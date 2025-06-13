@@ -68,8 +68,7 @@ public sealed class SetupWithMultipleParameters<T> : ISetupReturn<T>
 
 			return value;
 
-			Continue:
-			continue;
+			Continue: ;
 		}
 
 		return default;
@@ -84,6 +83,17 @@ public sealed class SetupWithMultipleParameters<T> : ISetupReturn<T>
 	{
 		if (_currentParameters is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
+
+		_values ??= new Dictionary<int, (int[], T?)>();
+
+		var hashCode = new HashCode();
+		foreach (var currentParameter in _currentParameters)
+			hashCode.Add(currentParameter);
+
+		ref var valueRef = ref System.Runtime.InteropServices.CollectionsMarshal.GetValueRefOrAddDefault(_values, hashCode.ToHashCode(), out _);
+		valueRef = (_currentParameters, value);
+
+		_currentParameters = null;
 	}
 }
 

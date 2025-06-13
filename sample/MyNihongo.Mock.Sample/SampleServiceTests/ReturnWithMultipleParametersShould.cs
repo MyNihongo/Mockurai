@@ -17,8 +17,8 @@ public sealed class ReturnWithMultipleParametersShould : SampleServiceTestsBase
 	[Fact]
 	public void ReturnValueWithSetup()
 	{
-		const double expected = 0d;
-		const decimal resultSetup = 123_456m;
+		const double expected = 225d;
+		const decimal resultSetup = 15m;
 		const int yearSetup = 2025, monthSetup = 6;
 		var input = new DateOnly(yearSetup, monthSetup, 13);
 
