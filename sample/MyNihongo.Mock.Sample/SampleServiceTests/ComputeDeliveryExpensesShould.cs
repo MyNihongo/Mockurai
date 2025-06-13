@@ -19,7 +19,9 @@ public sealed class ComputeDeliveryExpensesShould : SampleServiceTestsBase
 		const int setupCount = 5;
 		const decimal expected = 5_000m;
 
-		DependencyServiceMock.SetupGetShopCount(setupCount);
+		DependencyServiceMock
+			.SetupGetShopCount()
+			.Returns(setupCount);
 
 		var actual = CreateFixture()
 			.ComputeDeliveryExpenses();

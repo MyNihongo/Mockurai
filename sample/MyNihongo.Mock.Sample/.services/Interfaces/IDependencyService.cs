@@ -4,7 +4,11 @@ public interface IDependencyService
 {
 	int GetShopCount();
 
-	Task<int> GetItemCountAsync();
+	string GetCustomerName(in string customerId);
 
-	ValueTask<decimal> GetItemPriceAsync();
+	void SetShopName(in string shopName);
+
+	Task<int> GetItemCountAsync(int itemId, CancellationToken ct = default);
+
+	ValueTask<decimal> GetItemPriceAsync(int itemId, decimal deliveryCosts, CancellationToken ct = default);
 }

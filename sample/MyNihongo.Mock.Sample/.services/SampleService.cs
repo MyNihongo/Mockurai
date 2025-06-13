@@ -15,10 +15,10 @@ internal sealed class SampleService : ISampleService
 		return shopCount * 1000m;
 	}
 
-	public async Task<decimal> ComputeRevenueAsync()
+	public async Task<decimal> ComputeRevenueAsync(int itemId, decimal deliveryCosts, CancellationToken ct = default)
 	{
-		var itemCount = await _dependencyService.GetItemCountAsync();
-		var itemPrice = await _dependencyService.GetItemPriceAsync();
+		var itemCount = await _dependencyService.GetItemCountAsync(itemId, ct);
+		var itemPrice = await _dependencyService.GetItemPriceAsync(itemId, deliveryCosts, ct);
 
 		return itemCount * itemPrice * 0.75m;
 	}

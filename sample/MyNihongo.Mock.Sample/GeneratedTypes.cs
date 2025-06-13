@@ -1,9 +1,18 @@
 namespace MyNihongo.Mock.Sample;
 
 [Obsolete("Will be generated")]
-public sealed class Setup<T>
+public interface ISetupReturn<T>
 {
-	public T? Value { get; set; }
+	void Returns(in T? value);
+}
+
+[Obsolete("Will be generated")]
+public sealed class Setup<T> : ISetupReturn<T>
+{
+	public T? Value { get; private set; }
+
+	public void Returns(in T? value) =>
+		Value = value;
 }
 
 [Obsolete("Will be generated")]
@@ -21,8 +30,8 @@ public sealed class SampleMock : Mock<IDependencyService>
 {
 	private readonly Setup<int> _getShopCount = new();
 
-	public void SetupGetShopCount(int count) =>
-		_getShopCount.Value = count;
+	public Setup<int> SetupGetShopCount() =>
+		_getShopCount;
 
 	protected override IDependencyService CreateObject() =>
 		new Proxy(this);
@@ -39,12 +48,22 @@ public sealed class SampleMock : Mock<IDependencyService>
 		public int GetShopCount() =>
 			_mock._getShopCount.Value;
 
-		public Task<int> GetItemCountAsync()
+		public string GetCustomerName(in string customerId)
 		{
 			throw new NotImplementedException();
 		}
 
-		public ValueTask<decimal> GetItemPriceAsync()
+		public void SetShopName(in string shopName)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<int> GetItemCountAsync(int itemId, CancellationToken ct = default)
+		{
+			throw new NotImplementedException();
+		}
+
+		public ValueTask<decimal> GetItemPriceAsync(int itemId, decimal deliveryCosts, CancellationToken ct = default)
 		{
 			throw new NotImplementedException();
 		}
@@ -54,8 +73,6 @@ public sealed class SampleMock : Mock<IDependencyService>
 [Obsolete("Will be generated")]
 public static class SampleEx
 {
-	public static void SetupGetShopCount(this IMock<IDependencyService> @this, in int returnValue)
-	{
-		((SampleMock)@this).SetupGetShopCount(returnValue);
-	}
+	public static ISetupReturn<int> SetupGetShopCount(this IMock<IDependencyService> @this) =>
+		((SampleMock)@this).SetupGetShopCount();
 }
