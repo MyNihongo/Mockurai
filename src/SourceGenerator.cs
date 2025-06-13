@@ -30,6 +30,15 @@ public sealed class SourceGenerator : IIncrementalGenerator
 					  {
 					  	T Object { get; }
 					  }
+
+					  public abstract class Mock<T> : IMock<T>
+					  {
+					  	private T? _object;
+
+					  	public T Object => _object ??= CreateObject();
+
+					  	protected abstract T CreateObject();
+					  }
 					  """;
 
 				context.AddSource("Mock.g.cs", sample);
