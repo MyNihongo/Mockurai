@@ -166,21 +166,6 @@ public sealed class SampleMock : Mock<IPrimitiveDependencyService>
 			Span<int> hashCodes = stackalloc int[] { parameter1.GetHashCode(), parameter2.GetHashCode() };
 			return _mock._returnWithMultipleParameters?.GetValue(hashCodes) ?? 0m;
 		}
-
-		public void SetShopName(in string shopName)
-		{
-			throw new NotImplementedException();
-		}
-
-		public Task<int> GetItemCountAsync(int itemId, CancellationToken ct = default)
-		{
-			throw new NotImplementedException();
-		}
-
-		public ValueTask<decimal> GetItemPriceAsync(int itemId, decimal deliveryCosts, CancellationToken ct = default)
-		{
-			throw new NotImplementedException();
-		}
 	}
 }
 
