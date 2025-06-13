@@ -1,6 +1,6 @@
-namespace MyNihongo.Mock.Sample.SampleServiceTests;
+namespace MyNihongo.Mock.Sample.PrimitireTypeServiceTests;
 
-public sealed class ReturnWithoutParametersShould : SampleServiceTestsBase
+public sealed class ReturnWithoutParametersShould : PrimitireTypeServiceTestsBase
 {
 	[Fact]
 	public void ReturnValueWithoutSetup()
@@ -20,7 +20,7 @@ public sealed class ReturnWithoutParametersShould : SampleServiceTestsBase
 		const decimal expected = 5_000m;
 
 		DependencyServiceMock
-			.SetupGetShopCount()
+			.SetupReturn()
 			.Returns(setupCount);
 
 		var actual = CreateFixture()

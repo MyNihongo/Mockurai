@@ -1,6 +1,6 @@
-namespace MyNihongo.Mock.Sample.SampleServiceTests;
+namespace MyNihongo.Mock.Sample.PrimitireTypeServiceTests;
 
-public sealed class ReturnWithOneParameterShould : SampleServiceTestsBase
+public sealed class ReturnWithOneParameterShould : PrimitireTypeServiceTestsBase
 {
 	[Fact]
 	public void ReturnValueWithoutSetup()
@@ -16,17 +16,17 @@ public sealed class ReturnWithOneParameterShould : SampleServiceTestsBase
 	[Fact]
 	public void ReturnValueWithSetup()
 	{
-		const string paramCustomerId = "ZFJ2XHcBRAuyJZJX",
-			setupName = "Okayama Issei";
+		const string parameter = "ZFJ2XHcBRAuyJZJX",
+			nameSetup = "Okayama Issei";
 
 		DependencyServiceMock
-			.SetupGetCustomerName(paramCustomerId)
-			.Returns(setupName);
+			.SetupReturnWithOneParameter(parameter)
+			.Returns(nameSetup);
 
 		var actual = CreateFixture()
-			.ReturnWithOneParameter(paramCustomerId);
+			.ReturnWithOneParameter(parameter);
 
-		Assert.Equal(setupName, actual.Name);
+		Assert.Equal(nameSetup, actual.Name);
 	}
 
 	[Fact]
@@ -37,7 +37,7 @@ public sealed class ReturnWithOneParameterShould : SampleServiceTestsBase
 			setupName = "Okayama Issei";
 
 		DependencyServiceMock
-			.SetupGetCustomerName(setupCustomerId)
+			.SetupReturnWithOneParameter(setupCustomerId)
 			.Returns(setupName);
 
 		var actual = CreateFixture()

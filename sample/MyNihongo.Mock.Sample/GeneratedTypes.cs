@@ -108,42 +108,42 @@ public abstract class Mock<T> : IMock<T>
 }
 
 [Obsolete("Will be generated")]
-public sealed class SampleMock : Mock<IDependencyService>
+public sealed class SampleMock : Mock<IPrimitiveDependencyService>
 {
-	private Setup<int>? _getShopCount;
-	private SetupWithParameter<string>? _getCustomerName;
-	private SetupWithMultipleParameters<decimal>? _getCustomerSpending;
+	private Setup<int>? _return;
+	private SetupWithParameter<string>? _returnWithOneParameter;
+	private SetupWithMultipleParameters<decimal>? _returnWithMultipleParameters;
 
-	public Setup<int> SetupGetShopCount() =>
-		_getShopCount ??= new Setup<int>();
+	public Setup<int> SetupReturn() =>
+		_return ??= new Setup<int>();
 
-	public SetupWithParameter<string> SetupGetCustomerName(in string customerId)
+	public SetupWithParameter<string> SetupReturnWithOneParameter(in string parameter)
 	{
-		_getCustomerName ??= new SetupWithParameter<string>();
+		_returnWithOneParameter ??= new SetupWithParameter<string>();
 
-		var hashCode = customerId.GetHashCode();
-		_getCustomerName.SetupParameters(hashCode);
-		return _getCustomerName;
+		var hashCode = parameter.GetHashCode();
+		_returnWithOneParameter.SetupParameters(hashCode);
+		return _returnWithOneParameter;
 	}
 
-	public SetupWithMultipleParameters<decimal> SetupGetCustomerSpending(in int year, in int month)
+	public SetupWithMultipleParameters<decimal> SetupReturnWithMultipleParameters(in int parameter1, in int parameter2)
 	{
-		_getCustomerSpending ??= new SetupWithMultipleParameters<decimal>();
+		_returnWithMultipleParameters ??= new SetupWithMultipleParameters<decimal>();
 
 		var hashCodes = new[]
 		{
-			year.GetHashCode(),
-			month.GetHashCode(),
+			parameter1.GetHashCode(),
+			parameter2.GetHashCode(),
 		};
 
-		_getCustomerSpending.SetupParameters(hashCodes);
-		return _getCustomerSpending;
+		_returnWithMultipleParameters.SetupParameters(hashCodes);
+		return _returnWithMultipleParameters;
 	}
 
-	protected override IDependencyService CreateObject() =>
+	protected override IPrimitiveDependencyService CreateObject() =>
 		new Proxy(this);
 
-	private sealed class Proxy : IDependencyService
+	private sealed class Proxy : IPrimitiveDependencyService
 	{
 		private readonly SampleMock _mock;
 
@@ -152,19 +152,19 @@ public sealed class SampleMock : Mock<IDependencyService>
 			_mock = mock;
 		}
 
-		public int GetShopCount() =>
-			_mock._getShopCount?.Value ?? 0;
+		public int Return() =>
+			_mock._return?.Value ?? 0;
 
-		public string GetCustomerName(in string customerId)
+		public string ReturnWithParameter(in string parameter)
 		{
-			var hashcode = customerId.GetHashCode();
-			return _mock._getCustomerName?.GetValue(hashcode) ?? string.Empty;
+			var hashcode = parameter.GetHashCode();
+			return _mock._returnWithOneParameter?.GetValue(hashcode) ?? string.Empty;
 		}
 
-		public decimal GetCustomerSpending(int year, int month)
+		public decimal ReturnWithMultipleParameters(int parameter1, int parameter2)
 		{
-			Span<int> hashCodes = stackalloc int[] { year.GetHashCode(), month.GetHashCode() };
-			return _mock._getCustomerSpending?.GetValue(hashCodes) ?? 0m;
+			Span<int> hashCodes = stackalloc int[] { parameter1.GetHashCode(), parameter2.GetHashCode() };
+			return _mock._returnWithMultipleParameters?.GetValue(hashCodes) ?? 0m;
 		}
 
 		public void SetShopName(in string shopName)
@@ -187,12 +187,12 @@ public sealed class SampleMock : Mock<IDependencyService>
 [Obsolete("Will be generated")]
 public static class SampleEx
 {
-	public static ISetupReturn<int> SetupGetShopCount(this IMock<IDependencyService> @this) =>
-		((SampleMock)@this).SetupGetShopCount();
+	public static ISetupReturn<int> SetupReturn(this IMock<IPrimitiveDependencyService> @this) =>
+		((SampleMock)@this).SetupReturn();
 
-	public static ISetupReturn<string> SetupGetCustomerName(this IMock<IDependencyService> @this, in string customerId) =>
-		((SampleMock)@this).SetupGetCustomerName(customerId);
+	public static ISetupReturn<string> SetupReturnWithOneParameter(this IMock<IPrimitiveDependencyService> @this, in string parameter) =>
+		((SampleMock)@this).SetupReturnWithOneParameter(parameter);
 
-	public static ISetupReturn<decimal> SetupGetCustomerSpending(this IMock<IDependencyService> @this, in int year, in int month) =>
-		((SampleMock)@this).SetupGetCustomerSpending(year, month);
+	public static ISetupReturn<decimal> SetupReturnWithMultipleParameters(this IMock<IPrimitiveDependencyService> @this, in int parameter1, in int parameter2) =>
+		((SampleMock)@this).SetupReturnWithMultipleParameters(parameter1, parameter2);
 }
