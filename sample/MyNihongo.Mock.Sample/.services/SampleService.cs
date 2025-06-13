@@ -26,6 +26,14 @@ internal sealed class SampleService : ISampleService
 		};
 	}
 
+	public double ReturnWithMultipleParameters(in DateOnly date)
+	{
+		var spending = _dependencyService.GetCustomerSpending(date.Year, date.Month);
+		var spendingDouble = Convert.ToDouble(spending);
+
+		return Math.Pow(spendingDouble, 2d);
+	}
+
 	public async Task<decimal> ReturnTaskWithMultipleParametersAsync(int itemId, decimal deliveryCosts, CancellationToken ct = default)
 	{
 		var itemCount = await _dependencyService.GetItemCountAsync(itemId, ct);

@@ -6,6 +6,8 @@ public interface IDependencyService
 
 	string GetCustomerName(in string customerId);
 
+	decimal GetCustomerSpending(int year, int month);
+
 	void SetShopName(in string shopName);
 
 	Task<int> GetItemCountAsync(int itemId, CancellationToken ct = default);

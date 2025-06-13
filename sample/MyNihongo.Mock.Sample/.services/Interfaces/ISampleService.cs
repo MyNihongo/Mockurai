@@ -6,5 +6,7 @@ public interface ISampleService
 
 	CustomerModel ReturnWithOneParameter(in string customerId);
 
+	double ReturnWithMultipleParameters(in DateOnly date);
+
 	Task<decimal> ReturnTaskWithMultipleParametersAsync(int itemId, decimal deliveryCosts, CancellationToken ct = default);
 }
