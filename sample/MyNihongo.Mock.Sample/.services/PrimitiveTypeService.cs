@@ -15,14 +15,14 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		return shopCount * 1000m;
 	}
 
-	public CustomerModel ReturnWithOneParameter(in string parameter)
+	public ClassResult ReturnWithOneParameter(in string parameter)
 	{
 		var name = _primitiveDependencyService.ReturnWithParameter(parameter);
 
-		return new CustomerModel
+		return new ClassResult
 		{
-			Name = name,
-			Age = 32,
+			StringResult = name,
+			IntResult = 32,
 		};
 	}
 

@@ -10,7 +10,7 @@ public sealed class ReturnWithOneParameterShould : PrimitireTypeServiceTestsBase
 		var actual = CreateFixture()
 			.ReturnWithOneParameter(paramCustomerId);
 
-		Assert.Empty(actual.Name);
+		Assert.Empty(actual.StringResult);
 	}
 
 	[Fact]
@@ -26,7 +26,7 @@ public sealed class ReturnWithOneParameterShould : PrimitireTypeServiceTestsBase
 		var actual = CreateFixture()
 			.ReturnWithOneParameter(parameter);
 
-		Assert.Equal(nameSetup, actual.Name);
+		Assert.Equal(nameSetup, actual.StringResult);
 	}
 
 	[Fact]
@@ -43,6 +43,6 @@ public sealed class ReturnWithOneParameterShould : PrimitireTypeServiceTestsBase
 		var actual = CreateFixture()
 			.ReturnWithOneParameter(paramCustomerId);
 
-		Assert.Empty(actual.Name);
+		Assert.Empty(actual.StringResult);
 	}
 }
