@@ -2,7 +2,9 @@ namespace MyNihongo.Mock.Sample;
 
 public interface ISampleService
 {
-	decimal ComputeDeliveryExpenses();
+	decimal ReturnWithoutParameters();
 
-	Task<decimal> ComputeRevenueAsync(int itemId, decimal deliveryCosts, CancellationToken ct = default);
+	CustomerModel ReturnWithOneParameter(in string customerId);
+
+	Task<decimal> ReturnTaskWithMultipleParametersAsync(int itemId, decimal deliveryCosts, CancellationToken ct = default);
 }

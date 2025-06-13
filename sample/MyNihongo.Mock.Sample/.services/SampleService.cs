@@ -9,13 +9,24 @@ internal sealed class SampleService : ISampleService
 		_dependencyService = dependencyService;
 	}
 
-	public decimal ComputeDeliveryExpenses()
+	public decimal ReturnWithoutParameters()
 	{
 		var shopCount = _dependencyService.GetShopCount();
 		return shopCount * 1000m;
 	}
 
-	public async Task<decimal> ComputeRevenueAsync(int itemId, decimal deliveryCosts, CancellationToken ct = default)
+	public CustomerModel ReturnWithOneParameter(in string customerId)
+	{
+		var name = _dependencyService.GetCustomerName(customerId);
+
+		return new CustomerModel
+		{
+			Name = name,
+			Age = 32,
+		};
+	}
+
+	public async Task<decimal> ReturnTaskWithMultipleParametersAsync(int itemId, decimal deliveryCosts, CancellationToken ct = default)
 	{
 		var itemCount = await _dependencyService.GetItemCountAsync(itemId, ct);
 		var itemPrice = await _dependencyService.GetItemPriceAsync(itemId, deliveryCosts, ct);

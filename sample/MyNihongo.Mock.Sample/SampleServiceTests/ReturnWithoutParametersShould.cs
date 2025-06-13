@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock.Sample.SampleServiceTests;
 
-public sealed class ComputeDeliveryExpensesShould : SampleServiceTestsBase
+public sealed class ReturnWithoutParametersShould : SampleServiceTestsBase
 {
 	[Fact]
 	public void ReturnValueWithoutSetup()
@@ -8,7 +8,7 @@ public sealed class ComputeDeliveryExpensesShould : SampleServiceTestsBase
 		const decimal expected = 0m;
 
 		var actual = CreateFixture()
-			.ComputeDeliveryExpenses();
+			.ReturnWithoutParameters();
 
 		Assert.Equal(expected, actual);
 	}
@@ -24,7 +24,7 @@ public sealed class ComputeDeliveryExpensesShould : SampleServiceTestsBase
 			.Returns(setupCount);
 
 		var actual = CreateFixture()
-			.ComputeDeliveryExpenses();
+			.ReturnWithoutParameters();
 
 		Assert.Equal(expected, actual);
 	}
