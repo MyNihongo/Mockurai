@@ -18,7 +18,7 @@ internal static class IncrementalValueProviderEx
 
 	public static IncrementalValueProvider<CompilationCombinedResult> Combine(
 		this IncrementalValueProvider<Compilation> @this,
-		in IncrementalValueProvider<ImmutableArray<SyntaxNodeTransformResult>> transformResult,
+		in IncrementalValueProvider<ImmutableArray<SyntaxNodeTransformResult?>> transformResult,
 		in IncrementalValueProvider<ConfigurationOptions> options)
 	{
 		return @this
