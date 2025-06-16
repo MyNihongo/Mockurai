@@ -135,7 +135,7 @@ public sealed class ReturnWithMultipleParametersShould : RecordTypeServiceTestsB
 	}
 
 	[Fact]
-	public void ThrowWithDifferentInstancesInvalidSequence1()
+	public void ReturnValueWithDifferentInstancesInvalidSequence1()
 	{
 		var input1 = new RecordParameter1(
 			Number: 1,
@@ -155,15 +155,15 @@ public sealed class ReturnWithMultipleParametersShould : RecordTypeServiceTestsB
 				DateOfBirth: new DateOnly(2025, 6, 16)
 			));
 
-		Action actual = () => CreateFixture()
+		var actual = CreateFixture()
 			.ReturnWithMultipleParameters(input2, input1);
 
-		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IRecordDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+		const double expected = 15d;
+		Assert.Equal(expected, actual);
 	}
 
 	[Fact]
-	public void ThrowWithDifferentInstancesInvalidSequence2()
+	public void ReturnValueWithDifferentInstancesInvalidSequence2()
 	{
 		var input1 = new RecordParameter1(
 			Number: 1,
@@ -183,15 +183,15 @@ public sealed class ReturnWithMultipleParametersShould : RecordTypeServiceTestsB
 				DateOfBirth: new DateOnly(2025, 6, 16)
 			));
 
-		Action actual = () => CreateFixture()
-			.ReturnWithMultipleParameters(input1, input1);
+		var actual = CreateFixture()
+			.ReturnWithMultipleParameters(input2, input1);
 
-		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IRecordDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+		const double expected = 15d;
+		Assert.Equal(expected, actual);
 	}
 
 	[Fact]
-	public void ThrowWithDifferentInstancesInvalidSequence3()
+	public void ReturnValueWithDifferentInstancesInvalidSequence3()
 	{
 		var input1 = new RecordParameter1(
 			Number: 1,
@@ -211,10 +211,10 @@ public sealed class ReturnWithMultipleParametersShould : RecordTypeServiceTestsB
 				DateOfBirth: new DateOnly(2025, 6, 16)
 			));
 
-		Action actual = () => CreateFixture()
+		var actual = CreateFixture()
 			.ReturnWithMultipleParameters(input2, input1);
 
-		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IRecordDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+		const double expected = 15d;
+		Assert.Equal(expected, actual);
 	}
 }

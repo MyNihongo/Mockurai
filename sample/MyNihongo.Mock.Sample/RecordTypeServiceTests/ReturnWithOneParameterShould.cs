@@ -41,7 +41,7 @@ public sealed class ReturnWithOneParameterShould : RecordTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void ThrowWithSetupAnotherInstance()
+	public void ReturnValueWithSetupAnotherInstance()
 	{
 		var setupParameter = new RecordParameter1(
 			Number: 1,
@@ -61,11 +61,11 @@ public sealed class ReturnWithOneParameterShould : RecordTypeServiceTestsBase
 				DateOfBirth: new DateOnly(2025, 6, 16)
 			));
 
-		Action actual = () => CreateFixture()
+		var actual = CreateFixture()
 			.ReturnWithOneParameter(input);
 
-		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IRecordDependencyService#ReturnWithParameter() method has not been set up", exception.Message);
+		const string expected = "name:Okayama Issei,age:12";
+		Assert.Equal(expected, actual);
 	}
 
 	[Fact]

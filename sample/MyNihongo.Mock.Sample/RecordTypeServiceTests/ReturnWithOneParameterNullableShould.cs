@@ -40,7 +40,7 @@ public sealed class ReturnWithOneParameterNullableShould : RecordTypeServiceTest
 	}
 
 	[Fact]
-	public void ThrowWithSetupAnotherInstance()
+	public void ReturnValueWithSetupAnotherInstance()
 	{
 		var setupParameter = new RecordParameter1(
 			Number: 1,
@@ -63,7 +63,8 @@ public sealed class ReturnWithOneParameterNullableShould : RecordTypeServiceTest
 		var actual = CreateFixture()
 			.ReturnWithOneParameterNullable(input);
 
-		Assert.Null(actual);
+		const string expected = "name:Okayama Issei,age:12";
+		Assert.Equal(expected, actual);
 	}
 
 	[Fact]

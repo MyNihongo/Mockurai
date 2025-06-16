@@ -131,7 +131,7 @@ public sealed class ReturnWithMultipleParametersNullableShould : RecordTypeServi
 	}
 
 	[Fact]
-	public void ReturnNullWithDifferentInstancesInvalidSequence1()
+	public void ReturnValueWithDifferentInstancesInvalidSequence1()
 	{
 		var input1 = new RecordParameter1(
 			Number: 1,
@@ -154,11 +154,12 @@ public sealed class ReturnWithMultipleParametersNullableShould : RecordTypeServi
 		var actual = CreateFixture()
 			.ReturnWithMultipleParametersNullable(input2, input1);
 
-		Assert.Null(actual);
+		const double expected = 15d;
+		Assert.Equal(expected, actual);
 	}
 
 	[Fact]
-	public void ReturnNullWithDifferentInstancesInvalidSequence2()
+	public void ReturnValueWithDifferentInstancesInvalidSequence2()
 	{
 		var input1 = new RecordParameter1(
 			Number: 1,
@@ -181,11 +182,12 @@ public sealed class ReturnWithMultipleParametersNullableShould : RecordTypeServi
 		var actual = CreateFixture()
 			.ReturnWithMultipleParametersNullable(input1, input1);
 
-		Assert.Null(actual);
+		const double expected = 15d;
+		Assert.Equal(expected, actual);
 	}
 
 	[Fact]
-	public void ReturnNullWithDifferentInstancesInvalidSequence3()
+	public void ReturnValueWithDifferentInstancesInvalidSequence3()
 	{
 		var input1 = new RecordParameter1(
 			Number: 1,
@@ -208,6 +210,7 @@ public sealed class ReturnWithMultipleParametersNullableShould : RecordTypeServi
 		var actual = CreateFixture()
 			.ReturnWithMultipleParametersNullable(input2, input1);
 
-		Assert.Null(actual);
+		const double expected = 15d;
+		Assert.Equal(expected, actual);
 	}
 }
