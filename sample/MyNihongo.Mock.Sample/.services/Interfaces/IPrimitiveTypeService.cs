@@ -2,7 +2,7 @@ namespace MyNihongo.Mock.Sample;
 
 public interface IPrimitiveTypeService
 {
-	decimal ReturnWithoutParameters();
+	decimal Return();
 
 	string ReturnWithOneParameter(in string parameter);
 

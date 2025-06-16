@@ -9,7 +9,7 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		_primitiveDependencyService = primitiveDependencyService;
 	}
 
-	public decimal ReturnWithoutParameters()
+	public decimal Return()
 	{
 		var shopCount = _primitiveDependencyService.Return();
 		return shopCount * 1000m;

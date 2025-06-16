@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock.Sample.PrimitireTypeServiceTests;
 
-public sealed class ReturnWithoutParametersShould : PrimitireTypeServiceTestsBase
+public sealed class ReturnShould : PrimitireTypeServiceTestsBase
 {
 	[Fact]
 	public void ReturnValueWithoutSetup()
@@ -8,7 +8,7 @@ public sealed class ReturnWithoutParametersShould : PrimitireTypeServiceTestsBas
 		const decimal expected = 0m;
 
 		var actual = CreateFixture()
-			.ReturnWithoutParameters();
+			.Return();
 
 		Assert.Equal(expected, actual);
 	}
@@ -24,7 +24,7 @@ public sealed class ReturnWithoutParametersShould : PrimitireTypeServiceTestsBas
 			.Returns(setupCount);
 
 		var actual = CreateFixture()
-			.ReturnWithoutParameters();
+			.Return();
 
 		Assert.Equal(expected, actual);
 	}
