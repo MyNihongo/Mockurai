@@ -5,19 +5,21 @@ public sealed class ReturnWithOneParameterShould : PrimitireTypeServiceTestsBase
 	[Fact]
 	public void ReturnValueWithoutSetup()
 	{
-		const string paramCustomerId = "qOp5SNt2LVqzQ9qS";
+		const string paramCustomerId = "qOp5SNt2LVqzQ9qS",
+			expected = "name:,age:32";
 
 		var actual = CreateFixture()
 			.ReturnWithOneParameter(paramCustomerId);
 
-		Assert.Empty(actual.StringResult);
+		Assert.Equal(expected, actual);
 	}
 
 	[Fact]
 	public void ReturnValueWithSetup()
 	{
 		const string parameter = "ZFJ2XHcBRAuyJZJX",
-			nameSetup = "Okayama Issei";
+			nameSetup = "Okayama Issei",
+			expected = "name:Okayama Issei,age:32";
 
 		DependencyServiceMock
 			.SetupReturnWithOneParameter(parameter)
@@ -26,7 +28,7 @@ public sealed class ReturnWithOneParameterShould : PrimitireTypeServiceTestsBase
 		var actual = CreateFixture()
 			.ReturnWithOneParameter(parameter);
 
-		Assert.Equal(nameSetup, actual.StringResult);
+		Assert.Equal(expected, actual);
 	}
 
 	[Fact]
@@ -34,7 +36,8 @@ public sealed class ReturnWithOneParameterShould : PrimitireTypeServiceTestsBase
 	{
 		const string paramCustomerId = "ZFJ2XHcBRAuyJZJX",
 			setupCustomerId = "another ID",
-			setupName = "Okayama Issei";
+			setupName = "Okayama Issei",
+			expected = "name:,age:32";
 
 		DependencyServiceMock
 			.SetupReturnWithOneParameter(setupCustomerId)
@@ -43,6 +46,6 @@ public sealed class ReturnWithOneParameterShould : PrimitireTypeServiceTestsBase
 		var actual = CreateFixture()
 			.ReturnWithOneParameter(paramCustomerId);
 
-		Assert.Empty(actual.StringResult);
+		Assert.Equal(expected, actual);
 	}
 }

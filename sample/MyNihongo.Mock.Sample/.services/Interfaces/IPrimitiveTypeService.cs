@@ -4,7 +4,7 @@ public interface IPrimitiveTypeService
 {
 	decimal ReturnWithoutParameters();
 
-	ClassResult ReturnWithOneParameter(in string parameter);
+	string ReturnWithOneParameter(in string parameter);
 
 	double ReturnWithMultipleParameters(in int parameter1, in int parameter2);
 }
