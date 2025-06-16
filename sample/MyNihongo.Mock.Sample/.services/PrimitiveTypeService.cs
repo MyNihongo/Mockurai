@@ -9,21 +9,16 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		_primitiveDependencyService = primitiveDependencyService;
 	}
 
-	public decimal ReturnWithoutParameters()
+	public decimal Return()
 	{
 		var shopCount = _primitiveDependencyService.Return();
 		return shopCount * 1000m;
 	}
 
-	public ClassResult ReturnWithOneParameter(in string parameter)
+	public string ReturnWithOneParameter(in string parameter)
 	{
 		var name = _primitiveDependencyService.ReturnWithParameter(parameter);
-
-		return new ClassResult
-		{
-			StringResult = name,
-			IntResult = 32,
-		};
+		return $"name:{name},age:32";
 	}
 
 	public double ReturnWithMultipleParameters(in int parameter1, in int parameter2)

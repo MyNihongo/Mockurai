@@ -1,7 +1,7 @@
 namespace MyNihongo.Mock.Sample;
 
 [Obsolete("Will be generated")]
-public sealed class SampleMock : Mock<IPrimitiveDependencyService>
+public sealed class PrimitiveDependencyServiceMock : Mock<IPrimitiveDependencyService>
 {
 	private Setup<int>? _return;
 	private SetupWithParameter<string>? _returnWithOneParameter;
@@ -38,9 +38,9 @@ public sealed class SampleMock : Mock<IPrimitiveDependencyService>
 
 	private sealed class Proxy : IPrimitiveDependencyService
 	{
-		private readonly SampleMock _mock;
+		private readonly PrimitiveDependencyServiceMock _mock;
 
-		public Proxy(SampleMock mock)
+		public Proxy(PrimitiveDependencyServiceMock mock)
 		{
 			_mock = mock;
 		}
@@ -63,14 +63,14 @@ public sealed class SampleMock : Mock<IPrimitiveDependencyService>
 }
 
 [Obsolete("Will be generated")]
-public static class SampleEx
+public static class PrimitiveDependencyServiceMockEx
 {
 	public static ISetupReturn<int> SetupReturn(this IMock<IPrimitiveDependencyService> @this) =>
-		((SampleMock)@this).SetupReturn();
+		((PrimitiveDependencyServiceMock)@this).SetupReturn();
 
 	public static ISetupReturn<string> SetupReturnWithOneParameter(this IMock<IPrimitiveDependencyService> @this, in string parameter) =>
-		((SampleMock)@this).SetupReturnWithOneParameter(parameter);
+		((PrimitiveDependencyServiceMock)@this).SetupReturnWithOneParameter(parameter);
 
 	public static ISetupReturn<decimal> SetupReturnWithMultipleParameters(this IMock<IPrimitiveDependencyService> @this, in int parameter1, in int parameter2) =>
-		((SampleMock)@this).SetupReturnWithMultipleParameters(parameter1, parameter2);
+		((PrimitiveDependencyServiceMock)@this).SetupReturnWithMultipleParameters(parameter1, parameter2);
 }
