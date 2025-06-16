@@ -1,0 +1,13 @@
+namespace MyNihongo.Mock.Sample.RecordTypeServiceTests;
+
+public abstract class RecordTypeServiceTestsBase
+{
+	protected readonly Mock<IRecordDependencyService> RecordDependencyServiceMock = new RecordDependencyServiceMock();
+
+	protected IRecordTypeService CreateFixture()
+	{
+		return new RecordTypeService(
+			classDependencyService: RecordDependencyServiceMock.Object
+		);
+	}
+}

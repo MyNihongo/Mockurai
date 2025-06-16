@@ -1,0 +1,243 @@
+namespace MyNihongo.Mock.Sample.RecordTypeServiceTests;
+
+public sealed class ReturnWithMultipleParametersShould : RecordTypeServiceTestsBase
+{
+	[Fact]
+	public void ThrowWithoutSetup()
+	{
+		var input1 = new RecordParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new RecordParameter1
+		{
+			Number = 2,
+			Text = "Some text",
+		};
+
+		Action actual = () => CreateFixture()
+			.ReturnWithMultipleParameters(input1, input2);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal("IRecordDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+	}
+
+	[Fact]
+	public void ReturnValueWithSetup()
+	{
+		var input1 = new RecordParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new RecordParameter1
+		{
+			Number = 2,
+			Text = "Some text",
+		};
+
+		RecordDependencyServiceMock
+			.SetupReturnWithMultipleParameters(input1, input2)
+			.Returns(new RecordReturn
+			{
+				Name = "Okayama Issei",
+				Age = 12,
+				DateOfBirth = new DateOnly(2025, 6, 16),
+			});
+
+		var actual = CreateFixture()
+			.ReturnWithMultipleParameters(input1, input2);
+
+		const double expected = 15d;
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void ThrowWithInvalidSequence1()
+	{
+		var input1 = new RecordParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new RecordParameter1
+		{
+			Number = 2,
+			Text = "Some text",
+		};
+
+		RecordDependencyServiceMock
+			.SetupReturnWithMultipleParameters(input1, input2)
+			.Returns(new RecordReturn
+			{
+				Name = "Okayama Issei",
+				Age = 12,
+				DateOfBirth = new DateOnly(2025, 6, 16),
+			});
+
+		Action actual = () => CreateFixture()
+			.ReturnWithMultipleParameters(input1, input1);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal("IRecordDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+	}
+
+	[Fact]
+	public void ThrowWithInvalidSequence2()
+	{
+		var input1 = new RecordParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new RecordParameter1
+		{
+			Number = 2,
+			Text = "Some text",
+		};
+
+		RecordDependencyServiceMock
+			.SetupReturnWithMultipleParameters(input1, input2)
+			.Returns(new RecordReturn
+			{
+				Name = "Okayama Issei",
+				Age = 12,
+				DateOfBirth = new DateOnly(2025, 6, 16),
+			});
+
+		Action actual = () => CreateFixture()
+			.ReturnWithMultipleParameters(input2, input1);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal("IRecordDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+	}
+
+	[Fact]
+	public void ThrowWithInvalidSequence3()
+	{
+		var input1 = new RecordParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new RecordParameter1
+		{
+			Number = 2,
+			Text = "Some text",
+		};
+
+		RecordDependencyServiceMock
+			.SetupReturnWithMultipleParameters(input1, input2)
+			.Returns(new RecordReturn
+			{
+				Name = "Okayama Issei",
+				Age = 12,
+				DateOfBirth = new DateOnly(2025, 6, 16),
+			});
+
+		Action actual = () => CreateFixture()
+			.ReturnWithMultipleParameters(input2, input2);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal("IRecordDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+	}
+
+	[Fact]
+	public void ThrowWithDifferentInstancesInvalidSequence1()
+	{
+		var input1 = new RecordParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new RecordParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		RecordDependencyServiceMock
+			.SetupReturnWithMultipleParameters(input1, input2)
+			.Returns(new RecordReturn
+			{
+				Name = "Okayama Issei",
+				Age = 12,
+				DateOfBirth = new DateOnly(2025, 6, 16),
+			});
+
+		Action actual = () => CreateFixture()
+			.ReturnWithMultipleParameters(input2, input1);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal("IRecordDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+	}
+
+	[Fact]
+	public void ThrowWithDifferentInstancesInvalidSequence2()
+	{
+		var input1 = new RecordParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new RecordParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		RecordDependencyServiceMock
+			.SetupReturnWithMultipleParameters(input1, input2)
+			.Returns(new RecordReturn
+			{
+				Name = "Okayama Issei",
+				Age = 12,
+				DateOfBirth = new DateOnly(2025, 6, 16),
+			});
+
+		Action actual = () => CreateFixture()
+			.ReturnWithMultipleParameters(input1, input1);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal("IRecordDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+	}
+
+	[Fact]
+	public void ThrowWithDifferentInstancesInvalidSequence3()
+	{
+		var input1 = new RecordParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new RecordParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		RecordDependencyServiceMock
+			.SetupReturnWithMultipleParameters(input1, input2)
+			.Returns(new RecordReturn
+			{
+				Name = "Okayama Issei",
+				Age = 12,
+				DateOfBirth = new DateOnly(2025, 6, 16),
+			});
+
+		Action actual = () => CreateFixture()
+			.ReturnWithMultipleParameters(input2, input1);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal("IRecordDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+	}
+}
