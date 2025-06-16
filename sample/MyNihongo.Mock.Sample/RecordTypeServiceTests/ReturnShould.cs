@@ -19,12 +19,11 @@ public sealed class ReturnShould : RecordTypeServiceTestsBase
 
 		RecordDependencyServiceMock
 			.SetupReturn()
-			.Returns(new RecordReturn
-			{
-				Age = 12,
-				Name = "Okayama Issei",
-				DateOfBirth = new DateOnly(2025, 6, 16),
-			});
+			.Returns(new RecordReturn(
+				Age: 12,
+				Name: "Okayama Issei",
+				DateOfBirth: new DateOnly(2025, 6, 16)
+			));
 
 		var actual = CreateFixture()
 			.Return();

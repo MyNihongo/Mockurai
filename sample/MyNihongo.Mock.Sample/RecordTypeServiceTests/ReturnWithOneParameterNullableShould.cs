@@ -5,11 +5,10 @@ public sealed class ReturnWithOneParameterNullableShould : RecordTypeServiceTest
 	[Fact]
 	public void ThrowWithoutSetup()
 	{
-		var input = new RecordParameter1
-		{
-			Number = 1,
-			Text = "Some text",
-		};
+		var input = new RecordParameter1(
+			Number: 1,
+			Text: "Some text"
+		);
 
 		var actual = CreateFixture()
 			.ReturnWithOneParameterNullable(input);
@@ -20,23 +19,21 @@ public sealed class ReturnWithOneParameterNullableShould : RecordTypeServiceTest
 	[Fact]
 	public void ReturnValueWithSetupSameInstance()
 	{
-		var setupParameter = new RecordParameter1
-		{
-			Number = 1,
-			Text = "Some text",
-		};
+		var input = new RecordParameter1(
+			Number: 1,
+			Text: "Some text"
+		);
 
 		RecordDependencyServiceMock
-			.SetupReturnWithOneParameterNullable(setupParameter)
-			.Returns(new RecordReturn
-			{
-				Name = "Okayama Issei",
-				Age = 12,
-				DateOfBirth = new DateOnly(2025, 6, 16),
-			});
+			.SetupReturnWithOneParameterNullable(input)
+			.Returns(new RecordReturn(
+				Age: 12,
+				Name: "Okayama Issei",
+				DateOfBirth: new DateOnly(2025, 6, 16)
+			));
 
 		var actual = CreateFixture()
-			.ReturnWithOneParameterNullable(setupParameter);
+			.ReturnWithOneParameterNullable(input);
 
 		const string expected = "name:Okayama Issei,age:12";
 		Assert.Equal(expected, actual);
@@ -45,26 +42,23 @@ public sealed class ReturnWithOneParameterNullableShould : RecordTypeServiceTest
 	[Fact]
 	public void ThrowWithSetupAnotherInstance()
 	{
-		var setupParameter = new RecordParameter1
-		{
-			Number = 1,
-			Text = "Some text",
-		};
+		var setupParameter = new RecordParameter1(
+			Number: 1,
+			Text: "Some text"
+		);
 
-		var input = new RecordParameter1
-		{
-			Number = 1,
-			Text = "Some text",
-		};
+		var input = new RecordParameter1(
+			Number: 1,
+			Text: "Some text"
+		);
 
 		RecordDependencyServiceMock
 			.SetupReturnWithOneParameterNullable(setupParameter)
-			.Returns(new RecordReturn
-			{
-				Name = "Okayama Issei",
-				Age = 12,
-				DateOfBirth = new DateOnly(2025, 6, 16),
-			});
+			.Returns(new RecordReturn(
+				Age: 12,
+				Name: "Okayama Issei",
+				DateOfBirth: new DateOnly(2025, 6, 16)
+			));
 
 		var actual = CreateFixture()
 			.ReturnWithOneParameterNullable(input);
@@ -75,26 +69,23 @@ public sealed class ReturnWithOneParameterNullableShould : RecordTypeServiceTest
 	[Fact]
 	public void ThrowWithSetupAnotherSetup()
 	{
-		var setupParameter = new RecordParameter1
-		{
-			Number = 1,
-			Text = "Some text",
-		};
+		var setupParameter = new RecordParameter1(
+			Number: 1,
+			Text: "Some text"
+		);
 
-		var input = new RecordParameter1
-		{
-			Number = 12345678,
-			Text = "Another text",
-		};
+		var input = new RecordParameter1(
+			Number: 12345678,
+			Text: "Another text"
+		);
 
 		RecordDependencyServiceMock
 			.SetupReturnWithOneParameterNullable(setupParameter)
-			.Returns(new RecordReturn
-			{
-				Name = "Okayama Issei",
-				Age = 12,
-				DateOfBirth = new DateOnly(2025, 6, 16),
-			});
+			.Returns(new RecordReturn(
+				Age: 12,
+				Name: "Okayama Issei",
+				DateOfBirth: new DateOnly(2025, 6, 16)
+			));
 
 		var actual = CreateFixture()
 			.ReturnWithOneParameterNullable(input);

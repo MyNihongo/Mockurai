@@ -5,11 +5,10 @@ public sealed class ReturnWithOneParameterShould : RecordTypeServiceTestsBase
 	[Fact]
 	public void ThrowWithoutSetup()
 	{
-		var input = new RecordParameter1
-		{
-			Number = 1,
-			Text = "Some text",
-		};
+		var input = new RecordParameter1(
+			Number: 1,
+			Text: "Some text"
+		);
 
 		Action actual = () => CreateFixture()
 			.ReturnWithOneParameter(input);
@@ -28,12 +27,11 @@ public sealed class ReturnWithOneParameterShould : RecordTypeServiceTestsBase
 
 		RecordDependencyServiceMock
 			.SetupReturnWithOneParameter(setupParameter)
-			.Returns(new RecordReturn
-			{
-				Name = "Okayama Issei",
-				Age = 12,
-				DateOfBirth = new DateOnly(2025, 6, 16),
-			});
+			.Returns(new RecordReturn(
+				Name: "Okayama Issei",
+				Age: 12,
+				DateOfBirth: new DateOnly(2025, 6, 16)
+			));
 
 		var actual = CreateFixture()
 			.ReturnWithOneParameter(setupParameter);
@@ -45,26 +43,23 @@ public sealed class ReturnWithOneParameterShould : RecordTypeServiceTestsBase
 	[Fact]
 	public void ThrowWithSetupAnotherInstance()
 	{
-		var setupParameter = new RecordParameter1
-		{
-			Number = 1,
-			Text = "Some text",
-		};
+		var setupParameter = new RecordParameter1(
+			Number: 1,
+			Text: "Some text"
+		);
 
-		var input = new RecordParameter1
-		{
-			Number = 1,
-			Text = "Some text",
-		};
+		var input = new RecordParameter1(
+			Number: 1,
+			Text: "Some text"
+		);
 
 		RecordDependencyServiceMock
 			.SetupReturnWithOneParameter(setupParameter)
-			.Returns(new RecordReturn
-			{
-				Name = "Okayama Issei",
-				Age = 12,
-				DateOfBirth = new DateOnly(2025, 6, 16),
-			});
+			.Returns(new RecordReturn(
+				Age: 12,
+				Name: "Okayama Issei",
+				DateOfBirth: new DateOnly(2025, 6, 16)
+			));
 
 		Action actual = () => CreateFixture()
 			.ReturnWithOneParameter(input);
@@ -76,26 +71,23 @@ public sealed class ReturnWithOneParameterShould : RecordTypeServiceTestsBase
 	[Fact]
 	public void ThrowWithSetupAnotherSetup()
 	{
-		var setupParameter = new RecordParameter1
-		{
-			Number = 1,
-			Text = "Some text",
-		};
+		var setupParameter = new RecordParameter1(
+			Number: 1,
+			Text: "Some text"
+		);
 
-		var input = new RecordParameter1
-		{
-			Number = 12345678,
-			Text = "Another text",
-		};
+		var input = new RecordParameter1(
+			Number: 12345678,
+			Text: "Another text"
+		);
 
 		RecordDependencyServiceMock
 			.SetupReturnWithOneParameter(setupParameter)
-			.Returns(new RecordReturn
-			{
-				Name = "Okayama Issei",
-				Age = 12,
-				DateOfBirth = new DateOnly(2025, 6, 16),
-			});
+			.Returns(new RecordReturn(
+				Age: 12,
+				Name: "Okayama Issei",
+				DateOfBirth: new DateOnly(2025, 6, 16)
+			));
 
 		Action actual = () => CreateFixture()
 			.ReturnWithOneParameter(input);
