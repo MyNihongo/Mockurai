@@ -5,14 +5,14 @@ public sealed class ReturnWithOneParameterNullableShould : ClassTypeServiceTests
 	[Fact]
 	public void ThrowWithoutSetup()
 	{
-		var setupParameter = new ClassParameter1
+		var input = new ClassParameter1
 		{
 			Number = 1,
 			Text = "Some text",
 		};
 
 		var actual = CreateFixture()
-			.ReturnWithOneParameterNullable(setupParameter);
+			.ReturnWithOneParameterNullable(input);
 
 		Assert.Null(actual);
 	}

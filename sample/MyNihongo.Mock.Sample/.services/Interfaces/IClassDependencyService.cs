@@ -10,7 +10,7 @@ public interface IClassDependencyService
 
 	ClassReturn? ReturnWithParameterNullable(in ClassParameter1 parameter);
 
-	ClassReturn ReturnWithMultipleParameters(ClassParameter1 parameter1, ClassParameter2 parameter2);
+	ClassReturn ReturnWithMultipleParameters(ClassParameter1 parameter1, ClassParameter1 parameter2);
 
-	ClassReturn? ReturnWithMultipleParametersNullable(ClassParameter1 parameter1, ClassParameter2 parameter2);
+	ClassReturn? ReturnWithMultipleParametersNullable(ClassParameter1 parameter1, ClassParameter1 parameter2);
 }

@@ -5,14 +5,14 @@ public sealed class ReturnWithOneParameterShould : ClassTypeServiceTestsBase
 	[Fact]
 	public void ThrowWithoutSetup()
 	{
-		var setupParameter = new ClassParameter1
+		var input = new ClassParameter1
 		{
 			Number = 1,
 			Text = "Some text",
 		};
 
 		Action actual = () => CreateFixture()
-			.ReturnWithOneParameter(setupParameter);
+			.ReturnWithOneParameter(input);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
 		Assert.Equal("IClassDependencyService#ReturnWithParameter() method has not been set up", exception.Message);

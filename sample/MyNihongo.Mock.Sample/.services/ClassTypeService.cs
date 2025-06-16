@@ -33,13 +33,13 @@ public sealed class ClassTypeService : IClassTypeService
 		return result is not null ? $"name:{result.Name},age:{result.Age}" : null;
 	}
 
-	public double ReturnWithMultipleParameters(in ClassParameter1 parameter1, in ClassParameter2 parameter2)
+	public double ReturnWithMultipleParameters(in ClassParameter1 parameter1, in ClassParameter1 parameter2)
 	{
 		var result = _classDependencyService.ReturnWithMultipleParameters(parameter1, parameter2);
 		return result.Age + result.DateOfBirth.Day - result.Name.Length;
 	}
 
-	public double? ReturnWithMultipleParametersNullable(in ClassParameter1 parameter1, in ClassParameter2 parameter2)
+	public double? ReturnWithMultipleParametersNullable(in ClassParameter1 parameter1, in ClassParameter1 parameter2)
 	{
 		var result = _classDependencyService.ReturnWithMultipleParametersNullable(parameter1, parameter2);
 		return result is not null ? result.Age + result.DateOfBirth.Day - result.Name.Length : null;

@@ -34,7 +34,7 @@ public sealed class ClassDependencyServiceMock : Mock<IClassDependencyService>
 		return _returnWithOneParameterNullable;
 	}
 
-	public SetupWithMultipleParameters<ClassReturn> SetupReturnWithMultipleParameters(in ClassParameter1 parameter1, in ClassParameter2 parameter2)
+	public SetupWithMultipleParameters<ClassReturn> SetupReturnWithMultipleParameters(in ClassParameter1 parameter1, in ClassParameter1 parameter2)
 	{
 		_returnWithMultipleParameters ??= new SetupWithMultipleParameters<ClassReturn>();
 
@@ -48,7 +48,7 @@ public sealed class ClassDependencyServiceMock : Mock<IClassDependencyService>
 		return _returnWithMultipleParameters;
 	}
 
-	public SetupWithMultipleParameters<ClassReturn?> SetupReturnWithMultipleParametersNullable(in ClassParameter1 parameter1, in ClassParameter2 parameter2)
+	public SetupWithMultipleParameters<ClassReturn?> SetupReturnWithMultipleParametersNullable(in ClassParameter1 parameter1, in ClassParameter1 parameter2)
 	{
 		_returnWithMultipleParametersNullable ??= new SetupWithMultipleParameters<ClassReturn?>();
 
@@ -98,13 +98,13 @@ public sealed class ClassDependencyServiceMock : Mock<IClassDependencyService>
 			return _mock._returnWithOneParameterNullable?.GetValue(hashcode);
 		}
 
-		public ClassReturn ReturnWithMultipleParameters(ClassParameter1 parameter1, ClassParameter2 parameter2)
+		public ClassReturn ReturnWithMultipleParameters(ClassParameter1 parameter1, ClassParameter1 parameter2)
 		{
 			Span<int> hashCodes = stackalloc int[] { parameter1.GetHashCode(), parameter2.GetHashCode() };
 			return _mock._returnWithMultipleParameters?.GetValue(hashCodes) ?? throw new NullReferenceException("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up");
 		}
 
-		public ClassReturn? ReturnWithMultipleParametersNullable(ClassParameter1 parameter1, ClassParameter2 parameter2)
+		public ClassReturn? ReturnWithMultipleParametersNullable(ClassParameter1 parameter1, ClassParameter1 parameter2)
 		{
 			Span<int> hashCodes = stackalloc int[] { parameter1.GetHashCode(), parameter2.GetHashCode() };
 			return _mock._returnWithMultipleParametersNullable?.GetValue(hashCodes);
@@ -127,9 +127,9 @@ public static class ClassDependencyServiceMockEx
 	public static ISetupReturn<ClassReturn?> SetupReturnWithOneParameterNullable(this IMock<IClassDependencyService> @this, in ClassParameter1 parameter) =>
 		((ClassDependencyServiceMock)@this).SetupReturnWithOneParameterNullable(parameter);
 
-	public static ISetupReturn<ClassReturn> SetupReturnWithMultipleParameters(this IMock<IClassDependencyService> @this, in ClassParameter1 parameter1, in ClassParameter2 parameter2) =>
+	public static ISetupReturn<ClassReturn> SetupReturnWithMultipleParameters(this IMock<IClassDependencyService> @this, in ClassParameter1 parameter1, in ClassParameter1 parameter2) =>
 		((ClassDependencyServiceMock)@this).SetupReturnWithMultipleParameters(parameter1, parameter2);
 
-	public static ISetupReturn<ClassReturn?> SetupReturnWithMultipleParametersNullable(this IMock<IClassDependencyService> @this, in ClassParameter1 parameter1, in ClassParameter2 parameter2) =>
+	public static ISetupReturn<ClassReturn?> SetupReturnWithMultipleParametersNullable(this IMock<IClassDependencyService> @this, in ClassParameter1 parameter1, in ClassParameter1 parameter2) =>
 		((ClassDependencyServiceMock)@this).SetupReturnWithMultipleParametersNullable(parameter1, parameter2);
 }
