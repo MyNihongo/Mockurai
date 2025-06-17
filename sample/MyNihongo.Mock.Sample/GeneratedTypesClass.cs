@@ -87,7 +87,7 @@ public sealed class ClassDependencyServiceMock : IMock<IClassDependencyService>
 		public ClassReturn ReturnWithParameter(in ClassParameter1 parameter)
 		{
 			var hashcode = parameter.GetHashCode();
-			return _mock._returnWithOneParameter?.TryGetValue(hashcode, out var returnValue) == true ? returnValue! : throw new NullReferenceException("IClassDependencyService#ReturnWithParameter() method has not been set up");
+			return _mock._returnWithOneParameter?.TryGetValue(hashcode, out var returnValue) == true ? returnValue : throw new NullReferenceException("IClassDependencyService#ReturnWithParameter() method has not been set up");
 		}
 
 		public ClassReturn? ReturnWithParameterNullable(in ClassParameter1 parameter)
@@ -99,7 +99,7 @@ public sealed class ClassDependencyServiceMock : IMock<IClassDependencyService>
 		public ClassReturn ReturnWithMultipleParameters(ClassParameter1 parameter1, ClassParameter1 parameter2)
 		{
 			Span<int> hashCodes = stackalloc int[] { parameter1.GetHashCode(), parameter2.GetHashCode() };
-			return _mock._returnWithMultipleParameters?.TryGetValue(hashCodes, out var returnValue) == true ? returnValue! : throw new NullReferenceException("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up");
+			return _mock._returnWithMultipleParameters?.TryGetValue(hashCodes, out var returnValue) == true ? returnValue : throw new NullReferenceException("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up");
 		}
 
 		public ClassReturn? ReturnWithMultipleParametersNullable(ClassParameter1 parameter1, ClassParameter1 parameter2)
