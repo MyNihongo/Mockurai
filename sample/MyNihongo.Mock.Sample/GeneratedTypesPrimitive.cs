@@ -51,7 +51,7 @@ public sealed class PrimitiveDependencyServiceMock : Mock<IPrimitiveDependencySe
 		public string ReturnWithParameter(in string parameter)
 		{
 			var hashcode = parameter.GetHashCode();
-			return _mock._returnWithOneParameter?.TryGetValue(hashcode, out var returnValue) == true ? returnValue : string.Empty;
+			return _mock._returnWithOneParameter?.TryGetValue(hashcode, out var returnValue) == true ? returnValue! : string.Empty;
 		}
 
 		public decimal ReturnWithMultipleParameters(int parameter1, int parameter2)

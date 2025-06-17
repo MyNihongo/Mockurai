@@ -89,7 +89,7 @@ public sealed class RecordDependencyServiceMock : Mock<IRecordDependencyService>
 		public RecordReturn ReturnWithParameter(in RecordParameter1 parameter)
 		{
 			var hashCode = parameter.GetHashCode();
-			return _mock._returnWithOneParameter?.TryGetValue(hashCode, out var returnValue) == true ? returnValue : throw new NullReferenceException("IRecordDependencyService#ReturnWithParameter() method has not been set up");
+			return _mock._returnWithOneParameter?.TryGetValue(hashCode, out var returnValue) == true ? returnValue! : throw new NullReferenceException("IRecordDependencyService#ReturnWithParameter() method has not been set up");
 		}
 
 		public RecordReturn? ReturnWithParameterNullable(in RecordParameter1 parameter)
@@ -101,7 +101,7 @@ public sealed class RecordDependencyServiceMock : Mock<IRecordDependencyService>
 		public RecordReturn ReturnWithMultipleParameters(RecordParameter1 parameter1, RecordParameter1 parameter2)
 		{
 			Span<int> hashCodes = stackalloc int[] { parameter1.GetHashCode(), parameter2.GetHashCode() };
-			return _mock._returnWithMultipleParameters?.TryGetValue(hashCodes, out var returnValue) == true ? returnValue : throw new NullReferenceException("IRecordDependencyService#ReturnWithMultipleParameters() method has not been set up");
+			return _mock._returnWithMultipleParameters?.TryGetValue(hashCodes, out var returnValue) == true ? returnValue! : throw new NullReferenceException("IRecordDependencyService#ReturnWithMultipleParameters() method has not been set up");
 		}
 
 		public RecordReturn? ReturnWithMultipleParametersNullable(RecordParameter1 parameter1, RecordParameter1 parameter2)

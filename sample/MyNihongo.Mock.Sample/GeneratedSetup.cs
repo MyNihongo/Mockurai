@@ -21,7 +21,7 @@ public sealed class SetupWithParameter<T> : ISetupReturn<T>
 	private Dictionary<int, T?>? _values;
 	private int? _currentParameter;
 
-	public bool TryGetValue(in int parameterHashCode, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out T? value)
+	public bool TryGetValue(in int parameterHashCode, out T? value)
 	{
 		if (_values is not null && _values.TryGetValue(parameterHashCode, out value))
 			return true;
@@ -55,7 +55,7 @@ public sealed class SetupWithMultipleParameters<T> : ISetupReturn<T>
 	private Dictionary<int, (int[], T?)>? _values;
 	private int[]? _currentParameters;
 
-	public bool TryGetValue(in Span<int> parameterHashCodes, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out T? value)
+	public bool TryGetValue(in Span<int> parameterHashCodes, out T? value)
 	{
 		if (_values is null)
 		{
