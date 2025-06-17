@@ -104,7 +104,7 @@ public sealed class TaskDependencyServiceMock : IMock<ITaskDependencyService>
 		public Task<int> ReturnPrimitiveAsync(CancellationToken ct = default)
 		{
 			var hashCode = ct.GetHashCode();
-			return _mock._returnPrimitiveAsync?.TryGetValue(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : throw new NullReferenceException("IRecordDependencyService#ReturnWithParameter() method has not been set up");
+			return _mock._returnPrimitiveAsync?.TryGetValue(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : throw new NullReferenceException("ITaskDependencyService#ReturnPrimitiveAsync() method has not been set up");
 		}
 
 		public Task<short?> ReturnPrimitiveNullableAsync(CancellationToken ct = default)
@@ -116,7 +116,7 @@ public sealed class TaskDependencyServiceMock : IMock<ITaskDependencyService>
 		public Task<StructReturn> ReturnStructAsync(CancellationToken ct = default)
 		{
 			var hashCode = ct.GetHashCode();
-			return _mock._returnStructAsync?.TryGetValue(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : throw new NullReferenceException("IRecordDependencyService#ReturnWithParameter() method has not been set up");
+			return _mock._returnStructAsync?.TryGetValue(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : throw new NullReferenceException("ITaskDependencyService#ReturnStructAsync() method has not been set up");
 		}
 
 		public Task<StructReturn?> ReturnStructNullableAsync(CancellationToken ct = default)
@@ -128,7 +128,7 @@ public sealed class TaskDependencyServiceMock : IMock<ITaskDependencyService>
 		public Task<ClassReturn> ReturnClassAsync(CancellationToken ct = default)
 		{
 			var hashCode = ct.GetHashCode();
-			return _mock._returnClassAsync?.TryGetValue(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : throw new NullReferenceException("IRecordDependencyService#ReturnWithParameter() method has not been set up");
+			return _mock._returnClassAsync?.TryGetValue(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : throw new NullReferenceException("ITaskDependencyService#ReturnClassAsync() method has not been set up");
 		}
 
 		public Task<ClassReturn?> ReturnClassNullableAsync(CancellationToken ct = default)
@@ -140,7 +140,7 @@ public sealed class TaskDependencyServiceMock : IMock<ITaskDependencyService>
 		public Task<RecordReturn> ReturnRecordAsync(CancellationToken ct = default)
 		{
 			var hashCode = ct.GetHashCode();
-			return _mock._returnRecordAsync?.TryGetValue(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : throw new NullReferenceException("IRecordDependencyService#ReturnWithParameter() method has not been set up");
+			return _mock._returnRecordAsync?.TryGetValue(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : throw new NullReferenceException("ITaskDependencyService#ReturnRecordAsync() method has not been set up");
 		}
 
 		public Task<RecordReturn?> ReturnRecordNullableAsync(CancellationToken ct = default)
