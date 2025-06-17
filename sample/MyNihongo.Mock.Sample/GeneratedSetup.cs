@@ -21,11 +21,13 @@ public sealed class SetupWithParameter<T> : ISetupReturn<T>
 	private Dictionary<int, T?>? _values;
 	private int? _currentParameter;
 
-	public T? GetValue(in int parameterHashCode)
+	public bool TryGetValue(in int parameterHashCode, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out T? value)
 	{
-		return _values is not null
-			? _values.GetValueOrDefault(parameterHashCode)
-			: default;
+		if (_values is not null && _values.TryGetValue(parameterHashCode, out value))
+			return true;
+
+		value = default;
+		return false;
 	}
 
 	public void SetupParameters(in int parameterHashCode)
@@ -53,25 +55,30 @@ public sealed class SetupWithMultipleParameters<T> : ISetupReturn<T>
 	private Dictionary<int, (int[], T?)>? _values;
 	private int[]? _currentParameters;
 
-	public T? GetValue(in Span<int> parameterHashCodes)
+	public bool TryGetValue(in Span<int> parameterHashCodes, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out T? value)
 	{
 		if (_values is null)
-			return default;
+		{
+			value = default;
+			return false;
+		}
 
-		foreach (var (parameters, value) in _values.Values)
+		foreach (var values in _values.Values)
 		{
 			for (var i = 0; i < parameterHashCodes.Length; i++)
 			{
-				if (parameterHashCodes[i] != parameters[i])
+				if (parameterHashCodes[i] != values.Item1[i])
 					goto Continue;
 			}
 
-			return value;
+			value = values.Item2;
+			return true;
 
 			Continue: ;
 		}
 
-		return default;
+		value = default;
+		return false;
 	}
 
 	public void SetupParameters(in int[] parameterHashCodes)
