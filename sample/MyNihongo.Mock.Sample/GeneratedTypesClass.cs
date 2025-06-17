@@ -1,14 +1,17 @@
 namespace MyNihongo.Mock.Sample;
 
 [Obsolete("Will be generated")]
-public sealed class ClassDependencyServiceMock : Mock<IClassDependencyService>
+public sealed class ClassDependencyServiceMock : IMock<IClassDependencyService>
 {
+	private Proxy? _proxy;
 	private Setup<ClassReturn>? _return;
 	private Setup<ClassReturn?>? _returnNullable;
 	private SetupWithParameter<ClassReturn>? _returnWithOneParameter;
 	private SetupWithParameter<ClassReturn?>? _returnWithOneParameterNullable;
 	private SetupWithMultipleParameters<ClassReturn>? _returnWithMultipleParameters;
 	private SetupWithMultipleParameters<ClassReturn?>? _returnWithMultipleParametersNullable;
+
+	public IClassDependencyService Object => _proxy ??= new Proxy(this);
 
 	public Setup<ClassReturn> SetupReturn() =>
 		_return ??= new Setup<ClassReturn>();
@@ -60,11 +63,6 @@ public sealed class ClassDependencyServiceMock : Mock<IClassDependencyService>
 
 		_returnWithMultipleParametersNullable.SetupParameters(hashCodes);
 		return _returnWithMultipleParametersNullable;
-	}
-
-	protected override IClassDependencyService CreateObject()
-	{
-		return new Proxy(this);
 	}
 
 	private sealed class Proxy : IClassDependencyService

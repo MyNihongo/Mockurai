@@ -24,4 +24,8 @@
 		<None Remove="*.csproj.DotSettings" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="TaskServiceTests\" />
+	</ItemGroup>
+
 </Project>
