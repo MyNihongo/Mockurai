@@ -76,12 +76,12 @@ public sealed class RecordDependencyServiceMock : IMock<IRecordDependencyService
 
 		public RecordReturn Return()
 		{
-			return _mock._return?.Value ?? throw new NullReferenceException("IRecordDependencyService#Return() method has not been set up");
+			return _mock._return?.GetValue() ?? throw new NullReferenceException("IRecordDependencyService#Return() method has not been set up");
 		}
 
 		public RecordReturn? ReturnNullable()
 		{
-			return _mock._returnNullable?.Value;
+			return _mock._returnNullable?.GetValue();
 		}
 
 		public RecordReturn ReturnWithParameter(in RecordParameter1 parameter)
@@ -113,21 +113,21 @@ public sealed class RecordDependencyServiceMock : IMock<IRecordDependencyService
 [Obsolete("Will be generated")]
 public static class RecordDependencyServiceMockEx
 {
-	public static ISetupReturn<RecordReturn> SetupReturn(this IMock<IRecordDependencyService> @this) =>
+	public static ISetup<RecordReturn> SetupReturn(this IMock<IRecordDependencyService> @this) =>
 		((RecordDependencyServiceMock)@this).SetupReturn();
 
-	public static ISetupReturn<RecordReturn?> SetupReturnNullable(this IMock<IRecordDependencyService> @this) =>
+	public static ISetup<RecordReturn?> SetupReturnNullable(this IMock<IRecordDependencyService> @this) =>
 		((RecordDependencyServiceMock)@this).SetupReturnNullable();
 
-	public static ISetupReturn<RecordReturn> SetupReturnWithOneParameter(this IMock<IRecordDependencyService> @this, in RecordParameter1 parameter) =>
+	public static ISetup<RecordReturn> SetupReturnWithOneParameter(this IMock<IRecordDependencyService> @this, in RecordParameter1 parameter) =>
 		((RecordDependencyServiceMock)@this).SetupReturnWithOneParameter(parameter);
 
-	public static ISetupReturn<RecordReturn?> SetupReturnWithOneParameterNullable(this IMock<IRecordDependencyService> @this, in RecordParameter1 parameter) =>
+	public static ISetup<RecordReturn?> SetupReturnWithOneParameterNullable(this IMock<IRecordDependencyService> @this, in RecordParameter1 parameter) =>
 		((RecordDependencyServiceMock)@this).SetupReturnWithOneParameterNullable(parameter);
 
-	public static ISetupReturn<RecordReturn> SetupReturnWithMultipleParameters(this IMock<IRecordDependencyService> @this, in RecordParameter1 parameter1, in RecordParameter1 parameter2) =>
+	public static ISetup<RecordReturn> SetupReturnWithMultipleParameters(this IMock<IRecordDependencyService> @this, in RecordParameter1 parameter1, in RecordParameter1 parameter2) =>
 		((RecordDependencyServiceMock)@this).SetupReturnWithMultipleParameters(parameter1, parameter2);
 
-	public static ISetupReturn<RecordReturn?> SetupReturnWithMultipleParametersNullable(this IMock<IRecordDependencyService> @this, in RecordParameter1 parameter1, in RecordParameter1 parameter2) =>
+	public static ISetup<RecordReturn?> SetupReturnWithMultipleParametersNullable(this IMock<IRecordDependencyService> @this, in RecordParameter1 parameter1, in RecordParameter1 parameter2) =>
 		((RecordDependencyServiceMock)@this).SetupReturnWithMultipleParametersNullable(parameter1, parameter2);
 }
