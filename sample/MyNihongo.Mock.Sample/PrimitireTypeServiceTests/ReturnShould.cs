@@ -28,4 +28,20 @@ public sealed class ReturnShould : PrimitireTypeServiceTestsBase
 
 		Assert.Equal(expected, actual);
 	}
+
+	[Fact]
+	public void ThrowWithSetup()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		DependencyServiceMock
+			.SetupReturn()
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.Return();
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
 }

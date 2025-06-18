@@ -48,4 +48,40 @@ public sealed class ReturnWithOneParameterShould : PrimitireTypeServiceTestsBase
 
 		Assert.Equal(expected, actual);
 	}
+
+	[Fact]
+	public void ThrowWithSetup()
+	{
+		const string parameter = "ZFJ2XHcBRAuyJZJX",
+			errorMessage = nameof(errorMessage);
+
+		DependencyServiceMock
+			.SetupReturnWithOneParameter(parameter)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.ReturnWithOneParameter(parameter);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ReturnValueForThrowsWithAnotherSetup()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		const string paramCustomerId = "ZFJ2XHcBRAuyJZJX",
+			setupCustomerId = "another ID",
+			expected = "name:,age:32";
+
+		DependencyServiceMock
+			.SetupReturnWithOneParameter(setupCustomerId)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		var actual = CreateFixture()
+			.ReturnWithOneParameter(paramCustomerId);
+
+		Assert.Equal(expected, actual);
+	}
 }

@@ -81,4 +81,72 @@ public sealed class ReturnWithMultipleParametersShould : PrimitireTypeServiceTes
 
 		Assert.Equal(expected, actual);
 	}
+
+	[Fact]
+	public void ThrowWithSetup()
+	{
+		const string errorMessage = nameof(errorMessage);
+		const int parameter1 = 2025, parameter2 = 6;
+
+		DependencyServiceMock
+			.SetupReturnWithMultipleParameters(parameter1, parameter2)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.ReturnWithMultipleParameters(parameter1, parameter2);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ReturnValueForThrowsWithInvalidSequence1()
+	{
+		const double expected = 0d;
+		const int parameter1 = 2025, parameter2 = 6;
+		const string errorMessage = nameof(errorMessage);
+
+		DependencyServiceMock
+			.SetupReturnWithMultipleParameters(parameter1, parameter2)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		var actual = CreateFixture()
+			.ReturnWithMultipleParameters(parameter1, parameter1);
+
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void ReturnValueForThrowsWithInvalidSequence2()
+	{
+		const double expected = 0d;
+		const int parameter1 = 2025, parameter2 = 6;
+		const string errorMessage = nameof(errorMessage);
+
+		DependencyServiceMock
+			.SetupReturnWithMultipleParameters(parameter1, parameter2)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		var actual = CreateFixture()
+			.ReturnWithMultipleParameters(parameter2, parameter1);
+
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void ReturnValueForThrowsWithInvalidSequence3()
+	{
+		const double expected = 0d;
+		const int parameter1 = 2025, parameter2 = 6;
+		const string errorMessage = nameof(errorMessage);
+
+		DependencyServiceMock
+			.SetupReturnWithMultipleParameters(parameter1, parameter2)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		var actual = CreateFixture()
+			.ReturnWithMultipleParameters(parameter2, parameter2);
+
+		Assert.Equal(expected, actual);
+	}
 }
