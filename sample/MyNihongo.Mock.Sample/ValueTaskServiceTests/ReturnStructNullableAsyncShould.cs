@@ -1,3 +1,5 @@
+// ReSharper disable AccessToDisposedClosure
+
 namespace MyNihongo.Mock.Sample.ValueTaskServiceTests;
 
 public sealed class ReturnStructNullableAsyncShould : ValueTaskServiceTestsBase
@@ -46,6 +48,40 @@ public sealed class ReturnStructNullableAsyncShould : ValueTaskServiceTestsBase
 				name: "Okayama Issei",
 				dateOfBirth: new DateOnly(2025, 6, 18)
 			));
+
+		var actual = await CreateFixture()
+			.ReturnStructNullableAsync(ctsInput.Token);
+
+		Assert.Null(actual);
+	}
+
+	[Fact]
+	public async Task ThrowsWithSetup()
+	{
+		const string errorMessage = nameof(errorMessage);
+		using var cts = new CancellationTokenSource();
+
+		ValueTaskDependencyServiceMock
+			.SetupReturnStructNullableAsync(cts.Token)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Func<Task> actual = async () => await CreateFixture()
+			.ReturnStructNullableAsync(cts.Token);
+
+		var exception = await Assert.ThrowsAsync<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public async Task ReturnNullForThrowsWithSetupAnotherInstance()
+	{
+		const string errorMessage = nameof(errorMessage);
+		using var ctsSetup = new CancellationTokenSource(TimeSpan.FromSeconds(1d));
+		using var ctsInput = new CancellationTokenSource();
+
+		ValueTaskDependencyServiceMock
+			.SetupReturnStructAsync(ctsSetup.Token)
+			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = await CreateFixture()
 			.ReturnStructNullableAsync(ctsInput.Token);

@@ -56,4 +56,39 @@ public sealed class ReturnRecordAsyncShould : ValueTaskServiceTestsBase
 		var exception = await Assert.ThrowsAsync<NullReferenceException>(actual);
 		Assert.Equal("IValueTaskDependencyService#ReturnRecordAsync() method has not been set up", exception.Message);
 	}
+
+	[Fact]
+	public async Task ThrowWithSetup()
+	{
+		const string errorMessage = nameof(errorMessage);
+		using var cts = new CancellationTokenSource();
+
+		ValueTaskDependencyServiceMock
+			.SetupReturnRecordAsync(cts.Token)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Func<Task> actual = async () => await CreateFixture()
+			.ReturnRecordAsync(cts.Token);
+
+		var exception = await Assert.ThrowsAsync<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public async Task ThrowForThrowsWithSetupAnotherInstance()
+	{
+		const string errorMessage = nameof(errorMessage);
+		using var ctsSetup = new CancellationTokenSource(TimeSpan.FromSeconds(1d));
+		using var ctsInput = new CancellationTokenSource();
+
+		ValueTaskDependencyServiceMock
+			.SetupReturnRecordAsync(ctsSetup.Token)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Func<Task> actual = async () => await CreateFixture()
+			.ReturnRecordAsync(ctsInput.Token);
+
+		var exception = await Assert.ThrowsAsync<NullReferenceException>(actual);
+		Assert.Equal("IValueTaskDependencyService#ReturnRecordAsync() method has not been set up", exception.Message);
+	}
 }
