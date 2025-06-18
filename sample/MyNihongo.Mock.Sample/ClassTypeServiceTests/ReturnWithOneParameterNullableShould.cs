@@ -43,7 +43,7 @@ public sealed class ReturnWithOneParameterNullableShould : ClassTypeServiceTests
 	}
 
 	[Fact]
-	public void ThrowWithSetupAnotherInstance()
+	public void ReturnNullWithSetupAnotherInstance()
 	{
 		var setupParameter = new ClassParameter1
 		{
@@ -73,7 +73,7 @@ public sealed class ReturnWithOneParameterNullableShould : ClassTypeServiceTests
 	}
 
 	[Fact]
-	public void ThrowWithSetupAnotherSetup()
+	public void ReturnNullSetupAnotherSetup()
 	{
 		var setupParameter = new ClassParameter1
 		{
@@ -95,6 +95,82 @@ public sealed class ReturnWithOneParameterNullableShould : ClassTypeServiceTests
 				Age = 12,
 				DateOfBirth = new DateOnly(2025, 6, 16),
 			});
+
+		var actual = CreateFixture()
+			.ReturnWithOneParameterNullable(input);
+
+		Assert.Null(actual);
+	}
+
+	[Fact]
+	public void ThrowWithSetupSameInstance()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var setupParameter = new ClassParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		ClassDependencyServiceMock
+			.SetupReturnWithOneParameterNullable(setupParameter)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.ReturnWithOneParameterNullable(setupParameter);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ReturnNullForThrowsWithSetupAnotherInstance()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var setupParameter = new ClassParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input = new ClassParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		ClassDependencyServiceMock
+			.SetupReturnWithOneParameterNullable(setupParameter)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		var actual = CreateFixture()
+			.ReturnWithOneParameterNullable(input);
+
+		Assert.Null(actual);
+	}
+
+	[Fact]
+	public void ReturnNullForThrowsSetupAnotherSetup()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var setupParameter = new ClassParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input = new ClassParameter1
+		{
+			Number = 12345678,
+			Text = "Another text",
+		};
+
+		ClassDependencyServiceMock
+			.SetupReturnWithOneParameterNullable(setupParameter)
+			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = CreateFixture()
 			.ReturnWithOneParameterNullable(input);

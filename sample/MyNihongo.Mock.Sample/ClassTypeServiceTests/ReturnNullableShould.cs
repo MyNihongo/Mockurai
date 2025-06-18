@@ -30,4 +30,20 @@ public sealed class ReturnNullableShould : ClassTypeServiceTestsBase
 
 		Assert.Equal(expected, actual);
 	}
+
+	[Fact]
+	public void ThrowCustomException()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		ClassDependencyServiceMock
+			.SetupReturnNullable()
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.ReturnNullable();
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
 }

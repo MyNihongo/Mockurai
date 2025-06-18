@@ -31,4 +31,20 @@ public sealed class ReturnShould : ClassTypeServiceTestsBase
 
 		Assert.Equal(expected, actual);
 	}
+
+	[Fact]
+	public void ThrowCustomException()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		ClassDependencyServiceMock
+			.SetupReturn()
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.Return();
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
 }
