@@ -2,6 +2,12 @@ namespace MyNihongo.Mock.Sample;
 
 public interface IRecordDependencyService
 {
+	void Invoke();
+
+	void InvokeWithParameter(in RecordParameter1 parameter);
+
+	void InvokeWithMultipleParameters(in RecordParameter1 parameter1, in RecordParameter1 parameter2);
+
 	RecordReturn Return();
 
 	RecordReturn? ReturnNullable();

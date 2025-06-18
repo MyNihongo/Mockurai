@@ -240,4 +240,200 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 		var exception = Assert.Throws<NullReferenceException>(actual);
 		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
 	}
+
+	[Fact]
+	public void ThrowWithSetup()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var input1 = new ClassParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new ClassParameter1
+		{
+			Number = 2,
+			Text = "Some text",
+		};
+
+		ClassDependencyServiceMock
+			.SetupReturnWithMultipleParameters(input1, input2)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.ReturnWithMultipleParameters(input1, input2);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowForThrowsWithInvalidSequence1()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var input1 = new ClassParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new ClassParameter1
+		{
+			Number = 2,
+			Text = "Some text",
+		};
+
+		ClassDependencyServiceMock
+			.SetupReturnWithMultipleParameters(input1, input2)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.ReturnWithMultipleParameters(input1, input1);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+	}
+
+	[Fact]
+	public void ThrowForThrowsWithInvalidSequence2()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var input1 = new ClassParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new ClassParameter1
+		{
+			Number = 2,
+			Text = "Some text",
+		};
+
+		ClassDependencyServiceMock
+			.SetupReturnWithMultipleParameters(input1, input2)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.ReturnWithMultipleParameters(input2, input1);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+	}
+
+	[Fact]
+	public void ThrowForThrowsWithInvalidSequence3()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var input1 = new ClassParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new ClassParameter1
+		{
+			Number = 2,
+			Text = "Some text",
+		};
+
+		ClassDependencyServiceMock
+			.SetupReturnWithMultipleParameters(input1, input2)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.ReturnWithMultipleParameters(input2, input2);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+	}
+
+	[Fact]
+	public void ThrowForThrowsWithDifferentInstancesInvalidSequence1()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var input1 = new ClassParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new ClassParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		ClassDependencyServiceMock
+			.SetupReturnWithMultipleParameters(input1, input2)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.ReturnWithMultipleParameters(input2, input1);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+	}
+
+	[Fact]
+	public void ThrowForThrowsWithDifferentInstancesInvalidSequence2()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var input1 = new ClassParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new ClassParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		ClassDependencyServiceMock
+			.SetupReturnWithMultipleParameters(input1, input2)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.ReturnWithMultipleParameters(input1, input1);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+	}
+
+	[Fact]
+	public void ThrowForThrowsWithDifferentInstancesInvalidSequence3()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var input1 = new ClassParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new ClassParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		ClassDependencyServiceMock
+			.SetupReturnWithMultipleParameters(input1, input2)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.ReturnWithMultipleParameters(input2, input1);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+	}
 }

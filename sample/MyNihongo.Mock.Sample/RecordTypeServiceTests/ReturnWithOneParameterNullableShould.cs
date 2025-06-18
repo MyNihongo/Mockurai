@@ -68,7 +68,7 @@ public sealed class ReturnWithOneParameterNullableShould : RecordTypeServiceTest
 	}
 
 	[Fact]
-	public void ThrowWithSetupAnotherSetup()
+	public void ReturnNullWithSetupAnotherSetup()
 	{
 		var setupParameter = new RecordParameter1(
 			Number: 1,
@@ -87,6 +87,78 @@ public sealed class ReturnWithOneParameterNullableShould : RecordTypeServiceTest
 				Name: "Okayama Issei",
 				DateOfBirth: new DateOnly(2025, 6, 16)
 			));
+
+		var actual = CreateFixture()
+			.ReturnWithOneParameterNullable(input);
+
+		Assert.Null(actual);
+	}
+
+	[Fact]
+	public void ThrowWithSetupSameInstance()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var input = new RecordParameter1(
+			Number: 1,
+			Text: "Some text"
+		);
+
+		RecordDependencyServiceMock
+			.SetupReturnWithOneParameterNullable(input)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.ReturnWithOneParameterNullable(input);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowWithSetupAnotherInstance()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var setupParameter = new RecordParameter1(
+			Number: 1,
+			Text: "Some text"
+		);
+
+		var input = new RecordParameter1(
+			Number: 1,
+			Text: "Some text"
+		);
+
+		RecordDependencyServiceMock
+			.SetupReturnWithOneParameterNullable(setupParameter)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.ReturnWithOneParameterNullable(input);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ReturnNullForThrowsWithSetupAnotherSetup()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var setupParameter = new RecordParameter1(
+			Number: 1,
+			Text: "Some text"
+		);
+
+		var input = new RecordParameter1(
+			Number: 12345678,
+			Text: "Another text"
+		);
+
+		RecordDependencyServiceMock
+			.SetupReturnWithOneParameterNullable(setupParameter)
+			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = CreateFixture()
 			.ReturnWithOneParameterNullable(input);

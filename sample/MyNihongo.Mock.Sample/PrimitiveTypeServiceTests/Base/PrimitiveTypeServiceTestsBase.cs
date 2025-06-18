@@ -1,6 +1,6 @@
-namespace MyNihongo.Mock.Sample.PrimitireTypeServiceTests;
+namespace MyNihongo.Mock.Sample.PrimitiveTypeServiceTests;
 
-public abstract class PrimitireTypeServiceTestsBase
+public abstract class PrimitiveTypeServiceTestsBase
 {
 	protected readonly IMock<IPrimitiveDependencyService> DependencyServiceMock = new PrimitiveDependencyServiceMock();
 

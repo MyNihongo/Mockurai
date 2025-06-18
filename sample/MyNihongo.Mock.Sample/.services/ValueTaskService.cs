@@ -2,63 +2,63 @@ namespace MyNihongo.Mock.Sample;
 
 public sealed class ValueTaskService : IValueTaskService
 {
-	private readonly IValueTaskDependencyService _taskDependencyService;
+	private readonly IValueTaskDependencyService _valueTaskDependencyService;
 
-	public ValueTaskService(IValueTaskDependencyService taskDependencyService)
+	public ValueTaskService(IValueTaskDependencyService valueTaskDependencyService)
 	{
-		_taskDependencyService = taskDependencyService;
+		_valueTaskDependencyService = valueTaskDependencyService;
 	}
 
 	public async ValueTask InvokeAsync(CancellationToken ct = default)
 	{
-		await _taskDependencyService.InvokeAsync(ct);
+		await _valueTaskDependencyService.InvokeAsync(ct);
 	}
 
 	public async ValueTask<decimal> ReturnPrimitiveAsync(CancellationToken ct = default)
 	{
-		var result = await _taskDependencyService.ReturnPrimitiveAsync(ct);
+		var result = await _valueTaskDependencyService.ReturnPrimitiveAsync(ct);
 		return result + 2;
 	}
 
 	public async ValueTask<int?> ReturnPrimitiveNullableAsync(CancellationToken ct = default)
 	{
-		var result = await _taskDependencyService.ReturnPrimitiveNullableAsync(ct);
+		var result = await _valueTaskDependencyService.ReturnPrimitiveNullableAsync(ct);
 		return result + 2;
 	}
 
 	public async ValueTask<string> ReturnStructAsync(CancellationToken ct = default)
 	{
-		var result = await _taskDependencyService.ReturnStructAsync(ct);
+		var result = await _valueTaskDependencyService.ReturnStructAsync(ct);
 		return $"name:{result.Name};age:{result.Age};yob:{result.DateOfBirth.Year}";
 	}
 
 	public async ValueTask<string?> ReturnStructNullableAsync(CancellationToken ct = default)
 	{
-		var result = await _taskDependencyService.ReturnStructNullableAsync(ct);
+		var result = await _valueTaskDependencyService.ReturnStructNullableAsync(ct);
 		return result.HasValue ? $"name:{result.Value.Name};age:{result.Value.Age};yob:{result.Value.DateOfBirth.Year}" : null;
 	}
 
 	public async ValueTask<string> ReturnClassAsync(CancellationToken ct = default)
 	{
-		var result = await _taskDependencyService.ReturnClassAsync(ct);
+		var result = await _valueTaskDependencyService.ReturnClassAsync(ct);
 		return $"{result.Name} is {result.Age} years old, born in {result.DateOfBirth.Year}";
 	}
 
 	public async ValueTask<string?> ReturnClassNullableAsync(CancellationToken ct = default)
 	{
-		var result = await _taskDependencyService.ReturnClassNullableAsync(ct);
+		var result = await _valueTaskDependencyService.ReturnClassNullableAsync(ct);
 		return result is not null ? $"{result.Name} is {result.Age} years old, born in {result.DateOfBirth.Year}" : null;
 	}
 
 	public async ValueTask<string> ReturnRecordAsync(CancellationToken ct = default)
 	{
-		var result = await _taskDependencyService.ReturnRecordAsync(ct);
+		var result = await _valueTaskDependencyService.ReturnRecordAsync(ct);
 		return $"{result.Name} is {result.Age} years old, born in {result.DateOfBirth.Year}";
 	}
 
 	public async ValueTask<string?> ReturnRecordNullableAsync(CancellationToken ct = default)
 	{
-		var result = await _taskDependencyService.ReturnRecordNullableAsync(ct);
+		var result = await _valueTaskDependencyService.ReturnRecordNullableAsync(ct);
 		return result is not null ? $"{result.Name} is {result.Age} years old, born in {result.DateOfBirth.Year}" : null;
 	}
 }

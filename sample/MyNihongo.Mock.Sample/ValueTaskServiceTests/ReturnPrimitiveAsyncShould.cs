@@ -37,7 +37,7 @@ public sealed class ReturnPrimitiveAsyncShould : ValueTaskServiceTestsBase
 	[Fact]
 	public async Task ThrowWithSetupAnotherInstance()
 	{
-		const int setupParameter = 1234; 
+		const int setupParameter = 1234;
 
 		using var ctsSetup = new CancellationTokenSource(TimeSpan.FromSeconds(1d));
 		using var ctsInput = new CancellationTokenSource();
@@ -45,6 +45,41 @@ public sealed class ReturnPrimitiveAsyncShould : ValueTaskServiceTestsBase
 		ValueTaskDependencyServiceMock
 			.SetupReturnPrimitiveAsync(ctsSetup.Token)
 			.Returns(setupParameter);
+
+		Func<Task> actual = async () => await CreateFixture()
+			.ReturnPrimitiveAsync(ctsInput.Token);
+
+		var exception = await Assert.ThrowsAsync<NullReferenceException>(actual);
+		Assert.Equal("IValueTaskDependencyService#ReturnPrimitiveAsync() method has not been set up", exception.Message);
+	}
+
+	[Fact]
+	public async Task ThrowWithSetup()
+	{
+		const string errorMessage = nameof(errorMessage);
+		using var cts = new CancellationTokenSource();
+
+		ValueTaskDependencyServiceMock
+			.SetupReturnPrimitiveAsync(cts.Token)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Func<Task> actual = async () => await CreateFixture()
+			.ReturnPrimitiveAsync(cts.Token);
+
+		var exception = await Assert.ThrowsAsync<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public async Task ThrowForThrowsWithSetupAnotherInstance()
+	{
+		const string errorMessage = nameof(errorMessage);
+		using var ctsSetup = new CancellationTokenSource(TimeSpan.FromSeconds(1d));
+		using var ctsInput = new CancellationTokenSource();
+
+		ValueTaskDependencyServiceMock
+			.SetupReturnPrimitiveAsync(ctsSetup.Token)
+			.Throws(new InvalidOperationException(errorMessage));
 
 		Func<Task> actual = async () => await CreateFixture()
 			.ReturnPrimitiveAsync(ctsInput.Token);

@@ -8,6 +8,21 @@ public sealed class StructTypeService : IStructTypeService
 	{
 		_structDependencyService = structDependencyService;
 	}
+	
+	public void Invoke()
+	{
+		_structDependencyService.Invoke();
+	}
+
+	public void InvokeWithParameter(in StructParameter1 parameter)
+	{
+		_structDependencyService.InvokeWithParameter(parameter);
+	}
+
+	public void InvokeWithMultipleParameters(in StructParameter1 parameter1, in StructParameter1 parameter2)
+	{
+		_structDependencyService.InvokeWithMultipleParameters(parameter1, parameter2);
+	}
 
 	public decimal Return()
 	{

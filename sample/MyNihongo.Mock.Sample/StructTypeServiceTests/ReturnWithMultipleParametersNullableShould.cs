@@ -229,4 +229,197 @@ public sealed class ReturnWithMultipleParametersNullableShould : StructTypeServi
 		const double expected = 15d;
 		Assert.Equal(expected, actual);
 	}
+
+	[Fact]
+	public void ThrowWithSetup()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var input1 = new StructParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new StructParameter1
+		{
+			Number = 2,
+			Text = "Some text",
+		};
+
+		StructDependencyServiceMock
+			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.ReturnWithMultipleParametersNullable(input1, input2);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ReturnNullForThrowsWithInvalidSequence1()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var input1 = new StructParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new StructParameter1
+		{
+			Number = 2,
+			Text = "Some text",
+		};
+
+		StructDependencyServiceMock
+			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		var actual = CreateFixture()
+			.ReturnWithMultipleParametersNullable(input1, input1);
+
+		Assert.Null(actual);
+	}
+
+	[Fact]
+	public void ReturnNullForThrowsWithInvalidSequence2()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var input1 = new StructParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new StructParameter1
+		{
+			Number = 2,
+			Text = "Some text",
+		};
+
+		StructDependencyServiceMock
+			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		var actual = CreateFixture()
+			.ReturnWithMultipleParametersNullable(input2, input1);
+
+		Assert.Null(actual);
+	}
+
+	[Fact]
+	public void ReturnNullForThrowsWithInvalidSequence3()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var input1 = new StructParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new StructParameter1
+		{
+			Number = 2,
+			Text = "Some text",
+		};
+
+		StructDependencyServiceMock
+			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		var actual = CreateFixture()
+			.ReturnWithMultipleParametersNullable(input2, input2);
+
+		Assert.Null(actual);
+	}
+
+	[Fact]
+	public void ThrowWithDifferentInstancesInvalidSequence1()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var input1 = new StructParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new StructParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		StructDependencyServiceMock
+			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.ReturnWithMultipleParametersNullable(input2, input1);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowWithDifferentInstancesInvalidSequence2()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var input1 = new StructParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new StructParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		StructDependencyServiceMock
+			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.ReturnWithMultipleParametersNullable(input1, input1);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowWithDifferentInstancesInvalidSequence3()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var input1 = new StructParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input2 = new StructParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		StructDependencyServiceMock
+			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.ReturnWithMultipleParametersNullable(input2, input1);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
 }

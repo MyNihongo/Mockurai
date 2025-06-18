@@ -7,7 +7,7 @@ public abstract class ValueTaskServiceTestsBase
 	protected IValueTaskService CreateFixture()
 	{
 		return new ValueTaskService(
-			taskDependencyService: ValueTaskDependencyServiceMock.Object
+			valueTaskDependencyService: ValueTaskDependencyServiceMock.Object
 		);
 	}
 }

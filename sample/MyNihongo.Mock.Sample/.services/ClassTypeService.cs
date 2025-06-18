@@ -9,6 +9,21 @@ public sealed class ClassTypeService : IClassTypeService
 		_classDependencyService = classDependencyService;
 	}
 
+	public void Invoke()
+	{
+		_classDependencyService.Invoke();
+	}
+
+	public void InvokeWithParameter(in ClassParameter1 parameter)
+	{
+		_classDependencyService.InvokeWithParameter(parameter);
+	}
+
+	public void InvokeWithMultipleParameters(in ClassParameter1 parameter1, in ClassParameter1 parameter2)
+	{
+		_classDependencyService.InvokeWithMultipleParameters(parameter1, parameter2);
+	}
+
 	public decimal Return()
 	{
 		var result = _classDependencyService.Return();
