@@ -30,4 +30,20 @@ public sealed class ReturnShould : RecordTypeServiceTestsBase
 
 		Assert.Equal(expected, actual);
 	}
+
+	[Fact]
+	public void ThrowWithSetup()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		RecordDependencyServiceMock
+			.SetupReturn()
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.Return();
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
 }
