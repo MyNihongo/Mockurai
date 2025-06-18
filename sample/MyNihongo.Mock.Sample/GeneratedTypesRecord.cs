@@ -1,14 +1,17 @@
 namespace MyNihongo.Mock.Sample;
 
 [Obsolete("Will be generated")]
-public sealed class RecordDependencyServiceMock : Mock<IRecordDependencyService>
+public sealed class RecordDependencyServiceMock : IMock<IRecordDependencyService>
 {
+	private Proxy? _proxy;
 	private Setup<RecordReturn>? _return;
 	private Setup<RecordReturn?>? _returnNullable;
 	private SetupWithParameter<RecordReturn>? _returnWithOneParameter;
 	private SetupWithParameter<RecordReturn?>? _returnWithOneParameterNullable;
 	private SetupWithMultipleParameters<RecordReturn>? _returnWithMultipleParameters;
 	private SetupWithMultipleParameters<RecordReturn?>? _returnWithMultipleParametersNullable;
+
+	public IRecordDependencyService Object => _proxy ??= new Proxy(this);
 
 	public Setup<RecordReturn> SetupReturn() =>
 		_return ??= new Setup<RecordReturn>();
@@ -62,11 +65,6 @@ public sealed class RecordDependencyServiceMock : Mock<IRecordDependencyService>
 		return _returnWithMultipleParametersNullable;
 	}
 
-	protected override IRecordDependencyService CreateObject()
-	{
-		return new Proxy(this);
-	}
-
 	private sealed class Proxy : IRecordDependencyService
 	{
 		private readonly RecordDependencyServiceMock _mock;
@@ -88,26 +86,26 @@ public sealed class RecordDependencyServiceMock : Mock<IRecordDependencyService>
 
 		public RecordReturn ReturnWithParameter(in RecordParameter1 parameter)
 		{
-			var hashcode = parameter.GetHashCode();
-			return _mock._returnWithOneParameter?.GetValue(hashcode) ?? throw new NullReferenceException("IRecordDependencyService#ReturnWithParameter() method has not been set up");
+			var hashCode = parameter.GetHashCode();
+			return _mock._returnWithOneParameter?.TryGetValue(hashCode, out var returnValue) == true ? returnValue : throw new NullReferenceException("IRecordDependencyService#ReturnWithParameter() method has not been set up");
 		}
 
 		public RecordReturn? ReturnWithParameterNullable(in RecordParameter1 parameter)
 		{
-			var hashcode = parameter.GetHashCode();
-			return _mock._returnWithOneParameterNullable?.GetValue(hashcode);
+			var hashCode = parameter.GetHashCode();
+			return _mock._returnWithOneParameterNullable?.TryGetValue(hashCode, out var returnValue) == true ? returnValue : null;
 		}
 
 		public RecordReturn ReturnWithMultipleParameters(RecordParameter1 parameter1, RecordParameter1 parameter2)
 		{
 			Span<int> hashCodes = stackalloc int[] { parameter1.GetHashCode(), parameter2.GetHashCode() };
-			return _mock._returnWithMultipleParameters?.GetValue(hashCodes) ?? throw new NullReferenceException("IRecordDependencyService#ReturnWithMultipleParameters() method has not been set up");
+			return _mock._returnWithMultipleParameters?.TryGetValue(hashCodes, out var returnValue) == true ? returnValue : throw new NullReferenceException("IRecordDependencyService#ReturnWithMultipleParameters() method has not been set up");
 		}
 
 		public RecordReturn? ReturnWithMultipleParametersNullable(RecordParameter1 parameter1, RecordParameter1 parameter2)
 		{
 			Span<int> hashCodes = stackalloc int[] { parameter1.GetHashCode(), parameter2.GetHashCode() };
-			return _mock._returnWithMultipleParametersNullable?.GetValue(hashCodes);
+			return _mock._returnWithMultipleParametersNullable?.TryGetValue(hashCodes, out var returnValue) == true ? returnValue : null;
 		}
 	}
 }

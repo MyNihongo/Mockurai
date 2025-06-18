@@ -1,11 +1,14 @@
 namespace MyNihongo.Mock.Sample;
 
 [Obsolete("Will be generated")]
-public sealed class PrimitiveDependencyServiceMock : Mock<IPrimitiveDependencyService>
+public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyService>
 {
+	private Proxy? _proxy;
 	private Setup<int>? _return;
 	private SetupWithParameter<string>? _returnWithOneParameter;
 	private SetupWithMultipleParameters<decimal>? _returnWithMultipleParameters;
+
+	public IPrimitiveDependencyService Object => _proxy ??= new Proxy(this);
 
 	public Setup<int> SetupReturn() =>
 		_return ??= new Setup<int>();
@@ -33,9 +36,6 @@ public sealed class PrimitiveDependencyServiceMock : Mock<IPrimitiveDependencySe
 		return _returnWithMultipleParameters;
 	}
 
-	protected override IPrimitiveDependencyService CreateObject() =>
-		new Proxy(this);
-
 	private sealed class Proxy : IPrimitiveDependencyService
 	{
 		private readonly PrimitiveDependencyServiceMock _mock;
@@ -51,13 +51,13 @@ public sealed class PrimitiveDependencyServiceMock : Mock<IPrimitiveDependencySe
 		public string ReturnWithParameter(in string parameter)
 		{
 			var hashcode = parameter.GetHashCode();
-			return _mock._returnWithOneParameter?.GetValue(hashcode) ?? string.Empty;
+			return _mock._returnWithOneParameter?.TryGetValue(hashcode, out var returnValue) == true ? returnValue! : string.Empty;
 		}
 
 		public decimal ReturnWithMultipleParameters(int parameter1, int parameter2)
 		{
 			Span<int> hashCodes = stackalloc int[] { parameter1.GetHashCode(), parameter2.GetHashCode() };
-			return _mock._returnWithMultipleParameters?.GetValue(hashCodes) ?? 0m;
+			return _mock._returnWithMultipleParameters?.TryGetValue(hashCodes, out var returnValue) == true ? returnValue : 0m;
 		}
 	}
 }

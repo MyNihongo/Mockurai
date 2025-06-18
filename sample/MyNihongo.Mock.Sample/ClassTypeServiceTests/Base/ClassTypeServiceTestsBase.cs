@@ -2,7 +2,7 @@ namespace MyNihongo.Mock.Sample.ClassTypeServiceTests;
 
 public abstract class ClassTypeServiceTestsBase
 {
-	protected readonly Mock<IClassDependencyService> ClassDependencyServiceMock = new ClassDependencyServiceMock();
+	protected readonly IMock<IClassDependencyService> ClassDependencyServiceMock = new ClassDependencyServiceMock();
 
 	protected IClassTypeService CreateFixture()
 	{
