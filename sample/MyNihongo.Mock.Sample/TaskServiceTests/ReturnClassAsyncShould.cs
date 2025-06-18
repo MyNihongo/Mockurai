@@ -1,8 +1,7 @@
 // ReSharper disable AccessToDisposedClosure
-
 namespace MyNihongo.Mock.Sample.TaskServiceTests;
 
-public sealed class ReturnPrimitiveAsyncShould : TaskServiceTestsBase
+public sealed class ReturnClassAsyncShould : TaskServiceTestsBase
 {
 	[Fact]
 	public async Task ThrowWithoutSetup()
@@ -10,46 +9,52 @@ public sealed class ReturnPrimitiveAsyncShould : TaskServiceTestsBase
 		using var cts = new CancellationTokenSource();
 
 		Func<Task> actual = () => CreateFixture()
-			.ReturnPrimitiveAsync(cts.Token);
+			.ReturnClassAsync(cts.Token);
 
 		var exception = await Assert.ThrowsAsync<NullReferenceException>(actual);
-		Assert.Equal("ITaskDependencyService#ReturnPrimitiveAsync() method has not been set up", exception.Message);
+		Assert.Equal("ITaskDependencyService#ReturnClassAsync() method has not been set up", exception.Message);
 	}
 
 	[Fact]
 	public async Task ReturnValueWithSetup()
 	{
-		const int setupParameter = 1234;
-		const decimal expected = 1236m;
-
 		using var cts = new CancellationTokenSource();
 
 		TaskDependencyServiceMock
-			.SetupReturnPrimitiveAsync(cts.Token)
-			.Returns(setupParameter);
+			.SetupReturnClassAsync(cts.Token)
+			.Returns(new ClassReturn
+			{
+				Age = 12,
+				Name = "Okayama Issei",
+				DateOfBirth = new DateOnly(2025, 6, 18),
+			});
 
 		var actual = await CreateFixture()
-			.ReturnPrimitiveAsync(cts.Token);
+			.ReturnClassAsync(cts.Token);
 
+		const string expected = "Okayama Issei is 12 years old, born in 2025";
 		Assert.Equal(expected, actual);
 	}
 
 	[Fact]
 	public async Task ThrowWithSetupAnotherInstance()
 	{
-		const int setupParameter = 1234; 
-
 		using var ctsSetup = new CancellationTokenSource(TimeSpan.FromSeconds(1d));
 		using var ctsInput = new CancellationTokenSource();
 
 		TaskDependencyServiceMock
-			.SetupReturnPrimitiveAsync(ctsSetup.Token)
-			.Returns(setupParameter);
+			.SetupReturnClassAsync(ctsSetup.Token)
+			.Returns(new ClassReturn
+			{
+				Age = 12,
+				Name = "Okayama Issei",
+				DateOfBirth = new DateOnly(2025, 6, 18),
+			});
 
 		Func<Task> actual = () => CreateFixture()
-			.ReturnPrimitiveAsync(ctsInput.Token);
+			.ReturnClassAsync(ctsInput.Token);
 
 		var exception = await Assert.ThrowsAsync<NullReferenceException>(actual);
-		Assert.Equal("ITaskDependencyService#ReturnPrimitiveAsync() method has not been set up", exception.Message);
+		Assert.Equal("ITaskDependencyService#ReturnClassAsync() method has not been set up", exception.Message);
 	}
 }
