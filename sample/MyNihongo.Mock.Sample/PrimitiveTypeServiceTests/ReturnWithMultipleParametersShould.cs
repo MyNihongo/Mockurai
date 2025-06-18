@@ -1,6 +1,6 @@
-namespace MyNihongo.Mock.Sample.PrimitireTypeServiceTests;
+namespace MyNihongo.Mock.Sample.PrimitiveTypeServiceTests;
 
-public sealed class ReturnWithMultipleParametersShould : PrimitireTypeServiceTestsBase
+public sealed class ReturnWithMultipleParametersShould : PrimitiveTypeServiceTestsBase
 {
 	[Fact]
 	public void ReturnValueWithoutSetup()

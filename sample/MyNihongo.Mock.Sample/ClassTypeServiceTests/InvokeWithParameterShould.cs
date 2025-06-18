@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock.Sample.ClassTypeServiceTests;
 
-public sealed class InvokeWithOneParameterShould : ClassTypeServiceTestsBase
+public sealed class InvokeWithParameterShould : ClassTypeServiceTestsBase
 {
 	[Fact]
 	public void ExecuteWithoutSetup()

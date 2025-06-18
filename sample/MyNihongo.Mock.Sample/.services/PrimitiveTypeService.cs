@@ -9,6 +9,21 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		_primitiveDependencyService = primitiveDependencyService;
 	}
 
+	public void Invoke()
+	{
+		_primitiveDependencyService.Invoke();
+	}
+
+	public void InvokeWithParameter(in string parameter)
+	{
+		_primitiveDependencyService.InvokeWithParameter(parameter);
+	}
+
+	public void InvokeWithMultipleParameters(in int parameter1, in int parameter2)
+	{
+		_primitiveDependencyService.InvokeWithMultipleParameters(parameter1, parameter2);
+	}
+
 	public decimal Return()
 	{
 		var shopCount = _primitiveDependencyService.Return();
