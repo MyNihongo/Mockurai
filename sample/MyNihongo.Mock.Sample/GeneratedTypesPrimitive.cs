@@ -46,18 +46,18 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		}
 
 		public int Return() =>
-			_mock._return?.GetValue() ?? 0;
+			_mock._return?.Invoke() ?? 0;
 
 		public string ReturnWithParameter(in string parameter)
 		{
 			var hashcode = parameter.GetHashCode();
-			return _mock._returnWithOneParameter?.TryGetValue(hashcode, out var returnValue) == true ? returnValue! : string.Empty;
+			return _mock._returnWithOneParameter?.TryInvoke(hashcode, out var returnValue) == true ? returnValue! : string.Empty;
 		}
 
 		public decimal ReturnWithMultipleParameters(int parameter1, int parameter2)
 		{
 			Span<int> hashCodes = stackalloc int[] { parameter1.GetHashCode(), parameter2.GetHashCode() };
-			return _mock._returnWithMultipleParameters?.TryGetValue(hashCodes, out var returnValue) == true ? returnValue : 0m;
+			return _mock._returnWithMultipleParameters?.TryInvoke(hashCodes, out var returnValue) == true ? returnValue : 0m;
 		}
 	}
 }

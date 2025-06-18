@@ -4,6 +4,7 @@ namespace MyNihongo.Mock.Sample;
 public sealed class TaskDependencyServiceMock : IMock<ITaskDependencyService>
 {
 	private Proxy? _proxy;
+	private SetupThrowsWithParameter? _invokeAsync;
 	private SetupWithParameter<int>? _returnPrimitiveAsync;
 	private SetupWithParameter<short?>? _returnPrimitiveNullableAsync;
 	private SetupWithParameter<StructReturn>? _returnStructAsync;
@@ -12,6 +13,15 @@ public sealed class TaskDependencyServiceMock : IMock<ITaskDependencyService>
 	private SetupWithParameter<ClassReturn?>? _returnClassNullableAsync;
 	private SetupWithParameter<RecordReturn>? _returnRecordAsync;
 	private SetupWithParameter<RecordReturn?>? _returnRecordNullableAsync;
+
+	public SetupThrowsWithParameter SetupInvokeAsync(in CancellationToken ct)
+	{
+		_invokeAsync ??= new SetupThrowsWithParameter();
+
+		var hashCode = ct.GetHashCode();
+		_invokeAsync.SetupParameters(hashCode);
+		return _invokeAsync;
+	}
 
 	public SetupWithParameter<int> SetupReturnPrimitiveAsync(in CancellationToken ct)
 	{
@@ -98,55 +108,57 @@ public sealed class TaskDependencyServiceMock : IMock<ITaskDependencyService>
 
 		public Task InvokeAsync(CancellationToken ct = default)
 		{
+			var hashCode = ct.GetHashCode();
+			_mock._invokeAsync?.Invoke(hashCode);
 			return Task.CompletedTask;
 		}
 
 		public Task<int> ReturnPrimitiveAsync(CancellationToken ct = default)
 		{
 			var hashCode = ct.GetHashCode();
-			return _mock._returnPrimitiveAsync?.TryGetValue(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : throw new NullReferenceException("ITaskDependencyService#ReturnPrimitiveAsync() method has not been set up");
+			return _mock._returnPrimitiveAsync?.TryInvoke(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : throw new NullReferenceException("ITaskDependencyService#ReturnPrimitiveAsync() method has not been set up");
 		}
 
 		public Task<short?> ReturnPrimitiveNullableAsync(CancellationToken ct = default)
 		{
 			var hashCode = ct.GetHashCode();
-			return _mock._returnPrimitiveNullableAsync?.TryGetValue(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : Task.FromResult<short?>(null);
+			return _mock._returnPrimitiveNullableAsync?.TryInvoke(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : Task.FromResult<short?>(null);
 		}
 
 		public Task<StructReturn> ReturnStructAsync(CancellationToken ct = default)
 		{
 			var hashCode = ct.GetHashCode();
-			return _mock._returnStructAsync?.TryGetValue(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : throw new NullReferenceException("ITaskDependencyService#ReturnStructAsync() method has not been set up");
+			return _mock._returnStructAsync?.TryInvoke(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : throw new NullReferenceException("ITaskDependencyService#ReturnStructAsync() method has not been set up");
 		}
 
 		public Task<StructReturn?> ReturnStructNullableAsync(CancellationToken ct = default)
 		{
 			var hashCode = ct.GetHashCode();
-			return _mock._returnStructNullableAsync?.TryGetValue(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : Task.FromResult<StructReturn?>(null);
+			return _mock._returnStructNullableAsync?.TryInvoke(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : Task.FromResult<StructReturn?>(null);
 		}
 
 		public Task<ClassReturn> ReturnClassAsync(CancellationToken ct = default)
 		{
 			var hashCode = ct.GetHashCode();
-			return _mock._returnClassAsync?.TryGetValue(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : throw new NullReferenceException("ITaskDependencyService#ReturnClassAsync() method has not been set up");
+			return _mock._returnClassAsync?.TryInvoke(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : throw new NullReferenceException("ITaskDependencyService#ReturnClassAsync() method has not been set up");
 		}
 
 		public Task<ClassReturn?> ReturnClassNullableAsync(CancellationToken ct = default)
 		{
 			var hashCode = ct.GetHashCode();
-			return _mock._returnClassNullableAsync?.TryGetValue(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : Task.FromResult<ClassReturn?>(null);
+			return _mock._returnClassNullableAsync?.TryInvoke(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : Task.FromResult<ClassReturn?>(null);
 		}
 
 		public Task<RecordReturn> ReturnRecordAsync(CancellationToken ct = default)
 		{
 			var hashCode = ct.GetHashCode();
-			return _mock._returnRecordAsync?.TryGetValue(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : throw new NullReferenceException("ITaskDependencyService#ReturnRecordAsync() method has not been set up");
+			return _mock._returnRecordAsync?.TryInvoke(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : throw new NullReferenceException("ITaskDependencyService#ReturnRecordAsync() method has not been set up");
 		}
 
 		public Task<RecordReturn?> ReturnRecordNullableAsync(CancellationToken ct = default)
 		{
 			var hashCode = ct.GetHashCode();
-			return _mock._returnRecordNullableAsync?.TryGetValue(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : Task.FromResult<RecordReturn?>(null);
+			return _mock._returnRecordNullableAsync?.TryInvoke(hashCode, out var returnValue) == true ? Task.FromResult(returnValue) : Task.FromResult<RecordReturn?>(null);
 		}
 	}
 }
@@ -154,27 +166,30 @@ public sealed class TaskDependencyServiceMock : IMock<ITaskDependencyService>
 [Obsolete("Will be generated")]
 public static class TaskDependencyServiceMockEx
 {
-	public static SetupWithParameter<int> SetupReturnPrimitiveAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
+	public static ISetupThrows SetupInvokeAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
+		((TaskDependencyServiceMock)@this).SetupInvokeAsync(ct);
+
+	public static ISetup<int> SetupReturnPrimitiveAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
 		((TaskDependencyServiceMock)@this).SetupReturnPrimitiveAsync(ct);
 
-	public static SetupWithParameter<short?> SetupReturnPrimitiveNullableAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
+	public static ISetup<short?> SetupReturnPrimitiveNullableAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
 		((TaskDependencyServiceMock)@this).SetupReturnPrimitiveNullableAsync(ct);
 
-	public static SetupWithParameter<StructReturn> SetupReturnStructAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
+	public static ISetup<StructReturn> SetupReturnStructAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
 		((TaskDependencyServiceMock)@this).SetupReturnStructAsync(ct);
 
-	public static SetupWithParameter<StructReturn?> SetupReturnStructNullableAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
+	public static ISetup<StructReturn?> SetupReturnStructNullableAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
 		((TaskDependencyServiceMock)@this).SetupReturnStructNullableAsync(ct);
 
-	public static SetupWithParameter<ClassReturn> SetupReturnClassAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
+	public static ISetup<ClassReturn> SetupReturnClassAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
 		((TaskDependencyServiceMock)@this).SetupReturnClassAsync(ct);
 
-	public static SetupWithParameter<ClassReturn?> SetupReturnClassNullableAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
+	public static ISetup<ClassReturn?> SetupReturnClassNullableAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
 		((TaskDependencyServiceMock)@this).SetupReturnClassNullableAsync(ct);
 
-	public static SetupWithParameter<RecordReturn> SetupReturnRecordAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
+	public static ISetup<RecordReturn> SetupReturnRecordAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
 		((TaskDependencyServiceMock)@this).SetupReturnRecordAsync(ct);
 
-	public static SetupWithParameter<RecordReturn?> SetupReturnRecordNullableAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
+	public static ISetup<RecordReturn?> SetupReturnRecordNullableAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
 		((TaskDependencyServiceMock)@this).SetupReturnRecordNullableAsync(ct);
 }

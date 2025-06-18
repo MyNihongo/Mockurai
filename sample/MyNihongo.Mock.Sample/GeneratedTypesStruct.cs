@@ -76,36 +76,36 @@ public sealed class StructDependencyServiceMock : IMock<IStructDependencyService
 
 		public StructReturn Return()
 		{
-			return _mock._return?.GetValue() ?? throw new NullReferenceException("IStructDependencyService#Return() method has not been set up");
+			return _mock._return?.Invoke() ?? throw new NullReferenceException("IStructDependencyService#Return() method has not been set up");
 		}
 
 		public StructReturn? ReturnNullable()
 		{
-			return _mock._returnNullable?.GetValue();
+			return _mock._returnNullable?.Invoke();
 		}
 
 		public StructReturn ReturnWithParameter(in StructParameter1 parameter)
 		{
 			var hashcode = parameter.GetHashCode();
-			return _mock._returnWithOneParameter?.TryGetValue(hashcode, out var returnValue) == true ? returnValue : throw new NullReferenceException("IStructDependencyService#ReturnWithParameter() method has not been set up");
+			return _mock._returnWithOneParameter?.TryInvoke(hashcode, out var returnValue) == true ? returnValue : throw new NullReferenceException("IStructDependencyService#ReturnWithParameter() method has not been set up");
 		}
 
 		public StructReturn? ReturnWithParameterNullable(in StructParameter1 parameter)
 		{
 			var hashCode = parameter.GetHashCode();
-			return _mock._returnWithOneParameterNullable?.TryGetValue(hashCode, out var returnValue) == true ? returnValue : null;
+			return _mock._returnWithOneParameterNullable?.TryInvoke(hashCode, out var returnValue) == true ? returnValue : null;
 		}
 
 		public StructReturn ReturnWithMultipleParameters(StructParameter1 parameter1, StructParameter1 parameter2)
 		{
 			Span<int> hashCodes = stackalloc int[] { parameter1.GetHashCode(), parameter2.GetHashCode() };
-			return _mock._returnWithMultipleParameters?.TryGetValue(hashCodes, out var returnValue) == true ? returnValue : throw new NullReferenceException("IStructDependencyService#ReturnWithMultipleParameters() method has not been set up");
+			return _mock._returnWithMultipleParameters?.TryInvoke(hashCodes, out var returnValue) == true ? returnValue : throw new NullReferenceException("IStructDependencyService#ReturnWithMultipleParameters() method has not been set up");
 		}
 
 		public StructReturn? ReturnWithMultipleParametersNullable(StructParameter1 parameter1, StructParameter1 parameter2)
 		{
 			Span<int> hashCodes = stackalloc int[] { parameter1.GetHashCode(), parameter2.GetHashCode() };
-			return _mock._returnWithMultipleParametersNullable?.TryGetValue(hashCodes, out var returnValue) == true ? returnValue : null;
+			return _mock._returnWithMultipleParametersNullable?.TryInvoke(hashCodes, out var returnValue) == true ? returnValue : null;
 		}
 	}
 }
