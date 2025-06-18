@@ -7,7 +7,7 @@ public abstract class RecordTypeServiceTestsBase
 	protected IRecordTypeService CreateFixture()
 	{
 		return new RecordTypeService(
-			classDependencyService: RecordDependencyServiceMock.Object
+			recordDependencyService: RecordDependencyServiceMock.Object
 		);
 	}
 }
