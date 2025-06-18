@@ -2,6 +2,12 @@ namespace MyNihongo.Mock.Sample;
 
 public interface IClassTypeService
 {
+	void Invoke();
+
+	void InvokeWithParameter(in ClassParameter1 parameter);
+
+	void InvokeWithMultipleParameters(in ClassParameter1 parameter1, in ClassParameter1 parameter2);
+
 	decimal Return();
 
 	decimal? ReturnNullable();
