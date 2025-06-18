@@ -16,8 +16,8 @@ public sealed class InvokeAsyncShould : TaskServiceTestsBase
 	[Fact]
 	public async Task ThrowWithSetup()
 	{
-		using var cts = new CancellationTokenSource();
 		const string errorMessage = nameof(errorMessage);
+		using var cts = new CancellationTokenSource();
 
 		TaskDependencyServiceMock
 			.SetupInvokeAsync(cts.Token)
@@ -34,7 +34,6 @@ public sealed class InvokeAsyncShould : TaskServiceTestsBase
 	public async Task ExecuteWithAnotherSetup()
 	{
 		const string errorMessage = nameof(errorMessage);
-
 		using var ctsSetup = new CancellationTokenSource(TimeSpan.FromSeconds(1d));
 		using var ctsInput = new CancellationTokenSource();
 

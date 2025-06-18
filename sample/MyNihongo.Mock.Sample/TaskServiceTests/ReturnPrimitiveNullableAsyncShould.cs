@@ -1,3 +1,5 @@
+// ReSharper disable AccessToDisposedClosure
+
 namespace MyNihongo.Mock.Sample.TaskServiceTests;
 
 public sealed class ReturnPrimitiveNullableAsyncShould : TaskServiceTestsBase
@@ -42,6 +44,40 @@ public sealed class ReturnPrimitiveNullableAsyncShould : TaskServiceTestsBase
 		TaskDependencyServiceMock
 			.SetupReturnPrimitiveAsync(ctsSetup.Token)
 			.Returns(setupParameter);
+
+		var actual = await CreateFixture()
+			.ReturnPrimitiveNullableAsync(ctsInput.Token);
+
+		Assert.Null(actual);
+	}
+
+	[Fact]
+	public async Task ThrowWithSetup()
+	{
+		const string errorMessage = nameof(errorMessage);
+		using var cts = new CancellationTokenSource();
+
+		TaskDependencyServiceMock
+			.SetupReturnPrimitiveNullableAsync(cts.Token)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Func<Task> actual = () => CreateFixture()
+			.ReturnPrimitiveNullableAsync(cts.Token);
+
+		var exception = await Assert.ThrowsAsync<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public async Task ReturnNullForThrowsWithSetupAnotherInstance()
+	{
+		const string errorMessage = nameof(errorMessage);
+		using var ctsSetup = new CancellationTokenSource(TimeSpan.FromSeconds(1d));
+		using var ctsInput = new CancellationTokenSource();
+
+		TaskDependencyServiceMock
+			.SetupReturnPrimitiveAsync(ctsSetup.Token)
+			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = await CreateFixture()
 			.ReturnPrimitiveNullableAsync(ctsInput.Token);
