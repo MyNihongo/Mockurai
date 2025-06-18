@@ -72,7 +72,7 @@ public sealed class ReturnWithOneParameterNullableShould : StructTypeServiceTest
 	}
 
 	[Fact]
-	public void ThrowWithSetupAnotherSetup()
+	public void ReturnNullWithSetupAnotherSetup()
 	{
 		var setupParameter = new StructParameter1
 		{
@@ -93,6 +93,83 @@ public sealed class ReturnWithOneParameterNullableShould : StructTypeServiceTest
 				name: "Okayama Issei",
 				dateOfBirth: new DateOnly(2025, 6, 16)
 			));
+
+		var actual = CreateFixture()
+			.ReturnWithOneParameterNullable(input);
+
+		Assert.Null(actual);
+	}
+
+	[Fact]
+	public void ThrowWithSetupSameInstance()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var input = new StructParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		StructDependencyServiceMock
+			.SetupReturnWithOneParameterNullable(input)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.ReturnWithOneParameterNullable(input);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowWithSetupAnotherInstance()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var setupParameter = new StructParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input = new StructParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		StructDependencyServiceMock
+			.SetupReturnWithOneParameterNullable(setupParameter)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => CreateFixture()
+			.ReturnWithOneParameterNullable(input);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ReturnNullForThrowsWithSetupAnotherSetup()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var setupParameter = new StructParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		var input = new StructParameter1
+		{
+			Number = 12345678,
+			Text = "Another text",
+		};
+
+		StructDependencyServiceMock
+			.SetupReturnWithOneParameterNullable(setupParameter)
+			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = CreateFixture()
 			.ReturnWithOneParameterNullable(input);
