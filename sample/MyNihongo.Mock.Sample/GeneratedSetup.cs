@@ -40,10 +40,19 @@ public sealed class SetupWithParameter : ISetup
 		if (_values is null)
 			return;
 
+		var isParameterHashCodeNegative = parameterHashCode < 0;
 		foreach (var pair in _values)
 		{
-			if ((parameterHashCode & pair.Key) != pair.Key)
-				continue;
+			if (isParameterHashCodeNegative && pair.Key < parameterHashCode)
+			{
+				if ((pair.Key & parameterHashCode) != parameterHashCode)
+					continue;
+			}
+			else
+			{
+				if ((parameterHashCode & pair.Key) != pair.Key)
+					continue;
+			}
 
 			if (pair.Value is not null)
 				throw pair.Value;
