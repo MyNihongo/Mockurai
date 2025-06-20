@@ -37,11 +37,18 @@ public sealed class SetupWithParameter : ISetup
 
 	public void Invoke(in int parameterHashCode)
 	{
-		if (_values is null || !_values.TryGetValue(parameterHashCode, out var exception))
+		if (_values is null)
 			return;
 
-		if (exception is not null)
-			throw exception;
+		// TODO: maybe try _values.GetAlternateLookup() ?
+		foreach (var pair in _values)
+		{
+			if ((parameterHashCode & pair.Key) != pair.Key)
+				continue;
+
+			if (pair.Value is not null)
+				throw pair.Value;
+		}
 	}
 
 	public void SetupParameters(in int parameterHashCode)

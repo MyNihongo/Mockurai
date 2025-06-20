@@ -16,6 +16,11 @@ public readonly ref struct It<T> : IEquatable<It<T>>
 		return new It<T>(value);
 	}
 
+	public static It<T> Any()
+	{
+		return new It<T>();
+	}
+
 	public static implicit operator It<T>(in T value)
 	{
 		return Value(value);
@@ -29,7 +34,8 @@ public readonly ref struct It<T> : IEquatable<It<T>>
 
 	public override int GetHashCode()
 	{
-		// TODO
-		return _value.GetHashCode();
+		return _hasValue
+			? _value!.GetHashCode()
+			: 0;
 	}
 }

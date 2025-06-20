@@ -162,7 +162,7 @@ public static class ClassDependencyServiceMockEx
 	public static ISetup SetupInvoke(this IMock<IClassDependencyService> @this) =>
 		((ClassDependencyServiceMock)@this).SetupInvoke();
 
-	public static ISetup SetupInvokeWithParameter(this IMock<IClassDependencyService> @this, in It<ClassParameter1> parameter) =>
+	public static ISetup SetupInvokeWithParameter(this IMock<IClassDependencyService> @this, in It<ClassParameter1> parameter = default) =>
 		((ClassDependencyServiceMock)@this).SetupInvokeWithParameter(parameter);
 
 	public static ISetup SetupInvokeWithMultipleParameters(this IMock<IClassDependencyService> @this, in It<ClassParameter1> parameter1, in It<ClassParameter1> parameter2) =>
