@@ -40,7 +40,6 @@ public sealed class SetupWithParameter : ISetup
 		if (_values is null)
 			return;
 
-		// TODO: maybe try _values.GetAlternateLookup() ?
 		foreach (var pair in _values)
 		{
 			if ((parameterHashCode & pair.Key) != pair.Key)
@@ -154,12 +153,21 @@ public sealed class SetupWithParameter<T> : ISetup<T>
 
 	public bool TryInvoke(in int parameterHashCode, out T? returnValue)
 	{
-		if (_values is not null && _values.TryGetValue(parameterHashCode, out var valueSetup))
+		if (_values is null)
 		{
-			if (valueSetup.Item2 is not null)
-				throw valueSetup.Item2;
+			returnValue = default;
+			return false;
+		}
 
-			returnValue = valueSetup.Item1;
+		foreach (var pair in _values)
+		{
+			if ((parameterHashCode & pair.Key) != pair.Key)
+				continue;
+
+			if (pair.Value.Item2 is not null)
+				throw pair.Value.Item2;
+
+			returnValue = pair.Value.Item1;
 			return true;
 		}
 

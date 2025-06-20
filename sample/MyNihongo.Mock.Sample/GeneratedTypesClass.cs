@@ -19,7 +19,7 @@ public sealed class ClassDependencyServiceMock : IMock<IClassDependencyService>
 	public Setup SetupInvoke() =>
 		_invoke ??= new Setup();
 
-	public SetupWithParameter SetupInvokeWithParameter(in It<ClassParameter1> parameter)
+	public SetupWithParameter SetupInvokeWithParameter(in It<ClassParameter1> parameter = default)
 	{
 		_invokeWithParameter ??= new SetupWithParameter();
 
@@ -48,7 +48,7 @@ public sealed class ClassDependencyServiceMock : IMock<IClassDependencyService>
 	public Setup<ClassReturn?> SetupReturnNullable() =>
 		_returnNullable ??= new Setup<ClassReturn?>();
 
-	public SetupWithParameter<ClassReturn> SetupReturnWithOneParameter(in It<ClassParameter1> parameter)
+	public SetupWithParameter<ClassReturn> SetupReturnWithOneParameter(in It<ClassParameter1> parameter = default)
 	{
 		_returnWithOneParameter ??= new SetupWithParameter<ClassReturn>();
 
@@ -174,7 +174,7 @@ public static class ClassDependencyServiceMockEx
 	public static ISetup<ClassReturn?> SetupReturnNullable(this IMock<IClassDependencyService> @this) =>
 		((ClassDependencyServiceMock)@this).SetupReturnNullable();
 
-	public static ISetup<ClassReturn> SetupReturnWithOneParameter(this IMock<IClassDependencyService> @this, in It<ClassParameter1> parameter) =>
+	public static ISetup<ClassReturn> SetupReturnWithOneParameter(this IMock<IClassDependencyService> @this, in It<ClassParameter1> parameter = default) =>
 		((ClassDependencyServiceMock)@this).SetupReturnWithOneParameter(parameter);
 
 	public static ISetup<ClassReturn?> SetupReturnWithOneParameterNullable(this IMock<IClassDependencyService> @this, in It<ClassParameter1> parameter) =>
