@@ -60,7 +60,7 @@ public sealed class InvokeShould : SetupWithParameterTestsBase
 	[InlineData(0)]
 	public void ThrowForAny(int inputHashCode)
 	{
-		const int setupHashCode = 0;
+		int? setupHashCode = null;
 
 		var fixture = CreateFixture();
 		fixture.SetupParameters(setupHashCode);
