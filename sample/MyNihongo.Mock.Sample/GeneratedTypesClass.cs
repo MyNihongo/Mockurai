@@ -19,7 +19,7 @@ public sealed class ClassDependencyServiceMock : IMock<IClassDependencyService>
 	public Setup SetupInvoke() =>
 		_invoke ??= new Setup();
 
-	public SetupWithParameter SetupInvokeWithParameter(in ClassParameter1 parameter)
+	public SetupWithParameter SetupInvokeWithParameter(in It<ClassParameter1> parameter)
 	{
 		_invokeWithParameter ??= new SetupWithParameter();
 
@@ -162,7 +162,7 @@ public static class ClassDependencyServiceMockEx
 	public static ISetup SetupInvoke(this IMock<IClassDependencyService> @this) =>
 		((ClassDependencyServiceMock)@this).SetupInvoke();
 
-	public static ISetup SetupInvokeWithParameter(this IMock<IClassDependencyService> @this, in ClassParameter1 parameter) =>
+	public static ISetup SetupInvokeWithParameter(this IMock<IClassDependencyService> @this, in It<ClassParameter1> parameter) =>
 		((ClassDependencyServiceMock)@this).SetupInvokeWithParameter(parameter);
 
 	public static ISetup SetupInvokeWithMultipleParameters(this IMock<IClassDependencyService> @this, in ClassParameter1 parameter1, in ClassParameter1 parameter2) =>
