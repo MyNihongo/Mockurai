@@ -19,6 +19,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		_primitiveDependencyService.InvokeWithParameter(parameter);
 	}
 
+	public void InvokeWithParameter(in int parameter)
+	{
+		_primitiveDependencyService.InvokeWithParameter(parameter);
+	}
+
 	public void InvokeWithMultipleParameters(in int parameter1, in int parameter2)
 	{
 		_primitiveDependencyService.InvokeWithMultipleParameters(parameter1, parameter2);

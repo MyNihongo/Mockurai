@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock.Sample;
 
-public readonly ref struct It<T> : IEquatable<It<T>>
+public readonly ref struct It<T>
 {
 	private readonly bool _hasValue;
 	private readonly T? _value;
@@ -26,16 +26,10 @@ public readonly ref struct It<T> : IEquatable<It<T>>
 		return Value(value);
 	}
 
-	public bool Equals(It<T> other)
-	{
-		var otherHashCode = other.GetHashCode();
-		return GetHashCode() == otherHashCode;
-	}
-
-	public override int GetHashCode()
+	public new int? GetHashCode()
 	{
 		return _hasValue
 			? _value!.GetHashCode()
-			: 0;
+			: null;
 	}
 }

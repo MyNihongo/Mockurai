@@ -33,33 +33,18 @@ public sealed class Setup : ISetup
 public sealed class SetupWithParameter : ISetup
 {
 	private Dictionary<int, Exception?>? _values;
+	private Exception? _defaultException;
 	private int? _currentParameter;
 
 	public void Invoke(in int parameterHashCode)
 	{
-		if (_values is null)
-			return;
+		var exception = _values?.GetValueOrDefault(parameterHashCode, _defaultException);
 
-		var isParameterHashCodeNegative = parameterHashCode < 0;
-		foreach (var pair in _values)
-		{
-			if (isParameterHashCodeNegative && pair.Key < parameterHashCode)
-			{
-				if ((pair.Key & parameterHashCode) != parameterHashCode)
-					continue;
-			}
-			else
-			{
-				if ((parameterHashCode & pair.Key) != pair.Key)
-					continue;
-			}
-
-			if (pair.Value is not null)
-				throw pair.Value;
-		}
+		if (exception != null)
+			throw exception;
 	}
 
-	public void SetupParameters(in int parameterHashCode)
+	public void SetupParameters(in int? parameterHashCode)
 	{
 		_currentParameter = parameterHashCode;
 	}
@@ -67,7 +52,10 @@ public sealed class SetupWithParameter : ISetup
 	public void Throws(in Exception exception)
 	{
 		if (!_currentParameter.HasValue)
-			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
+		{
+			_defaultException = exception;
+			return;
+		}
 
 		_values ??= new Dictionary<int, Exception?>();
 
@@ -81,8 +69,8 @@ public sealed class SetupWithParameter : ISetup
 [Obsolete("Will be generated")]
 public sealed class SetupWithMultipleParameters : ISetup
 {
-	private Dictionary<int, (int[], Exception?)>? _values;
-	private int[]? _currentParameters;
+	private Dictionary<int, (int?[], Exception?)>? _values;
+	private int?[]? _currentParameters;
 
 	public void Invoke(in Span<int> parameterHashCodes)
 	{
@@ -106,7 +94,7 @@ public sealed class SetupWithMultipleParameters : ISetup
 		}
 	}
 
-	public void SetupParameters(in int[] parameterHashCodes)
+	public void SetupParameters(in int?[] parameterHashCodes)
 	{
 		_currentParameters = parameterHashCodes;
 	}
@@ -158,33 +146,34 @@ public sealed class Setup<T> : ISetup<T>
 public sealed class SetupWithParameter<T> : ISetup<T>
 {
 	private Dictionary<int, (T?, Exception?)>? _values;
+	private (T?, Exception?)? _defaultValue;
 	private int? _currentParameter;
 
 	public bool TryInvoke(in int parameterHashCode, out T? returnValue)
 	{
 		if (_values is null)
+			goto EmptySetup;
+
+		if (!_values.TryGetValue(parameterHashCode, out var valueSetup))
 		{
-			returnValue = default;
-			return false;
+			if (_defaultValue.HasValue)
+				valueSetup = _defaultValue.Value;
+			else
+				goto EmptySetup;
 		}
 
-		foreach (var pair in _values)
-		{
-			if ((parameterHashCode & pair.Key) != pair.Key)
-				continue;
+		if (valueSetup.Item2 is not null)
+			throw valueSetup.Item2;
 
-			if (pair.Value.Item2 is not null)
-				throw pair.Value.Item2;
+		returnValue = valueSetup.Item1;
+		return true;
 
-			returnValue = pair.Value.Item1;
-			return true;
-		}
-
+		EmptySetup:
 		returnValue = default;
 		return false;
 	}
 
-	public void SetupParameters(in int parameterHashCode)
+	public void SetupParameters(in int? parameterHashCode)
 	{
 		_currentParameter = parameterHashCode;
 	}
@@ -192,7 +181,10 @@ public sealed class SetupWithParameter<T> : ISetup<T>
 	public void Returns(in T? value)
 	{
 		if (!_currentParameter.HasValue)
-			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
+		{
+			_defaultValue = (value, null);
+			return;
+		}
 
 		_values ??= new Dictionary<int, (T?, Exception?)>();
 
@@ -205,7 +197,10 @@ public sealed class SetupWithParameter<T> : ISetup<T>
 	public void Throws(in Exception exception)
 	{
 		if (!_currentParameter.HasValue)
-			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
+		{
+			_defaultValue = (default, exception);
+			return;
+		}
 
 		_values ??= new Dictionary<int, (T?, Exception?)>();
 
@@ -219,8 +214,8 @@ public sealed class SetupWithParameter<T> : ISetup<T>
 [Obsolete("Will be generated")]
 public sealed class SetupWithMultipleParameters<T> : ISetup<T>
 {
-	private Dictionary<int, (int[], T?, Exception?)>? _values;
-	private int[]? _currentParameters;
+	private Dictionary<int, (int?[], T?, Exception?)>? _values;
+	private int?[]? _currentParameters;
 
 	public bool TryInvoke(in Span<int> parameterHashCodes, out T? returnValue)
 	{
@@ -251,7 +246,7 @@ public sealed class SetupWithMultipleParameters<T> : ISetup<T>
 		return false;
 	}
 
-	public void SetupParameters(in int[] parameterHashCodes)
+	public void SetupParameters(in int?[] parameterHashCodes)
 	{
 		_currentParameters = parameterHashCodes;
 	}
