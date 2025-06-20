@@ -4,7 +4,7 @@ namespace MyNihongo.Mock.Sample;
 public sealed class ValueTaskDependencyServiceMock : IMock<IValueTaskDependencyService>
 {
 	private Proxy? _proxy;
-	private SetupThrowsWithParameter? _invokeAsync;
+	private SetupWithParameter? _invokeAsync;
 	private SetupWithParameter<int>? _returnPrimitiveAsync;
 	private SetupWithParameter<short?>? _returnPrimitiveNullableAsync;
 	private SetupWithParameter<StructReturn>? _returnStructAsync;
@@ -14,9 +14,9 @@ public sealed class ValueTaskDependencyServiceMock : IMock<IValueTaskDependencyS
 	private SetupWithParameter<RecordReturn>? _returnRecordAsync;
 	private SetupWithParameter<RecordReturn?>? _returnRecordNullableAsync;
 
-	public SetupThrowsWithParameter SetupInvokeAsync(in CancellationToken ct)
+	public SetupWithParameter SetupInvokeAsync(in CancellationToken ct)
 	{
-		_invokeAsync ??= new SetupThrowsWithParameter();
+		_invokeAsync ??= new SetupWithParameter();
 
 		var hashCode = ct.GetHashCode();
 		_invokeAsync.SetupParameters(hashCode);
@@ -166,7 +166,7 @@ public sealed class ValueTaskDependencyServiceMock : IMock<IValueTaskDependencyS
 [Obsolete("Will be generated")]
 public static class ValueTaskDependencyServiceMockEx
 {
-	public static ISetupThrows SetupInvokeAsync(this IMock<IValueTaskDependencyService> @this, in CancellationToken ct) =>
+	public static ISetup SetupInvokeAsync(this IMock<IValueTaskDependencyService> @this, in CancellationToken ct) =>
 		((ValueTaskDependencyServiceMock)@this).SetupInvokeAsync(ct);
 
 	public static ISetup<int> SetupReturnPrimitiveAsync(this IMock<IValueTaskDependencyService> @this, in CancellationToken ct) =>

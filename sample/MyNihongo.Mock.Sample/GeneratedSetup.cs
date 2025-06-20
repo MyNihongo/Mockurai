@@ -1,19 +1,19 @@
 namespace MyNihongo.Mock.Sample;
 
 [Obsolete("Will be generated")]
-public interface ISetupThrows
+public interface ISetup
 {
 	void Throws(in Exception exception);
 }
 
 [Obsolete("Will be generated")]
-public interface ISetup<T> : ISetupThrows
+public interface ISetup<T> : ISetup
 {
 	void Returns(in T? value);
 }
 
 [Obsolete("Will be generated")]
-public sealed class SetupThrows : ISetupThrows
+public sealed class Setup : ISetup
 {
 	private Exception? _exception;
 
@@ -30,7 +30,7 @@ public sealed class SetupThrows : ISetupThrows
 }
 
 [Obsolete("Will be generated")]
-public sealed class SetupThrowsWithParameter : ISetupThrows
+public sealed class SetupWithParameter : ISetup
 {
 	private Dictionary<int, Exception?>? _values;
 	private int? _currentParameter;
@@ -64,7 +64,7 @@ public sealed class SetupThrowsWithParameter : ISetupThrows
 }
 
 [Obsolete("Will be generated")]
-public sealed class SetupThrowsWithMultipleParameters : ISetupThrows
+public sealed class SetupWithMultipleParameters : ISetup
 {
 	private Dictionary<int, (int[], Exception?)>? _values;
 	private int[]? _currentParameters;

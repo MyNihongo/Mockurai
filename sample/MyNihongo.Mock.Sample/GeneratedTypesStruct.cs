@@ -4,9 +4,9 @@ namespace MyNihongo.Mock.Sample;
 public sealed class StructDependencyServiceMock : IMock<IStructDependencyService>
 {
 	private Proxy? _proxy;
-	private SetupThrows? _invoke;
-	private SetupThrowsWithParameter? _invokeWithParameter;
-	private SetupThrowsWithMultipleParameters? _invokeWithMultipleParameters;
+	private Setup? _invoke;
+	private SetupWithParameter? _invokeWithParameter;
+	private SetupWithMultipleParameters? _invokeWithMultipleParameters;
 	private Setup<StructReturn>? _return;
 	private Setup<StructReturn?>? _returnNullable;
 	private SetupWithParameter<StructReturn>? _returnWithOneParameter;
@@ -16,21 +16,21 @@ public sealed class StructDependencyServiceMock : IMock<IStructDependencyService
 
 	public IStructDependencyService Object => _proxy ??= new Proxy(this);
 
-	public SetupThrows SetupInvoke() =>
-		_invoke ??= new SetupThrows();
+	public Setup SetupInvoke() =>
+		_invoke ??= new Setup();
 
-	public SetupThrowsWithParameter SetupInvokeWithParameter(in StructParameter1 parameter)
+	public SetupWithParameter SetupInvokeWithParameter(in StructParameter1 parameter)
 	{
-		_invokeWithParameter ??= new SetupThrowsWithParameter();
+		_invokeWithParameter ??= new SetupWithParameter();
 
 		var hashCode = parameter.GetHashCode();
 		_invokeWithParameter.SetupParameters(hashCode);
 		return _invokeWithParameter;
 	}
 
-	public SetupThrowsWithMultipleParameters SetupInvokeWithMultipleParameters(in StructParameter1 parameter1, in StructParameter1 parameter2)
+	public SetupWithMultipleParameters SetupInvokeWithMultipleParameters(in StructParameter1 parameter1, in StructParameter1 parameter2)
 	{
-		_invokeWithMultipleParameters ??= new SetupThrowsWithMultipleParameters();
+		_invokeWithMultipleParameters ??= new SetupWithMultipleParameters();
 
 		var hashCodes = new[]
 		{
@@ -159,13 +159,13 @@ public sealed class StructDependencyServiceMock : IMock<IStructDependencyService
 [Obsolete("Will be generated")]
 public static class StructDependencyServiceMockEx
 {
-	public static ISetupThrows SetupInvoke(this IMock<IStructDependencyService> @this) =>
+	public static ISetup SetupInvoke(this IMock<IStructDependencyService> @this) =>
 		((StructDependencyServiceMock)@this).SetupInvoke();
 
-	public static ISetupThrows SetupInvokeWithParameter(this IMock<IStructDependencyService> @this, in StructParameter1 parameter) =>
+	public static ISetup SetupInvokeWithParameter(this IMock<IStructDependencyService> @this, in StructParameter1 parameter) =>
 		((StructDependencyServiceMock)@this).SetupInvokeWithParameter(parameter);
 
-	public static ISetupThrows SetupInvokeWithMultipleParameters(this IMock<IStructDependencyService> @this, in StructParameter1 parameter1, in StructParameter1 parameter2) =>
+	public static ISetup SetupInvokeWithMultipleParameters(this IMock<IStructDependencyService> @this, in StructParameter1 parameter1, in StructParameter1 parameter2) =>
 		((StructDependencyServiceMock)@this).SetupInvokeWithMultipleParameters(parameter1, parameter2);
 
 	public static ISetup<StructReturn> SetupReturn(this IMock<IStructDependencyService> @this) =>

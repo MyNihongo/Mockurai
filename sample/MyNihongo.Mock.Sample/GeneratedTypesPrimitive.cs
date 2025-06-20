@@ -4,30 +4,30 @@ namespace MyNihongo.Mock.Sample;
 public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyService>
 {
 	private Proxy? _proxy;
-	private SetupThrows? _invoke;
-	private SetupThrowsWithParameter? _invokeWithParameter;
-	private SetupThrowsWithMultipleParameters? _invokeWithMultipleParameters;
+	private Setup? _invoke;
+	private SetupWithParameter? _invokeWithParameter;
+	private SetupWithMultipleParameters? _invokeWithMultipleParameters;
 	private Setup<int>? _return;
 	private SetupWithParameter<string>? _returnWithOneParameter;
 	private SetupWithMultipleParameters<decimal>? _returnWithMultipleParameters;
 
 	public IPrimitiveDependencyService Object => _proxy ??= new Proxy(this);
 
-	public SetupThrows SetupInvoke() =>
-		_invoke ??= new SetupThrows();
+	public Setup SetupInvoke() =>
+		_invoke ??= new Setup();
 
-	public SetupThrowsWithParameter SetupInvokeWithParameter(in string parameter)
+	public SetupWithParameter SetupInvokeWithParameter(in string parameter)
 	{
-		_invokeWithParameter ??= new SetupThrowsWithParameter();
+		_invokeWithParameter ??= new SetupWithParameter();
 
 		var hashCode = parameter.GetHashCode();
 		_invokeWithParameter.SetupParameters(hashCode);
 		return _invokeWithParameter;
 	}
 
-	public SetupThrowsWithMultipleParameters SetupInvokeWithMultipleParameters(in int parameter1, in int parameter2)
+	public SetupWithMultipleParameters SetupInvokeWithMultipleParameters(in int parameter1, in int parameter2)
 	{
-		_invokeWithMultipleParameters ??= new SetupThrowsWithMultipleParameters();
+		_invokeWithMultipleParameters ??= new SetupWithMultipleParameters();
 
 		var hashCodes = new[]
 		{
@@ -111,13 +111,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 [Obsolete("Will be generated")]
 public static class PrimitiveDependencyServiceMockEx
 {
-	public static ISetupThrows SetupInvoke(this IMock<IPrimitiveDependencyService> @this) =>
+	public static ISetup SetupInvoke(this IMock<IPrimitiveDependencyService> @this) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvoke();
 
-	public static ISetupThrows SetupInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in string parameter) =>
+	public static ISetup SetupInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in string parameter) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithParameter(parameter);
 
-	public static ISetupThrows SetupInvokeWithMultipleParameters(this IMock<IPrimitiveDependencyService> @this, in int parameter1, in int parameter2) =>
+	public static ISetup SetupInvokeWithMultipleParameters(this IMock<IPrimitiveDependencyService> @this, in int parameter1, in int parameter2) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithMultipleParameters(parameter1, parameter2);
 
 	public static ISetup<int> SetupReturn(this IMock<IPrimitiveDependencyService> @this) =>

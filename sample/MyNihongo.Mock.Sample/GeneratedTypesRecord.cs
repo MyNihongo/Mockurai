@@ -4,9 +4,9 @@ namespace MyNihongo.Mock.Sample;
 public sealed class RecordDependencyServiceMock : IMock<IRecordDependencyService>
 {
 	private Proxy? _proxy;
-	private SetupThrows? _invoke;
-	private SetupThrowsWithParameter? _invokeWithParameter;
-	private SetupThrowsWithMultipleParameters? _invokeWithMultipleParameters;
+	private Setup? _invoke;
+	private SetupWithParameter? _invokeWithParameter;
+	private SetupWithMultipleParameters? _invokeWithMultipleParameters;
 	private Setup<RecordReturn>? _return;
 	private Setup<RecordReturn?>? _returnNullable;
 	private SetupWithParameter<RecordReturn>? _returnWithOneParameter;
@@ -16,21 +16,21 @@ public sealed class RecordDependencyServiceMock : IMock<IRecordDependencyService
 
 	public IRecordDependencyService Object => _proxy ??= new Proxy(this);
 
-	public SetupThrows SetupInvoke() =>
-		_invoke ??= new SetupThrows();
+	public Setup SetupInvoke() =>
+		_invoke ??= new Setup();
 
-	public SetupThrowsWithParameter SetupInvokeWithParameter(in RecordParameter1 parameter)
+	public SetupWithParameter SetupInvokeWithParameter(in RecordParameter1 parameter)
 	{
-		_invokeWithParameter ??= new SetupThrowsWithParameter();
+		_invokeWithParameter ??= new SetupWithParameter();
 
 		var hashCode = parameter.GetHashCode();
 		_invokeWithParameter.SetupParameters(hashCode);
 		return _invokeWithParameter;
 	}
 
-	public SetupThrowsWithMultipleParameters SetupInvokeWithMultipleParameters(in RecordParameter1 parameter1, in RecordParameter1 parameter2)
+	public SetupWithMultipleParameters SetupInvokeWithMultipleParameters(in RecordParameter1 parameter1, in RecordParameter1 parameter2)
 	{
-		_invokeWithMultipleParameters ??= new SetupThrowsWithMultipleParameters();
+		_invokeWithMultipleParameters ??= new SetupWithMultipleParameters();
 
 		var hashCodes = new[]
 		{
@@ -159,13 +159,13 @@ public sealed class RecordDependencyServiceMock : IMock<IRecordDependencyService
 [Obsolete("Will be generated")]
 public static class RecordDependencyServiceMockEx
 {
-	public static ISetupThrows SetupInvoke(this IMock<IRecordDependencyService> @this) =>
+	public static ISetup SetupInvoke(this IMock<IRecordDependencyService> @this) =>
 		((RecordDependencyServiceMock)@this).SetupInvoke();
 
-	public static ISetupThrows SetupInvokeWithParameter(this IMock<IRecordDependencyService> @this, in RecordParameter1 parameter) =>
+	public static ISetup SetupInvokeWithParameter(this IMock<IRecordDependencyService> @this, in RecordParameter1 parameter) =>
 		((RecordDependencyServiceMock)@this).SetupInvokeWithParameter(parameter);
 
-	public static ISetupThrows SetupInvokeWithMultipleParameters(this IMock<IRecordDependencyService> @this, in RecordParameter1 parameter1, in RecordParameter1 parameter2) =>
+	public static ISetup SetupInvokeWithMultipleParameters(this IMock<IRecordDependencyService> @this, in RecordParameter1 parameter1, in RecordParameter1 parameter2) =>
 		((RecordDependencyServiceMock)@this).SetupInvokeWithMultipleParameters(parameter1, parameter2);
 
 	public static ISetup<RecordReturn> SetupReturn(this IMock<IRecordDependencyService> @this) =>
