@@ -19,7 +19,7 @@ public sealed class StructDependencyServiceMock : IMock<IStructDependencyService
 	public Setup SetupInvoke() =>
 		_invoke ??= new Setup();
 
-	public SetupWithParameter SetupInvokeWithParameter(in StructParameter1 parameter)
+	public SetupWithParameter SetupInvokeWithParameter(in It<StructParameter1> parameter)
 	{
 		_invokeWithParameter ??= new SetupWithParameter();
 
@@ -28,7 +28,7 @@ public sealed class StructDependencyServiceMock : IMock<IStructDependencyService
 		return _invokeWithParameter;
 	}
 
-	public SetupWithMultipleParameters SetupInvokeWithMultipleParameters(in StructParameter1 parameter1, in StructParameter1 parameter2)
+	public SetupWithMultipleParameters SetupInvokeWithMultipleParameters(in It<StructParameter1> parameter1, in It<StructParameter1> parameter2)
 	{
 		_invokeWithMultipleParameters ??= new SetupWithMultipleParameters();
 
@@ -48,7 +48,7 @@ public sealed class StructDependencyServiceMock : IMock<IStructDependencyService
 	public Setup<StructReturn?> SetupReturnNullable() =>
 		_returnNullable ??= new Setup<StructReturn?>();
 
-	public SetupWithParameter<StructReturn> SetupReturnWithOneParameter(in StructParameter1 parameter)
+	public SetupWithParameter<StructReturn> SetupReturnWithOneParameter(in It<StructParameter1> parameter)
 	{
 		_returnWithOneParameter ??= new SetupWithParameter<StructReturn>();
 
@@ -57,7 +57,7 @@ public sealed class StructDependencyServiceMock : IMock<IStructDependencyService
 		return _returnWithOneParameter;
 	}
 
-	public SetupWithParameter<StructReturn?> SetupReturnWithOneParameterNullable(in StructParameter1 parameter)
+	public SetupWithParameter<StructReturn?> SetupReturnWithOneParameterNullable(in It<StructParameter1> parameter)
 	{
 		_returnWithOneParameterNullable ??= new SetupWithParameter<StructReturn?>();
 
@@ -66,7 +66,7 @@ public sealed class StructDependencyServiceMock : IMock<IStructDependencyService
 		return _returnWithOneParameterNullable;
 	}
 
-	public SetupWithMultipleParameters<StructReturn> SetupReturnWithMultipleParameters(in StructParameter1 parameter1, in StructParameter1 parameter2)
+	public SetupWithMultipleParameters<StructReturn> SetupReturnWithMultipleParameters(in It<StructParameter1> parameter1, in It<StructParameter1> parameter2)
 	{
 		_returnWithMultipleParameters ??= new SetupWithMultipleParameters<StructReturn>();
 
@@ -80,7 +80,7 @@ public sealed class StructDependencyServiceMock : IMock<IStructDependencyService
 		return _returnWithMultipleParameters;
 	}
 
-	public SetupWithMultipleParameters<StructReturn?> SetupReturnWithMultipleParametersNullable(in StructParameter1 parameter1, in StructParameter1 parameter2)
+	public SetupWithMultipleParameters<StructReturn?> SetupReturnWithMultipleParametersNullable(in It<StructParameter1> parameter1, in It<StructParameter1> parameter2)
 	{
 		_returnWithMultipleParametersNullable ??= new SetupWithMultipleParameters<StructReturn?>();
 
@@ -162,10 +162,10 @@ public static class StructDependencyServiceMockEx
 	public static ISetup SetupInvoke(this IMock<IStructDependencyService> @this) =>
 		((StructDependencyServiceMock)@this).SetupInvoke();
 
-	public static ISetup SetupInvokeWithParameter(this IMock<IStructDependencyService> @this, in StructParameter1 parameter) =>
+	public static ISetup SetupInvokeWithParameter(this IMock<IStructDependencyService> @this, in It<StructParameter1> parameter) =>
 		((StructDependencyServiceMock)@this).SetupInvokeWithParameter(parameter);
 
-	public static ISetup SetupInvokeWithMultipleParameters(this IMock<IStructDependencyService> @this, in StructParameter1 parameter1, in StructParameter1 parameter2) =>
+	public static ISetup SetupInvokeWithMultipleParameters(this IMock<IStructDependencyService> @this, in It<StructParameter1> parameter1, in It<StructParameter1> parameter2) =>
 		((StructDependencyServiceMock)@this).SetupInvokeWithMultipleParameters(parameter1, parameter2);
 
 	public static ISetup<StructReturn> SetupReturn(this IMock<IStructDependencyService> @this) =>
@@ -174,15 +174,15 @@ public static class StructDependencyServiceMockEx
 	public static ISetup<StructReturn?> SetupReturnNullable(this IMock<IStructDependencyService> @this) =>
 		((StructDependencyServiceMock)@this).SetupReturnNullable();
 
-	public static ISetup<StructReturn> SetupReturnWithOneParameter(this IMock<IStructDependencyService> @this, in StructParameter1 parameter) =>
+	public static ISetup<StructReturn> SetupReturnWithOneParameter(this IMock<IStructDependencyService> @this, in It<StructParameter1> parameter) =>
 		((StructDependencyServiceMock)@this).SetupReturnWithOneParameter(parameter);
 
-	public static ISetup<StructReturn?> SetupReturnWithOneParameterNullable(this IMock<IStructDependencyService> @this, in StructParameter1 parameter) =>
+	public static ISetup<StructReturn?> SetupReturnWithOneParameterNullable(this IMock<IStructDependencyService> @this, in It<StructParameter1> parameter) =>
 		((StructDependencyServiceMock)@this).SetupReturnWithOneParameterNullable(parameter);
 
-	public static ISetup<StructReturn> SetupReturnWithMultipleParameters(this IMock<IStructDependencyService> @this, in StructParameter1 parameter1, in StructParameter1 parameter2) =>
+	public static ISetup<StructReturn> SetupReturnWithMultipleParameters(this IMock<IStructDependencyService> @this, in It<StructParameter1> parameter1, in It<StructParameter1> parameter2) =>
 		((StructDependencyServiceMock)@this).SetupReturnWithMultipleParameters(parameter1, parameter2);
 
-	public static ISetup<StructReturn?> SetupReturnWithMultipleParametersNullable(this IMock<IStructDependencyService> @this, in StructParameter1 parameter1, in StructParameter1 parameter2) =>
+	public static ISetup<StructReturn?> SetupReturnWithMultipleParametersNullable(this IMock<IStructDependencyService> @this, in It<StructParameter1> parameter1, in It<StructParameter1> parameter2) =>
 		((StructDependencyServiceMock)@this).SetupReturnWithMultipleParametersNullable(parameter1, parameter2);
 }

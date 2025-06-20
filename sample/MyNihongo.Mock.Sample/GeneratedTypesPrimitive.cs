@@ -16,7 +16,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	public Setup SetupInvoke() =>
 		_invoke ??= new Setup();
 
-	public SetupWithParameter SetupInvokeWithParameter(in string parameter)
+	public SetupWithParameter SetupInvokeWithParameter(in It<string> parameter)
 	{
 		_invokeWithParameter ??= new SetupWithParameter();
 
@@ -25,7 +25,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		return _invokeWithParameter;
 	}
 
-	public SetupWithMultipleParameters SetupInvokeWithMultipleParameters(in int parameter1, in int parameter2)
+	public SetupWithMultipleParameters SetupInvokeWithMultipleParameters(in It<int> parameter1, in It<int> parameter2)
 	{
 		_invokeWithMultipleParameters ??= new SetupWithMultipleParameters();
 
@@ -42,7 +42,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	public Setup<int> SetupReturn() =>
 		_return ??= new Setup<int>();
 
-	public SetupWithParameter<string> SetupReturnWithOneParameter(in string parameter)
+	public SetupWithParameter<string> SetupReturnWithOneParameter(in It<string> parameter)
 	{
 		_returnWithOneParameter ??= new SetupWithParameter<string>();
 
@@ -51,7 +51,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		return _returnWithOneParameter;
 	}
 
-	public SetupWithMultipleParameters<decimal> SetupReturnWithMultipleParameters(in int parameter1, in int parameter2)
+	public SetupWithMultipleParameters<decimal> SetupReturnWithMultipleParameters(in It<int> parameter1, in It<int> parameter2)
 	{
 		_returnWithMultipleParameters ??= new SetupWithMultipleParameters<decimal>();
 
@@ -114,18 +114,18 @@ public static class PrimitiveDependencyServiceMockEx
 	public static ISetup SetupInvoke(this IMock<IPrimitiveDependencyService> @this) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvoke();
 
-	public static ISetup SetupInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in string parameter) =>
+	public static ISetup SetupInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<string> parameter) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithParameter(parameter);
 
-	public static ISetup SetupInvokeWithMultipleParameters(this IMock<IPrimitiveDependencyService> @this, in int parameter1, in int parameter2) =>
+	public static ISetup SetupInvokeWithMultipleParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1, in It<int> parameter2) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithMultipleParameters(parameter1, parameter2);
 
 	public static ISetup<int> SetupReturn(this IMock<IPrimitiveDependencyService> @this) =>
 		((PrimitiveDependencyServiceMock)@this).SetupReturn();
 
-	public static ISetup<string> SetupReturnWithOneParameter(this IMock<IPrimitiveDependencyService> @this, in string parameter) =>
+	public static ISetup<string> SetupReturnWithOneParameter(this IMock<IPrimitiveDependencyService> @this, in It<string> parameter) =>
 		((PrimitiveDependencyServiceMock)@this).SetupReturnWithOneParameter(parameter);
 
-	public static ISetup<decimal> SetupReturnWithMultipleParameters(this IMock<IPrimitiveDependencyService> @this, in int parameter1, in int parameter2) =>
+	public static ISetup<decimal> SetupReturnWithMultipleParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1, in It<int> parameter2) =>
 		((PrimitiveDependencyServiceMock)@this).SetupReturnWithMultipleParameters(parameter1, parameter2);
 }

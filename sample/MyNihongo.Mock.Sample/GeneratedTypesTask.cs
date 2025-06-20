@@ -14,7 +14,7 @@ public sealed class TaskDependencyServiceMock : IMock<ITaskDependencyService>
 	private SetupWithParameter<RecordReturn>? _returnRecordAsync;
 	private SetupWithParameter<RecordReturn?>? _returnRecordNullableAsync;
 
-	public SetupWithParameter SetupInvokeAsync(in CancellationToken ct)
+	public SetupWithParameter SetupInvokeAsync(in It<CancellationToken> ct)
 	{
 		_invokeAsync ??= new SetupWithParameter();
 
@@ -23,7 +23,7 @@ public sealed class TaskDependencyServiceMock : IMock<ITaskDependencyService>
 		return _invokeAsync;
 	}
 
-	public SetupWithParameter<int> SetupReturnPrimitiveAsync(in CancellationToken ct)
+	public SetupWithParameter<int> SetupReturnPrimitiveAsync(in It<CancellationToken> ct)
 	{
 		_returnPrimitiveAsync ??= new SetupWithParameter<int>();
 
@@ -32,7 +32,7 @@ public sealed class TaskDependencyServiceMock : IMock<ITaskDependencyService>
 		return _returnPrimitiveAsync;
 	}
 
-	public SetupWithParameter<short?> SetupReturnPrimitiveNullableAsync(in CancellationToken ct)
+	public SetupWithParameter<short?> SetupReturnPrimitiveNullableAsync(in It<CancellationToken> ct)
 	{
 		_returnPrimitiveNullableAsync ??= new SetupWithParameter<short?>();
 
@@ -41,7 +41,7 @@ public sealed class TaskDependencyServiceMock : IMock<ITaskDependencyService>
 		return _returnPrimitiveNullableAsync;
 	}
 
-	public SetupWithParameter<StructReturn> SetupReturnStructAsync(in CancellationToken ct)
+	public SetupWithParameter<StructReturn> SetupReturnStructAsync(in It<CancellationToken> ct)
 	{
 		_returnStructAsync ??= new SetupWithParameter<StructReturn>();
 
@@ -50,7 +50,7 @@ public sealed class TaskDependencyServiceMock : IMock<ITaskDependencyService>
 		return _returnStructAsync;
 	}
 
-	public SetupWithParameter<StructReturn?> SetupReturnStructNullableAsync(in CancellationToken ct)
+	public SetupWithParameter<StructReturn?> SetupReturnStructNullableAsync(in It<CancellationToken> ct)
 	{
 		_returnStructNullableAsync ??= new SetupWithParameter<StructReturn?>();
 
@@ -59,7 +59,7 @@ public sealed class TaskDependencyServiceMock : IMock<ITaskDependencyService>
 		return _returnStructNullableAsync;
 	}
 
-	public SetupWithParameter<ClassReturn> SetupReturnClassAsync(in CancellationToken ct)
+	public SetupWithParameter<ClassReturn> SetupReturnClassAsync(in It<CancellationToken> ct)
 	{
 		_returnClassAsync ??= new SetupWithParameter<ClassReturn>();
 
@@ -68,7 +68,7 @@ public sealed class TaskDependencyServiceMock : IMock<ITaskDependencyService>
 		return _returnClassAsync;
 	}
 
-	public SetupWithParameter<ClassReturn?> SetupReturnClassNullableAsync(in CancellationToken ct)
+	public SetupWithParameter<ClassReturn?> SetupReturnClassNullableAsync(in It<CancellationToken> ct)
 	{
 		_returnClassNullableAsync ??= new SetupWithParameter<ClassReturn?>();
 
@@ -77,7 +77,7 @@ public sealed class TaskDependencyServiceMock : IMock<ITaskDependencyService>
 		return _returnClassNullableAsync;
 	}
 
-	public SetupWithParameter<RecordReturn> SetupReturnRecordAsync(in CancellationToken ct)
+	public SetupWithParameter<RecordReturn> SetupReturnRecordAsync(in It<CancellationToken> ct)
 	{
 		_returnRecordAsync ??= new SetupWithParameter<RecordReturn>();
 
@@ -86,7 +86,7 @@ public sealed class TaskDependencyServiceMock : IMock<ITaskDependencyService>
 		return _returnRecordAsync;
 	}
 
-	public SetupWithParameter<RecordReturn?> SetupReturnRecordNullableAsync(in CancellationToken ct)
+	public SetupWithParameter<RecordReturn?> SetupReturnRecordNullableAsync(in It<CancellationToken> ct)
 	{
 		_returnRecordNullableAsync ??= new SetupWithParameter<RecordReturn?>();
 
@@ -166,30 +166,30 @@ public sealed class TaskDependencyServiceMock : IMock<ITaskDependencyService>
 [Obsolete("Will be generated")]
 public static class TaskDependencyServiceMockEx
 {
-	public static ISetup SetupInvokeAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
+	public static ISetup SetupInvokeAsync(this IMock<ITaskDependencyService> @this, in It<CancellationToken> ct) =>
 		((TaskDependencyServiceMock)@this).SetupInvokeAsync(ct);
 
-	public static ISetup<int> SetupReturnPrimitiveAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
+	public static ISetup<int> SetupReturnPrimitiveAsync(this IMock<ITaskDependencyService> @this, in It<CancellationToken> ct) =>
 		((TaskDependencyServiceMock)@this).SetupReturnPrimitiveAsync(ct);
 
-	public static ISetup<short?> SetupReturnPrimitiveNullableAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
+	public static ISetup<short?> SetupReturnPrimitiveNullableAsync(this IMock<ITaskDependencyService> @this, in It<CancellationToken> ct) =>
 		((TaskDependencyServiceMock)@this).SetupReturnPrimitiveNullableAsync(ct);
 
-	public static ISetup<StructReturn> SetupReturnStructAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
+	public static ISetup<StructReturn> SetupReturnStructAsync(this IMock<ITaskDependencyService> @this, in It<CancellationToken> ct) =>
 		((TaskDependencyServiceMock)@this).SetupReturnStructAsync(ct);
 
-	public static ISetup<StructReturn?> SetupReturnStructNullableAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
+	public static ISetup<StructReturn?> SetupReturnStructNullableAsync(this IMock<ITaskDependencyService> @this, in It<CancellationToken> ct) =>
 		((TaskDependencyServiceMock)@this).SetupReturnStructNullableAsync(ct);
 
-	public static ISetup<ClassReturn> SetupReturnClassAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
+	public static ISetup<ClassReturn> SetupReturnClassAsync(this IMock<ITaskDependencyService> @this, in It<CancellationToken> ct) =>
 		((TaskDependencyServiceMock)@this).SetupReturnClassAsync(ct);
 
-	public static ISetup<ClassReturn?> SetupReturnClassNullableAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
+	public static ISetup<ClassReturn?> SetupReturnClassNullableAsync(this IMock<ITaskDependencyService> @this, in It<CancellationToken> ct) =>
 		((TaskDependencyServiceMock)@this).SetupReturnClassNullableAsync(ct);
 
-	public static ISetup<RecordReturn> SetupReturnRecordAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
+	public static ISetup<RecordReturn> SetupReturnRecordAsync(this IMock<ITaskDependencyService> @this, in It<CancellationToken> ct) =>
 		((TaskDependencyServiceMock)@this).SetupReturnRecordAsync(ct);
 
-	public static ISetup<RecordReturn?> SetupReturnRecordNullableAsync(this IMock<ITaskDependencyService> @this, in CancellationToken ct) =>
+	public static ISetup<RecordReturn?> SetupReturnRecordNullableAsync(this IMock<ITaskDependencyService> @this, in It<CancellationToken> ct) =>
 		((TaskDependencyServiceMock)@this).SetupReturnRecordNullableAsync(ct);
 }
