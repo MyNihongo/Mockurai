@@ -22,4 +22,10 @@ public sealed class InvokeStructShould : SetupWithParameterTestsBase
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 	}
+
+	[Fact]
+	public void Todo()
+	{
+		throw new NotImplementedException();
+	}
 }

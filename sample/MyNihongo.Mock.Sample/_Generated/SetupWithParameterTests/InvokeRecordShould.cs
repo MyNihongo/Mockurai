@@ -21,4 +21,10 @@ public sealed class InvokeRecordShould : SetupWithParameterTestsBase
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 	}
+
+	[Fact]
+	public void Todo()
+	{
+		throw new NotImplementedException();
+	}
 }
