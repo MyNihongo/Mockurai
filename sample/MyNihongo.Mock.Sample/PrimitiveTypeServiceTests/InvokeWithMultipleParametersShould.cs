@@ -69,4 +69,140 @@ public sealed class InvokeWithMultipleParametersShould : PrimitiveTypeServiceTes
 		CreateFixture()
 			.InvokeWithMultipleParameters(parameter2, parameter2);
 	}
+
+	[Fact]
+	public void NotTreatZeroAsAny()
+	{
+		const string errorMessage = nameof(errorMessage);
+		const int parameter = 0, anotherParameter = 1;
+
+		DependencyServiceMock
+			.SetupInvokeWithMultipleParameters(parameter, parameter)
+			.Throws(new InvalidOperationException(errorMessage));
+
+		var actual = () => CreateFixture()
+			.InvokeWithMultipleParameters(anotherParameter, anotherParameter);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+
+		CreateFixture()
+			.InvokeWithParameter(anotherParameter);
+	}
+
+	[Fact]
+	public void TreatExactMatchesWithMorePriority1()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2), errorMessage3 = nameof(errorMessage3), errorMessage4 = nameof(errorMessage4);
+		const int input1 = 123, input2 = 234;
+
+		DependencyServiceMock
+			.SetupInvokeWithMultipleParameters()
+			.Throws(new InvalidOperationException(errorMessage1));
+
+		DependencyServiceMock
+			.SetupInvokeWithMultipleParameters(input1)
+			.Throws(new ArgumentException(errorMessage2));
+
+		DependencyServiceMock
+			.SetupInvokeWithMultipleParameters(parameter2: input2)
+			.Throws(new OutOfMemoryException(errorMessage3));
+
+		DependencyServiceMock
+			.SetupInvokeWithMultipleParameters(input1, input2)
+			.Throws(new ArgumentOutOfRangeException(errorMessage4));
+
+		var actual = () => CreateFixture()
+			.InvokeWithMultipleParameters(input1, input2);
+
+		var exception = Assert.Throws<ArgumentOutOfRangeException>(actual);
+		Assert.Equal(errorMessage4, exception.Message);
+	}
+
+	[Fact]
+	public void TreatExactMatchesWithMorePriority2()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2), errorMessage3 = nameof(errorMessage3), errorMessage4 = nameof(errorMessage4);
+		const int input1 = 123, input2 = 234, anotherParameter = 987654;
+
+		DependencyServiceMock
+			.SetupInvokeWithMultipleParameters()
+			.Throws(new InvalidOperationException(errorMessage1));
+
+		DependencyServiceMock
+			.SetupInvokeWithMultipleParameters(input1)
+			.Throws(new ArgumentException(errorMessage2));
+
+		DependencyServiceMock
+			.SetupInvokeWithMultipleParameters(parameter2: input2)
+			.Throws(new OutOfMemoryException(errorMessage3));
+
+		DependencyServiceMock
+			.SetupInvokeWithMultipleParameters(input1, input2)
+			.Throws(new ArgumentOutOfRangeException(errorMessage4));
+
+		var actual = () => CreateFixture()
+			.InvokeWithMultipleParameters(input1, anotherParameter);
+
+		var exception = Assert.Throws<OutOfMemoryException>(actual);
+		Assert.Equal(errorMessage3, exception.Message);
+	}
+
+	[Fact]
+	public void TreatExactMatchesWithMorePriority3()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2), errorMessage3 = nameof(errorMessage3), errorMessage4 = nameof(errorMessage4);
+		const int input1 = 123, input2 = 234, anotherParameter = 987654;
+
+		DependencyServiceMock
+			.SetupInvokeWithMultipleParameters()
+			.Throws(new InvalidOperationException(errorMessage1));
+
+		DependencyServiceMock
+			.SetupInvokeWithMultipleParameters(input1)
+			.Throws(new ArgumentException(errorMessage2));
+
+		DependencyServiceMock
+			.SetupInvokeWithMultipleParameters(parameter2: input2)
+			.Throws(new OutOfMemoryException(errorMessage3));
+
+		DependencyServiceMock
+			.SetupInvokeWithMultipleParameters(input1, input2)
+			.Throws(new ArgumentOutOfRangeException(errorMessage4));
+
+		var actual = () => CreateFixture()
+			.InvokeWithMultipleParameters(anotherParameter, input2);
+
+		var exception = Assert.Throws<ArgumentException>(actual);
+		Assert.Equal(errorMessage2, exception.Message);
+	}
+
+	[Fact]
+	public void TreatExactMatchesWithMorePriority4()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2), errorMessage3 = nameof(errorMessage3), errorMessage4 = nameof(errorMessage4);
+		const int input1 = 123, input2 = 234, anotherParameter = 987654;
+
+		DependencyServiceMock
+			.SetupInvokeWithMultipleParameters()
+			.Throws(new InvalidOperationException(errorMessage1));
+
+		DependencyServiceMock
+			.SetupInvokeWithMultipleParameters(input1)
+			.Throws(new ArgumentException(errorMessage2));
+
+		DependencyServiceMock
+			.SetupInvokeWithMultipleParameters(parameter2: input2)
+			.Throws(new OutOfMemoryException(errorMessage3));
+
+		DependencyServiceMock
+			.SetupInvokeWithMultipleParameters(input1, input2)
+			.Throws(new ArgumentOutOfRangeException(errorMessage4));
+
+		var actual = () => CreateFixture()
+			.InvokeWithMultipleParameters(anotherParameter, anotherParameter);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage1, exception.Message);
+	}
 }

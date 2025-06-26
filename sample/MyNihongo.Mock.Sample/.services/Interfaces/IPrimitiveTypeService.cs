@@ -6,6 +6,8 @@ public interface IPrimitiveTypeService
 
 	void InvokeWithParameter(in string parameter);
 
+	void InvokeWithParameter(in int parameter);
+
 	void InvokeWithMultipleParameters(in int parameter1, in int parameter2);
 
 	decimal Return();

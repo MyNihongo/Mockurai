@@ -86,4 +86,48 @@ public sealed class InvokeWithParameterShould : ClassTypeServiceTestsBase
 		CreateFixture()
 			.InvokeWithParameter(input);
 	}
+
+	[Fact]
+	public void ThrowIfSetupAnyImplicitly()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var input = new ClassParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		ClassDependencyServiceMock
+			.SetupInvokeWithParameter()
+			.Throws(new InvalidOperationException(errorMessage));
+
+		var actual = () => CreateFixture()
+			.InvokeWithParameter(input);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowIfSetupAnyExplicitly()
+	{
+		const string errorMessage = nameof(errorMessage);
+
+		var input = new ClassParameter1
+		{
+			Number = 1,
+			Text = "Some text",
+		};
+
+		ClassDependencyServiceMock
+			.SetupInvokeWithParameter(It<ClassParameter1>.Any())
+			.Throws(new InvalidOperationException(errorMessage));
+
+		var actual = () => CreateFixture()
+			.InvokeWithParameter(input);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
 }

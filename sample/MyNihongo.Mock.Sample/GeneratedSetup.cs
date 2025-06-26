@@ -1,19 +1,19 @@
 namespace MyNihongo.Mock.Sample;
 
 [Obsolete("Will be generated")]
-public interface ISetupThrows
+public interface ISetup
 {
 	void Throws(in Exception exception);
 }
 
 [Obsolete("Will be generated")]
-public interface ISetup<T> : ISetupThrows
+public interface ISetup<T> : ISetup
 {
 	void Returns(in T? value);
 }
 
 [Obsolete("Will be generated")]
-public sealed class SetupThrows : ISetupThrows
+public sealed class Setup : ISetup
 {
 	private Exception? _exception;
 
@@ -30,21 +30,21 @@ public sealed class SetupThrows : ISetupThrows
 }
 
 [Obsolete("Will be generated")]
-public sealed class SetupThrowsWithParameter : ISetupThrows
+public sealed class SetupWithParameter : ISetup
 {
 	private Dictionary<int, Exception?>? _values;
+	private Exception? _defaultException;
 	private int? _currentParameter;
 
 	public void Invoke(in int parameterHashCode)
 	{
-		if (_values is null || !_values.TryGetValue(parameterHashCode, out var exception))
-			return;
+		var exception = _values?.GetValueOrDefault(parameterHashCode, _defaultException);
 
-		if (exception is not null)
+		if (exception != null)
 			throw exception;
 	}
 
-	public void SetupParameters(in int parameterHashCode)
+	public void SetupParameters(in int? parameterHashCode)
 	{
 		_currentParameter = parameterHashCode;
 	}
@@ -52,7 +52,10 @@ public sealed class SetupThrowsWithParameter : ISetupThrows
 	public void Throws(in Exception exception)
 	{
 		if (!_currentParameter.HasValue)
-			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
+		{
+			_defaultException = exception;
+			return;
+		}
 
 		_values ??= new Dictionary<int, Exception?>();
 
@@ -64,10 +67,10 @@ public sealed class SetupThrowsWithParameter : ISetupThrows
 }
 
 [Obsolete("Will be generated")]
-public sealed class SetupThrowsWithMultipleParameters : ISetupThrows
+public sealed class SetupWithMultipleParameters : ISetup
 {
-	private Dictionary<int, (int[], Exception?)>? _values;
-	private int[]? _currentParameters;
+	private Dictionary<int, (int?[], Exception?)>? _values;
+	private int?[]? _currentParameters;
 
 	public void Invoke(in Span<int> parameterHashCodes)
 	{
@@ -91,7 +94,7 @@ public sealed class SetupThrowsWithMultipleParameters : ISetupThrows
 		}
 	}
 
-	public void SetupParameters(in int[] parameterHashCodes)
+	public void SetupParameters(in int?[] parameterHashCodes)
 	{
 		_currentParameters = parameterHashCodes;
 	}
@@ -143,24 +146,34 @@ public sealed class Setup<T> : ISetup<T>
 public sealed class SetupWithParameter<T> : ISetup<T>
 {
 	private Dictionary<int, (T?, Exception?)>? _values;
+	private (T?, Exception?)? _defaultValue;
 	private int? _currentParameter;
 
 	public bool TryInvoke(in int parameterHashCode, out T? returnValue)
 	{
-		if (_values is not null && _values.TryGetValue(parameterHashCode, out var valueSetup))
-		{
-			if (valueSetup.Item2 is not null)
-				throw valueSetup.Item2;
+		if (_values is null)
+			goto EmptySetup;
 
-			returnValue = valueSetup.Item1;
-			return true;
+		if (!_values.TryGetValue(parameterHashCode, out var valueSetup))
+		{
+			if (_defaultValue.HasValue)
+				valueSetup = _defaultValue.Value;
+			else
+				goto EmptySetup;
 		}
 
+		if (valueSetup.Item2 is not null)
+			throw valueSetup.Item2;
+
+		returnValue = valueSetup.Item1;
+		return true;
+
+		EmptySetup:
 		returnValue = default;
 		return false;
 	}
 
-	public void SetupParameters(in int parameterHashCode)
+	public void SetupParameters(in int? parameterHashCode)
 	{
 		_currentParameter = parameterHashCode;
 	}
@@ -168,7 +181,10 @@ public sealed class SetupWithParameter<T> : ISetup<T>
 	public void Returns(in T? value)
 	{
 		if (!_currentParameter.HasValue)
-			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
+		{
+			_defaultValue = (value, null);
+			return;
+		}
 
 		_values ??= new Dictionary<int, (T?, Exception?)>();
 
@@ -181,7 +197,10 @@ public sealed class SetupWithParameter<T> : ISetup<T>
 	public void Throws(in Exception exception)
 	{
 		if (!_currentParameter.HasValue)
-			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
+		{
+			_defaultValue = (default, exception);
+			return;
+		}
 
 		_values ??= new Dictionary<int, (T?, Exception?)>();
 
@@ -195,8 +214,8 @@ public sealed class SetupWithParameter<T> : ISetup<T>
 [Obsolete("Will be generated")]
 public sealed class SetupWithMultipleParameters<T> : ISetup<T>
 {
-	private Dictionary<int, (int[], T?, Exception?)>? _values;
-	private int[]? _currentParameters;
+	private Dictionary<int, (int?[], T?, Exception?)>? _values;
+	private int?[]? _currentParameters;
 
 	public bool TryInvoke(in Span<int> parameterHashCodes, out T? returnValue)
 	{
@@ -227,7 +246,7 @@ public sealed class SetupWithMultipleParameters<T> : ISetup<T>
 		return false;
 	}
 
-	public void SetupParameters(in int[] parameterHashCodes)
+	public void SetupParameters(in int?[] parameterHashCodes)
 	{
 		_currentParameters = parameterHashCodes;
 	}
