@@ -5,7 +5,7 @@ public sealed class ClassDependencyServiceMock : IMock<IClassDependencyService>
 {
 	private Proxy? _proxy;
 	private Setup? _invoke;
-	private SetupWithParameter? _invokeWithParameter;
+	private SetupWithParameter<ClassParameter1>? _invokeWithParameter;
 	// private SetupWithSeveralParameters? _invokeWithSeveralParameters;
 	private Setup<ClassReturn>? _return;
 	private Setup<ClassReturn?>? _returnNullable;
@@ -19,12 +19,10 @@ public sealed class ClassDependencyServiceMock : IMock<IClassDependencyService>
 	public Setup SetupInvoke() =>
 		_invoke ??= new Setup();
 
-	public SetupWithParameter SetupInvokeWithOneParameter(in It<ClassParameter1> parameter = default)
+	public SetupWithParameter<ClassParameter1> SetupInvokeWithOneParameter(in It<ClassParameter1> parameter = default)
 	{
-		_invokeWithParameter ??= new SetupWithParameter();
-
-		var hashCode = parameter.GetHashCode();
-		_invokeWithParameter.SetupParameters(hashCode);
+		_invokeWithParameter ??= new SetupWithParameter<ClassParameter1>();
+		_invokeWithParameter.SetupParameter(parameter.Predicate);
 		return _invokeWithParameter;
 	}
 
@@ -111,7 +109,7 @@ public sealed class ClassDependencyServiceMock : IMock<IClassDependencyService>
 		public void InvokeWithOneParameter(in ClassParameter1 parameter)
 		{
 			var hashCode = parameter.GetHashCode();
-			_mock._invokeWithParameter?.Invoke(hashCode);
+			_mock._invokeWithParameter?.Invoke(parameter);
 		}
 
 		public void InvokeWithSeveralParameters(in ClassParameter1 parameter1, in ClassParameter1 parameter2)

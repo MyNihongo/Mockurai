@@ -2,18 +2,21 @@ namespace MyNihongo.Mock.Sample;
 
 public readonly ref struct It<T>
 {
-	private readonly bool _hasValue;
-	private readonly T? _value;
+	public readonly Func<T, bool>? Predicate;
 
-	private It(T value)
+	private It(Func<T, bool> predicate)
 	{
-		_value = value;
-		_hasValue = true;
+		Predicate = predicate;
 	}
 
-	public static It<T> Value(in T value)
+	public static It<T> Value(T value)
 	{
-		return new It<T>(value);
+		return new It<T>(x => EqualityComparer<T>.Default.Equals(x, value));
+	}
+
+	public static It<T> Where(in Func<T, bool> predicate)
+	{
+		return new It<T>(predicate);
 	}
 
 	public static It<T> Any()
@@ -24,12 +27,5 @@ public readonly ref struct It<T>
 	public static implicit operator It<T>(in T value)
 	{
 		return Value(value);
-	}
-
-	public new int? GetHashCode()
-	{
-		return _hasValue
-			? _value!.GetHashCode()
-			: null;
 	}
 }

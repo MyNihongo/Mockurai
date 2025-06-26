@@ -30,39 +30,43 @@ public sealed class Setup : ISetup
 }
 
 [Obsolete("Will be generated")]
-public sealed class SetupWithParameter : ISetup
+public sealed class SetupWithParameter<TParameter> : ISetup
 {
-	private Dictionary<int, Exception?>? _values;
+	private List<(Func<TParameter, bool>, Exception)>? _setups;
 	private Exception? _defaultException;
-	private int? _currentParameter;
+	private Func<TParameter, bool>? _tempSetup;
 
-	public void Invoke(in int parameterHashCode)
+	public void Invoke(in TParameter parameter)
 	{
-		var exception = _values?.GetValueOrDefault(parameterHashCode, _defaultException);
+		var span = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_setups);
+		foreach (var setup in span)
+		{
+			if (!setup.Item1(parameter))
+				continue;
 
-		if (exception != null)
-			throw exception;
+			throw setup.Item2;
+		}
+
+		if (_defaultException is not null)
+			throw _defaultException;
 	}
 
-	public void SetupParameters(in int? parameterHashCode)
+	public void SetupParameter(in Func<TParameter, bool>? setup)
 	{
-		_currentParameter = parameterHashCode;
+		_tempSetup = setup;
 	}
 
 	public void Throws(in Exception exception)
 	{
-		if (!_currentParameter.HasValue)
+		if (_tempSetup is null)
 		{
 			_defaultException = exception;
 			return;
 		}
 
-		_values ??= new Dictionary<int, Exception?>();
-
-		ref var valueRef = ref System.Runtime.InteropServices.CollectionsMarshal.GetValueRefOrAddDefault(_values, _currentParameter.Value, out _);
-		valueRef = exception;
-
-		_currentParameter = null;
+		_setups ??= [];
+		_setups.Add((_tempSetup, exception));
+		_tempSetup = null;
 	}
 }
 
