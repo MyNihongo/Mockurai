@@ -90,10 +90,10 @@ public sealed class InvokePrimitiveShould : SetupWithOneParameterTestsBase
 		var setup2 = It<int>.Where(static x => x > 10);
 
 		var fixture = CreateFixture<int>();
-		fixture.SetupParameter(setup1.Predicate);
+		fixture.SetupParameter(setup1);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
-		fixture.SetupParameter(setup2.Predicate);
+		fixture.SetupParameter(setup2);
 		fixture.Throws(new InvalidCastException(errorMessage2));
 
 		const int input = 12345678;
@@ -117,13 +117,13 @@ public sealed class InvokePrimitiveShould : SetupWithOneParameterTestsBase
 		var setup3 = It<int>.Value(setupValue3);
 
 		var fixture = CreateFixture<int>();
-		fixture.SetupParameter(setup1.Predicate);
+		fixture.SetupParameter(setup1);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
-		fixture.SetupParameter(setup2.Predicate);
+		fixture.SetupParameter(setup2);
 		fixture.Throws(new InvalidCastException(errorMessage2));
 
-		fixture.SetupParameter(setup3.Predicate);
+		fixture.SetupParameter(setup3);
 		fixture.Throws(new ArrayTypeMismatchException(errorMessage3));
 
 		var actual = () => fixture.Invoke(setupValue3);

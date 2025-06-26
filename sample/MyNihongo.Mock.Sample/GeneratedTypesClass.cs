@@ -22,7 +22,7 @@ public sealed class ClassDependencyServiceMock : IMock<IClassDependencyService>
 	public SetupWithParameter<ClassParameter1> SetupInvokeWithOneParameter(in It<ClassParameter1> parameter = default)
 	{
 		_invokeWithParameter ??= new SetupWithParameter<ClassParameter1>();
-		_invokeWithParameter.SetupParameter(parameter.Predicate);
+		_invokeWithParameter.SetupParameter(parameter);
 		return _invokeWithParameter;
 	}
 

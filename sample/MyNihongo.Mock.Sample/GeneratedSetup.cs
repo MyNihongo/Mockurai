@@ -54,9 +54,9 @@ public sealed class SetupWithParameter<TParameter> : ISetup
 			throw _defaultException;
 	}
 
-	public void SetupParameter(in It<TParameter>.Setup? setup)
+	public void SetupParameter(in It<TParameter> parameter)
 	{
-		_tempSetup = setup;
+		_tempSetup = parameter.ValueSetup;
 	}
 
 	public void Throws(in Exception exception)

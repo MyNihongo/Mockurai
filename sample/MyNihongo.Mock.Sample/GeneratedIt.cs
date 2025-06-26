@@ -2,11 +2,11 @@ namespace MyNihongo.Mock.Sample;
 
 public readonly ref struct It<T>
 {
-	public readonly Setup? Predicate;
+	public readonly Setup? ValueSetup;
 
 	private It(Func<T, bool> predicate, int sort)
 	{
-		Predicate = new Setup(predicate, sort);
+		ValueSetup = new Setup(predicate, sort);
 	}
 
 	public static It<T> Value(T value)
