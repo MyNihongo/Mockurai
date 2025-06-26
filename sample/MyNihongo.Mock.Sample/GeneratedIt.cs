@@ -11,7 +11,7 @@ public readonly ref struct It<T>
 
 	public static It<T> Value(T value)
 	{
-		return new It<T>(x => EqualityComparer<T>.Default.Equals(x, value), sort: 0);
+		return new It<T>(x => EqualityComparer<T>.Default.Equals(x, value), sort: 2);
 	}
 
 	public static It<T> Where(in Func<T, bool> predicate)
@@ -32,7 +32,7 @@ public readonly ref struct It<T>
 	public readonly struct Setup : IComparable<Setup>
 	{
 		public readonly Func<T, bool> Predicate;
-		private readonly int _sort = int.MaxValue;
+		private readonly int _sort;
 
 		public Setup(in Func<T, bool> predicate, in int sort)
 		{
@@ -42,7 +42,7 @@ public readonly ref struct It<T>
 
 		public int CompareTo(Setup other)
 		{
-			return other._sort.CompareTo(_sort);
+			return _sort.CompareTo(other._sort);
 		}
 	}
 }

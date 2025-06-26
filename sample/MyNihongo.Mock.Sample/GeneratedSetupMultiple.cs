@@ -3,7 +3,7 @@ namespace MyNihongo.Mock.Sample;
 [Obsolete("Will be generated")]
 public sealed class SetupIntInt : ISetup
 {
-	private SortedSet<(It<int>.Setup?, It<int>.Setup?, Exception)>? _setups;
+	private SetupContainer<(It<int>.Setup?, It<int>.Setup?, Exception)>? _setups;
 	private (It<int>.Setup?, It<int>.Setup?)? _tempSetup;
 
 	public void Invoke(in int parameter1, in int parameter2)

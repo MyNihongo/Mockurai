@@ -32,7 +32,7 @@ public sealed class Setup : ISetup
 [Obsolete("Will be generated")]
 public sealed class SetupWithParameter<TParameter> : ISetup
 {
-	private SortedSet<(It<TParameter>.Setup, Exception)>? _setups;
+	private SetupContainer<(It<TParameter>.Setup, Exception)>? _setups;
 	private It<TParameter>.Setup? _tempSetup;
 	private Exception? _defaultException;
 

@@ -30,11 +30,11 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.Throws(new InvalidCastException(errorMessage3));
 
 		fixture.SetupParameters(setup41, setup42);
-		fixture.Throws(new ArgumentNullException(errorMessage4));
-		
+		fixture.Throws(new OverflowException(errorMessage4));
+
 		var actual = () => fixture.Invoke(setupValue1, setupValue2);
 
-		var exception = Assert.Throws<ArgumentNullException>(actual);
+		var exception = Assert.Throws<OverflowException>(actual);
 		Assert.Equal(errorMessage4, exception.Message);
 	}
 }
