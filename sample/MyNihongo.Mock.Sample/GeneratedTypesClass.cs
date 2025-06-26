@@ -6,13 +6,13 @@ public sealed class ClassDependencyServiceMock : IMock<IClassDependencyService>
 	private Proxy? _proxy;
 	private Setup? _invoke;
 	private SetupWithParameter? _invokeWithParameter;
-	private SetupWithMultipleParameters? _invokeWithMultipleParameters;
+	// private SetupWithMultipleParameters? _invokeWithMultipleParameters;
 	private Setup<ClassReturn>? _return;
 	private Setup<ClassReturn?>? _returnNullable;
-	private SetupWithParameter<ClassReturn>? _returnWithOneParameter;
-	private SetupWithParameter<ClassReturn?>? _returnWithOneParameterNullable;
-	private SetupWithMultipleParameters<ClassReturn>? _returnWithMultipleParameters;
-	private SetupWithMultipleParameters<ClassReturn?>? _returnWithMultipleParametersNullable;
+	// private SetupWithParameter<ClassReturn>? _returnWithOneParameter;
+	// private SetupWithParameter<ClassReturn?>? _returnWithOneParameterNullable;
+	// private SetupWithMultipleParameters<ClassReturn>? _returnWithMultipleParameters;
+	// private SetupWithMultipleParameters<ClassReturn?>? _returnWithMultipleParametersNullable;
 
 	public IClassDependencyService Object => _proxy ??= new Proxy(this);
 
@@ -28,19 +28,19 @@ public sealed class ClassDependencyServiceMock : IMock<IClassDependencyService>
 		return _invokeWithParameter;
 	}
 
-	public SetupWithMultipleParameters SetupInvokeWithMultipleParameters(in It<ClassParameter1> parameter1, in It<ClassParameter1> parameter2)
-	{
-		_invokeWithMultipleParameters ??= new SetupWithMultipleParameters();
-
-		var hashCodes = new[]
-		{
-			parameter1.GetHashCode(),
-			parameter2.GetHashCode(),
-		};
-
-		_invokeWithMultipleParameters.SetupParameters(hashCodes);
-		return _invokeWithMultipleParameters;
-	}
+	// public SetupWithMultipleParameters SetupInvokeWithMultipleParameters(in It<ClassParameter1> parameter1, in It<ClassParameter1> parameter2)
+	// {
+	// 	_invokeWithMultipleParameters ??= new SetupWithMultipleParameters();
+	//
+	// 	var hashCodes = new[]
+	// 	{
+	// 		parameter1.GetHashCode(),
+	// 		parameter2.GetHashCode(),
+	// 	};
+	//
+	// 	_invokeWithMultipleParameters.SetupParameters(hashCodes);
+	// 	return _invokeWithMultipleParameters;
+	// }
 
 	public Setup<ClassReturn> SetupReturn() =>
 		_return ??= new Setup<ClassReturn>();
@@ -48,51 +48,51 @@ public sealed class ClassDependencyServiceMock : IMock<IClassDependencyService>
 	public Setup<ClassReturn?> SetupReturnNullable() =>
 		_returnNullable ??= new Setup<ClassReturn?>();
 
-	public SetupWithParameter<ClassReturn> SetupReturnWithOneParameter(in It<ClassParameter1> parameter = default)
-	{
-		_returnWithOneParameter ??= new SetupWithParameter<ClassReturn>();
+	// public SetupWithParameter<ClassReturn> SetupReturnWithOneParameter(in It<ClassParameter1> parameter = default)
+	// {
+	// 	_returnWithOneParameter ??= new SetupWithParameter<ClassReturn>();
+	//
+	// 	var hashCode = parameter.GetHashCode();
+	// 	_returnWithOneParameter.SetupParameters(hashCode);
+	// 	return _returnWithOneParameter;
+	// }
 
-		var hashCode = parameter.GetHashCode();
-		_returnWithOneParameter.SetupParameters(hashCode);
-		return _returnWithOneParameter;
-	}
+	// public SetupWithParameter<ClassReturn?> SetupReturnWithOneParameterNullable(in It<ClassParameter1> parameter)
+	// {
+	// 	_returnWithOneParameterNullable ??= new SetupWithParameter<ClassReturn?>();
+	//
+	// 	var hashCode = parameter.GetHashCode();
+	// 	_returnWithOneParameterNullable.SetupParameters(hashCode);
+	// 	return _returnWithOneParameterNullable;
+	// }
 
-	public SetupWithParameter<ClassReturn?> SetupReturnWithOneParameterNullable(in It<ClassParameter1> parameter)
-	{
-		_returnWithOneParameterNullable ??= new SetupWithParameter<ClassReturn?>();
+	// public SetupWithMultipleParameters<ClassReturn> SetupReturnWithMultipleParameters(in It<ClassParameter1> parameter1, in It<ClassParameter1> parameter2)
+	// {
+	// 	_returnWithMultipleParameters ??= new SetupWithMultipleParameters<ClassReturn>();
+	//
+	// 	var hashCodes = new[]
+	// 	{
+	// 		parameter1.GetHashCode(),
+	// 		parameter2.GetHashCode(),
+	// 	};
+	//
+	// 	_returnWithMultipleParameters.SetupParameters(hashCodes);
+	// 	return _returnWithMultipleParameters;
+	// }
 
-		var hashCode = parameter.GetHashCode();
-		_returnWithOneParameterNullable.SetupParameters(hashCode);
-		return _returnWithOneParameterNullable;
-	}
-
-	public SetupWithMultipleParameters<ClassReturn> SetupReturnWithMultipleParameters(in It<ClassParameter1> parameter1, in It<ClassParameter1> parameter2)
-	{
-		_returnWithMultipleParameters ??= new SetupWithMultipleParameters<ClassReturn>();
-
-		var hashCodes = new[]
-		{
-			parameter1.GetHashCode(),
-			parameter2.GetHashCode(),
-		};
-
-		_returnWithMultipleParameters.SetupParameters(hashCodes);
-		return _returnWithMultipleParameters;
-	}
-
-	public SetupWithMultipleParameters<ClassReturn?> SetupReturnWithMultipleParametersNullable(in It<ClassParameter1> parameter1, in It<ClassParameter1> parameter2)
-	{
-		_returnWithMultipleParametersNullable ??= new SetupWithMultipleParameters<ClassReturn?>();
-
-		var hashCodes = new[]
-		{
-			parameter1.GetHashCode(),
-			parameter2.GetHashCode(),
-		};
-
-		_returnWithMultipleParametersNullable.SetupParameters(hashCodes);
-		return _returnWithMultipleParametersNullable;
-	}
+	// public SetupWithMultipleParameters<ClassReturn?> SetupReturnWithMultipleParametersNullable(in It<ClassParameter1> parameter1, in It<ClassParameter1> parameter2)
+	// {
+	// 	_returnWithMultipleParametersNullable ??= new SetupWithMultipleParameters<ClassReturn?>();
+	//
+	// 	var hashCodes = new[]
+	// 	{
+	// 		parameter1.GetHashCode(),
+	// 		parameter2.GetHashCode(),
+	// 	};
+	//
+	// 	_returnWithMultipleParametersNullable.SetupParameters(hashCodes);
+	// 	return _returnWithMultipleParametersNullable;
+	// }
 
 	private sealed class Proxy : IClassDependencyService
 	{
@@ -117,7 +117,7 @@ public sealed class ClassDependencyServiceMock : IMock<IClassDependencyService>
 		public void InvokeWithMultipleParameters(in ClassParameter1 parameter1, in ClassParameter1 parameter2)
 		{
 			Span<int> hashCodes = stackalloc int[] { parameter1.GetHashCode(), parameter2.GetHashCode() };
-			_mock._invokeWithMultipleParameters?.Invoke(hashCodes);
+			// _mock._invokeWithMultipleParameters?.Invoke(hashCodes);
 		}
 
 		public ClassReturn Return()
@@ -133,25 +133,29 @@ public sealed class ClassDependencyServiceMock : IMock<IClassDependencyService>
 		public ClassReturn ReturnWithParameter(in ClassParameter1 parameter)
 		{
 			var hashcode = parameter.GetHashCode();
-			return _mock._returnWithOneParameter?.TryInvoke(hashcode, out var returnValue) == true ? returnValue : throw new NullReferenceException("IClassDependencyService#ReturnWithParameter() method has not been set up");
+			throw new NotImplementedException();
+			// return _mock._returnWithOneParameter?.TryInvoke(hashcode, out var returnValue) == true ? returnValue : throw new NullReferenceException("IClassDependencyService#ReturnWithParameter() method has not been set up");
 		}
 
 		public ClassReturn? ReturnWithParameterNullable(in ClassParameter1 parameter)
 		{
 			var hashcode = parameter.GetHashCode();
-			return _mock._returnWithOneParameterNullable?.TryInvoke(hashcode, out var returnValue) == true ? returnValue : null;
+			throw new NotImplementedException();
+			// return _mock._returnWithOneParameterNullable?.TryInvoke(hashcode, out var returnValue) == true ? returnValue : null;
 		}
 
 		public ClassReturn ReturnWithMultipleParameters(ClassParameter1 parameter1, ClassParameter1 parameter2)
 		{
 			Span<int> hashCodes = stackalloc int[] { parameter1.GetHashCode(), parameter2.GetHashCode() };
-			return _mock._returnWithMultipleParameters?.TryInvoke(hashCodes, out var returnValue) == true ? returnValue : throw new NullReferenceException("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up");
+			throw new NotImplementedException();
+			// return _mock._returnWithMultipleParameters?.TryInvoke(hashCodes, out var returnValue) == true ? returnValue : throw new NullReferenceException("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up");
 		}
 
 		public ClassReturn? ReturnWithMultipleParametersNullable(ClassParameter1 parameter1, ClassParameter1 parameter2)
 		{
 			Span<int> hashCodes = stackalloc int[] { parameter1.GetHashCode(), parameter2.GetHashCode() };
-			return _mock._returnWithMultipleParametersNullable?.TryInvoke(hashCodes, out var returnValue) == true ? returnValue : null;
+			throw new NotImplementedException();
+			// return _mock._returnWithMultipleParametersNullable?.TryInvoke(hashCodes, out var returnValue) == true ? returnValue : null;
 		}
 	}
 }
