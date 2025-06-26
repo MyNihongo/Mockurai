@@ -4,9 +4,9 @@ public interface IClassTypeService
 {
 	void Invoke();
 
-	void InvokeWithParameter(in ClassParameter1 parameter);
+	void InvokeWithOneParameter(in ClassParameter1 parameter);
 
-	void InvokeWithMultipleParameters(in ClassParameter1 parameter1, in ClassParameter1 parameter2);
+	void InvokeWithSeveralParameters(in ClassParameter1 parameter1, in ClassParameter1 parameter2);
 
 	decimal Return();
 
@@ -16,7 +16,7 @@ public interface IClassTypeService
 
 	string? ReturnWithOneParameterNullable(in ClassParameter1 parameter);
 
-	double ReturnWithMultipleParameters(in ClassParameter1 parameter1, in ClassParameter1 parameter2);
+	double ReturnWithSeveralParameters(in ClassParameter1 parameter1, in ClassParameter1 parameter2);
 
-	double? ReturnWithMultipleParametersNullable(in ClassParameter1 parameter1, in ClassParameter1 parameter2);
+	double? ReturnWithSeveralParametersNullable(in ClassParameter1 parameter1, in ClassParameter1 parameter2);
 }
