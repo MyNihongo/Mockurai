@@ -1,6 +1,6 @@
-namespace MyNihongo.Mock.Sample._Generated.SetupWithParameterTests;
+namespace MyNihongo.Mock.Sample._Generated.SetupWithOneParameterTests;
 
-public sealed class InvokePrimitiveShould : SetupWithParameterTestsBase
+public sealed class InvokePrimitiveShould : SetupWithOneParameterTestsBase
 {
 	[Fact]
 	public void ThrowForAnySetup()
@@ -78,5 +78,57 @@ public sealed class InvokePrimitiveShould : SetupWithParameterTestsBase
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
 		fixture.Invoke(input);
+	}
+
+	[Fact]
+	public void PrioritiseWhereOverAny()
+	{
+		const string errorMessage1 = nameof(errorMessage1);
+		var setup1 = It<int>.Any();
+
+		const string errorMessage2 = nameof(errorMessage2);
+		var setup2 = It<int>.Where(static x => x > 10);
+
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(setup1.Predicate);
+		fixture.Throws(new InvalidOperationException(errorMessage1));
+
+		fixture.SetupParameter(setup2.Predicate);
+		fixture.Throws(new InvalidCastException(errorMessage2));
+
+		const int input = 12345678;
+		var actual = () => fixture.Invoke(input);
+
+		var exception = Assert.Throws<InvalidCastException>(actual);
+		Assert.Equal(errorMessage2, exception.Message);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverWhere()
+	{
+		const string errorMessage1 = nameof(errorMessage1);
+		var setup1 = It<int>.Any();
+
+		const string errorMessage2 = nameof(errorMessage2);
+		var setup2 = It<int>.Where(static x => x > 10);
+
+		const int setupValue3 = 12345678;
+		const string errorMessage3 = nameof(errorMessage3);
+		var setup3 = It<int>.Value(setupValue3);
+
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(setup1.Predicate);
+		fixture.Throws(new InvalidOperationException(errorMessage1));
+
+		fixture.SetupParameter(setup2.Predicate);
+		fixture.Throws(new InvalidCastException(errorMessage2));
+
+		fixture.SetupParameter(setup3.Predicate);
+		fixture.Throws(new ArrayTypeMismatchException(errorMessage3));
+
+		var actual = () => fixture.Invoke(setupValue3);
+
+		var exception = Assert.Throws<ArrayTypeMismatchException>(actual);
+		Assert.Equal(errorMessage3, exception.Message);
 	}
 }

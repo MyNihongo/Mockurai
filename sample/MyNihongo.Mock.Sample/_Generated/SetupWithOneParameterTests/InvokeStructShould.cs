@@ -1,6 +1,6 @@
-namespace MyNihongo.Mock.Sample._Generated.SetupWithParameterTests;
+namespace MyNihongo.Mock.Sample._Generated.SetupWithOneParameterTests;
 
-public sealed class InvokeStructShould : SetupWithParameterTestsBase
+public sealed class InvokeStructShould : SetupWithOneParameterTestsBase
 {
 	[Fact]
 	public void ThrowForAnySetup()

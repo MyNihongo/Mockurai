@@ -1,4 +1,4 @@
-namespace MyNihongo.Mock.Sample._Generated.SetupWithMultipleParametersTests;
+namespace MyNihongo.Mock.Sample._Generated.SetupWithSeveralParametersTests;
 
 public sealed class TryInvokeShould
 {
