@@ -131,4 +131,64 @@ public sealed class InvokePrimitiveShould : SetupWithOneParameterTestsBase
 		var exception = Assert.Throws<ArrayTypeMismatchException>(actual);
 		Assert.Equal(errorMessage3, exception.Message);
 	}
+
+	[Fact]
+	public void PrioritiseValueOverWhereThrowWhere()
+	{
+		const string errorMessage1 = nameof(errorMessage1);
+		var setup1 = It<int>.Any();
+
+		const string errorMessage2 = nameof(errorMessage2);
+		var setup2 = It<int>.Where(static x => x > 10);
+
+		const int setupValue3 = 12345678;
+		const string errorMessage3 = nameof(errorMessage3);
+		var setup3 = It<int>.Value(setupValue3);
+
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(setup1);
+		fixture.Throws(new InvalidOperationException(errorMessage1));
+
+		fixture.SetupParameter(setup2);
+		fixture.Throws(new InvalidCastException(errorMessage2));
+
+		fixture.SetupParameter(setup3);
+		fixture.Throws(new ArrayTypeMismatchException(errorMessage3));
+
+		const int input = 11;
+		var actual = () => fixture.Invoke(input);
+
+		var exception = Assert.Throws<InvalidCastException>(actual);
+		Assert.Equal(errorMessage2, exception.Message);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverWhereThrowAny()
+	{
+		const string errorMessage1 = nameof(errorMessage1);
+		var setup1 = It<int>.Any();
+
+		const string errorMessage2 = nameof(errorMessage2);
+		var setup2 = It<int>.Where(static x => x > 10);
+
+		const int setupValue3 = 12345678;
+		const string errorMessage3 = nameof(errorMessage3);
+		var setup3 = It<int>.Value(setupValue3);
+
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(setup1);
+		fixture.Throws(new InvalidOperationException(errorMessage1));
+
+		fixture.SetupParameter(setup2);
+		fixture.Throws(new InvalidCastException(errorMessage2));
+
+		fixture.SetupParameter(setup3);
+		fixture.Throws(new ArrayTypeMismatchException(errorMessage3));
+
+		const int input = 10;
+		var actual = () => fixture.Invoke(input);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage1, exception.Message);
+	}
 }

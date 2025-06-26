@@ -42,7 +42,7 @@ public readonly ref struct It<T>
 
 		public int CompareTo(Setup other)
 		{
-			return _sort.CompareTo(other._sort);
+			return other._sort.CompareTo(_sort);
 		}
 	}
 }
