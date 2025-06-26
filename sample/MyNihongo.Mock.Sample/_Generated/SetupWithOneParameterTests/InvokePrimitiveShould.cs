@@ -81,7 +81,7 @@ public sealed class InvokePrimitiveShould : SetupWithOneParameterTestsBase
 	}
 
 	[Fact]
-	public void PrioritiseWhereOverAny()
+	public void PrioritiseWhereOverAnyThrowWhere()
 	{
 		const string errorMessage1 = nameof(errorMessage1);
 		var setup1 = It<int>.Any();
@@ -104,7 +104,30 @@ public sealed class InvokePrimitiveShould : SetupWithOneParameterTestsBase
 	}
 
 	[Fact]
-	public void PrioritiseValueOverWhere()
+	public void PrioritiseWhereOverAnyThrowAny()
+	{
+		const string errorMessage1 = nameof(errorMessage1);
+		var setup1 = It<int>.Any();
+
+		const string errorMessage2 = nameof(errorMessage2);
+		var setup2 = It<int>.Where(static x => x > 10);
+
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(setup1);
+		fixture.Throws(new InvalidOperationException(errorMessage1));
+
+		fixture.SetupParameter(setup2);
+		fixture.Throws(new InvalidCastException(errorMessage2));
+
+		const int input = 10;
+		var actual = () => fixture.Invoke(input);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage1, exception.Message);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverWhereThrowValue()
 	{
 		const string errorMessage1 = nameof(errorMessage1);
 		var setup1 = It<int>.Any();
