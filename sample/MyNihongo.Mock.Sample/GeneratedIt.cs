@@ -11,7 +11,7 @@ public readonly ref struct It<T>
 
 	public static It<T> Value(T value)
 	{
-		return new It<T>(x => EqualityComparer<T>.Default.Equals(x, value), sort: 2);
+		return new It<T>(x => EqualityComparer<T>.Default.Equals(x, value), sort: 10);
 	}
 
 	public static It<T> Where(in Func<T, bool> predicate)
@@ -32,17 +32,22 @@ public readonly ref struct It<T>
 	public readonly struct Setup : IComparable<Setup>
 	{
 		public readonly Func<T, bool> Predicate;
-		private readonly int _sort;
+		public readonly int Sort;
 
 		public Setup(in Func<T, bool> predicate, in int sort)
 		{
 			Predicate = predicate;
-			_sort = sort;
+			Sort = sort;
 		}
 
 		public int CompareTo(Setup other)
 		{
-			return _sort.CompareTo(other._sort);
+			return Sort.CompareTo(other.Sort);
+		}
+
+		public override string ToString()
+		{
+			return Sort.ToString();
 		}
 	}
 }
