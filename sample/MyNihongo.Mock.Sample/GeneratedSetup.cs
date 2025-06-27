@@ -79,12 +79,13 @@ public sealed class Setup<T> : ISetup<T>
 	private Exception? _exception;
 	private T? _value;
 
-	public T? Invoke()
+	public bool Execute(out T? returnValue)
 	{
 		if (_exception is not null)
 			throw _exception;
 
-		return _value;
+		returnValue = _value;
+		return true;
 	}
 
 	public void Returns(in T? value)

@@ -120,12 +120,12 @@ public sealed class ClassDependencyServiceMock : IMock<IClassDependencyService>
 
 		public ClassReturn Return()
 		{
-			return _mock._return?.Invoke() ?? throw new NullReferenceException("IClassDependencyService#Return() method has not been set up");
+			return _mock._return?.Execute(out var returnValue) == true ? returnValue : throw new NullReferenceException("IClassDependencyService#Return() method has not been set up");
 		}
 
 		public ClassReturn? ReturnNullable()
 		{
-			return _mock._returnNullable?.Invoke();
+			return _mock._returnNullable?.Execute(out var returnValue) == true ? returnValue : null;
 		}
 
 		public ClassReturn ReturnWithOneParameter(in ClassParameter1 parameter)
