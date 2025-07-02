@@ -333,4 +333,139 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOneParameterTestsBa
 		Assert.True(hasValue);
 		Assert.Equal(returnValue3, actual);
 	}
+
+	[Fact]
+	public void PrioritiseWhereOverAnyThrows1()
+	{
+		const string errorMessage1 = nameof(errorMessage1);
+		var setup1 = It<int>.Any();
+
+		const string errorMessage2 = nameof(errorMessage2);
+		var setup2 = It<int>.Where(static x => x > 10);
+
+		var fixture = CreateFixture<int, string>(setup1);
+		fixture.SetupParameter(setup1);
+		fixture.Throws(new InvalidOperationException(errorMessage1));
+
+		fixture.SetupParameter(setup2);
+		fixture.Throws(new InvalidCastException(errorMessage2));
+
+		const int inputValue = 10;
+		Action actual = () => fixture.Execute(inputValue, out _);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage1, exception.Message);
+	}
+
+	[Fact]
+	public void PrioritiseWhereOverAnyThrows2()
+	{
+		const string errorMessage1 = nameof(errorMessage1);
+		var setup1 = It<int>.Any();
+
+		const string errorMessage2 = nameof(errorMessage2);
+		var setup2 = It<int>.Where(static x => x > 10);
+
+		var fixture = CreateFixture<int, string>(setup1);
+		fixture.SetupParameter(setup1);
+		fixture.Throws(new InvalidOperationException(errorMessage1));
+
+		fixture.SetupParameter(setup2);
+		fixture.Throws(new InvalidCastException(errorMessage2));
+
+		const int inputValue = 12345678;
+		Action actual = () => fixture.Execute(inputValue, out _);
+
+		var exception = Assert.Throws<InvalidCastException>(actual);
+		Assert.Equal(errorMessage2, exception.Message);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverWhereThrows1()
+	{
+		const string errorMessage1 = nameof(errorMessage1);
+		var setup1 = It<int>.Any();
+
+		const string errorMessage2 = nameof(errorMessage2);
+		var setup2 = It<int>.Where(static x => x > 10);
+
+		const int setupValue3 = 12345678;
+		const string errorMessage3 = nameof(errorMessage3);
+		var setup3 = It<int>.Value(setupValue3);
+
+		var fixture = CreateFixture<int, string>();
+		fixture.SetupParameter(setup1);
+		fixture.Throws(new InvalidOperationException(errorMessage1));
+
+		fixture.SetupParameter(setup2);
+		fixture.Throws(new InvalidCastException(errorMessage2));
+
+		fixture.SetupParameter(setup3);
+		fixture.Throws(new ArrayTypeMismatchException(errorMessage3));
+
+		const int inputValue = 10;
+		Action actual = () => fixture.Execute(inputValue, out _);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage1, exception.Message);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverWhereThrows2()
+	{
+		const string errorMessage1 = nameof(errorMessage1);
+		var setup1 = It<int>.Any();
+
+		const string errorMessage2 = nameof(errorMessage2);
+		var setup2 = It<int>.Where(static x => x > 10);
+
+		const int setupValue3 = 12345678;
+		const string errorMessage3 = nameof(errorMessage3);
+		var setup3 = It<int>.Value(setupValue3);
+
+		var fixture = CreateFixture<int, string>();
+		fixture.SetupParameter(setup1);
+		fixture.Throws(new InvalidOperationException(errorMessage1));
+
+		fixture.SetupParameter(setup2);
+		fixture.Throws(new InvalidCastException(errorMessage2));
+
+		fixture.SetupParameter(setup3);
+		fixture.Throws(new ArrayTypeMismatchException(errorMessage3));
+
+		const int inputValue = 11;
+		Action actual = () => fixture.Execute(inputValue, out _);
+
+		var exception = Assert.Throws<InvalidCastException>(actual);
+		Assert.Equal(errorMessage2, exception.Message);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverWhereThrows3()
+	{
+		const string errorMessage1 = nameof(errorMessage1);
+		var setup1 = It<int>.Any();
+
+		const string errorMessage2 = nameof(errorMessage2);
+		var setup2 = It<int>.Where(static x => x > 10);
+
+		const int setupValue3 = 12345678;
+		const string errorMessage3 = nameof(errorMessage3);
+		var setup3 = It<int>.Value(setupValue3);
+
+		var fixture = CreateFixture<int, string>();
+		fixture.SetupParameter(setup1);
+		fixture.Throws(new InvalidOperationException(errorMessage1));
+
+		fixture.SetupParameter(setup2);
+		fixture.Throws(new InvalidCastException(errorMessage2));
+
+		fixture.SetupParameter(setup3);
+		fixture.Throws(new ArrayTypeMismatchException(errorMessage3));
+
+		Action actual = () => fixture.Execute(setupValue3, out _);
+
+		var exception = Assert.Throws<ArrayTypeMismatchException>(actual);
+		Assert.Equal(errorMessage3, exception.Message);
+	}
 }
