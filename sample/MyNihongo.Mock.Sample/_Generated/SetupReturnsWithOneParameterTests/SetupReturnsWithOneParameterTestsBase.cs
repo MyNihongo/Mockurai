@@ -2,5 +2,15 @@ namespace MyNihongo.Mock.Sample._Generated.SetupReturnsWithOneParameterTests;
 
 public abstract class SetupReturnsWithOneParameterTestsBase
 {
-	
+	protected static SetupWithParameter<TParameter, TReturns> CreateFixture<TParameter, TReturns>(It<TParameter> parameter)
+	{
+		var fixture = CreateFixture<TParameter, TReturns>();
+		fixture.SetupParameter(parameter);
+		return fixture;
+	}
+
+	private static SetupWithParameter<TParameter, TReturns> CreateFixture<TParameter, TReturns>()
+	{
+		return new SetupWithParameter<TParameter, TReturns>();
+	}
 }
