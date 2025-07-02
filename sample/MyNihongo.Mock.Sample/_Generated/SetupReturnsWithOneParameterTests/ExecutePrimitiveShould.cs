@@ -198,4 +198,139 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOneParameterTestsBa
 
 		fixture.Execute(inputValue, out _);
 	}
+
+	[Fact]
+	public void PrioritiseWhereOverAnyReturns1()
+	{
+		const string returnValue1 = nameof(returnValue1);
+		var setup1 = It<int>.Any();
+
+		const string returnValue2 = nameof(returnValue2);
+		var setup2 = It<int>.Where(static x => x > 10);
+
+		var fixture = CreateFixture<int, string>(setup1);
+		fixture.SetupParameter(setup1);
+		fixture.Returns(returnValue1);
+
+		fixture.SetupParameter(setup2);
+		fixture.Returns(returnValue2);
+
+		const int inputValue = 10;
+		var hasValue = fixture.Execute(inputValue, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue1, actual);
+	}
+
+	[Fact]
+	public void PrioritiseWhereOverAnyReturns2()
+	{
+		const string returnValue1 = nameof(returnValue1);
+		var setup1 = It<int>.Any();
+
+		const string returnValue2 = nameof(returnValue2);
+		var setup2 = It<int>.Where(static x => x > 10);
+
+		var fixture = CreateFixture<int, string>(setup1);
+		fixture.SetupParameter(setup1);
+		fixture.Returns(returnValue1);
+
+		fixture.SetupParameter(setup2);
+		fixture.Returns(returnValue2);
+
+		const int inputValue = 12345678;
+		var hasValue = fixture.Execute(inputValue, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue2, actual);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverWhereReturns1()
+	{
+		const string returnValue1 = nameof(returnValue1);
+		var setup1 = It<int>.Any();
+
+		const string returnValue2 = nameof(returnValue2);
+		var setup2 = It<int>.Where(static x => x > 10);
+
+		const int setupValue3 = 12345678;
+		const string returnValue3 = nameof(returnValue3);
+		var setup3 = It<int>.Value(setupValue3);
+
+		var fixture = CreateFixture<int, string>();
+		fixture.SetupParameter(setup1);
+		fixture.Returns(returnValue1);
+
+		fixture.SetupParameter(setup2);
+		fixture.Returns(returnValue2);
+
+		fixture.SetupParameter(setup3);
+		fixture.Returns(returnValue3);
+
+		const int input = 10;
+		var hasValue = fixture.Execute(input, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue1, actual);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverWhereReturns2()
+	{
+		const string returnValue1 = nameof(returnValue1);
+		var setup1 = It<int>.Any();
+
+		const string returnValue2 = nameof(returnValue2);
+		var setup2 = It<int>.Where(static x => x > 10);
+
+		const int setupValue3 = 12345678;
+		const string returnValue3 = nameof(returnValue3);
+		var setup3 = It<int>.Value(setupValue3);
+
+		var fixture = CreateFixture<int, string>();
+		fixture.SetupParameter(setup1);
+		fixture.Returns(returnValue1);
+
+		fixture.SetupParameter(setup2);
+		fixture.Returns(returnValue2);
+
+		fixture.SetupParameter(setup3);
+		fixture.Returns(returnValue3);
+
+		const int input = 11;
+		var hasValue = fixture.Execute(input, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue2, actual);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverWhereReturns3()
+	{
+		const string returnValue1 = nameof(returnValue1);
+		var setup1 = It<int>.Any();
+
+		const string returnValue2 = nameof(returnValue2);
+		var setup2 = It<int>.Where(static x => x > 10);
+
+		const int setupValue3 = 12345678;
+		const string returnValue3 = nameof(returnValue3);
+		var setup3 = It<int>.Value(setupValue3);
+
+		var fixture = CreateFixture<int, string>();
+		fixture.SetupParameter(setup1);
+		fixture.Returns(returnValue1);
+
+		fixture.SetupParameter(setup2);
+		fixture.Returns(returnValue2);
+
+		fixture.SetupParameter(setup3);
+		fixture.Returns(returnValue3);
+
+		var hasValue = fixture.Execute(setupValue3, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue3, actual);
+	}
 }

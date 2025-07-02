@@ -9,7 +9,7 @@ public abstract class SetupReturnsWithOneParameterTestsBase
 		return fixture;
 	}
 
-	private static SetupWithParameter<TParameter, TReturns> CreateFixture<TParameter, TReturns>()
+	protected static SetupWithParameter<TParameter, TReturns> CreateFixture<TParameter, TReturns>()
 	{
 		return new SetupWithParameter<TParameter, TReturns>();
 	}
