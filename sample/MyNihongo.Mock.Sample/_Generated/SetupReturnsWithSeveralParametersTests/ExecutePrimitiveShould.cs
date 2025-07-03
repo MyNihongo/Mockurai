@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock.Sample._Generated.SetupReturnsWithSeveralParametersTests;
 
-public sealed class ExecutePrimitiveShouldShould : SetupReturnsWithSeveralParametersTestsBase
+public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTestsBase
 {
 	[Fact]
 	public void ReturnForAnySetup()
@@ -595,5 +595,152 @@ public sealed class ExecutePrimitiveShouldShould : SetupReturnsWithSeveralParame
 
 		const int inputValue1 = 99, inputValue2 = 11;
 		fixture.Execute(inputValue1, inputValue2, out _);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverAnyReturn4()
+	{
+		const int setupValue1 = 1, setupValue2 = 2;
+
+		const string returnValue1 = nameof(returnValue1);
+		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
+
+		const string returnValue2 = nameof(returnValue2);
+		It<int> setup21 = setupValue1, setup22 = default;
+
+		const string returnValue3 = nameof(returnValue3);
+		It<int> setup31 = default, setup32 = setupValue2;
+
+		const string returnValue4 = nameof(returnValue4);
+		It<int> setup41 = setupValue1, setup42 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup11, setup12);
+		fixture.Returns(returnValue1);
+
+		fixture.SetupParameters(setup21, setup22);
+		fixture.Returns(returnValue2);
+
+		fixture.SetupParameters(setup31, setup32);
+		fixture.Returns(returnValue3);
+
+		fixture.SetupParameters(setup41, setup42);
+		fixture.Returns(returnValue4);
+
+		var hasValue = fixture.Execute(setupValue1, setupValue2, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue4, actual);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverAnyReturn3()
+	{
+		const int setupValue1 = 1, setupValue2 = 2;
+
+		const string returnValue1 = nameof(returnValue1);
+		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
+
+		const string returnValue2 = nameof(returnValue2);
+		It<int> setup21 = setupValue1, setup22 = default;
+
+		const string returnValue3 = nameof(returnValue3);
+		It<int> setup31 = default, setup32 = setupValue2;
+
+		const string returnValue4 = nameof(returnValue4);
+		It<int> setup41 = setupValue1, setup42 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup11, setup12);
+		fixture.Returns(returnValue1);
+
+		fixture.SetupParameters(setup21, setup22);
+		fixture.Returns(returnValue2);
+
+		fixture.SetupParameters(setup31, setup32);
+		fixture.Returns(returnValue3);
+
+		fixture.SetupParameters(setup41, setup42);
+		fixture.Returns(returnValue4);
+
+		const int inputValue1 = 324343242;
+		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue3, actual);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverAnyReturn2()
+	{
+		const int setupValue1 = 1, setupValue2 = 2;
+
+		const string returnValue1 = nameof(returnValue1);
+		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
+
+		const string returnValue2 = nameof(returnValue2);
+		It<int> setup21 = setupValue1, setup22 = default;
+
+		const string returnValue3 = nameof(returnValue3);
+		It<int> setup31 = default, setup32 = setupValue2;
+
+		const string returnValue4 = nameof(returnValue4);
+		It<int> setup41 = setupValue1, setup42 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup11, setup12);
+		fixture.Returns(returnValue1);
+
+		fixture.SetupParameters(setup21, setup22);
+		fixture.Returns(returnValue2);
+
+		fixture.SetupParameters(setup31, setup32);
+		fixture.Returns(returnValue3);
+
+		fixture.SetupParameters(setup41, setup42);
+		fixture.Returns(returnValue4);
+
+		const int inputValue2 = 324343242;
+		var hasValue = fixture.Execute(setupValue1, inputValue2, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue2, actual);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverAnyReturn1()
+	{
+		const int setupValue1 = 1, setupValue2 = 2;
+
+		const string returnValue1 = nameof(returnValue1);
+		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
+
+		const string returnValue2 = nameof(returnValue2);
+		It<int> setup21 = setupValue1, setup22 = default;
+
+		const string returnValue3 = nameof(returnValue3);
+		It<int> setup31 = default, setup32 = setupValue2;
+
+		const string returnValue4 = nameof(returnValue4);
+		It<int> setup41 = setupValue1, setup42 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup11, setup12);
+		fixture.Returns(returnValue1);
+
+		fixture.SetupParameters(setup21, setup22);
+		fixture.Returns(returnValue2);
+
+		fixture.SetupParameters(setup31, setup32);
+		fixture.Returns(returnValue3);
+
+		fixture.SetupParameters(setup41, setup42);
+		fixture.Returns(returnValue4);
+
+		const int inputValue1 = 324343242, inputValue2 = 837483252;
+		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue1, actual);
 	}
 }
