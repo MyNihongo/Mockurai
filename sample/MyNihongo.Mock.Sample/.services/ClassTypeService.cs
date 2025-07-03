@@ -14,14 +14,14 @@ public sealed class ClassTypeService : IClassTypeService
 		_classDependencyService.Invoke();
 	}
 
-	public void InvokeWithParameter(in ClassParameter1 parameter)
+	public void InvokeWithOneParameter(in ClassParameter1 parameter)
 	{
-		_classDependencyService.InvokeWithParameter(parameter);
+		_classDependencyService.InvokeWithOneParameter(parameter);
 	}
 
-	public void InvokeWithMultipleParameters(in ClassParameter1 parameter1, in ClassParameter1 parameter2)
+	public void InvokeWithSeveralParameters(in ClassParameter1 parameter1, in ClassParameter1 parameter2)
 	{
-		_classDependencyService.InvokeWithMultipleParameters(parameter1, parameter2);
+		_classDependencyService.InvokeWithSeveralParameters(parameter1, parameter2);
 	}
 
 	public decimal Return()
@@ -38,25 +38,25 @@ public sealed class ClassTypeService : IClassTypeService
 
 	public string ReturnWithOneParameter(in ClassParameter1 parameter)
 	{
-		var result = _classDependencyService.ReturnWithParameter(parameter);
+		var result = _classDependencyService.ReturnWithOneParameter(parameter);
 		return $"name:{result.Name},age:{result.Age}";
 	}
 
 	public string? ReturnWithOneParameterNullable(in ClassParameter1 parameter)
 	{
-		var result = _classDependencyService.ReturnWithParameterNullable(parameter);
+		var result = _classDependencyService.ReturnWithOneParameterNullable(parameter);
 		return result is not null ? $"name:{result.Name},age:{result.Age}" : null;
 	}
 
-	public double ReturnWithMultipleParameters(in ClassParameter1 parameter1, in ClassParameter1 parameter2)
+	public double ReturnWithSeveralParameters(in ClassParameter1 parameter1, in ClassParameter1 parameter2)
 	{
-		var result = _classDependencyService.ReturnWithMultipleParameters(parameter1, parameter2);
+		var result = _classDependencyService.ReturnWithSeveralParameters(parameter1, parameter2);
 		return result.Age + result.DateOfBirth.Day - result.Name.Length;
 	}
 
-	public double? ReturnWithMultipleParametersNullable(in ClassParameter1 parameter1, in ClassParameter1 parameter2)
+	public double? ReturnWithSeveralParametersNullable(in ClassParameter1 parameter1, in ClassParameter1 parameter2)
 	{
-		var result = _classDependencyService.ReturnWithMultipleParametersNullable(parameter1, parameter2);
+		var result = _classDependencyService.ReturnWithSeveralParametersNullable(parameter1, parameter2);
 		return result is not null ? result.Age + result.DateOfBirth.Day - result.Name.Length : null;
 	}
 }

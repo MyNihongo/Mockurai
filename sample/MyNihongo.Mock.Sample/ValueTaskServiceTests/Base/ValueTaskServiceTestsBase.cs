@@ -2,7 +2,7 @@ namespace MyNihongo.Mock.Sample.ValueTaskServiceTests;
 
 public abstract class ValueTaskServiceTestsBase
 {
-	protected readonly IMock<IValueTaskDependencyService> ValueTaskDependencyServiceMock = new ValueTaskDependencyServiceMock();
+	protected readonly IMock<IValueTaskDependencyService> ValueTaskDependencyServiceMock/* = new ValueTaskDependencyServiceMock()*/;
 
 	protected IValueTaskService CreateFixture()
 	{

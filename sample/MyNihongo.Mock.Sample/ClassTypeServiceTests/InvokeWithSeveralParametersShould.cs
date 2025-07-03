@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock.Sample.ClassTypeServiceTests;
 
-public sealed class InvokeWithMultipleParametersShould : ClassTypeServiceTestsBase
+public sealed class InvokeWithSeveralParametersShould : ClassTypeServiceTestsBase
 {
 	[Fact]
 	public void ExecuteWithoutSetup()
@@ -18,7 +18,7 @@ public sealed class InvokeWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		CreateFixture()
-			.InvokeWithMultipleParameters(input1, input2);
+			.InvokeWithSeveralParameters(input1, input2);
 	}
 
 	[Fact]
@@ -39,11 +39,11 @@ public sealed class InvokeWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupInvokeWithMultipleParameters(input1, input2)
+			.SetupInvokeWithSeveralParameters(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = () => CreateFixture()
-			.InvokeWithMultipleParameters(input1, input2);
+			.InvokeWithSeveralParameters(input1, input2);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
@@ -67,11 +67,11 @@ public sealed class InvokeWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupInvokeWithMultipleParameters(input1, input2)
+			.SetupInvokeWithSeveralParameters(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		CreateFixture()
-			.InvokeWithMultipleParameters(input1, input1);
+			.InvokeWithSeveralParameters(input1, input1);
 	}
 
 	[Fact]
@@ -92,11 +92,11 @@ public sealed class InvokeWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupInvokeWithMultipleParameters(input1, input2)
+			.SetupInvokeWithSeveralParameters(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		CreateFixture()
-			.InvokeWithMultipleParameters(input2, input1);
+			.InvokeWithSeveralParameters(input2, input1);
 	}
 
 	[Fact]
@@ -117,11 +117,11 @@ public sealed class InvokeWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupInvokeWithMultipleParameters(input1, input2)
+			.SetupInvokeWithSeveralParameters(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		CreateFixture()
-			.InvokeWithMultipleParameters(input2, input2);
+			.InvokeWithSeveralParameters(input2, input2);
 	}
 
 	[Fact]
@@ -142,11 +142,11 @@ public sealed class InvokeWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupInvokeWithMultipleParameters(input1, input2)
+			.SetupInvokeWithSeveralParameters(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		CreateFixture()
-			.InvokeWithMultipleParameters(input2, input1);
+			.InvokeWithSeveralParameters(input2, input1);
 	}
 
 	[Fact]
@@ -167,11 +167,11 @@ public sealed class InvokeWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupInvokeWithMultipleParameters(input1, input2)
+			.SetupInvokeWithSeveralParameters(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		CreateFixture()
-			.InvokeWithMultipleParameters(input1, input1);
+			.InvokeWithSeveralParameters(input1, input1);
 	}
 
 	[Fact]
@@ -192,10 +192,10 @@ public sealed class InvokeWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupInvokeWithMultipleParameters(input1, input2)
+			.SetupInvokeWithSeveralParameters(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		CreateFixture()
-			.InvokeWithMultipleParameters(input2, input1);
+			.InvokeWithSeveralParameters(input2, input1);
 	}
 }

@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock.Sample.ClassTypeServiceTests;
 
-public sealed class InvokeWithParameterShould : ClassTypeServiceTestsBase
+public sealed class InvokeWithOneParameterShould : ClassTypeServiceTestsBase
 {
 	[Fact]
 	public void ExecuteWithoutSetup()
@@ -12,7 +12,7 @@ public sealed class InvokeWithParameterShould : ClassTypeServiceTestsBase
 		};
 
 		CreateFixture()
-			.InvokeWithParameter(input);
+			.InvokeWithOneParameter(input);
 	}
 
 	[Fact]
@@ -27,11 +27,11 @@ public sealed class InvokeWithParameterShould : ClassTypeServiceTestsBase
 		};
 
 		ClassDependencyServiceMock
-			.SetupInvokeWithParameter(setupParameter)
+			.SetupInvokeWithOneParameter(setupParameter)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = () => CreateFixture()
-			.InvokeWithParameter(setupParameter);
+			.InvokeWithOneParameter(setupParameter);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
@@ -55,11 +55,11 @@ public sealed class InvokeWithParameterShould : ClassTypeServiceTestsBase
 		};
 
 		ClassDependencyServiceMock
-			.SetupInvokeWithParameter(setupParameter)
+			.SetupInvokeWithOneParameter(setupParameter)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		CreateFixture()
-			.InvokeWithParameter(input);
+			.InvokeWithOneParameter(input);
 	}
 
 	[Fact]
@@ -80,11 +80,11 @@ public sealed class InvokeWithParameterShould : ClassTypeServiceTestsBase
 		};
 
 		ClassDependencyServiceMock
-			.SetupInvokeWithParameter(setupParameter)
+			.SetupInvokeWithOneParameter(setupParameter)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		CreateFixture()
-			.InvokeWithParameter(input);
+			.InvokeWithOneParameter(input);
 	}
 
 	[Fact]
@@ -99,11 +99,11 @@ public sealed class InvokeWithParameterShould : ClassTypeServiceTestsBase
 		};
 
 		ClassDependencyServiceMock
-			.SetupInvokeWithParameter()
+			.SetupInvokeWithOneParameter()
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = () => CreateFixture()
-			.InvokeWithParameter(input);
+			.InvokeWithOneParameter(input);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
@@ -121,11 +121,11 @@ public sealed class InvokeWithParameterShould : ClassTypeServiceTestsBase
 		};
 
 		ClassDependencyServiceMock
-			.SetupInvokeWithParameter(It<ClassParameter1>.Any())
+			.SetupInvokeWithOneParameter(It<ClassParameter1>.Any())
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = () => CreateFixture()
-			.InvokeWithParameter(input);
+			.InvokeWithOneParameter(input);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);

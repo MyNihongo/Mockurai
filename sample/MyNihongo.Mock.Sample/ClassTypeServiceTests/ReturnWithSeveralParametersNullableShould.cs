@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock.Sample.ClassTypeServiceTests;
 
-public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServiceTestsBase
+public sealed class ReturnWithSeveralParametersNullableShould : ClassTypeServiceTestsBase
 {
 	[Fact]
 	public void ReturnNullWithoutSetup()
@@ -18,7 +18,7 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 		};
 
 		var actual = CreateFixture()
-			.ReturnWithMultipleParametersNullable(input1, input2);
+			.ReturnWithSeveralParametersNullable(input1, input2);
 
 		Assert.Null(actual);
 	}
@@ -39,7 +39,7 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.SetupReturnWithSeveralParametersNullable(input1, input2)
 			.Returns(new ClassReturn
 			{
 				Name = "Okayama Issei",
@@ -48,7 +48,7 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 			});
 
 		var actual = CreateFixture()
-			.ReturnWithMultipleParametersNullable(input1, input2);
+			.ReturnWithSeveralParametersNullable(input1, input2);
 
 		const double expected = 15d;
 		Assert.Equal(expected, actual);
@@ -70,7 +70,7 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.SetupReturnWithSeveralParametersNullable(input1, input2)
 			.Returns(new ClassReturn
 			{
 				Name = "Okayama Issei",
@@ -79,7 +79,7 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 			});
 
 		var actual = CreateFixture()
-			.ReturnWithMultipleParametersNullable(input1, input1);
+			.ReturnWithSeveralParametersNullable(input1, input1);
 
 		Assert.Null(actual);
 	}
@@ -100,7 +100,7 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.SetupReturnWithSeveralParametersNullable(input1, input2)
 			.Returns(new ClassReturn
 			{
 				Name = "Okayama Issei",
@@ -109,7 +109,7 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 			});
 
 		var actual = CreateFixture()
-			.ReturnWithMultipleParametersNullable(input2, input1);
+			.ReturnWithSeveralParametersNullable(input2, input1);
 
 		Assert.Null(actual);
 	}
@@ -130,7 +130,7 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.SetupReturnWithSeveralParametersNullable(input1, input2)
 			.Returns(new ClassReturn
 			{
 				Name = "Okayama Issei",
@@ -139,7 +139,7 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 			});
 
 		var actual = CreateFixture()
-			.ReturnWithMultipleParametersNullable(input2, input2);
+			.ReturnWithSeveralParametersNullable(input2, input2);
 
 		Assert.Null(actual);
 	}
@@ -160,7 +160,7 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.SetupReturnWithSeveralParametersNullable(input1, input2)
 			.Returns(new ClassReturn
 			{
 				Name = "Okayama Issei",
@@ -169,7 +169,7 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 			});
 
 		var actual = CreateFixture()
-			.ReturnWithMultipleParametersNullable(input2, input1);
+			.ReturnWithSeveralParametersNullable(input2, input1);
 
 		Assert.Null(actual);
 	}
@@ -190,7 +190,7 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.SetupReturnWithSeveralParametersNullable(input1, input2)
 			.Returns(new ClassReturn
 			{
 				Name = "Okayama Issei",
@@ -199,7 +199,7 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 			});
 
 		var actual = CreateFixture()
-			.ReturnWithMultipleParametersNullable(input1, input1);
+			.ReturnWithSeveralParametersNullable(input1, input1);
 
 		Assert.Null(actual);
 	}
@@ -220,7 +220,7 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.SetupReturnWithSeveralParametersNullable(input1, input2)
 			.Returns(new ClassReturn
 			{
 				Name = "Okayama Issei",
@@ -229,7 +229,7 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 			});
 
 		var actual = CreateFixture()
-			.ReturnWithMultipleParametersNullable(input2, input1);
+			.ReturnWithSeveralParametersNullable(input2, input1);
 
 		Assert.Null(actual);
 	}
@@ -252,11 +252,11 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.SetupReturnWithSeveralParametersNullable(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		Action actual = () => CreateFixture()
-			.ReturnWithMultipleParametersNullable(input1, input2);
+			.ReturnWithSeveralParametersNullable(input1, input2);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
@@ -280,11 +280,11 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.SetupReturnWithSeveralParametersNullable(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = CreateFixture()
-			.ReturnWithMultipleParametersNullable(input1, input1);
+			.ReturnWithSeveralParametersNullable(input1, input1);
 
 		Assert.Null(actual);
 	}
@@ -307,11 +307,11 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.SetupReturnWithSeveralParametersNullable(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = CreateFixture()
-			.ReturnWithMultipleParametersNullable(input2, input1);
+			.ReturnWithSeveralParametersNullable(input2, input1);
 
 		Assert.Null(actual);
 	}
@@ -334,11 +334,11 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.SetupReturnWithSeveralParametersNullable(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = CreateFixture()
-			.ReturnWithMultipleParametersNullable(input2, input2);
+			.ReturnWithSeveralParametersNullable(input2, input2);
 
 		Assert.Null(actual);
 	}
@@ -361,11 +361,11 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.SetupReturnWithSeveralParametersNullable(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = CreateFixture()
-			.ReturnWithMultipleParametersNullable(input2, input1);
+			.ReturnWithSeveralParametersNullable(input2, input1);
 
 		Assert.Null(actual);
 	}
@@ -388,11 +388,11 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.SetupReturnWithSeveralParametersNullable(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = CreateFixture()
-			.ReturnWithMultipleParametersNullable(input1, input1);
+			.ReturnWithSeveralParametersNullable(input1, input1);
 
 		Assert.Null(actual);
 	}
@@ -415,11 +415,11 @@ public sealed class ReturnWithMultipleParametersNullableShould : ClassTypeServic
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParametersNullable(input1, input2)
+			.SetupReturnWithSeveralParametersNullable(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = CreateFixture()
-			.ReturnWithMultipleParametersNullable(input2, input1);
+			.ReturnWithSeveralParametersNullable(input2, input1);
 
 		Assert.Null(actual);
 	}

@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock.Sample.ClassTypeServiceTests;
 
-public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBase
+public sealed class ReturnWithSeveralParametersShould : ClassTypeServiceTestsBase
 {
 	[Fact]
 	public void ThrowWithoutSetup()
@@ -18,10 +18,10 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		Action actual = () => CreateFixture()
-			.ReturnWithMultipleParameters(input1, input2);
+			.ReturnWithSeveralParameters(input1, input2);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -40,7 +40,7 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParameters(input1, input2)
+			.SetupReturnWithSeveralParameters(input1, input2)
 			.Returns(new ClassReturn
 			{
 				Name = "Okayama Issei",
@@ -49,7 +49,7 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 			});
 
 		var actual = CreateFixture()
-			.ReturnWithMultipleParameters(input1, input2);
+			.ReturnWithSeveralParameters(input1, input2);
 
 		const double expected = 15d;
 		Assert.Equal(expected, actual);
@@ -71,7 +71,7 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParameters(input1, input2)
+			.SetupReturnWithSeveralParameters(input1, input2)
 			.Returns(new ClassReturn
 			{
 				Name = "Okayama Issei",
@@ -80,10 +80,10 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 			});
 
 		Action actual = () => CreateFixture()
-			.ReturnWithMultipleParameters(input1, input1);
+			.ReturnWithSeveralParameters(input1, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -102,7 +102,7 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParameters(input1, input2)
+			.SetupReturnWithSeveralParameters(input1, input2)
 			.Returns(new ClassReturn
 			{
 				Name = "Okayama Issei",
@@ -111,10 +111,10 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 			});
 
 		Action actual = () => CreateFixture()
-			.ReturnWithMultipleParameters(input2, input1);
+			.ReturnWithSeveralParameters(input2, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -133,7 +133,7 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParameters(input1, input2)
+			.SetupReturnWithSeveralParameters(input1, input2)
 			.Returns(new ClassReturn
 			{
 				Name = "Okayama Issei",
@@ -142,10 +142,10 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 			});
 
 		Action actual = () => CreateFixture()
-			.ReturnWithMultipleParameters(input2, input2);
+			.ReturnWithSeveralParameters(input2, input2);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -164,7 +164,7 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParameters(input1, input2)
+			.SetupReturnWithSeveralParameters(input1, input2)
 			.Returns(new ClassReturn
 			{
 				Name = "Okayama Issei",
@@ -173,10 +173,10 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 			});
 
 		Action actual = () => CreateFixture()
-			.ReturnWithMultipleParameters(input2, input1);
+			.ReturnWithSeveralParameters(input2, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -195,7 +195,7 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParameters(input1, input2)
+			.SetupReturnWithSeveralParameters(input1, input2)
 			.Returns(new ClassReturn
 			{
 				Name = "Okayama Issei",
@@ -204,10 +204,10 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 			});
 
 		Action actual = () => CreateFixture()
-			.ReturnWithMultipleParameters(input1, input1);
+			.ReturnWithSeveralParameters(input1, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -226,7 +226,7 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParameters(input1, input2)
+			.SetupReturnWithSeveralParameters(input1, input2)
 			.Returns(new ClassReturn
 			{
 				Name = "Okayama Issei",
@@ -235,10 +235,10 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 			});
 
 		Action actual = () => CreateFixture()
-			.ReturnWithMultipleParameters(input2, input1);
+			.ReturnWithSeveralParameters(input2, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -259,11 +259,11 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParameters(input1, input2)
+			.SetupReturnWithSeveralParameters(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		Action actual = () => CreateFixture()
-			.ReturnWithMultipleParameters(input1, input2);
+			.ReturnWithSeveralParameters(input1, input2);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
@@ -287,14 +287,14 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParameters(input1, input2)
+			.SetupReturnWithSeveralParameters(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		Action actual = () => CreateFixture()
-			.ReturnWithMultipleParameters(input1, input1);
+			.ReturnWithSeveralParameters(input1, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -315,14 +315,14 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParameters(input1, input2)
+			.SetupReturnWithSeveralParameters(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		Action actual = () => CreateFixture()
-			.ReturnWithMultipleParameters(input2, input1);
+			.ReturnWithSeveralParameters(input2, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -343,14 +343,14 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParameters(input1, input2)
+			.SetupReturnWithSeveralParameters(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		Action actual = () => CreateFixture()
-			.ReturnWithMultipleParameters(input2, input2);
+			.ReturnWithSeveralParameters(input2, input2);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -371,14 +371,14 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParameters(input1, input2)
+			.SetupReturnWithSeveralParameters(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		Action actual = () => CreateFixture()
-			.ReturnWithMultipleParameters(input2, input1);
+			.ReturnWithSeveralParameters(input2, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -399,14 +399,14 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParameters(input1, input2)
+			.SetupReturnWithSeveralParameters(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		Action actual = () => CreateFixture()
-			.ReturnWithMultipleParameters(input1, input1);
+			.ReturnWithSeveralParameters(input1, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -427,13 +427,13 @@ public sealed class ReturnWithMultipleParametersShould : ClassTypeServiceTestsBa
 		};
 
 		ClassDependencyServiceMock
-			.SetupReturnWithMultipleParameters(input1, input2)
+			.SetupReturnWithSeveralParameters(input1, input2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		Action actual = () => CreateFixture()
-			.ReturnWithMultipleParameters(input2, input1);
+			.ReturnWithSeveralParameters(input2, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 }
