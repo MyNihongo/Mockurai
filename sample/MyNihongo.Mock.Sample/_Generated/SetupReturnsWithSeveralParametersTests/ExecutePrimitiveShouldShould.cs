@@ -351,4 +351,249 @@ public sealed class ExecutePrimitiveShouldShould : SetupReturnsWithSeveralParame
 		Assert.False(hasValue);
 		Assert.Equal(expected, actual);
 	}
+
+	[Fact]
+	public void ReturnNullForWhereSetups1And2()
+	{
+		const string returnValue = nameof(returnValue);
+		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns(returnValue);
+
+		const int inputValue1 = 99, inputValue2 = 11;
+		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+
+		Assert.False(hasValue);
+		Assert.Null(actual);
+	}
+
+	[Fact]
+	public void ReturnDefaultForWhereSetups1And2()
+	{
+		const int returnValue = 374452;
+		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns(returnValue);
+
+		const int inputValue1 = 99, inputValue2 = 11;
+		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+
+		const int expected = 0;
+		Assert.False(hasValue);
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void ThrowForAnySetup()
+	{
+		const string errorMessage = nameof(errorMessage);
+		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		const int inputValue1 = 12345678, inputValue2 = 987654321;
+		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowForValueSetup()
+	{
+		const string errorMessage = nameof(errorMessage);
+		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => fixture.Execute(setupValue1, setupValue2, out _);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void NotThrowForValueSetup1()
+	{
+		const string errorMessage = nameof(errorMessage);
+		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		const int inputValue1 = 84837621;
+		fixture.Execute(inputValue1, setupValue2, out _);
+	}
+
+	[Fact]
+	public void NotThrowForValueSetup2()
+	{
+		const string errorMessage = nameof(errorMessage);
+		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		const int inputValue2 = 84837621;
+		fixture.Execute(setupValue1, inputValue2, out _);
+	}
+
+	[Fact]
+	public void NotThrowForValueSetupFor1And2()
+	{
+		const string errorMessage = nameof(errorMessage);
+		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		const int inputValue1 = -771245, inputValue2 = 84837621;
+		fixture.Execute(inputValue1, inputValue2, out _);
+	}
+
+	[Theory]
+	[InlineData(-1)]
+	[InlineData(0)]
+	[InlineData(10)]
+	public void ThrowForWhereSetup1(int inputValue1)
+	{
+		const string errorMessage = nameof(errorMessage);
+		const int setupValue2 = 987654321;
+		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => fixture.Execute(inputValue1, setupValue2, out _);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Theory]
+	[InlineData(11)]
+	[InlineData(100)]
+	public void NotThrowForWhereSetup1(int inputValue1)
+	{
+		const string errorMessage = nameof(errorMessage);
+		const int setupValue2 = 987654321;
+		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		fixture.Execute(inputValue1, setupValue2, out _);
+	}
+
+	[Theory]
+	[InlineData(-1)]
+	[InlineData(0)]
+	[InlineData(10)]
+	public void ThrowForWhereSetup2(int inputValue2)
+	{
+		const string errorMessage = nameof(errorMessage);
+		const int setupValue1 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		Action actual = () => fixture.Execute(setupValue1, inputValue2, out _);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Theory]
+	[InlineData(11)]
+	[InlineData(100)]
+	public void NotThrowForWhereSetup2(int inputValue2)
+	{
+		const string errorMessage = nameof(errorMessage);
+		const int setupValue1 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		fixture.Execute(setupValue1, inputValue2, out _);
+	}
+
+	[Fact]
+	public void ThrowForWhereSetups()
+	{
+		const string errorMessage = nameof(errorMessage);
+		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		const int inputValue1 = 101, inputValue2 = 9;
+		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowForWhereSetups1()
+	{
+		const string errorMessage = nameof(errorMessage);
+		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		const int inputValue1 = 99, inputValue2 = 9;
+		fixture.Execute(inputValue1, inputValue2, out _);
+	}
+
+	[Fact]
+	public void ThrowForWhereSetups2()
+	{
+		const string errorMessage = nameof(errorMessage);
+		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		const int inputValue1 = 101, inputValue2 = 11;
+		fixture.Execute(inputValue1, inputValue2, out _);
+	}
+
+	[Fact]
+	public void ThrowForWhereSetups1And2()
+	{
+		const string errorMessage = nameof(errorMessage);
+		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		const int inputValue1 = 99, inputValue2 = 11;
+		fixture.Execute(inputValue1, inputValue2, out _);
+	}
 }

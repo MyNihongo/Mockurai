@@ -15,8 +15,8 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		const int input1 = 12345678, input2 = 987654321;
-		var actual = () => fixture.Invoke(input1, input2);
+		const int inputValue1 = 12345678, inputValue2 = 987654321;
+		var actual = () => fixture.Invoke(inputValue1, inputValue2);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
@@ -26,14 +26,14 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 	public void ThrowForValueSetup()
 	{
 		const string errorMessage = nameof(errorMessage);
-		const int input1 = 12345678, input2 = 987654321;
-		It<int> setup1 = input1, setup2 = input2;
+		const int inputValue1 = 12345678, inputValue2 = 987654321;
+		It<int> setup1 = inputValue1, setup2 = inputValue2;
 
 		var fixture = CreateFixture<SetupIntInt>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		var actual = () => fixture.Invoke(input1, input2);
+		var actual = () => fixture.Invoke(inputValue1, inputValue2);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
@@ -50,8 +50,8 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		const int input1 = 747474;
-		fixture.Invoke(input1, setupValue2);
+		const int inputValue1 = 747474;
+		fixture.Invoke(inputValue1, setupValue2);
 	}
 
 	[Fact]
@@ -65,8 +65,8 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		const int input2 = 747474;
-		fixture.Invoke(setupValue1, input2);
+		const int inputValue2 = 747474;
+		fixture.Invoke(setupValue1, inputValue2);
 	}
 
 	[Fact]
@@ -80,15 +80,15 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		const int input1 = 3243253, input2 = 747474;
-		fixture.Invoke(input1, input2);
+		const int inputValue1 = 3243253, inputValue2 = 747474;
+		fixture.Invoke(inputValue1, inputValue2);
 	}
 
 	[Theory]
 	[InlineData(-1)]
 	[InlineData(0)]
 	[InlineData(10)]
-	public void ThrowForWhereSetup1(int input1)
+	public void ThrowForWhereSetup1(int inputValue1)
 	{
 		const string errorMessage = nameof(errorMessage);
 		const int setupValue2 = 987654321;
@@ -98,7 +98,7 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		var actual = () => fixture.Invoke(input1, setupValue2);
+		var actual = () => fixture.Invoke(inputValue1, setupValue2);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
@@ -107,7 +107,7 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 	[Theory]
 	[InlineData(11)]
 	[InlineData(100)]
-	public void NotThrowForWhereSetup1(int input1)
+	public void NotThrowForWhereSetup1(int inputValue1)
 	{
 		const string errorMessage = nameof(errorMessage);
 		const int setupValue2 = 987654321;
@@ -117,14 +117,14 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		fixture.Invoke(input1, setupValue2);
+		fixture.Invoke(inputValue1, setupValue2);
 	}
 
 	[Theory]
 	[InlineData(-1)]
 	[InlineData(0)]
 	[InlineData(10)]
-	public void ThrowForWhereSetup2(int input2)
+	public void ThrowForWhereSetup2(int inputValue2)
 	{
 		const string errorMessage = nameof(errorMessage);
 		const int setupValue1 = 987654321;
@@ -134,7 +134,7 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		var actual = () => fixture.Invoke(setupValue1, input2);
+		var actual = () => fixture.Invoke(setupValue1, inputValue2);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
@@ -143,7 +143,7 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 	[Theory]
 	[InlineData(11)]
 	[InlineData(100)]
-	public void NotThrowForWhereSetup2(int input2)
+	public void NotThrowForWhereSetup2(int inputValue2)
 	{
 		const string errorMessage = nameof(errorMessage);
 		const int setupValue1 = 987654321;
@@ -153,7 +153,7 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		fixture.Invoke(setupValue1, input2);
+		fixture.Invoke(setupValue1, inputValue2);
 	}
 
 	[Fact]
@@ -166,8 +166,8 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		const int input1 = 101, input2 = 9;
-		var actual = () => fixture.Invoke(input1, input2);
+		const int inputValue1 = 101, inputValue2 = 9;
+		var actual = () => fixture.Invoke(inputValue1, inputValue2);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
@@ -183,8 +183,8 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		const int input1 = 99, input2 = 9;
-		fixture.Invoke(input1, input2);
+		const int inputValue1 = 99, inputValue2 = 9;
+		fixture.Invoke(inputValue1, inputValue2);
 	}
 
 	[Fact]
@@ -197,8 +197,22 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		const int input1 = 101, input2 = 11;
-		fixture.Invoke(input1, input2);
+		const int inputValue1 = 101, inputValue2 = 11;
+		fixture.Invoke(inputValue1, inputValue2);
+	}
+
+	[Fact]
+	public void NotThrowForWhereSetups1And2()
+	{
+		const string errorMessage = nameof(errorMessage);
+		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		const int inputValue1 = 99, inputValue2 = 11;
+		fixture.Invoke(inputValue1, inputValue2);
 	}
 
 	[Fact]
@@ -231,8 +245,8 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup41, setup42);
 		fixture.Throws(new OverflowException(errorMessage4));
 
-		const int input2 = 324343242;
-		var actual = () => fixture.Invoke(setupValue1, input2);
+		const int inputValue2 = 324343242;
+		var actual = () => fixture.Invoke(setupValue1, inputValue2);
 
 		var exception = Assert.Throws<ArgumentException>(actual);
 		Assert.Equal(errorMessage2, exception.Message);
@@ -268,8 +282,8 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup41, setup42);
 		fixture.Throws(new OverflowException(errorMessage4));
 
-		const int input1 = 324343242;
-		var actual = () => fixture.Invoke(input1, setupValue2);
+		const int inputValue1 = 324343242;
+		var actual = () => fixture.Invoke(inputValue1, setupValue2);
 
 		var exception = Assert.Throws<InvalidCastException>(actual);
 		Assert.Equal(errorMessage3, exception.Message);
@@ -341,8 +355,8 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup41, setup42);
 		fixture.Throws(new OverflowException(errorMessage4));
 
-		const int input1 = 324343242, input2 = 837483252;
-		var actual = () => fixture.Invoke(input1, input2);
+		const int inputValue1 = 324343242, inputValue2 = 837483252;
+		var actual = () => fixture.Invoke(inputValue1, inputValue2);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage1, exception.Message);
@@ -476,8 +490,8 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
-		const int input1 = 25;
-		var actual = () => fixture.Invoke(input1, setupValue2);
+		const int inputValue1 = 25;
+		var actual = () => fixture.Invoke(inputValue1, setupValue2);
 
 		var exception = Assert.Throws<ArithmeticException>(actual);
 		Assert.Equal(errorMessage8, exception.Message);
@@ -544,8 +558,8 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
-		const int input1 = -345332543;
-		var actual = () => fixture.Invoke(input1, setupValue2);
+		const int inputValue1 = -345332543;
+		var actual = () => fixture.Invoke(inputValue1, setupValue2);
 
 		var exception = Assert.Throws<AggregateException>(actual);
 		Assert.Equal(errorMessage7, exception.Message);
@@ -612,8 +626,8 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
-		const int input2 = 21;
-		var actual = () => fixture.Invoke(setupValue1, input2);
+		const int inputValue2 = 21;
+		var actual = () => fixture.Invoke(setupValue1, inputValue2);
 
 		var exception = Assert.Throws<FileLoadException>(actual);
 		Assert.Equal(errorMessage6, exception.Message);
@@ -680,8 +694,8 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
-		const int input2 = -21;
-		var actual = () => fixture.Invoke(setupValue1, input2);
+		const int inputValue2 = -21;
+		var actual = () => fixture.Invoke(setupValue1, inputValue2);
 
 		var exception = Assert.Throws<MissingSatelliteAssemblyException>(actual);
 		Assert.Equal(errorMessage5, exception.Message);
@@ -748,8 +762,8 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
-		const int input1 = 14, input2 = 21;
-		var actual = () => fixture.Invoke(input1, input2);
+		const int inputValue1 = 14, inputValue2 = 21;
+		var actual = () => fixture.Invoke(inputValue1, inputValue2);
 
 		var exception = Assert.Throws<OverflowException>(actual);
 		Assert.Equal(errorMessage4, exception.Message);
@@ -816,8 +830,8 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
-		const int input1 = -14, input2 = 21;
-		var actual = () => fixture.Invoke(input1, input2);
+		const int inputValue1 = -14, inputValue2 = 21;
+		var actual = () => fixture.Invoke(inputValue1, inputValue2);
 
 		var exception = Assert.Throws<InvalidCastException>(actual);
 		Assert.Equal(errorMessage3, exception.Message);
@@ -884,8 +898,8 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
-		const int input1 = 14, input2 = -21;
-		var actual = () => fixture.Invoke(input1, input2);
+		const int inputValue1 = 14, inputValue2 = -21;
+		var actual = () => fixture.Invoke(inputValue1, inputValue2);
 
 		var exception = Assert.Throws<ArgumentException>(actual);
 		Assert.Equal(errorMessage2, exception.Message);
@@ -952,8 +966,8 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
-		const int input1 = -14, input2 = -21;
-		var actual = () => fixture.Invoke(input1, input2);
+		const int inputValue1 = -14, inputValue2 = -21;
+		var actual = () => fixture.Invoke(inputValue1, inputValue2);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage1, exception.Message);
