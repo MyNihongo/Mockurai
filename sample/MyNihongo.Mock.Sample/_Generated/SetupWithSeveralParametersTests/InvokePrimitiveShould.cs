@@ -1,6 +1,3 @@
-using System.Data;
-using System.Resources;
-
 namespace MyNihongo.Mock.Sample._Generated.SetupWithSeveralParametersTests;
 
 public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
