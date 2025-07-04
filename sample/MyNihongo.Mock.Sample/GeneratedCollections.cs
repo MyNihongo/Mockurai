@@ -33,3 +33,28 @@ public sealed class SetupContainer<T> : IEnumerable<T>
 	IEnumerator IEnumerable.GetEnumerator() =>
 		GetEnumerator();
 }
+
+[Obsolete("Will be generated")]
+public sealed class InvocationContainer<T> : IEnumerable<(long, T)>
+{
+	private readonly List<(long, T)> _invocations = [];
+
+	public int Count => _invocations.Count;
+
+	public void Add(in long index, in T item)
+	{
+		var indexPair = (index, item);
+		var insertIndex = _invocations.BinarySearch(indexPair);
+
+		if (insertIndex < 0)
+			insertIndex = ~insertIndex;
+
+		_invocations.Insert(insertIndex, indexPair);
+	}
+
+	public IEnumerator<(long, T)> GetEnumerator() =>
+		_invocations.GetEnumerator();
+
+	IEnumerator IEnumerable.GetEnumerator() =>
+		GetEnumerator();
+}
