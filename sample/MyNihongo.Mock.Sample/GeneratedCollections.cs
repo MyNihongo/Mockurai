@@ -52,6 +52,22 @@ public sealed class InvocationContainer<T> : IEnumerable<(long, T)>
 		_invocations.Insert(insertIndex, indexPair);
 	}
 
+	public (long, T)? TryGetItemAfter(in long index)
+	{
+		if (_invocations.Count == 0)
+			return null;
+
+		var indexPair = (index, default(T));
+		var insertIndex = _invocations.BinarySearch(indexPair!);
+
+		if (insertIndex < 0)
+			insertIndex = ~insertIndex;
+
+		return insertIndex < _invocations.Count
+			? _invocations[insertIndex]
+			: null;
+	}
+
 	public IEnumerator<(long, T)> GetEnumerator() =>
 		_invocations.GetEnumerator();
 
