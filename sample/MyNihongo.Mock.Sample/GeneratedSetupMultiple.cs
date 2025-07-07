@@ -4,8 +4,8 @@ namespace MyNihongo.Mock.Sample;
 public sealed class SetupIntInt : ISetup
 {
 	private static readonly Comparer SortComparer = new();
-	private SetupContainer<(It<int>.Setup?, It<int>.Setup?, Exception)>? _setups;
-	private (It<int>.Setup?, It<int>.Setup?)? _tempSetup;
+	private SetupContainer<(It<int>.Setup? Parameter1, It<int>.Setup? Parameter2, Exception Exception)>? _setups;
+	private (It<int>.Setup? Parameter1, It<int>.Setup? Parameter2)? _tempSetup;
 
 	public void Invoke(in int parameter1, in int parameter2)
 	{
@@ -14,12 +14,12 @@ public sealed class SetupIntInt : ISetup
 
 		foreach (var setup in _setups)
 		{
-			if (setup.Item1.HasValue && !setup.Item1.Value.Predicate(parameter1))
+			if (setup.Parameter1.HasValue && !setup.Parameter1.Value.Predicate(parameter1))
 				continue;
-			if (setup.Item2.HasValue && !setup.Item2.Value.Predicate(parameter2))
+			if (setup.Parameter2.HasValue && !setup.Parameter2.Value.Predicate(parameter2))
 				continue;
 
-			throw setup.Item3;
+			throw setup.Exception;
 		}
 	}
 
@@ -34,26 +34,26 @@ public sealed class SetupIntInt : ISetup
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
 		_setups ??= new SetupContainer<(It<int>.Setup?, It<int>.Setup?, Exception)>(SortComparer);
-		_setups.Add((_tempSetup.Value.Item1, _tempSetup.Value.Item2, exception));
+		_setups.Add((_tempSetup.Value.Parameter1, _tempSetup.Value.Parameter2, exception));
 		_tempSetup = null;
 	}
 
-	private sealed class Comparer : IComparer<(It<int>.Setup?, It<int>.Setup?, Exception)>
+	private sealed class Comparer : IComparer<(It<int>.Setup? Parameter1, It<int>.Setup? Parameter2, Exception Exception)>
 	{
-		public int Compare((It<int>.Setup?, It<int>.Setup?, Exception) x, (It<int>.Setup?, It<int>.Setup?, Exception) y)
+		public int Compare((It<int>.Setup? Parameter1, It<int>.Setup? Parameter2, Exception Exception) x, (It<int>.Setup? Parameter1, It<int>.Setup? Parameter2, Exception Exception) y)
 		{
 			var xSort = 0;
 			var ySort = 0;
 
-			if (x.Item1.HasValue)
-				xSort += x.Item1.Value.Sort;
-			if (x.Item2.HasValue)
-				xSort += x.Item2.Value.Sort;
+			if (x.Parameter1.HasValue)
+				xSort += x.Parameter1.Value.Sort;
+			if (x.Parameter2.HasValue)
+				xSort += x.Parameter2.Value.Sort;
 
-			if (y.Item1.HasValue)
-				ySort += y.Item1.Value.Sort;
-			if (y.Item2.HasValue)
-				ySort += y.Item2.Value.Sort;
+			if (y.Parameter1.HasValue)
+				ySort += y.Parameter1.Value.Sort;
+			if (y.Parameter2.HasValue)
+				ySort += y.Parameter2.Value.Sort;
 
 			return xSort.CompareTo(ySort);
 		}
@@ -64,8 +64,8 @@ public sealed class SetupIntInt : ISetup
 public sealed class SetupIntInt<TReturns> : ISetup<TReturns>
 {
 	private static readonly Comparer SortComparer = new();
-	private SetupContainer<(It<int>.Setup?, It<int>.Setup?, TReturns?, Exception?)>? _setups;
-	private (It<int>.Setup?, It<int>.Setup?)? _tempSetup;
+	private SetupContainer<(It<int>.Setup? Parameter1, It<int>.Setup? Parameter2, TReturns? Returns, Exception? Exception)>? _setups;
+	private (It<int>.Setup? Parameter1, It<int>.Setup? Parameter2)? _tempSetup;
 
 	public bool Execute(in int parameter1, in int parameter2, out TReturns? returnValue)
 	{
@@ -74,15 +74,15 @@ public sealed class SetupIntInt<TReturns> : ISetup<TReturns>
 
 		foreach (var setup in _setups)
 		{
-			if (setup.Item1.HasValue && !setup.Item1.Value.Predicate(parameter1))
+			if (setup.Parameter1.HasValue && !setup.Parameter1.Value.Predicate(parameter1))
 				continue;
-			if (setup.Item2.HasValue && !setup.Item2.Value.Predicate(parameter2))
+			if (setup.Parameter2.HasValue && !setup.Parameter2.Value.Predicate(parameter2))
 				continue;
 
-			if (setup.Item4 is not null)
-				throw setup.Item4;
+			if (setup.Exception is not null)
+				throw setup.Exception;
 
-			returnValue = setup.Item3;
+			returnValue = setup.Returns;
 			return true;
 		}
 
@@ -102,7 +102,7 @@ public sealed class SetupIntInt<TReturns> : ISetup<TReturns>
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
 		_setups ??= new SetupContainer<(It<int>.Setup?, It<int>.Setup?, TReturns?, Exception?)>(SortComparer);
-		_setups.Add((_tempSetup.Value.Item1, _tempSetup.Value.Item2, value, null));
+		_setups.Add((_tempSetup.Value.Parameter1, _tempSetup.Value.Parameter2, value, null));
 		_tempSetup = null;
 	}
 
@@ -116,22 +116,22 @@ public sealed class SetupIntInt<TReturns> : ISetup<TReturns>
 		_tempSetup = null;
 	}
 
-	private sealed class Comparer : IComparer<(It<int>.Setup?, It<int>.Setup?, TReturns?, Exception?)>
+	private sealed class Comparer : IComparer<(It<int>.Setup? Parameter1, It<int>.Setup? Parameter2, TReturns? Returns, Exception? Exception)>
 	{
-		public int Compare((It<int>.Setup?, It<int>.Setup?, TReturns?, Exception?) x, (It<int>.Setup?, It<int>.Setup?, TReturns?, Exception?) y)
+		public int Compare((It<int>.Setup? Parameter1, It<int>.Setup? Parameter2, TReturns? Returns, Exception? Exception) x, (It<int>.Setup? Parameter1, It<int>.Setup? Parameter2, TReturns? Returns, Exception? Exception) y)
 		{
 			var xSort = 0;
 			var ySort = 0;
 
-			if (x.Item1.HasValue)
-				xSort += x.Item1.Value.Sort;
-			if (x.Item2.HasValue)
-				xSort += x.Item2.Value.Sort;
+			if (x.Parameter1.HasValue)
+				xSort += x.Parameter1.Value.Sort;
+			if (x.Parameter2.HasValue)
+				xSort += x.Parameter2.Value.Sort;
 
-			if (y.Item1.HasValue)
-				ySort += y.Item1.Value.Sort;
-			if (y.Item2.HasValue)
-				ySort += y.Item2.Value.Sort;
+			if (y.Parameter1.HasValue)
+				ySort += y.Parameter1.Value.Sort;
+			if (y.Parameter2.HasValue)
+				ySort += y.Parameter2.Value.Sort;
 
 			return xSort.CompareTo(ySort);
 		}
