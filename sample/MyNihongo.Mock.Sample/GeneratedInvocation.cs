@@ -80,3 +80,18 @@ public sealed class Invocation
 		public bool IsVerified;
 	}
 }
+
+public sealed class Invocation<TParameter>
+{
+	private readonly string _name;
+	
+	public Invocation(in string name)
+	{
+		_name = name;
+	}
+	
+	private sealed class Item
+	{
+		public bool IsVerified;
+	}
+}
