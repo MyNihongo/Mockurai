@@ -118,17 +118,20 @@ public sealed class Invocation<TParameter>
 		throw new MockVerifyCountException(_name, times.Count, count, invocations);
 	}
 
-	public void Verify(in It<TParameter> parameter, in long index)
+	public long Verify(in It<TParameter> parameter, in long index)
 	{
-		var item = _invocations.TryGetItemAt(index);
-		if (!item.HasValue)
-			throw new MockVerifySequenceOutOfRangeException(_name, index);
+		foreach (var item in _invocations.GetItemsFrom(index))
+		{
+			var verifyParameter = item.Invocation.GetParameter();
 
-		var verifyParameter = item.Value.Invocation.GetParameter();
-		if (parameter.ValueSetup.HasValue && !parameter.ValueSetup.Value.Predicate(verifyParameter))
-			throw new MockVerifySequenceOutOfRangeException(_name, index);
+			if (!parameter.ValueSetup.HasValue || parameter.ValueSetup.Value.Predicate(verifyParameter))
+			{
+				item.Invocation.IsVerified = true;
+				return item.Index + 1;
+			}
+		}
 
-		item.Value.Invocation.IsVerified = true;
+		throw new MockVerifySequenceOutOfRangeException(_name, index);
 	}
 
 	public void VerifyNoOtherCalls()

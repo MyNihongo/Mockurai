@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Runtime.CompilerServices;
 
 namespace MyNihongo.Mock.Sample;
 
@@ -54,17 +55,37 @@ public sealed class InvocationContainer<T> : IEnumerable<(long Index, T Invocati
 
 	public (long Index, T Invocation)? TryGetItemAt(in long index)
 	{
+		var itemIndex = TryGetIndexAt(index);
+
+		return itemIndex.HasValue
+			? _invocations[itemIndex.Value]
+			: null;
+	}
+
+	public IEnumerable<(long Index, T Invocation)> GetItemsFrom(long index)
+	{
+		var itemIndex = TryGetIndexAt(index);
+		if (!itemIndex.HasValue)
+			yield break;
+
+		for (var i = itemIndex.Value; i < _invocations.Count; i++)
+			yield return _invocations[i];
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private int? TryGetIndexAt(in long index)
+	{
 		if (_invocations.Count == 0)
 			return null;
 
 		var indexPair = (index, default(T));
-		var insertIndex = _invocations.BinarySearch(indexPair!);
+		var itemIndex = _invocations.BinarySearch(indexPair!);
 
-		if (insertIndex < 0)
-			insertIndex = ~insertIndex;
+		if (itemIndex < 0)
+			itemIndex = ~itemIndex;
 
-		return insertIndex < _invocations.Count
-			? _invocations[insertIndex]
+		return itemIndex < _invocations.Count
+			? itemIndex
 			: null;
 	}
 
