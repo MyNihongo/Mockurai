@@ -37,7 +37,7 @@ public sealed class SetupContainer<T> : IEnumerable<T>
 [Obsolete("Will be generated")]
 public sealed class InvocationContainer<T> : IEnumerable<(long Index, T Invocation)>
 {
-	private readonly List<(long, T)> _invocations = [];
+	private readonly List<(long Index, T Invocation)> _invocations = [];
 
 	public int Count => _invocations.Count;
 
@@ -73,4 +73,18 @@ public sealed class InvocationContainer<T> : IEnumerable<(long Index, T Invocati
 
 	IEnumerator IEnumerable.GetEnumerator() =>
 		GetEnumerator();
+
+	public IEnumerable<string> GetItemStrings()
+	{
+		for (var i = 0; i < _invocations.Count; i++)
+			yield return _invocations[i].GetString();
+	}
+}
+
+public static class TupleEx
+{
+	public static string GetString<T>(this (long, T) @this)
+	{
+		return $"{@this.Item1}: {@this.Item2}";
+	}
 }

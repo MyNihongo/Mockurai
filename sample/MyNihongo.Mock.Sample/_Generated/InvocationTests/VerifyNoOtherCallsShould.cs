@@ -48,7 +48,7 @@ public sealed class VerifyNoOtherCallsShould : InvocationTestsBase
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod() to be verified, but the following invocations have not been verified
+			Expected MyClass#MyMethod() to be verified, but the following invocations have not been verified:
 			- index 1
 			- index 2
 			""";
@@ -71,7 +71,7 @@ public sealed class VerifyNoOtherCallsShould : InvocationTestsBase
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod() to be verified, but the following invocations have not been verified
+			Expected MyClass#MyMethod() to be verified, but the following invocations have not been verified:
 			- index 1
 			""";
 
@@ -93,7 +93,7 @@ public sealed class VerifyNoOtherCallsShould : InvocationTestsBase
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod() to be verified, but the following invocations have not been verified
+			Expected MyClass#MyMethod() to be verified, but the following invocations have not been verified:
 			- index 2
 			""";
 

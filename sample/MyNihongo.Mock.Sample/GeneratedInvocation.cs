@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace MyNihongo.Mock.Sample;
 
 public readonly ref struct Times
@@ -56,7 +58,7 @@ public sealed class Invocation
 		if (!item.HasValue)
 			throw new MockVerifySequenceOutOfRangeException(_name, index);
 
-		item.Value.Item2.IsVerified = true;
+		item.Value.Invocation.IsVerified = true;
 	}
 
 	public void VerifyNoOtherCalls()
@@ -64,14 +66,12 @@ public sealed class Invocation
 		if (_isVerified)
 			return;
 
-		var unverifiedItems = new List<long>();
-		foreach (var invocation in _invocations)
-		{
-			if (!invocation.Invocation.IsVerified)
-				unverifiedItems.Add(invocation.Index);
-		}
+		var unverifiedItems = _invocations
+			.Where(static x => !x.Invocation.IsVerified)
+			.Select(static x => x.Index)
+			.ToArray();
 
-		if (unverifiedItems.Count > 0)
+		if (unverifiedItems.Length > 0)
 			throw new MockUnverifiedException(_name, unverifiedItems);
 	}
 
@@ -84,14 +84,95 @@ public sealed class Invocation
 public sealed class Invocation<TParameter>
 {
 	private readonly string _name;
-	
+	private readonly InvocationContainer<Item> _invocations = [];
+
 	public Invocation(in string name)
 	{
 		_name = name;
 	}
-	
+
+	public void Register(ref long index, in TParameter parameter)
+	{
+		var invokedIndex = Interlocked.Increment(ref index);
+		_invocations.Add(invokedIndex, new Item(parameter));
+	}
+
+	public void Verify(in It<TParameter>.Setup parameter, in Times times)
+	{
+		var count = 0;
+		foreach (var invocation in _invocations)
+		{
+			var verifyParameter = invocation.Invocation.GetParameter();
+			if (!parameter.Predicate(verifyParameter))
+				continue;
+
+			invocation.Invocation.IsVerified = true;
+			count++;
+		}
+
+		if (times.Count == count)
+			return;
+
+		var invocations = _invocations.GetItemStrings();
+		throw new MockVerifyCountException(_name, times.Count, _invocations.Count, invocations);
+	}
+
+	public void Verify(in It<TParameter>.Setup parameter, in long index)
+	{
+		var item = _invocations.TryGetItemAt(index);
+		if (!item.HasValue)
+			throw new MockVerifySequenceOutOfRangeException(_name, index);
+
+		var verifyParameter = item.Value.Invocation.GetParameter();
+		if (!parameter.Predicate(verifyParameter))
+			throw new MockVerifySequenceOutOfRangeException(_name, index);
+
+		item.Value.Invocation.IsVerified = true;
+	}
+
+	public void VerifyNoOtherCalls()
+	{
+		var unverifiedItems = _invocations
+			.Where(static x => !x.Invocation.IsVerified)
+			.Select(static x => x.GetString())
+			.ToArray();
+
+		if (unverifiedItems.Length > 0)
+			throw new MockUnverifiedException(_name, unverifiedItems);
+	}
+
 	private sealed class Item
 	{
 		public bool IsVerified;
+		private readonly TParameter _parameter;
+		private readonly string? _jsonSnapshot;
+
+		public Item(TParameter parameter)
+		{
+			_parameter = parameter;
+
+			try
+			{
+				_jsonSnapshot = JsonSerializer.Serialize(parameter);
+			}
+			catch
+			{
+				// Swallow
+			}
+		}
+
+		public TParameter GetParameter()
+		{
+			return !string.IsNullOrEmpty(_jsonSnapshot)
+				? JsonSerializer.Deserialize<TParameter>(_jsonSnapshot)!
+				: _parameter;
+		}
+
+		public override string ToString()
+		{
+			return string.IsNullOrEmpty(_jsonSnapshot)
+				? _parameter?.ToString() ?? string.Empty
+				: _jsonSnapshot;
+		}
 	}
 }
