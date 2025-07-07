@@ -52,13 +52,14 @@ public sealed class Invocation
 		_isVerified = true;
 	}
 
-	public void Verify(in long index)
+	public long Verify(in long index)
 	{
 		var item = _invocations.TryGetItemAt(index);
 		if (!item.HasValue)
 			throw new MockVerifySequenceOutOfRangeException(_name, index);
 
 		item.Value.Invocation.IsVerified = true;
+		return item.Value.Index + 1;
 	}
 
 	public void VerifyNoOtherCalls()
@@ -97,13 +98,13 @@ public sealed class Invocation<TParameter>
 		_invocations.Add(invokedIndex, new Item(parameter));
 	}
 
-	public void Verify(in It<TParameter>.Setup parameter, in Times times)
+	public void Verify(in It<TParameter> parameter, in Times times)
 	{
 		var count = 0;
 		foreach (var invocation in _invocations)
 		{
 			var verifyParameter = invocation.Invocation.GetParameter();
-			if (!parameter.Predicate(verifyParameter))
+			if (parameter.ValueSetup.HasValue && !parameter.ValueSetup.Value.Predicate(verifyParameter))
 				continue;
 
 			invocation.Invocation.IsVerified = true;
@@ -114,17 +115,17 @@ public sealed class Invocation<TParameter>
 			return;
 
 		var invocations = _invocations.GetItemStrings();
-		throw new MockVerifyCountException(_name, times.Count, _invocations.Count, invocations);
+		throw new MockVerifyCountException(_name, times.Count, count, invocations);
 	}
 
-	public void Verify(in It<TParameter>.Setup parameter, in long index)
+	public void Verify(in It<TParameter> parameter, in long index)
 	{
 		var item = _invocations.TryGetItemAt(index);
 		if (!item.HasValue)
 			throw new MockVerifySequenceOutOfRangeException(_name, index);
 
 		var verifyParameter = item.Value.Invocation.GetParameter();
-		if (!parameter.Predicate(verifyParameter))
+		if (parameter.ValueSetup.HasValue && !parameter.ValueSetup.Value.Predicate(verifyParameter))
 			throw new MockVerifySequenceOutOfRangeException(_name, index);
 
 		item.Value.Invocation.IsVerified = true;
@@ -163,6 +164,9 @@ public sealed class Invocation<TParameter>
 
 		public TParameter GetParameter()
 		{
+			return _parameter;
+
+			// TODO: only for equivalent
 			return !string.IsNullOrEmpty(_jsonSnapshot)
 				? JsonSerializer.Deserialize<TParameter>(_jsonSnapshot)!
 				: _parameter;
