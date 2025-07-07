@@ -67,8 +67,8 @@ public sealed class Invocation
 		var unverifiedItems = new List<long>();
 		foreach (var invocation in _invocations)
 		{
-			if (!invocation.Item2.IsVerified)
-				unverifiedItems.Add(invocation.Item1);
+			if (!invocation.Invocation.IsVerified)
+				unverifiedItems.Add(invocation.Index);
 		}
 
 		if (unverifiedItems.Count > 0)

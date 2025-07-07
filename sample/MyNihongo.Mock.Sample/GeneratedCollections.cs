@@ -35,7 +35,7 @@ public sealed class SetupContainer<T> : IEnumerable<T>
 }
 
 [Obsolete("Will be generated")]
-public sealed class InvocationContainer<T> : IEnumerable<(long, T)>
+public sealed class InvocationContainer<T> : IEnumerable<(long Index, T Invocation)>
 {
 	private readonly List<(long, T)> _invocations = [];
 
@@ -52,7 +52,7 @@ public sealed class InvocationContainer<T> : IEnumerable<(long, T)>
 		_invocations.Insert(insertIndex, indexPair);
 	}
 
-	public (long, T)? TryGetItemAt(in long index)
+	public (long Index, T Invocation)? TryGetItemAt(in long index)
 	{
 		if (_invocations.Count == 0)
 			return null;
@@ -68,7 +68,7 @@ public sealed class InvocationContainer<T> : IEnumerable<(long, T)>
 			: null;
 	}
 
-	public IEnumerator<(long, T)> GetEnumerator() =>
+	public IEnumerator<(long Index, T Invocation)> GetEnumerator() =>
 		_invocations.GetEnumerator();
 
 	IEnumerator IEnumerable.GetEnumerator() =>
