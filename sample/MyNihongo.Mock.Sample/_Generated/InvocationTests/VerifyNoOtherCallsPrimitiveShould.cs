@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock.Sample._Generated.InvocationTests;
 
-public sealed class VerifyNoOtherCallsShould : InvocationTestsBase
+public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationTestsBase
 {
 	[Fact]
 	public void NotThrowIfNoInvocations()
@@ -33,6 +33,26 @@ public sealed class VerifyNoOtherCallsShould : InvocationTestsBase
 
 		fixture.Verify(Times.Once());
 		fixture.VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowIfNotVerified()
+	{
+		var index = 0L;
+
+		var fixture = CreateFixture();
+		fixture.Register(ref index);
+
+		var actual = () => fixture.VerifyNoOtherCalls();
+
+		const string exceptionMessage =
+			"""
+			Expected MyClass#MyMethod() to be verified, but the following invocations have not been verified:
+			- index 1
+			""";
+
+		var exception = Assert.Throws<MockUnverifiedException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
 	}
 
 	[Fact]
