@@ -52,7 +52,7 @@ public sealed class InvocationContainer<T> : IEnumerable<(long, T)>
 		_invocations.Insert(insertIndex, indexPair);
 	}
 
-	public (long, T)? TryGetItemAfter(in long index)
+	public (long, T)? TryGetItemAt(in long index)
 	{
 		if (_invocations.Count == 0)
 			return null;

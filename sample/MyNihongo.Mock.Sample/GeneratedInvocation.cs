@@ -50,14 +50,13 @@ public sealed class Invocation
 		_isVerified = true;
 	}
 
-	public long Verify(in long index)
+	public void Verify(in long index)
 	{
-		var nextItem = _invocations.TryGetItemAfter(index);
-		if (!nextItem.HasValue)
+		var item = _invocations.TryGetItemAt(index);
+		if (!item.HasValue)
 			throw new MockVerifySequenceOutOfRangeException(_name, index);
 
-		nextItem.Value.Item2.IsVerified = true;
-		return nextItem.Value.Item1;
+		item.Value.Item2.IsVerified = true;
 	}
 
 	public void VerifyNoOtherCalls()
@@ -65,11 +64,15 @@ public sealed class Invocation
 		if (_isVerified)
 			return;
 
+		var unverifiedItems = new List<long>();
 		foreach (var invocation in _invocations)
 		{
 			if (!invocation.Item2.IsVerified)
-				throw new MockUnverifiedException(_name, invocation.Item1);
+				unverifiedItems.Add(invocation.Item1);
 		}
+
+		if (unverifiedItems.Count > 0)
+			throw new MockUnverifiedException(_name, unverifiedItems);
 	}
 
 	private sealed class Item

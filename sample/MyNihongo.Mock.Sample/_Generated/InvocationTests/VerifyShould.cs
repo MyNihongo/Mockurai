@@ -55,4 +55,48 @@ public sealed class VerifyShould : InvocationTestsBase
 		var exception = Assert.Throws<MockVerifyCountException>(action);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public void VerifyWithIndex()
+	{
+		var index = 0L;
+
+		var fixture = CreateFixture();
+		fixture.Register(ref index);
+		fixture.Register(ref index);
+
+		fixture.Verify(1L);
+		fixture.Verify(2L);
+	}
+
+	[Fact]
+	public void ThrowIfVerifyOutsideIndex()
+	{
+		var index = 0L;
+
+		var fixture = CreateFixture();
+		fixture.Register(ref index);
+		fixture.Register(ref index);
+
+		const long verifyIndex = 3L;
+		var action = () => fixture.Verify(verifyIndex);
+
+		const string expectedMessage = "Expected MyClass#MyMethod() to be invoked at index 3, but there are no invocations";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(action);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Theory]
+	[InlineData(0L)]
+	[InlineData(1L)]
+	public void ThrowIfVerifyNoInvocations(long verifyIndex)
+	{
+		var fixture = CreateFixture();
+
+		var action = () => fixture.Verify(verifyIndex);
+
+		var expectedMessage = $"Expected MyClass#MyMethod() to be invoked at index {verifyIndex}, but there are no invocations";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(action);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
 }
