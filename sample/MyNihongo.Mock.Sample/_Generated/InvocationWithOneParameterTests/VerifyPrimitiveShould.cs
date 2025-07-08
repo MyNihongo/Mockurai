@@ -169,6 +169,44 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 	}
 
 	[Fact]
+	public void ThrowIfInvalidVerifyValue()
+	{
+		var index = 0L;
+
+		var fixture = CreateFixture<int>();
+		fixture.Register(ref index, 321);
+
+		var actual = () =>
+		{
+			var verify = It<int>.Value(123);
+			fixture.Verify(verify, Times.Once());
+		};
+
+		const string expectedMessage = "Expected MyClass#MyMethod(Int32) to be called 1 times, but instead it was called 0 times";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowIfInvalidVerifyWhere()
+	{
+		var index = 0L;
+
+		var fixture = CreateFixture<int>();
+		fixture.Register(ref index, 321);
+
+		var actual = () =>
+		{
+			var verify = It<int>.Where(x => x > 3000);
+			fixture.Verify(verify, Times.Once());
+		};
+
+		const string expectedMessage = "Expected MyClass#MyMethod(Int32) to be called 1 times, but instead it was called 0 times";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
 	public void VerifyAnyWithIndex()
 	{
 		var index = 0L;
