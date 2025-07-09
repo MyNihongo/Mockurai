@@ -151,7 +151,7 @@ public sealed class Invocation<TParameter>
 		private readonly TParameter _parameter;
 		private readonly string? _jsonSnapshot;
 
-		public Item(TParameter parameter)
+		public Item(in TParameter parameter)
 		{
 			_parameter = parameter;
 
