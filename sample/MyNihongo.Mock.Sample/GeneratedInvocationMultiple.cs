@@ -13,7 +13,7 @@ public sealed class InvocationIntInt
 	{
 		_name = name;
 	}
-	
+
 	public void Verify(in It<int> parameter1, in It<int> parameter2, in Times times)
 	{
 		var count = 0;
@@ -21,7 +21,7 @@ public sealed class InvocationIntInt
 		{
 			var verifyParameter1 = invocation.Invocation.GetParameter1();
 			var verifyParameter2 = invocation.Invocation.GetParameter2();
-			
+
 			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Predicate(verifyParameter1))
 				continue;
 			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Predicate(verifyParameter2))
