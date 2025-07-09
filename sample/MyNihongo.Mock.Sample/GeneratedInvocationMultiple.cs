@@ -14,6 +14,12 @@ public sealed class InvocationIntInt
 		_name = name;
 	}
 
+	public void Register(ref long index, in int parameter1, in int parameter2)
+	{
+		var invokedIndex = Interlocked.Increment(ref index);
+		_invocations.Add(invokedIndex, new Item(parameter1, parameter2));
+	}
+
 	public void Verify(in It<int> parameter1, in It<int> parameter2, in Times times)
 	{
 		var count = 0;
