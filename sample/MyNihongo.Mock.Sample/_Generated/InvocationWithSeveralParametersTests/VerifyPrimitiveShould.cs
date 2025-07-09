@@ -688,4 +688,199 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
+
+	[Fact]
+	public void ThrowIfVerifyAnyWhereWithIndex1()
+	{
+		var index = 0L;
+
+		var fixture = CreateFixturePrimitive();
+		fixture.Register(ref index, 123, 234);
+
+		var actual = () =>
+		{
+			It<int> verify1 = It<int>.Where(x => x > 200), verify2 = It<int>.Any();
+			fixture.Verify(verify1, verify2, 1L);
+		};
+
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowIfVerifyAnyWhereWithIndex2()
+	{
+		var index = 0L;
+
+		var fixture = CreateFixturePrimitive();
+		fixture.Register(ref index, 123, 234);
+
+		var actual = () =>
+		{
+			It<int> verify1 = It<int>.Any(), verify2 = It<int>.Where(x => x < 100);
+			fixture.Verify(verify1, verify2, 1L);
+		};
+
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowIfVerifyAnyValueWithIndex1()
+	{
+		var index = 0L;
+		const int inputValue1 = 123;
+
+		var fixture = CreateFixturePrimitive();
+		fixture.Register(ref index, inputValue1, 234);
+
+		var actual = () =>
+		{
+			It<int> verify1 = inputValue1 + 1, verify2 = It<int>.Any();
+			fixture.Verify(verify1, verify2, 1L);
+		};
+
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowIfVerifyWhereAnyWithIndex2()
+	{
+		var index = 0L;
+		const int inputValue2 = 234;
+
+		var fixture = CreateFixturePrimitive();
+		fixture.Register(ref index, 123, inputValue2);
+
+		var actual = () =>
+		{
+			It<int> verify1 = It<int>.Any(), verify2 = inputValue2 + 1;
+			fixture.Verify(verify1, verify2, 1L);
+		};
+
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowIfVerifyWhereWithIndex1()
+	{
+		var index = 0L;
+
+		var fixture = CreateFixturePrimitive();
+		fixture.Register(ref index, 123, 234);
+
+		var actual = () =>
+		{
+			It<int> verify1 = It<int>.Where(x => x > 100), verify2 = It<int>.Where(x => x < 200);
+			fixture.Verify(verify1, verify2, 1L);
+		};
+
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowIfVerifyWhereWithIndex2()
+	{
+		var index = 0L;
+
+		var fixture = CreateFixturePrimitive();
+		fixture.Register(ref index, 123, 234);
+
+		var actual = () =>
+		{
+			It<int> verify1 = It<int>.Where(x => x < 100), verify2 = It<int>.Where(x => x > 200);
+			fixture.Verify(verify1, verify2, 1L);
+		};
+
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowIfVerifyWhereWithIndex3()
+	{
+		var index = 0L;
+
+		var fixture = CreateFixturePrimitive();
+		fixture.Register(ref index, 123, 234);
+
+		var actual = () =>
+		{
+			It<int> verify1 = It<int>.Where(x => x > 200), verify2 = It<int>.Where(x => x < 200);
+			fixture.Verify(verify1, verify2, 1L);
+		};
+
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowIfVerifyValueWithIndex1()
+	{
+		var index = 0L;
+		const int inputValue1 = 123, inputValue2 = 234;
+
+		var fixture = CreateFixturePrimitive();
+		fixture.Register(ref index, inputValue1, inputValue2);
+
+		var actual = () =>
+		{
+			It<int> verify1 = inputValue2, verify2 = inputValue1;
+			fixture.Verify(verify1, verify2, 1L);
+		};
+
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowIfVerifyValueWithIndex2()
+	{
+		var index = 0L;
+		const int inputValue1 = 123, inputValue2 = 234;
+
+		var fixture = CreateFixturePrimitive();
+		fixture.Register(ref index, inputValue1, inputValue2);
+
+		var actual = () =>
+		{
+			It<int> verify1 = inputValue1, verify2 = inputValue1;
+			fixture.Verify(verify1, verify2, 1L);
+		};
+
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowIfVerifyValueWithIndex3()
+	{
+		var index = 0L;
+		const int inputValue1 = 123, inputValue2 = 234;
+
+		var fixture = CreateFixturePrimitive();
+		fixture.Register(ref index, inputValue1, inputValue2);
+
+		var actual = () =>
+		{
+			It<int> verify1 = inputValue2, verify2 = inputValue2;
+			fixture.Verify(verify1, verify2, 1L);
+		};
+
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
 }
