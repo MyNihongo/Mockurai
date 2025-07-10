@@ -32,7 +32,7 @@ public sealed class Setup : ISetup
 [Obsolete("Will be generated")]
 public sealed class SetupWithParameter<TParameter> : ISetup
 {
-	private SetupContainer<(It<TParameter>.Setup, Exception)>? _setups;
+	private SetupContainer<(It<TParameter>.Setup Parameter, Exception Exception)>? _setups;
 	private It<TParameter>.Setup? _tempSetup;
 	private Exception? _defaultException;
 
@@ -43,10 +43,10 @@ public sealed class SetupWithParameter<TParameter> : ISetup
 
 		foreach (var setup in _setups)
 		{
-			if (!setup.Item1.Predicate(parameter))
+			if (!setup.Parameter.Predicate(parameter))
 				continue;
 
-			throw setup.Item2;
+			throw setup.Exception;
 		}
 
 		Default:
@@ -102,7 +102,7 @@ public sealed class Setup<T> : ISetup<T>
 [Obsolete("Will be generated")]
 public sealed class SetupWithParameter<TParameter, TReturns> : ISetup<TReturns>
 {
-	private SetupContainer<(It<TParameter>.Setup?, TReturns?, Exception?)>? _setups;
+	private SetupContainer<(It<TParameter>.Setup? Parameter, TReturns? Returns, Exception? Exception)>? _setups;
 	private It<TParameter>.Setup? _tempSetup;
 
 	public bool Execute(in TParameter parameter, out TReturns? returnValue)
@@ -112,13 +112,13 @@ public sealed class SetupWithParameter<TParameter, TReturns> : ISetup<TReturns>
 
 		foreach (var setup in _setups)
 		{
-			if (setup.Item1.HasValue && !setup.Item1.Value.Predicate(parameter))
+			if (setup.Parameter.HasValue && !setup.Parameter.Value.Predicate(parameter))
 				continue;
 			
-			if (setup.Item3 is not null)
-				throw setup.Item3;
+			if (setup.Exception is not null)
+				throw setup.Exception;
 			
-			returnValue = setup.Item2;
+			returnValue = setup.Returns;
 			return true;
 		}
 
@@ -146,78 +146,3 @@ public sealed class SetupWithParameter<TParameter, TReturns> : ISetup<TReturns>
 		_tempSetup = null;
 	}
 }
-
-// [Obsolete("Will be generated")]
-// public sealed class SetupWithMultipleParameters<T> : ISetup<T>
-// {
-// 	private Dictionary<int, (int?[], T?, Exception?)>? _values;
-// 	private int?[]? _currentParameters;
-//
-// 	public bool TryInvoke(in Span<int> parameterHashCodes, out T? returnValue)
-// 	{
-// 		if (_values is null)
-// 		{
-// 			returnValue = default;
-// 			return false;
-// 		}
-//
-// 		foreach (var values in _values.Values)
-// 		{
-// 			for (var i = 0; i < parameterHashCodes.Length; i++)
-// 			{
-// 				if (parameterHashCodes[i] != values.Item1[i])
-// 					goto Continue;
-// 			}
-//
-// 			if (values.Item3 is not null)
-// 				throw values.Item3;
-//
-// 			returnValue = values.Item2;
-// 			return true;
-//
-// 			Continue: ;
-// 		}
-//
-// 		returnValue = default;
-// 		return false;
-// 	}
-//
-// 	public void SetupParameters(in int?[] parameterHashCodes)
-// 	{
-// 		_currentParameters = parameterHashCodes;
-// 	}
-//
-// 	public void Returns(in T? value)
-// 	{
-// 		if (_currentParameters is null)
-// 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
-//
-// 		_values ??= new Dictionary<int, (int[], T?, Exception?)>();
-//
-// 		var hashCode = new HashCode();
-// 		foreach (var currentParameter in _currentParameters)
-// 			hashCode.Add(currentParameter);
-//
-// 		ref var valueRef = ref System.Runtime.InteropServices.CollectionsMarshal.GetValueRefOrAddDefault(_values, hashCode.ToHashCode(), out _);
-// 		valueRef = (_currentParameters, value, null);
-//
-// 		_currentParameters = null;
-// 	}
-//
-// 	public void Throws(in Exception exception)
-// 	{
-// 		if (_currentParameters is null)
-// 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
-//
-// 		_values ??= new Dictionary<int, (int[], T?, Exception?)>();
-//
-// 		var hashCode = new HashCode();
-// 		foreach (var currentParameter in _currentParameters)
-// 			hashCode.Add(currentParameter);
-//
-// 		ref var valueRef = ref System.Runtime.InteropServices.CollectionsMarshal.GetValueRefOrAddDefault(_values, hashCode.ToHashCode(), out _);
-// 		valueRef = (_currentParameters, default, exception);
-//
-// 		_currentParameters = null;
-// 	}
-// }
