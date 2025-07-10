@@ -133,6 +133,8 @@ public sealed class InvocationIntInt
 			else
 				stringBuilder.Append(_parameter1);
 
+			stringBuilder.Append(", ");
+
 			if (!string.IsNullOrEmpty(_jsonSnapshot2))
 				stringBuilder.Append(_jsonSnapshot2);
 			else
