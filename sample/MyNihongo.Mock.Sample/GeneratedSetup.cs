@@ -77,20 +77,25 @@ public sealed class SetupWithParameter<TParameter> : ISetup
 public sealed class Setup<T> : ISetup<T>
 {
 	private Exception? _exception;
-	private T? _value;
+	private Func<T?>? _returns;
 
 	public bool Execute(out T? returnValue)
 	{
 		if (_exception is not null)
 			throw _exception;
 
-		returnValue = _value;
+		returnValue = _returns is not null ? _returns() : default;
 		return true;
 	}
 
 	public void Returns(T? value)
 	{
-		_value = value;
+		Returns(() => value);
+	}
+
+	public void Returns(in Func<T?> value)
+	{
+		_returns = value;
 	}
 
 	public void Throws(in Exception exception)
