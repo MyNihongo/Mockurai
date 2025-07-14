@@ -77,4 +77,30 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var exception = Assert.Throws<IndexOutOfRangeException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 	}
+
+	[Fact]
+	public void ReturnValueFunc()
+	{
+		const int setupValue = 123;
+
+		var fixture = CreateFixture<int>();
+		fixture.Returns(() => setupValue + 2);
+		var actual = fixture.Execute(out var returnValue);
+
+		Assert.True(actual);
+		Assert.Equal(setupValue + 2, returnValue);
+	}
+
+	[Fact]
+	public void ReturnNullValueFunc()
+	{
+		int? setupValue = null;
+
+		var fixture = CreateFixture<int?>();
+		fixture.Returns(() => setupValue);
+		var actual = fixture.Execute(out var returnValue);
+
+		Assert.True(actual);
+		Assert.Equal(setupValue, returnValue);
+	}
 }
