@@ -119,10 +119,10 @@ public sealed class SetupWithParameter<TParameter, TReturns> : ISetup<TReturns>
 		{
 			if (setup.Parameter.HasValue && !setup.Parameter.Value.Predicate(parameter))
 				continue;
-			
+
 			if (setup.Exception is not null)
 				throw setup.Exception;
-			
+
 			returnValue = setup.Returns is not null ? setup.Returns(parameter) : default;
 			return true;
 		}
