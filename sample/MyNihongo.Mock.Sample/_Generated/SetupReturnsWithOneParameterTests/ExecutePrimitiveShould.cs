@@ -480,9 +480,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOneParameterTestsBa
 		const int input = 12345678;
 		var hasValue = fixture.Execute(input, out var actual);
 
-		const string expectedReturnValue = "12345681";
+		const string returnValue = "12345681";
 		Assert.True(hasValue);
-		Assert.Equal(expectedReturnValue, actual);
+		Assert.Equal(returnValue, actual);
 	}
 
 	[Fact]
@@ -496,9 +496,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOneParameterTestsBa
 
 		var hasValue = fixture.Execute(setupValue, out var actual);
 
-		const string expectedReturnValue = "12345681";
+		const string returnValue = "12345681";
 		Assert.True(hasValue);
-		Assert.Equal(expectedReturnValue, actual);
+		Assert.Equal(returnValue, actual);
 	}
 
 	[Fact]
@@ -547,9 +547,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOneParameterTestsBa
 
 		var hasValue = fixture.Execute(inputValue, out var actual);
 
-		var expectedReturnValue = $"{inputValue + 3}";
+		var returnValue = $"{inputValue + 3}";
 		Assert.True(hasValue);
-		Assert.Equal(expectedReturnValue, actual);
+		Assert.Equal(returnValue, actual);
 	}
 
 	[Theory]
