@@ -7,9 +7,9 @@ public interface ISetup
 }
 
 [Obsolete("Will be generated")]
-public interface ISetup<T> : ISetup
+public interface ISetup<in T> : ISetup
 {
-	void Returns(in T? value);
+	void Returns(T? value);
 }
 
 [Obsolete("Will be generated")]
@@ -77,20 +77,25 @@ public sealed class SetupWithParameter<TParameter> : ISetup
 public sealed class Setup<T> : ISetup<T>
 {
 	private Exception? _exception;
-	private T? _value;
+	private Func<T?>? _returns;
 
 	public bool Execute(out T? returnValue)
 	{
 		if (_exception is not null)
 			throw _exception;
 
-		returnValue = _value;
+		returnValue = _returns is not null ? _returns() : default;
 		return true;
 	}
 
-	public void Returns(in T? value)
+	public void Returns(T? value)
 	{
-		_value = value;
+		Returns(() => value);
+	}
+
+	public void Returns(in Func<T?> value)
+	{
+		_returns = value;
 	}
 
 	public void Throws(in Exception exception)
@@ -102,7 +107,7 @@ public sealed class Setup<T> : ISetup<T>
 [Obsolete("Will be generated")]
 public sealed class SetupWithParameter<TParameter, TReturns> : ISetup<TReturns>
 {
-	private SetupContainer<(It<TParameter>.Setup? Parameter, TReturns? Returns, Exception? Exception)>? _setups;
+	private SetupContainer<(It<TParameter>.Setup? Parameter, Func<TParameter, TReturns?>? Returns, Exception? Exception)>? _setups;
 	private It<TParameter>.Setup? _tempSetup;
 
 	public bool Execute(in TParameter parameter, out TReturns? returnValue)
@@ -114,11 +119,11 @@ public sealed class SetupWithParameter<TParameter, TReturns> : ISetup<TReturns>
 		{
 			if (setup.Parameter.HasValue && !setup.Parameter.Value.Predicate(parameter))
 				continue;
-			
+
 			if (setup.Exception is not null)
 				throw setup.Exception;
-			
-			returnValue = setup.Returns;
+
+			returnValue = setup.Returns is not null ? setup.Returns(parameter) : default;
 			return true;
 		}
 
@@ -132,7 +137,12 @@ public sealed class SetupWithParameter<TParameter, TReturns> : ISetup<TReturns>
 		_tempSetup = parameter.ValueSetup;
 	}
 
-	public void Returns(in TReturns? value)
+	public void Returns(TReturns? value)
+	{
+		Returns(_ => value);
+	}
+
+	public void Returns(in Func<TParameter, TReturns?> value)
 	{
 		_setups ??= [];
 		_setups.Add((_tempSetup, value, null));
@@ -142,7 +152,7 @@ public sealed class SetupWithParameter<TParameter, TReturns> : ISetup<TReturns>
 	public void Throws(in Exception exception)
 	{
 		_setups ??= [];
-		_setups.Add((_tempSetup, default, exception));
+		_setups.Add((_tempSetup, null, exception));
 		_tempSetup = null;
 	}
 }

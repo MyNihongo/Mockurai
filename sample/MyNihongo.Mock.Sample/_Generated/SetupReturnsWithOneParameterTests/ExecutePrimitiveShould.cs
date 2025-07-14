@@ -468,4 +468,120 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOneParameterTestsBa
 		var exception = Assert.Throws<ArrayTypeMismatchException>(actual);
 		Assert.Equal(errorMessage3, exception.Message);
 	}
+
+	[Fact]
+	public void ReturnForAnySetupFunc()
+	{
+		var setup = It<int>.Any();
+
+		var fixture = CreateFixture<int, string>(setup);
+		fixture.Returns(static x => (x + 3).ToString());
+
+		const int input = 12345678;
+		var hasValue = fixture.Execute(input, out var actual);
+
+		const string returnValue = "12345681";
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+	}
+
+	[Fact]
+	public void ReturnForValueSetupFunc()
+	{
+		const int setupValue = 12345678;
+		It<int> setup = setupValue;
+
+		var fixture = CreateFixture<int, string>(setup);
+		fixture.Returns(static x => (x + 3).ToString());
+
+		var hasValue = fixture.Execute(setupValue, out var actual);
+
+		const string returnValue = "12345681";
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+	}
+
+	[Fact]
+	public void ReturnDefaultNullForValueSetupFunc()
+	{
+		const int setupValue = 12345678;
+		It<int> setup = setupValue;
+
+		var fixture = CreateFixture<int, string>(setup);
+		fixture.Returns(static x => (x + 3).ToString());
+
+		const int inputValue = -123245;
+		var hasValue = fixture.Execute(inputValue, out var actual);
+
+		Assert.False(hasValue);
+		Assert.Null(actual);
+	}
+
+	[Fact]
+	public void ReturnDefaultForValueSetupFunc()
+	{
+		const int setupValue = 12345678;
+		It<int> setup = setupValue;
+
+		var fixture = CreateFixture<int, int>(setup);
+		fixture.Returns(static x => x + 3);
+
+		const int inputValue = -123245;
+		var hasValue = fixture.Execute(inputValue, out var actual);
+
+		const int expected = 0;
+		Assert.False(hasValue);
+		Assert.Equal(expected, actual);
+	}
+
+	[Theory]
+	[InlineData(-1)]
+	[InlineData(0)]
+	[InlineData(10)]
+	public void ReturnForWhereSetupFunc(int inputValue)
+	{
+		var setup = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<int, string>(setup);
+		fixture.Returns(static x => (x + 3).ToString());
+
+		var hasValue = fixture.Execute(inputValue, out var actual);
+
+		var returnValue = $"{inputValue + 3}";
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+	}
+
+	[Theory]
+	[InlineData(11)]
+	[InlineData(100)]
+	public void ReturnDefaultNullForWhereSetupFunc(int inputValue)
+	{
+		var setup = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<int, string>(setup);
+		fixture.Returns(static x => (x + 3).ToString());
+
+		var hasValue = fixture.Execute(inputValue, out var actual);
+
+		Assert.False(hasValue);
+		Assert.Null(actual);
+	}
+
+	[Theory]
+	[InlineData(11)]
+	[InlineData(100)]
+	public void ReturnDefaultForWhereSetupFunc(int inputValue)
+	{
+		var setup = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<int, int>(setup);
+		fixture.Returns(static x => x + 3);
+
+		var hasValue = fixture.Execute(inputValue, out var actual);
+
+		const int expected = 0;
+		Assert.False(hasValue);
+		Assert.Equal(expected, actual);
+	}
 }

@@ -37,7 +37,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 	}
 
 	[Fact]
-	public void ReturnNullForValueSetup1()
+	public void ReturnNullForValueSetup()
 	{
 		const string returnValue = nameof(returnValue);
 		const int setupValue1 = 12345678, setupValue2 = 987654321;
@@ -2111,5 +2111,375 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage1, exception.Message);
+	}
+
+	[Fact]
+	public void ReturnForAnySetupFunc()
+	{
+		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => (x + y - 1).ToString());
+
+		const int inputValue1 = 12345678, inputValue2 = 987654321;
+		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+
+		const string returnValue = "999999998";
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+	}
+
+	[Fact]
+	public void ReturnForValueSetupFunc()
+	{
+		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => (x + y - 1).ToString());
+
+		var hasValue = fixture.Execute(setupValue1, setupValue2, out var actual);
+
+		const string returnValue = "999999998";
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+	}
+
+	[Fact]
+	public void ReturnNullForValueSetupFunc()
+	{
+		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => (x + y - 1).ToString());
+
+		const int inputValue1 = 84837621;
+		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+
+		Assert.False(hasValue);
+		Assert.Null(actual);
+	}
+
+	[Fact]
+	public void ReturnDefaultForValueSetupFunc1()
+	{
+		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = setupValue2;
+
+		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => x + y - 1);
+
+		const int inputValue1 = 84837621;
+		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+
+		const int expected = 0;
+		Assert.False(hasValue);
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void ReturnNullForValueSetupFunc2()
+	{
+		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => (x + y - 1).ToString());
+
+		const int inputValue2 = 84837621;
+		var hasValue = fixture.Execute(setupValue1, inputValue2, out var actual);
+
+		Assert.False(hasValue);
+		Assert.Null(actual);
+	}
+
+	[Fact]
+	public void ReturnDefaultForValueSetupFunc2()
+	{
+		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = setupValue2;
+
+		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => x + y - 1);
+
+		const int inputValue2 = 84837621;
+		var hasValue = fixture.Execute(setupValue1, inputValue2, out var actual);
+
+		const int expected = 0;
+		Assert.False(hasValue);
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void ReturnNullForValueSetupFunc1And2()
+	{
+		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => (x + y - 1).ToString());
+
+		const int inputValue1 = -771245, inputValue2 = 84837621;
+		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+
+		Assert.False(hasValue);
+		Assert.Null(actual);
+	}
+
+	[Fact]
+	public void ReturnDefaultForValueSetupFunc1And2()
+	{
+		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = setupValue2;
+
+		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => x + y - 1);
+
+		const int inputValue1 = -771245, inputValue2 = 84837621;
+		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+
+		const int expected = 0;
+		Assert.False(hasValue);
+		Assert.Equal(expected, actual);
+	}
+
+	[Theory]
+	[InlineData(-1)]
+	[InlineData(0)]
+	[InlineData(10)]
+	public void ReturnForWhereSetupFunc1(int inputValue1)
+	{
+		const int setupValue2 = 987654321;
+		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => (x + y - 1).ToString());
+
+		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+
+		var returnValue = $"{inputValue1 + setupValue2 - 1}";
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+	}
+
+	[Theory]
+	[InlineData(11)]
+	[InlineData(100)]
+	public void ReturnNullForWhereSetupFunc1(int inputValue2)
+	{
+		const int setupValue2 = 987654321;
+		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => (x + y - 1).ToString());
+
+		var hasValue = fixture.Execute(inputValue2, setupValue2, out var actual);
+
+		Assert.False(hasValue);
+		Assert.Null(actual);
+	}
+
+	[Theory]
+	[InlineData(11)]
+	[InlineData(100)]
+	public void ReturnDefaultForWhereSetupFunc1(int inputValue1)
+	{
+		const int returnValue = 12345;
+		const int setupValue2 = 987654321;
+		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
+
+		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => x + y - 1);
+
+		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+
+		const int expected = 0;
+		Assert.False(hasValue);
+		Assert.Equal(expected, actual);
+	}
+
+	[Theory]
+	[InlineData(-1)]
+	[InlineData(0)]
+	[InlineData(10)]
+	public void ReturnForWhereSetupFunc2(int inputValue2)
+	{
+		const int setupValue1 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => (x + y - 1).ToString());
+
+		var hasValue = fixture.Execute(setupValue1, inputValue2, out var actual);
+
+		var returnValue = $"{setupValue1 + inputValue2 - 1}";
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+	}
+
+	[Theory]
+	[InlineData(11)]
+	[InlineData(100)]
+	public void ReturnNullForWhereSetupFunc2(int inputValue2)
+	{
+		const int setupValue1 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => (x + y - 1).ToString());
+
+		var hasValue = fixture.Execute(setupValue1, inputValue2, out var actual);
+
+		Assert.False(hasValue);
+		Assert.Null(actual);
+	}
+
+	[Theory]
+	[InlineData(11)]
+	[InlineData(100)]
+	public void ReturnDefaultForWhereSetupFunc2(int inputValue2)
+	{
+		const int setupValue1 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => x + y - 1);
+
+		var hasValue = fixture.Execute(setupValue1, inputValue2, out var actual);
+
+		const int expected = 0;
+		Assert.False(hasValue);
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void ReturnForWhereSetupsFunc()
+	{
+		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => (x + y - 1).ToString());
+
+		const int inputValue1 = 101, inputValue2 = 9;
+		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+
+		const string returnValue = "109";
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+	}
+	
+	[Fact]
+	public void ReturnNullForWhereSetupsFunc1()
+	{
+		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => (x + y - 1).ToString());
+
+		const int inputValue1 = 99, inputValue2 = 9;
+		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+
+		Assert.False(hasValue);
+		Assert.Null(actual);
+	}
+	
+	[Fact]
+	public void ReturnDefaultForWhereSetupsFunc1()
+	{
+		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => x + y - 1);
+
+		const int inputValue1 = 99, inputValue2 = 9;
+		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+
+		const int expected = 0;
+		Assert.False(hasValue);
+		Assert.Equal(expected, actual);
+	}
+	
+	[Fact]
+	public void ReturnNullForWhereSetupsFunc2()
+	{
+		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => (x + y - 1).ToString());
+
+		const int inputValue1 = 101, inputValue2 = 11;
+		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+
+		Assert.False(hasValue);
+		Assert.Null(actual);
+	}
+	
+	[Fact]
+	public void ReturnDefaultForWhereSetupsFunc2()
+	{
+		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => x + y - 1);
+
+		const int inputValue1 = 101, inputValue2 = 11;
+		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+
+		const int expected = 0;
+		Assert.False(hasValue);
+		Assert.Equal(expected, actual);
+	}
+	
+	[Fact]
+	public void ReturnNullForWhereSetupsFunc1And2()
+	{
+		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => (x + y - 1).ToString());
+
+		const int inputValue1 = 99, inputValue2 = 11;
+		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+
+		Assert.False(hasValue);
+		Assert.Null(actual);
+	}
+	
+	[Fact]
+	public void ReturnDefaultForWhereSetupsFunc1And2()
+	{
+		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((x, y) => x + y - 1);
+
+		const int inputValue1 = 99, inputValue2 = 11;
+		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+
+		const int expected = 0;
+		Assert.False(hasValue);
+		Assert.Equal(expected, actual);
 	}
 }
