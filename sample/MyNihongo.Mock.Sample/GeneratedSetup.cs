@@ -40,9 +40,11 @@ public sealed class Setup : ISetup
 [Obsolete("Will be generated")]
 public sealed class SetupWithParameter<TParameter> : ISetup
 {
-	private SetupContainer<(It<TParameter>.Setup Parameter, Exception Exception)>? _setups;
+	private SetupContainer<(It<TParameter>.Setup? Parameter, Action<TParameter>? Callback, Exception? Exception)>? _setups;
+	private (It<TParameter>.Setup? Parameter, Action<TParameter>? Callback, Exception? Exception)? _currentSetup;
 	private It<TParameter>.Setup? _tempSetup;
 	private Exception? _defaultException;
+	private Action<TParameter>? _defaultCallback;
 
 	public void Invoke(in TParameter parameter)
 	{
@@ -51,13 +53,18 @@ public sealed class SetupWithParameter<TParameter> : ISetup
 
 		foreach (var setup in _setups)
 		{
-			if (!setup.Parameter.Predicate(parameter))
+			if (setup.Parameter.HasValue && !setup.Parameter.Value.Predicate(parameter))
 				continue;
 
-			throw setup.Exception;
+			setup.Callback?.Invoke(parameter);
+			
+			if (setup.Exception is not null)
+				throw setup.Exception;
 		}
 
 		Default:
+		_defaultCallback?.Invoke(parameter);
+		
 		if (_defaultException is not null)
 			throw _defaultException;
 	}
@@ -65,6 +72,19 @@ public sealed class SetupWithParameter<TParameter> : ISetup
 	public void SetupParameter(in It<TParameter> parameter)
 	{
 		_tempSetup = parameter.ValueSetup;
+		_currentSetup = null;
+	}
+
+	public void Callback(in Action<TParameter> callback)
+	{
+		if (!_tempSetup.HasValue)
+		{
+			_defaultCallback = callback;
+			return;
+		}
+
+		_setups ??= [];
+		_currentSetup = _setups.Add((_tempSetup.Value, callback, _currentSetup?.Exception));
 	}
 
 	public void Throws(in Exception exception)
@@ -76,7 +96,7 @@ public sealed class SetupWithParameter<TParameter> : ISetup
 		}
 
 		_setups ??= [];
-		_setups.Add((_tempSetup.Value, exception));
+		_currentSetup = _setups.Add((_tempSetup.Value, _currentSetup?.Callback, exception));
 	}
 }
 
@@ -85,14 +105,22 @@ public sealed class Setup<T> : ISetup<T>
 {
 	private Exception? _exception;
 	private Func<T?>? _returns;
+	private Action? _callback;
 
 	public bool Execute(out T? returnValue)
 	{
+		_callback?.Invoke();
+
 		if (_exception is not null)
 			throw _exception;
 
 		returnValue = _returns is not null ? _returns() : default;
 		return true;
+	}
+
+	public void Callback(in Action callback)
+	{
+		_callback = callback;
 	}
 
 	public void Returns(T? value)
@@ -114,7 +142,8 @@ public sealed class Setup<T> : ISetup<T>
 [Obsolete("Will be generated")]
 public sealed class SetupWithParameter<TParameter, TReturns> : ISetup<TReturns>
 {
-	private SetupContainer<(It<TParameter>.Setup? Parameter, Func<TParameter, TReturns?>? Returns, Exception? Exception)>? _setups;
+	private SetupContainer<(It<TParameter>.Setup? Parameter, Action<TParameter>? Callback, Func<TParameter, TReturns?>? Returns, Exception? Exception)>? _setups;
+	private (It<TParameter>.Setup? Parameter, Action<TParameter>? Callback, Func<TParameter, TReturns?>? Returns, Exception? Exception)? _currentSetup;
 	private It<TParameter>.Setup? _tempSetup;
 
 	public bool Execute(in TParameter parameter, out TReturns? returnValue)
@@ -126,6 +155,8 @@ public sealed class SetupWithParameter<TParameter, TReturns> : ISetup<TReturns>
 		{
 			if (setup.Parameter.HasValue && !setup.Parameter.Value.Predicate(parameter))
 				continue;
+
+			setup.Callback?.Invoke(parameter);
 
 			if (setup.Exception is not null)
 				throw setup.Exception;
@@ -142,6 +173,13 @@ public sealed class SetupWithParameter<TParameter, TReturns> : ISetup<TReturns>
 	public void SetupParameter(in It<TParameter> parameter)
 	{
 		_tempSetup = parameter.ValueSetup;
+		_currentSetup = null;
+	}
+
+	public void Callback(in Action<TParameter> callback)
+	{
+		_setups ??= [];
+		_currentSetup = _setups.Add((_tempSetup, callback, _currentSetup?.Returns, _currentSetup?.Exception));
 	}
 
 	public void Returns(TReturns? value)
@@ -152,12 +190,12 @@ public sealed class SetupWithParameter<TParameter, TReturns> : ISetup<TReturns>
 	public void Returns(in Func<TParameter, TReturns?> value)
 	{
 		_setups ??= [];
-		_setups.Add((_tempSetup, value, null));
+		_currentSetup = _setups.Add((_tempSetup, _currentSetup?.Callback, value, _currentSetup?.Exception));
 	}
 
 	public void Throws(in Exception exception)
 	{
 		_setups ??= [];
-		_setups.Add((_tempSetup, null, exception));
+		_currentSetup = _setups.Add((_tempSetup, _currentSetup?.Callback, _currentSetup?.Returns, exception));
 	}
 }
