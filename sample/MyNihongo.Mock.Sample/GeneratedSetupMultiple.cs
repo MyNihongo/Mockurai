@@ -108,7 +108,6 @@ public sealed class SetupIntInt<TReturns> : ISetup<TReturns>
 
 		_setups ??= new SetupContainer<(It<int>.Setup?, It<int>.Setup?, Func<int, int, TReturns?>?, Exception?)>(SortComparer);
 		_setups.Add((_tempSetup.Value.Parameter1, _tempSetup.Value.Parameter2, value, null));
-		_tempSetup = null;
 	}
 
 	public void Throws(in Exception exception)
@@ -118,7 +117,6 @@ public sealed class SetupIntInt<TReturns> : ISetup<TReturns>
 
 		_setups ??= new SetupContainer<(It<int>.Setup?, It<int>.Setup?, Func<int, int, TReturns?>? Returns, Exception?)>(SortComparer);
 		_setups.Add((_tempSetup.Value.Item1, _tempSetup.Value.Item2, null, exception));
-		_tempSetup = null;
 	}
 
 	private sealed class Comparer : IComparer<(It<int>.Setup? Parameter1, It<int>.Setup? Parameter2, Func<int, int, TReturns?>? Returns, Exception? Exception)>

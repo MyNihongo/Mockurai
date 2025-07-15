@@ -77,7 +77,6 @@ public sealed class SetupWithParameter<TParameter> : ISetup
 
 		_setups ??= [];
 		_setups.Add((_tempSetup.Value, exception));
-		_tempSetup = null;
 	}
 }
 
@@ -154,13 +153,11 @@ public sealed class SetupWithParameter<TParameter, TReturns> : ISetup<TReturns>
 	{
 		_setups ??= [];
 		_setups.Add((_tempSetup, value, null));
-		_tempSetup = null;
 	}
 
 	public void Throws(in Exception exception)
 	{
 		_setups ??= [];
 		_setups.Add((_tempSetup, null, exception));
-		_tempSetup = null;
 	}
 }
