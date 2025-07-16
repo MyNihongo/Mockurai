@@ -56,14 +56,14 @@ public sealed class SetupWithParameter<TParameter> : ISetup
 				continue;
 
 			setup.Callback?.Invoke(parameter);
-			
+
 			if (setup.Exception is not null)
 				throw setup.Exception;
 		}
 
 		Default:
 		_defaultCallback?.Invoke(parameter);
-		
+
 		if (_defaultException is not null)
 			throw _defaultException;
 	}
@@ -112,8 +112,14 @@ public sealed class Setup<T> : ISetup<T>
 		if (_exception is not null)
 			throw _exception;
 
-		returnValue = _returns is not null ? _returns() : default;
-		return true;
+		if (_returns is not null)
+		{
+			returnValue = _returns();
+			return true;
+		}
+
+		returnValue = default;
+		return false;
 	}
 
 	public void Callback(in Action callback)
