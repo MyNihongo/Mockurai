@@ -114,12 +114,12 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Returns(setupValue);
 		fixture.Callback(() => counter++);
 
-		var actual = fixture.Execute(out var returnValue);
+		var hasValue = fixture.Execute(out var actual);
 
 		const int expected = 1;
-		Assert.True(actual);
+		Assert.True(hasValue);
 		Assert.Equal(expected, counter);
-		Assert.Equal(setupValue, returnValue);
+		Assert.Equal(setupValue, actual);
 	}
 
 	[Fact]
@@ -148,10 +148,10 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var fixture = CreateFixture<int>();
 		fixture.Callback(() => counter++);
 
-		var actual = fixture.Execute(out _);
+		var hasValue = fixture.Execute(out _);
 
 		const int expected = 1;
-		Assert.False(actual);
+		Assert.False(hasValue);
 		Assert.Equal(expected, counter);
 	}
 }

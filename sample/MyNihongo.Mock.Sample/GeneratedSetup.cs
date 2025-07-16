@@ -164,8 +164,14 @@ public sealed class SetupWithParameter<TParameter, TReturns> : ISetup<TReturns>
 			if (setup.Exception is not null)
 				throw setup.Exception;
 
-			returnValue = setup.Returns is not null ? setup.Returns(parameter) : default;
-			return true;
+			if (setup.Returns is not null)
+			{
+				returnValue = setup.Returns(parameter);
+				return true;
+			}
+
+			returnValue = default;
+			return false;
 		}
 
 		Default:
