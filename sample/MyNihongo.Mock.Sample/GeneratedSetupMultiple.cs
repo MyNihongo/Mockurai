@@ -6,7 +6,6 @@ public sealed class SetupIntInt : ISetup
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<(It<int>.Setup? Parameter1, It<int>.Setup? Parameter2, Action<int, int>? Callback, Exception? Exception)>? _setups;
 	private (It<int>.Setup? Parameter1, It<int>.Setup? Parameter2, Action<int, int>? Callback, Exception? Exception)? _currentSetup;
-	private (It<int>.Setup? Parameter1, It<int>.Setup? Parameter2)? _tempSetup;
 
 	public void Invoke(in int parameter1, in int parameter2)
 	{
@@ -29,26 +28,25 @@ public sealed class SetupIntInt : ISetup
 
 	public void SetupParameters(in It<int> setup1, in It<int> setup2)
 	{
-		_tempSetup = (setup1.ValueSetup, setup2.ValueSetup);
-		_currentSetup = null;
+		_currentSetup = (setup1.ValueSetup, setup2.ValueSetup, null, null);
 	}
 
 	public void Callback(in Action<int, int> callback)
 	{
-		if (!_tempSetup.HasValue)
+		if (!_currentSetup.HasValue)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
 		_setups ??= new SetupContainer<(It<int>.Setup?, It<int>.Setup?, Action<int, int>?, Exception?)>(SortComparer);
-		_currentSetup = _setups.Add((_tempSetup.Value.Parameter1, _tempSetup.Value.Parameter2, callback, _currentSetup?.Exception));
+		_currentSetup = _setups.Add((_currentSetup.Value.Parameter1, _currentSetup.Value.Parameter2, callback, _currentSetup.Value.Exception));
 	}
 
 	public void Throws(in Exception exception)
 	{
-		if (!_tempSetup.HasValue)
+		if (!_currentSetup.HasValue)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
 		_setups ??= new SetupContainer<(It<int>.Setup?, It<int>.Setup?, Action<int, int>?, Exception?)>(SortComparer);
-		_currentSetup = _setups.Add((_tempSetup.Value.Parameter1, _tempSetup.Value.Parameter2, _currentSetup?.Callback, exception));
+		_currentSetup = _setups.Add((_currentSetup.Value.Parameter1, _currentSetup.Value.Parameter2, _currentSetup.Value.Callback, exception));
 	}
 
 	private sealed class Comparer : IComparer<(It<int>.Setup? Parameter1, It<int>.Setup? Parameter2, Action<int, int>? Callback, Exception? Exception)>
@@ -79,7 +77,6 @@ public sealed class SetupIntInt<TReturns> : ISetup<TReturns>
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<(It<int>.Setup? Parameter1, It<int>.Setup? Parameter2, Action<int, int>? Callback, Func<int, int, TReturns?>? Returns, Exception? Exception)>? _setups;
 	private (It<int>.Setup? Parameter1, It<int>.Setup? Parameter2, Action<int, int>? Callback, Func<int, int, TReturns?>? Returns, Exception? Exception)? _currentSetup;
-	private (It<int>.Setup? Parameter1, It<int>.Setup? Parameter2)? _tempSetup;
 
 	public bool Execute(in int parameter1, in int parameter2, out TReturns? returnValue)
 	{
@@ -107,17 +104,16 @@ public sealed class SetupIntInt<TReturns> : ISetup<TReturns>
 
 	public void SetupParameters(in It<int> setup1, in It<int> setup2)
 	{
-		_tempSetup = (setup1.ValueSetup, setup2.ValueSetup);
-		_currentSetup = null;
+		_currentSetup = (setup1.ValueSetup, setup2.ValueSetup, null, null, null);
 	}
 
 	public void Callback(in Action<int, int> callback)
 	{
-		if (!_tempSetup.HasValue)
+		if (!_currentSetup.HasValue)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
 		_setups ??= new SetupContainer<(It<int>.Setup?, It<int>.Setup?, Action<int, int>? Callback, Func<int, int, TReturns?>?, Exception?)>(SortComparer);
-		_setups.Add((_tempSetup.Value.Parameter1, _tempSetup.Value.Parameter2, callback, _currentSetup?.Returns, _currentSetup?.Exception));
+		_setups.Add((_currentSetup.Value.Parameter1, _currentSetup.Value.Parameter2, callback, _currentSetup.Value.Returns, _currentSetup.Value.Exception));
 	}
 
 	public void Returns(TReturns? value)
@@ -127,20 +123,20 @@ public sealed class SetupIntInt<TReturns> : ISetup<TReturns>
 
 	public void Returns(in Func<int, int, TReturns?> value)
 	{
-		if (!_tempSetup.HasValue)
+		if (!_currentSetup.HasValue)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
 		_setups ??= new SetupContainer<(It<int>.Setup?, It<int>.Setup?, Action<int, int>? Callback, Func<int, int, TReturns?>?, Exception?)>(SortComparer);
-		_setups.Add((_tempSetup.Value.Parameter1, _tempSetup.Value.Parameter2, _currentSetup?.Callback, value, _currentSetup?.Exception));
+		_setups.Add((_currentSetup.Value.Parameter1, _currentSetup.Value.Parameter2, _currentSetup.Value.Callback, value, _currentSetup.Value.Exception));
 	}
 
 	public void Throws(in Exception exception)
 	{
-		if (!_tempSetup.HasValue)
+		if (!_currentSetup.HasValue)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
 		_setups ??= new SetupContainer<(It<int>.Setup?, It<int>.Setup?, Action<int, int>? Callback, Func<int, int, TReturns?>? Returns, Exception?)>(SortComparer);
-		_setups.Add((_tempSetup.Value.Item1, _tempSetup.Value.Item2, _currentSetup?.Callback, _currentSetup?.Returns, exception));
+		_setups.Add((_currentSetup.Value.Item1, _currentSetup.Value.Item2, _currentSetup.Value.Callback, _currentSetup.Value.Returns, exception));
 	}
 
 	private sealed class Comparer : IComparer<(It<int>.Setup? Parameter1, It<int>.Setup? Parameter2, Action<int, int>? Callback, Func<int, int, TReturns?>? Returns, Exception? Exception)>

@@ -42,7 +42,6 @@ public sealed class SetupWithParameter<TParameter> : ISetup
 {
 	private SetupContainer<(It<TParameter>.Setup? Parameter, Action<TParameter>? Callback, Exception? Exception)>? _setups;
 	private (It<TParameter>.Setup? Parameter, Action<TParameter>? Callback, Exception? Exception)? _currentSetup;
-	private It<TParameter>.Setup? _tempSetup;
 	private Exception? _defaultException;
 	private Action<TParameter>? _defaultCallback;
 
@@ -71,32 +70,31 @@ public sealed class SetupWithParameter<TParameter> : ISetup
 
 	public void SetupParameter(in It<TParameter> parameter)
 	{
-		_tempSetup = parameter.ValueSetup;
-		_currentSetup = null;
+		_currentSetup = (parameter.ValueSetup, null, null);
 	}
 
 	public void Callback(in Action<TParameter> callback)
 	{
-		if (!_tempSetup.HasValue)
+		if (!_currentSetup.HasValue)
 		{
 			_defaultCallback = callback;
 			return;
 		}
 
 		_setups ??= [];
-		_currentSetup = _setups.Add((_tempSetup.Value, callback, _currentSetup?.Exception));
+		_currentSetup = _setups.Add((_currentSetup.Value.Parameter, callback, _currentSetup.Value.Exception));
 	}
 
 	public void Throws(in Exception exception)
 	{
-		if (!_tempSetup.HasValue)
+		if (!_currentSetup.HasValue)
 		{
 			_defaultException = exception;
 			return;
 		}
 
 		_setups ??= [];
-		_currentSetup = _setups.Add((_tempSetup.Value, _currentSetup?.Callback, exception));
+		_currentSetup = _setups.Add((_currentSetup.Value.Parameter, _currentSetup.Value.Callback, exception));
 	}
 }
 
@@ -144,7 +142,6 @@ public sealed class SetupWithParameter<TParameter, TReturns> : ISetup<TReturns>
 {
 	private SetupContainer<(It<TParameter>.Setup? Parameter, Action<TParameter>? Callback, Func<TParameter, TReturns?>? Returns, Exception? Exception)>? _setups;
 	private (It<TParameter>.Setup? Parameter, Action<TParameter>? Callback, Func<TParameter, TReturns?>? Returns, Exception? Exception)? _currentSetup;
-	private It<TParameter>.Setup? _tempSetup;
 
 	public bool Execute(in TParameter parameter, out TReturns? returnValue)
 	{
@@ -172,14 +169,13 @@ public sealed class SetupWithParameter<TParameter, TReturns> : ISetup<TReturns>
 
 	public void SetupParameter(in It<TParameter> parameter)
 	{
-		_tempSetup = parameter.ValueSetup;
-		_currentSetup = null;
+		_currentSetup = (parameter.ValueSetup, null, null, null);
 	}
 
 	public void Callback(in Action<TParameter> callback)
 	{
 		_setups ??= [];
-		_currentSetup = _setups.Add((_tempSetup, callback, _currentSetup?.Returns, _currentSetup?.Exception));
+		_currentSetup = _setups.Add((_currentSetup?.Parameter, callback, _currentSetup?.Returns, _currentSetup?.Exception));
 	}
 
 	public void Returns(TReturns? value)
@@ -190,12 +186,12 @@ public sealed class SetupWithParameter<TParameter, TReturns> : ISetup<TReturns>
 	public void Returns(in Func<TParameter, TReturns?> value)
 	{
 		_setups ??= [];
-		_currentSetup = _setups.Add((_tempSetup, _currentSetup?.Callback, value, _currentSetup?.Exception));
+		_currentSetup = _setups.Add((_currentSetup?.Parameter, _currentSetup?.Callback, value, _currentSetup?.Exception));
 	}
 
 	public void Throws(in Exception exception)
 	{
 		_setups ??= [];
-		_currentSetup = _setups.Add((_tempSetup, _currentSetup?.Callback, _currentSetup?.Returns, exception));
+		_currentSetup = _setups.Add((_currentSetup?.Parameter, _currentSetup?.Callback, _currentSetup?.Returns, exception));
 	}
 }
