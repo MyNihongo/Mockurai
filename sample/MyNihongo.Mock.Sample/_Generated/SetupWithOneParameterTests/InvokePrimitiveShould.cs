@@ -3,6 +3,24 @@ namespace MyNihongo.Mock.Sample._Generated.SetupWithOneParameterTests;
 public sealed class InvokePrimitiveShould : SetupWithOneParameterTestsBase
 {
 	[Fact]
+	public void NotDuplicateSetupAny()
+	{
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Callback(_ => { });
+
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Throws(new Exception());
+
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Callback(_ => { Debug.WriteLine("output"); });
+
+		const int expected = 1;
+		var actual = GetSetupCount(fixture);
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
 	public void ThrowForAnySetup()
 	{
 		const string errorMessage = nameof(errorMessage);
