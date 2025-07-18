@@ -2865,4 +2865,263 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 		Assert.False(hasValue);
 		Assert.Equal(expected, callbackValue);
 	}
+
+	[Fact]
+	public void NotDuplicateSameSetup()
+	{
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
+		fixture.Callback((_, _) => { });
+		fixture.Throws(new Exception());
+		fixture.Callback((_, _) => { Debug.WriteLine("output"); });
+		fixture.Throws(new Exception());
+
+		const int expected = 1;
+		var actual = GetSetupCount(fixture);
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void InsertAllSetups()
+	{
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
+		fixture.Callback((_, _) => { });
+
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
+		fixture.Throws(new Exception());
+
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
+		fixture.Callback((_, _) => { Debug.WriteLine("output"); });
+
+		const int expected = 3;
+		var actual = GetSetupCount(fixture);
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void ReturnLastResultAny()
+	{
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
+		fixture.Returns("random text");
+
+		const string returnValue = nameof(returnValue);
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
+		fixture.Returns(returnValue);
+
+		const int inputValue1 = 12345678, inputValue2 = 23456;
+		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionAny()
+	{
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		const int inputValue1 = 12345678, inputValue2 = 23456;
+		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ReturnLastResultAnyWhere()
+	{
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Where(x => x > 10));
+		fixture.Returns("random text");
+
+		const string returnValue = nameof(returnValue);
+		fixture.SetupParameters(It<int>.Any(), It<int>.Where(x => x > 10));
+		fixture.Returns(returnValue);
+
+		const int inputValue1 = 12345678, inputValue2 = 23456;
+		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionAnyWhere()
+	{
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Where(x => x > 10));
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameters(It<int>.Any(), It<int>.Where(x => x > 10));
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		const int inputValue1 = 12345678, inputValue2 = 23456;
+		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ReturnLastResultAnyValue()
+	{
+		const int setupValue2 = 123;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Value(setupValue2));
+		fixture.Returns("random text");
+
+		const string returnValue = nameof(returnValue);
+		fixture.SetupParameters(It<int>.Any(), It<int>.Value(setupValue2));
+		fixture.Returns(returnValue);
+
+		const int inputValue1 = 12345678;
+		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionAnyValue()
+	{
+		const int setupValue2 = 123;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Value(setupValue2));
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameters(It<int>.Any(), It<int>.Value(setupValue2));
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		const int inputValue1 = 12345678;
+		Action actual = () => fixture.Execute(inputValue1, setupValue2, out _);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ReturnLastResultWhere()
+	{
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(It<int>.Where(x => x > 100), It<int>.Where(x => x < 20));
+		fixture.Returns("random text");
+
+		const string returnValue = nameof(returnValue);
+		fixture.SetupParameters(It<int>.Where(x => x > 100), It<int>.Where(x => x < 20));
+		fixture.Returns(returnValue);
+
+		const int inputValue1 = 123, inputValue2 = 15;
+		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionWhere()
+	{
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(It<int>.Where(x => x > 100), It<int>.Where(x => x < 20));
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameters(It<int>.Where(x => x > 100), It<int>.Where(x => x < 20));
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		const int inputValue1 = 123, inputValue2 = 15;
+		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ReturnLastResultWhereValue()
+	{
+		const int setupValue2 = 123;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(It<int>.Where(x => x > 100), setupValue2);
+		fixture.Returns("random text");
+
+		const string returnValue = nameof(returnValue);
+		fixture.SetupParameters(It<int>.Where(x => x > 100), setupValue2);
+		fixture.Returns(returnValue);
+
+		const int inputValue1 = 123;
+		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionWhereValue()
+	{
+		const int setupValue2 = 123;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(It<int>.Where(x => x > 100), setupValue2);
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameters(It<int>.Where(x => x > 100), setupValue2);
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		const int inputValue1 = 123;
+		Action actual = () => fixture.Execute(inputValue1, setupValue2, out _);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ReturnLastResultValue()
+	{
+		const int setupValue1 = 11, setupValue2 = 123;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setupValue1, setupValue2);
+		fixture.Returns("random text");
+
+		const string returnValue = nameof(returnValue);
+		fixture.SetupParameters(setupValue1, setupValue2);
+		fixture.Returns(returnValue);
+
+		var hasValue = fixture.Execute(setupValue1, setupValue2, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionValue()
+	{
+		const int setupValue1 = 11, setupValue2 = 123;
+
+		var fixture = CreateFixture<SetupIntInt<string>>();
+		fixture.SetupParameters(setupValue1, setupValue2);
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameters(setupValue1, setupValue2);
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		Action actual = () => fixture.Execute(setupValue1, setupValue2, out _);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
 }
