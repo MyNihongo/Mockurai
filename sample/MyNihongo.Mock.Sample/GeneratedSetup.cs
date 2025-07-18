@@ -41,8 +41,8 @@ public sealed class Setup : ISetup
 public sealed class SetupWithParameter<TParameter> : ISetup
 {
 	private static readonly Comparer SortComparer = new();
-	private SetupContainer<(It<TParameter>.Setup? Parameter, Action<TParameter>? Callback, Exception? Exception)>? _setups;
-	private (It<TParameter>.Setup? Parameter, Action<TParameter>? Callback, Exception? Exception)? _currentSetup;
+	private SetupContainer<Item>? _setups;
+	private Item? _currentSetup;
 
 	public void Invoke(in TParameter parameter)
 	{
@@ -63,38 +63,46 @@ public sealed class SetupWithParameter<TParameter> : ISetup
 
 	public void SetupParameter(in It<TParameter> parameter)
 	{
-		_currentSetup = (parameter.ValueSetup, null, null);
+		_currentSetup = new Item(parameter.ValueSetup);
+		
+		_setups ??= new SetupContainer<Item>(SortComparer);
+		_setups.Add(_currentSetup);
 	}
 
 	public void Callback(in Action<TParameter> callback)
 	{
-		if (!_currentSetup.HasValue)
+		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_setups ??= new SetupContainer<(It<TParameter>.Setup? Parameter, Action<TParameter>? Callback, Exception? Exception)>(SortComparer);
-		_currentSetup = _setups.Add((_currentSetup.Value.Parameter, callback, _currentSetup.Value.Exception));
+		_currentSetup.Callback = callback;
 	}
 
 	public void Throws(in Exception exception)
 	{
-		if (!_currentSetup.HasValue)
+		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_setups ??= new SetupContainer<(It<TParameter>.Setup? Parameter, Action<TParameter>? Callback, Exception? Exception)>(SortComparer);
-		_currentSetup = _setups.Add((_currentSetup.Value.Parameter, _currentSetup.Value.Callback, exception));
+		_currentSetup.Exception  = exception;
+	}
+	
+	private sealed class Item(in It<TParameter>.Setup? parameter)
+	{
+		public readonly It<TParameter>.Setup? Parameter = parameter;
+		public Action<TParameter>?  Callback;
+		public Exception? Exception;
 	}
 
-	private sealed class Comparer : IComparer<(It<TParameter>.Setup? Parameter, Action<TParameter>? Callback, Exception? Exception)>
+	private sealed class Comparer : IComparer<Item>
 	{
-		public int Compare((It<TParameter>.Setup? Parameter, Action<TParameter>? Callback, Exception? Exception) x, (It<TParameter>.Setup? Parameter, Action<TParameter>? Callback, Exception? Exception) y)
+		public int Compare(Item? x, Item? y)
 		{
 			var xSort = 0;
 			var ySort = 0;
 
-			if (x.Parameter.HasValue)
+			if (x?.Parameter.HasValue == true)
 				xSort += x.Parameter.Value.Sort;
 
-			if (y.Parameter.HasValue)
+			if (y?.Parameter.HasValue == true)
 				ySort += y.Parameter.Value.Sort;
 
 			return xSort.CompareTo(ySort);

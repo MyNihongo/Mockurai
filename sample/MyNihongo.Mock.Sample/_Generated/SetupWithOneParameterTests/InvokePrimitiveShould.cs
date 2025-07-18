@@ -3,24 +3,6 @@ namespace MyNihongo.Mock.Sample._Generated.SetupWithOneParameterTests;
 public sealed class InvokePrimitiveShould : SetupWithOneParameterTestsBase
 {
 	[Fact]
-	public void NotDuplicateSetupAny()
-	{
-		var fixture = CreateFixture<int>();
-		fixture.SetupParameter(It<int>.Any());
-		fixture.Callback(_ => { });
-
-		fixture.SetupParameter(It<int>.Any());
-		fixture.Throws(new Exception());
-
-		fixture.SetupParameter(It<int>.Any());
-		fixture.Callback(_ => { Debug.WriteLine("output"); });
-
-		const int expected = 1;
-		var actual = GetSetupCount(fixture);
-		Assert.Equal(expected, actual);
-	}
-
-	[Fact]
 	public void ThrowForAnySetup()
 	{
 		const string errorMessage = nameof(errorMessage);
@@ -366,5 +348,94 @@ public sealed class InvokePrimitiveShould : SetupWithOneParameterTestsBase
 
 		const int expected = 0;
 		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotDuplicateSameSetup()
+	{
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Callback(_ => { });
+		fixture.Throws(new Exception());
+		fixture.Callback(_ => { Debug.WriteLine("output"); });
+
+		const int expected = 1;
+		var actual = GetSetupCount(fixture);
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void InsertAllSetups()
+	{
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Callback(_ => { });
+
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Throws(new Exception());
+
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Callback(_ => { Debug.WriteLine("output"); });
+
+		const int expected = 3;
+		var actual = GetSetupCount(fixture);
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionAny()
+	{
+		var fixture = CreateFixture<int>();
+
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		const int inputValue = 12345678;
+		var actual = () => fixture.Invoke(inputValue);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionWhere()
+	{
+		var fixture = CreateFixture<int>();
+
+		fixture.SetupParameter(It<int>.Where(x => x > 10));
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameter(It<int>.Where(x => x > 100));
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		const int inputValue = 12345678;
+		var actual = () => fixture.Invoke(inputValue);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionValue()
+	{
+		const int setupValue = 12345678;
+		var fixture = CreateFixture<int>();
+
+		fixture.SetupParameter(setupValue);
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameter(setupValue);
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		var actual = () => fixture.Invoke(setupValue);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
 	}
 }

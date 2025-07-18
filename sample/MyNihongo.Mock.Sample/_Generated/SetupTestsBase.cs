@@ -14,8 +14,8 @@ public abstract class SetupTestsBase
 
 		var setupContainerType = value.GetType();
 		setupField = setupContainerType.GetField("_setups", BindingFlags.Instance | BindingFlags.NonPublic);
-		value = setupField?.GetValue(value) ?? throw new NullReferenceException("Field not found, name=`_setups`");
+		var list = (IList?)setupField?.GetValue(value) ?? throw new NullReferenceException("Field not found, name=`_setups`");
 
-		return value.Count;
+		return list.Count;
 	}
 }
