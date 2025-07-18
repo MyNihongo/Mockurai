@@ -15,7 +15,7 @@ public sealed class SetupContainer<T> : IEnumerable<T>
 		_comparer = comparer;
 	}
 
-	public T Add(in T item)
+	public void Add(in T item)
 	{
 		var index = _setups.BinarySearch(item, _comparer);
 
@@ -31,7 +31,6 @@ public sealed class SetupContainer<T> : IEnumerable<T>
 		}
 
 		_setups.Insert(index, item);
-		return item;
 	}
 
 	public IEnumerator<T> GetEnumerator()
