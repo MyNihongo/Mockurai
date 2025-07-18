@@ -696,24 +696,6 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOneParameterTestsBa
 	}
 
 	[Fact]
-	public void NotInvokeCallbackForValue()
-	{
-		const int setupValue = 12345678;
-		var setup = It<int>.Value(setupValue);
-		var callbackValue = 0;
-
-		var fixture = CreateFixture<int, string>(setup);
-		fixture.Callback(x => callbackValue = x + 1);
-
-		const int inputValue = -64713;
-		var hasValue = fixture.Execute(inputValue, out _);
-
-		const int expected = 0;
-		Assert.False(hasValue);
-		Assert.Equal(expected, callbackValue);
-	}
-
-	[Fact]
 	public void InvokeCallbackForWhere()
 	{
 		var setup = It<int>.Where(x => x > 10);
@@ -765,6 +747,24 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOneParameterTestsBa
 		var exception = Assert.Throws<Exception>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForValue()
+	{
+		const int setupValue = 12345678;
+		var setup = It<int>.Value(setupValue);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<int, string>(setup);
+		fixture.Callback(x => callbackValue = x + 1);
+
+		const int inputValue = -64713;
+		var hasValue = fixture.Execute(inputValue, out _);
+
+		const int expected = 0;
+		Assert.False(hasValue);
+		Assert.Equal(expected, callbackValue);
 	}
 
 	[Fact]
