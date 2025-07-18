@@ -969,4 +969,456 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage1, exception.Message);
 	}
+	
+	[Fact]
+	public void InvokeCallbackForAny()
+	{
+		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((x, y) => callbackValue = x - y + 1);
+
+		const int inputValue1 = 99, inputValue2 = 11;
+		fixture.Invoke(inputValue1, inputValue2);
+
+		const int expected = 89;
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForAnyBeforeThrows()
+	{
+		const string exceptionMessage = nameof(exceptionMessage);
+		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Throws(new Exception(exceptionMessage));
+		fixture.Callback((x, y) => callbackValue = x - y + 1);
+
+		const int inputValue1 = 99, inputValue2 = 11;
+		var actual = () => fixture.Invoke(inputValue1, inputValue2);
+
+		const int expected = 89;
+		var exception = Assert.Throws<Exception>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForValue()
+	{
+		const int setupValue1 = 12345678, setupValue2 = 23456789;
+		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((x, y) => callbackValue = x - y + 1);
+
+		fixture.Invoke(setupValue1, setupValue2);
+
+		const int expected = -11111110;
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForValueBeforeThrows()
+	{
+		const string exceptionMessage = nameof(exceptionMessage);
+		const int setupValue1 = 12345678, setupValue2 = 23456789;
+		It<int> setup1 = setupValue1, setup2 = setupValue2;
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Throws(new Exception(exceptionMessage));
+		fixture.Callback((x, y) => callbackValue = x - y + 1);
+
+		var actual = () => fixture.Invoke(setupValue1, setupValue2);
+
+		const int expected = -11111110;
+		var exception = Assert.Throws<Exception>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForWhere()
+	{
+		It<int> setup1 = It<int>.Where(x => x > 20), setup2 = It<int>.Where(x => x < 15);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((x, y) => callbackValue = x - y + 1);
+
+		const int inputValue1 = 99, inputValue2 = 11;
+		fixture.Invoke(inputValue1, inputValue2);
+
+		const int expected = 89;
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForWhereBeforeThrows()
+	{
+		const string exceptionMessage = nameof(exceptionMessage);
+		It<int> setup1 = It<int>.Where(x => x > 20), setup2 = It<int>.Where(x => x < 15);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Throws(new Exception(exceptionMessage));
+		fixture.Callback((x, y) => callbackValue = x - y + 1);
+
+		const int inputValue1 = 99, inputValue2 = 11;
+		var actual = () => fixture.Invoke(inputValue1, inputValue2);
+
+		const int expected = 89;
+		var exception = Assert.Throws<Exception>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForValue1()
+	{
+		const int setupValue1 = 12345678, setupValue2 = 23456789;
+		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((x, y) => callbackValue = x - y + 1);
+
+		const int inputValue1 = -64713;
+		fixture.Invoke(inputValue1, setupValue2);
+
+		const int expected = 0;
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForValue2()
+	{
+		const int setupValue1 = 12345678, setupValue2 = 23456789;
+		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((x, y) => callbackValue = x - y + 1);
+
+		const int inputValue2 = -64713;
+		fixture.Invoke(setupValue1, inputValue2);
+
+		const int expected = 0;
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForValue3()
+	{
+		const int setupValue1 = 12345678, setupValue2 = 23456789;
+		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((x, y) => callbackValue = x - y + 1);
+
+		const int inputValue1 = -64713, inputValue2 = -28257;
+		fixture.Invoke(inputValue1, inputValue2);
+
+		const int expected = 0;
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForValue4()
+	{
+		const int setupValue1 = 12345678, setupValue2 = 23456789;
+		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((x, y) => callbackValue = x - y + 1);
+
+		fixture.Invoke(setupValue2, setupValue1);
+
+		const int expected = 0;
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForValueAny1()
+	{
+		const int setupValue1 = 12345678;
+		It<int> setup1 = It<int>.Value(setupValue1), setup2 = It<int>.Any();
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((x, y) => callbackValue = x - y + 1);
+
+		const int inputValue1 = -2341414, inputValue2 = 1234;
+		fixture.Invoke(inputValue1, inputValue2);
+
+		const int expected = 0;
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForValueAny2()
+	{
+		const int setupValue2 = 12345678;
+		It<int> setup1 = It<int>.Any(), setup2 = setupValue2;
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((x, y) => callbackValue = x - y + 1);
+
+		const int inputValue1 = -2341414, inputValue2 = 1234;
+		fixture.Invoke(inputValue1, inputValue2);
+
+		const int expected = 0;
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForWhere1()
+	{
+		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Where(x => x < 20);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((x, y) => callbackValue = x - y + 1);
+
+		const int inputValue1 = 10, inputValue2 = 9;
+		fixture.Invoke(inputValue1, inputValue2);
+
+		const int expected = 0;
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForWhere2()
+	{
+		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Where(x => x < 20);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((x, y) => callbackValue = x - y + 1);
+
+		const int inputValue1 = 11, inputValue2 = 20;
+		fixture.Invoke(inputValue1, inputValue2);
+
+		const int expected = 0;
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForWhere3()
+	{
+		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Where(x => x < 20);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((x, y) => callbackValue = x - y + 1);
+
+		const int inputValue1 = 10, inputValue2 = 20;
+		fixture.Invoke(inputValue1, inputValue2);
+
+		const int expected = 0;
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForWhereAny1()
+	{
+		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Any();
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((x, y) => callbackValue = x - y + 1);
+
+		const int inputValue1 = 10, inputValue2 = 20;
+		fixture.Invoke(inputValue1, inputValue2);
+
+		const int expected = 0;
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForWhereAny2()
+	{
+		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Where(x => x < 20);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((x, y) => callbackValue = x - y + 1);
+
+		const int inputValue1 = 10, inputValue2 = 20;
+		fixture.Invoke(inputValue1, inputValue2);
+
+		const int expected = 0;
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotDuplicateSameSetup()
+	{
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
+		fixture.Callback((_, _) => { });
+		fixture.Throws(new Exception());
+		fixture.Callback((_, _) => { Debug.WriteLine("output"); });
+		fixture.Throws(new Exception());
+
+		const int expected = 1;
+		var actual = GetSetupCount(fixture);
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void InsertAllSetups()
+	{
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
+		fixture.Callback((_, _) => { });
+
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
+		fixture.Throws(new Exception());
+
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
+		fixture.Callback((_, _) => { Debug.WriteLine("output"); });
+
+		const int expected = 3;
+		var actual = GetSetupCount(fixture);
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionAny()
+	{
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		const int inputValue1 = 12345678, inputValue2 = 23456;
+		var actual = () => fixture.Invoke(inputValue1, inputValue2);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionAnyWhere()
+	{
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Where(x => x > 10));
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameters(It<int>.Any(), It<int>.Where(x => x > 10));
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		const int inputValue1 = 12345678, inputValue2 = 23456;
+		var actual = () => fixture.Invoke(inputValue1, inputValue2);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionAnyValue()
+	{
+		const int setupValue2 = 123;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Value(setupValue2));
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameters(It<int>.Any(), It<int>.Value(setupValue2));
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		const int inputValue1 = 12345678;
+		var actual = () => fixture.Invoke(inputValue1, setupValue2);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionWhere()
+	{
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(It<int>.Where(x => x > 100), It<int>.Where(x => x < 20));
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameters(It<int>.Where(x => x > 100), It<int>.Where(x => x < 20));
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		const int inputValue1 = 123, inputValue2 = 15;
+		var actual = () => fixture.Invoke(inputValue1, inputValue2);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionWhereValue()
+	{
+		const int setupValue2 = 123;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(It<int>.Where(x => x > 100), setupValue2);
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameters(It<int>.Where(x => x > 100), setupValue2);
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		const int inputValue1 = 123;
+		var actual = () => fixture.Invoke(inputValue1, setupValue2);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionValue()
+	{
+		const int setupValue1 = 11, setupValue2 = 123;
+
+		var fixture = CreateFixture<SetupIntInt>();
+		fixture.SetupParameters(setupValue1, setupValue2);
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameters(setupValue1, setupValue2);
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		var actual = () => fixture.Invoke(setupValue1, setupValue2);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
 }

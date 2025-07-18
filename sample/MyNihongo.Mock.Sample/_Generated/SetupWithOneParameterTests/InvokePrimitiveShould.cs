@@ -214,4 +214,228 @@ public sealed class InvokePrimitiveShould : SetupWithOneParameterTestsBase
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage1, exception.Message);
 	}
+
+	[Fact]
+	public void InvokeCallbackForAny()
+	{
+		var setup = It<int>.Any();
+		var callbackValue = 0;
+
+		var fixture = CreateFixture(setup);
+		fixture.Callback(x => callbackValue = x + 1);
+
+		const int inputValue = 12345678;
+		fixture.Invoke(inputValue);
+
+		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForAnyBeforeThrows()
+	{
+		const string exceptionMessage = nameof(exceptionMessage);
+		var setup = It<int>.Any();
+		var callbackValue = 0;
+
+		var fixture = CreateFixture(setup);
+		fixture.Throws(new Exception(exceptionMessage));
+		fixture.Callback(x => callbackValue = x + 1);
+
+		const int inputValue = 12345678;
+		var actual = () => fixture.Invoke(inputValue);
+
+		var exception = Assert.Throws<Exception>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForValue()
+	{
+		const int setupValue = 12345678;
+		var setup = It<int>.Value(setupValue);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture(setup);
+		fixture.Callback(x => callbackValue = x + 1);
+		fixture.Invoke(setupValue);
+
+		Assert.Equal(setupValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForValueBeforeThrows()
+	{
+		const string exceptionMessage = nameof(exceptionMessage);
+		const int setupValue = 12345678;
+		var setup = It<int>.Value(setupValue);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture(setup);
+		fixture.Throws(new Exception(exceptionMessage));
+		fixture.Callback(x => callbackValue = x + 1);
+
+		const int inputValue = 12345678;
+		var actual = () => fixture.Invoke(inputValue);
+
+		var exception = Assert.Throws<Exception>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForValue()
+	{
+		const int setupValue = 12345678;
+		var setup = It<int>.Value(setupValue);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture(setup);
+		fixture.Callback(x => callbackValue = x + 1);
+
+		const int inputValue = -64713;
+		fixture.Invoke(inputValue);
+
+		const int expected = 0;
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForWhere()
+	{
+		var setup = It<int>.Where(x => x > 10);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture(setup);
+		fixture.Callback(x => callbackValue = x + 1);
+
+		const int inputValue = 12345678;
+		fixture.Invoke(inputValue);
+
+		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForWhereBeforeThrows()
+	{
+		const string exceptionMessage = nameof(exceptionMessage);
+		var setup = It<int>.Where(x => x > 10);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture(setup);
+		fixture.Throws(new Exception(exceptionMessage));
+		fixture.Callback(x => callbackValue = x + 1);
+
+		const int inputValue = 12345678;
+		var actual = () => fixture.Invoke(inputValue);
+
+		var exception = Assert.Throws<Exception>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForWhere()
+	{
+		var setup = It<int>.Where(x => x > 10);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture(setup);
+		fixture.Callback(x => callbackValue = x + 1);
+
+		const int inputValue = -64713;
+		fixture.Invoke(inputValue);
+
+		const int expected = 0;
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotDuplicateSameSetup()
+	{
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Callback(_ => { });
+		fixture.Throws(new Exception());
+		fixture.Callback(_ => { Debug.WriteLine("output"); });
+
+		const int expected = 1;
+		var actual = GetSetupCount(fixture);
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void InsertAllSetups()
+	{
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Callback(_ => { });
+
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Throws(new Exception());
+
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Callback(_ => { Debug.WriteLine("output"); });
+
+		const int expected = 3;
+		var actual = GetSetupCount(fixture);
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionAny()
+	{
+		var fixture = CreateFixture<int>();
+
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		const int inputValue = 12345678;
+		var actual = () => fixture.Invoke(inputValue);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionWhere()
+	{
+		var fixture = CreateFixture<int>();
+
+		fixture.SetupParameter(It<int>.Where(x => x > 10));
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameter(It<int>.Where(x => x > 100));
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		const int inputValue = 12345678;
+		var actual = () => fixture.Invoke(inputValue);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionValue()
+	{
+		const int setupValue = 12345678;
+		var fixture = CreateFixture<int>();
+
+		fixture.SetupParameter(setupValue);
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameter(setupValue);
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		var actual = () => fixture.Invoke(setupValue);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
 }

@@ -584,4 +584,350 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOneParameterTestsBa
 		Assert.False(hasValue);
 		Assert.Equal(expected, actual);
 	}
+
+	[Fact]
+	public void InvokeCallbackForAny()
+	{
+		var setup = It<int>.Any();
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<int, string>(setup);
+		fixture.Callback(x => callbackValue = x + 1);
+
+		const int inputValue = 12345678;
+		var hasValue = fixture.Execute(inputValue, out _);
+
+		Assert.False(hasValue);
+		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForAnyBeforeReturns()
+	{
+		const string returnValue = nameof(returnValue);
+		var setup = It<int>.Any();
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<int, string>(setup);
+		fixture.Returns(returnValue);
+		fixture.Callback(x => callbackValue = x + 1);
+
+		const int inputValue = 12345678;
+		var hasValue = fixture.Execute(inputValue, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForAnyBeforeThrows()
+	{
+		const string exceptionMessage = nameof(exceptionMessage);
+		var setup = It<int>.Any();
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<int, string>(setup);
+		fixture.Throws(new Exception(exceptionMessage));
+		fixture.Callback(x => callbackValue = x + 1);
+
+		const int inputValue = 12345678;
+		Action actual = () => fixture.Execute(inputValue, out _);
+
+		var exception = Assert.Throws<Exception>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForValue()
+	{
+		const int setupValue = 12345678;
+		var setup = It<int>.Value(setupValue);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<int, string>(setup);
+		fixture.Callback(x => callbackValue = x + 1);
+
+		var hasValue = fixture.Execute(setupValue, out _);
+
+		Assert.False(hasValue);
+		Assert.Equal(setupValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForValueBeforeReturns()
+	{
+		const string returnValue = nameof(returnValue);
+		const int setupValue = 12345678;
+		var setup = It<int>.Value(setupValue);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<int, string>(setup);
+		fixture.Returns(returnValue);
+		fixture.Callback(x => callbackValue = x + 1);
+
+		const int inputValue = 12345678;
+		var hasValue = fixture.Execute(inputValue, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForValueBeforeThrows()
+	{
+		const string exceptionMessage = nameof(exceptionMessage);
+		const int setupValue = 12345678;
+		var setup = It<int>.Value(setupValue);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<int, string>(setup);
+		fixture.Throws(new Exception(exceptionMessage));
+		fixture.Callback(x => callbackValue = x + 1);
+
+		const int inputValue = 12345678;
+		Action actual = () => fixture.Execute(inputValue, out _);
+
+		var exception = Assert.Throws<Exception>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForWhere()
+	{
+		var setup = It<int>.Where(x => x > 10);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<int, string>(setup);
+		fixture.Callback(x => callbackValue = x + 1);
+
+		const int inputValue = 12345678;
+		var hasValue = fixture.Execute(inputValue, out _);
+
+		Assert.False(hasValue);
+		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForWhereBeforeReturns()
+	{
+		const string returnValue = nameof(returnValue);
+		var setup = It<int>.Where(x => x > 10);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<int, string>(setup);
+		fixture.Returns(returnValue);
+		fixture.Callback(x => callbackValue = x + 1);
+
+		const int inputValue = 12345678;
+		var hasValue = fixture.Execute(inputValue, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForWhereBeforeThrows()
+	{
+		const string exceptionMessage = nameof(exceptionMessage);
+		var setup = It<int>.Where(x => x > 10);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<int, string>(setup);
+		fixture.Throws(new Exception(exceptionMessage));
+		fixture.Callback(x => callbackValue = x + 1);
+
+		const int inputValue = 12345678;
+		Action actual = () => fixture.Execute(inputValue, out _);
+
+		var exception = Assert.Throws<Exception>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForValue()
+	{
+		const int setupValue = 12345678;
+		var setup = It<int>.Value(setupValue);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<int, string>(setup);
+		fixture.Callback(x => callbackValue = x + 1);
+
+		const int inputValue = -64713;
+		var hasValue = fixture.Execute(inputValue, out _);
+
+		const int expected = 0;
+		Assert.False(hasValue);
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForWhere()
+	{
+		var setup = It<int>.Where(x => x > 10);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture<int, string>(setup);
+		fixture.Callback(x => callbackValue = x + 1);
+
+		const int inputValue = -64713;
+		var hasValue = fixture.Execute(inputValue, out _);
+
+		const int expected = 0;
+		Assert.False(hasValue);
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotDuplicateSameSetup()
+	{
+		var fixture = CreateFixture<int, string>();
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Callback(_ => { });
+		fixture.Throws(new Exception());
+		fixture.Callback(_ => { Debug.WriteLine("output"); });
+		fixture.Throws(new Exception());
+
+		const int expected = 1;
+		var actual = GetSetupCount(fixture);
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void InsertAllSetups()
+	{
+		var fixture = CreateFixture<int, string>();
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Callback(_ => { });
+
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Throws(new Exception());
+
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Callback(_ => { Debug.WriteLine("output"); });
+
+		const int expected = 3;
+		var actual = GetSetupCount(fixture);
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void ReturnLastResultAny()
+	{
+		var fixture = CreateFixture<int, string>();
+
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Returns("random text");
+
+		const string returnValue = nameof(returnValue);
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Returns(returnValue);
+
+		const int inputValue = 12345678;
+		var hasValue = fixture.Execute(inputValue, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionAny()
+	{
+		var fixture = CreateFixture<int, string>();
+
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		const int inputValue = 12345678;
+		Action actual = () => fixture.Execute(inputValue, out _);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ReturnLastResultWhere()
+	{
+		var fixture = CreateFixture<int, string>();
+
+		fixture.SetupParameter(It<int>.Where(x => x > 10));
+		fixture.Returns("random text");
+
+		const string returnValue = nameof(returnValue);
+		fixture.SetupParameter(It<int>.Where(x => x > 100));
+		fixture.Returns(returnValue);
+
+		const int inputValue = 12345678;
+		var hasValue = fixture.Execute(inputValue, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionWhere()
+	{
+		var fixture = CreateFixture<int, string>();
+
+		fixture.SetupParameter(It<int>.Where(x => x > 10));
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameter(It<int>.Where(x => x > 100));
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		const int inputValue = 12345678;
+		Action actual = () => fixture.Execute(inputValue, out _);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ReturnLastResultValue()
+	{
+		const int setupValue = 12345678;
+		var fixture = CreateFixture<int, string>();
+
+		fixture.SetupParameter(setupValue);
+		fixture.Returns("random text");
+
+		const string returnValue = nameof(returnValue);
+		fixture.SetupParameter(setupValue);
+		fixture.Returns(returnValue);
+
+		var hasValue = fixture.Execute(setupValue, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionValue()
+	{
+		const int setupValue = 12345678;
+		var fixture = CreateFixture<int, string>();
+
+		fixture.SetupParameter(setupValue);
+		fixture.Throws(new Exception("random text"));
+
+		const string exceptionMessage = nameof(exceptionMessage);
+		fixture.SetupParameter(setupValue);
+		fixture.Throws(new NullReferenceException(exceptionMessage));
+
+		Action actual = () => fixture.Execute(setupValue, out _);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
 }

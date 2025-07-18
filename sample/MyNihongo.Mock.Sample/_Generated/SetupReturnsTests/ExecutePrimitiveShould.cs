@@ -9,7 +9,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var actual = fixture.Execute(out var returnValue);
 
 		const int expected = 0;
-		Assert.True(actual);
+		Assert.False(actual);
 		Assert.Equal(expected, returnValue);
 	}
 
@@ -19,7 +19,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var fixture = CreateFixture<int?>();
 		var actual = fixture.Execute(out var returnValue);
 
-		Assert.True(actual);
+		Assert.False(actual);
 		Assert.Null(returnValue);
 	}
 
@@ -102,5 +102,56 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 
 		Assert.True(actual);
 		Assert.Equal(setupValue, returnValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackBeforeReturns()
+	{
+		const int setupValue = 123;
+		var counter = 0;
+
+		var fixture = CreateFixture<int>();
+		fixture.Returns(setupValue);
+		fixture.Callback(() => counter++);
+
+		var hasValue = fixture.Execute(out var actual);
+
+		const int expected = 1;
+		Assert.True(hasValue);
+		Assert.Equal(expected, counter);
+		Assert.Equal(setupValue, actual);
+	}
+
+	[Fact]
+	public void InvokeCallbackBeforeThrows()
+	{
+		const string errorMessage = nameof(errorMessage);
+		var counter = 0;
+
+		var fixture = CreateFixture<int>();
+		fixture.Throws(new IndexOutOfRangeException(errorMessage));
+		fixture.Callback(() => counter++);
+
+		Action actual = () => fixture.Execute(out _);
+
+		const int expected = 1;
+		var exception = Assert.Throws<IndexOutOfRangeException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+		Assert.Equal(expected, counter);
+	}
+
+	[Fact]
+	public void InvokeCallback()
+	{
+		var counter = 0;
+
+		var fixture = CreateFixture<int>();
+		fixture.Callback(() => counter++);
+
+		var hasValue = fixture.Execute(out _);
+
+		const int expected = 1;
+		Assert.False(hasValue);
+		Assert.Equal(expected, counter);
 	}
 }

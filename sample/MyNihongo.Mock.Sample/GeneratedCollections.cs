@@ -1,16 +1,16 @@
 using System.Collections;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace MyNihongo.Mock.Sample;
 
 [Obsolete("Will be generated")]
 public sealed class SetupContainer<T> : IEnumerable<T>
-	where T : IComparable<T>
 {
-	private readonly IComparer<T>? _comparer;
+	private readonly IComparer<T> _comparer;
 	private readonly List<T> _setups = [];
 
-	public SetupContainer(IComparer<T>? comparer = null)
+	public SetupContainer(IComparer<T> comparer)
 	{
 		_comparer = comparer;
 	}
@@ -20,7 +20,15 @@ public sealed class SetupContainer<T> : IEnumerable<T>
 		var index = _setups.BinarySearch(item, _comparer);
 
 		if (index < 0)
+		{
 			index = ~index;
+		}
+		else
+		{
+			var span = CollectionsMarshal.AsSpan(_setups);
+			while (index < span.Length && _comparer.Compare(item, span[index]) == 0)
+				index++;
+		}
 
 		_setups.Insert(index, item);
 	}
