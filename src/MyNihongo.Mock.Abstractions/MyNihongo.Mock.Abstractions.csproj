@@ -7,4 +7,8 @@
 		<RootNamespace>MyNihongo.Mock</RootNamespace>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<None Remove="*.csproj.DotSettings" />
+	</ItemGroup>
+
 </Project>
