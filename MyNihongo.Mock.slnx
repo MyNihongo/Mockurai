@@ -1,4 +1,4 @@
 <Solution>
 	<Project Path="sample\MyNihongo.Mock.Sample\MyNihongo.Mock.Sample.csproj" Type="Classic C#" />
-	<Project Path="src\MyNihongo.Mock.csproj" />
+	<Project Path="src\MyNihongo.Mock\MyNihongo.Mock.csproj" />
 </Solution>
