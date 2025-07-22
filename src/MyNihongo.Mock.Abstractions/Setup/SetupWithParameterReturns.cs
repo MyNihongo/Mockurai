@@ -1,15 +1,15 @@
 namespace MyNihongo.Mock;
 
-public sealed class SetupWithParameter<TParameter> : ISetup
+public sealed class SetupWithParameter<TParameter, TReturns> : ISetup<TReturns>
 {
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;
 	private Item? _currentSetup;
 
-	public void Invoke(in TParameter parameter)
+	public bool Execute(in TParameter parameter, out TReturns? returnValue)
 	{
 		if (_setups is null)
-			return;
+			goto Default;
 
 		foreach (var setup in _setups)
 		{
@@ -20,7 +20,20 @@ public sealed class SetupWithParameter<TParameter> : ISetup
 
 			if (setup.Exception is not null)
 				throw setup.Exception;
+
+			if (setup.Returns is not null)
+			{
+				returnValue = setup.Returns(parameter);
+				return true;
+			}
+
+			returnValue = default;
+			return false;
 		}
+
+		Default:
+		returnValue = default;
+		return false;
 	}
 
 	public void SetupParameter(in It<TParameter> parameter)
@@ -39,6 +52,19 @@ public sealed class SetupWithParameter<TParameter> : ISetup
 		_currentSetup.Callback = callback;
 	}
 
+	public void Returns(TReturns? value)
+	{
+		Returns(_ => value);
+	}
+
+	public void Returns(in Func<TParameter, TReturns?> value)
+	{
+		if (_currentSetup is null)
+			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
+
+		_currentSetup.Returns = value;
+	}
+
 	public void Throws(in Exception exception)
 	{
 		if (_currentSetup is null)
@@ -51,6 +77,7 @@ public sealed class SetupWithParameter<TParameter> : ISetup
 	{
 		public readonly It<TParameter>.Setup? Parameter = parameter;
 		public Action<TParameter>? Callback;
+		public Func<TParameter, TReturns?>? Returns;
 		public Exception? Exception;
 	}
 
