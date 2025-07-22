@@ -1,110 +1,36 @@
+using System.Text;
 using System.Text.Json;
 
 namespace MyNihongo.Mock.Sample;
 
-public readonly ref struct Times
-{
-	public readonly int Count;
-
-	private Times(int count)
-	{
-		Count = count;
-	}
-
-	public static Times Exactly(in int count)
-	{
-		return new Times(count);
-	}
-
-	public static Times Once()
-	{
-		return new Times(1);
-	}
-
-	public static Times Never()
-	{
-		return new Times();
-	}
-}
-
-public sealed class Invocation
-{
-	private readonly string _name;
-	private readonly InvocationContainer<Item> _invocations = [];
-	private bool _isVerified;
-
-	public Invocation(in string name)
-	{
-		_name = name;
-	}
-
-	public void Register(ref long index)
-	{
-		var invokedIndex = Interlocked.Increment(ref index);
-		_invocations.Add(invokedIndex, new Item());
-	}
-
-	public void Verify(in Times times)
-	{
-		if (_invocations.Count != times.Count)
-			throw new MockVerifyCountException(_name, times.Count, _invocations.Count);
-
-		_isVerified = true;
-	}
-
-	public long Verify(in long index)
-	{
-		var item = _invocations.TryGetItemAt(index);
-		if (!item.HasValue)
-			throw new MockVerifySequenceOutOfRangeException(_name, index);
-
-		item.Value.Invocation.IsVerified = true;
-		return item.Value.Index + 1;
-	}
-
-	public void VerifyNoOtherCalls()
-	{
-		if (_isVerified)
-			return;
-
-		var unverifiedItems = _invocations
-			.Where(static x => !x.Invocation.IsVerified)
-			.Select(static x => x.Index)
-			.ToArray();
-
-		if (unverifiedItems.Length > 0)
-			throw new MockUnverifiedException(_name, unverifiedItems);
-	}
-
-	private sealed class Item
-	{
-		public bool IsVerified;
-	}
-}
-
-public sealed class Invocation<TParameter>
+[Obsolete("Will be generated")]
+public sealed class InvocationIntInt
 {
 	private readonly string _name;
 	private readonly InvocationContainer<Item> _invocations = [];
 
-	public Invocation(in string name)
+	public InvocationIntInt(in string name)
 	{
 		_name = name;
 	}
 
-	public void Register(ref long index, in TParameter parameter)
+	public void Register(ref long index, in int parameter1, in int parameter2)
 	{
 		var invokedIndex = Interlocked.Increment(ref index);
-		_invocations.Add(invokedIndex, new Item(parameter));
+		_invocations.Add(invokedIndex, new Item(parameter1, parameter2));
 	}
 
-	public void Verify(in It<TParameter> parameter, in Times times)
+	public void Verify(in It<int> parameter1, in It<int> parameter2, in Times times)
 	{
 		var count = 0;
 		foreach (var invocation in _invocations)
 		{
-			var verifyParameter = invocation.Invocation.GetParameter();
-			if (parameter.ValueSetup.HasValue && !parameter.ValueSetup.Value.Predicate(verifyParameter))
+			var verifyParameter1 = invocation.Invocation.GetParameter1();
+			var verifyParameter2 = invocation.Invocation.GetParameter2();
+
+			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Predicate(verifyParameter1))
+				continue;
+			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Predicate(verifyParameter2))
 				continue;
 
 			invocation.Invocation.IsVerified = true;
@@ -118,17 +44,20 @@ public sealed class Invocation<TParameter>
 		throw new MockVerifyCountException(_name, times.Count, count, invocations);
 	}
 
-	public long Verify(in It<TParameter> parameter, in long index)
+	public long Verify(in It<int> parameter1, in It<int> parameter2, in long index)
 	{
 		foreach (var item in _invocations.GetItemsFrom(index))
 		{
-			var verifyParameter = item.Invocation.GetParameter();
+			var verifyParameter1 = item.Invocation.GetParameter1();
+			var verifyParameter2 = item.Invocation.GetParameter2();
 
-			if (!parameter.ValueSetup.HasValue || parameter.ValueSetup.Value.Predicate(verifyParameter))
-			{
-				item.Invocation.IsVerified = true;
-				return item.Index + 1;
-			}
+			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Predicate(verifyParameter1))
+				continue;
+			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Predicate(verifyParameter2))
+				continue;
+
+			item.Invocation.IsVerified = true;
+			return item.Index + 1;
 		}
 
 		throw new MockVerifySequenceOutOfRangeException(_name, index);
@@ -148,16 +77,26 @@ public sealed class Invocation<TParameter>
 	private sealed class Item
 	{
 		public bool IsVerified;
-		private readonly TParameter _parameter;
-		private readonly string? _jsonSnapshot;
+		private readonly int _parameter1, _parameter2;
+		private readonly string? _jsonSnapshot1, _jsonSnapshot2;
 
-		public Item(in TParameter parameter)
+		public Item(in int parameter1, in int parameter2)
 		{
-			_parameter = parameter;
+			_parameter1 = parameter1;
+			_parameter2 = parameter2;
 
 			try
 			{
-				_jsonSnapshot = JsonSerializer.Serialize(parameter);
+				_jsonSnapshot1 = JsonSerializer.Serialize(parameter1);
+			}
+			catch
+			{
+				// Swallow
+			}
+
+			try
+			{
+				_jsonSnapshot2 = JsonSerializer.Serialize(parameter2);
 			}
 			catch
 			{
@@ -165,21 +104,43 @@ public sealed class Invocation<TParameter>
 			}
 		}
 
-		public TParameter GetParameter()
+		public int GetParameter1()
 		{
-			return _parameter;
+			return _parameter1;
 
 			// TODO: only for equivalent
-			return !string.IsNullOrEmpty(_jsonSnapshot)
-				? JsonSerializer.Deserialize<TParameter>(_jsonSnapshot)!
-				: _parameter;
+			return !string.IsNullOrEmpty(_jsonSnapshot1)
+				? JsonSerializer.Deserialize<int>(_jsonSnapshot1)!
+				: _parameter1;
+		}
+
+		public int GetParameter2()
+		{
+			return _parameter2;
+
+			// TODO: only for equivalent
+			return !string.IsNullOrEmpty(_jsonSnapshot2)
+				? JsonSerializer.Deserialize<int>(_jsonSnapshot2)!
+				: _parameter2;
 		}
 
 		public override string ToString()
 		{
-			return string.IsNullOrEmpty(_jsonSnapshot)
-				? _parameter?.ToString() ?? string.Empty
-				: _jsonSnapshot;
+			var stringBuilder = new StringBuilder();
+
+			if (!string.IsNullOrEmpty(_jsonSnapshot1))
+				stringBuilder.Append(_jsonSnapshot1);
+			else
+				stringBuilder.Append(_parameter1);
+
+			stringBuilder.Append(", ");
+
+			if (!string.IsNullOrEmpty(_jsonSnapshot2))
+				stringBuilder.Append(_jsonSnapshot2);
+			else
+				stringBuilder.Append(_parameter2);
+
+			return stringBuilder.ToString();
 		}
 	}
 }
