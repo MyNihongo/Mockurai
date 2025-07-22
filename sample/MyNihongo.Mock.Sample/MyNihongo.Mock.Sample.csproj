@@ -15,6 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\src\MyNihongo.Mock.Abstractions\MyNihongo.Mock.Abstractions.csproj" />
 		<ProjectReference Include="..\..\src\MyNihongo.Mock\MyNihongo.Mock.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
