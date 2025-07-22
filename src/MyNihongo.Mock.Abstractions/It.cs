@@ -1,4 +1,4 @@
-namespace MyNihongo.Mock.Sample;
+namespace MyNihongo.Mock;
 
 public readonly ref struct It<T>
 {
