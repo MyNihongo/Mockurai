@@ -17,8 +17,8 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 
 	[Theory]
 	[InlineData(0)]
-	[InlineData(1)]
-	[InlineData(3)]
+	[InlineData(2)]
+	[InlineData(4)]
 	public void ThrowIfVerifyTimesWrong(int expected)
 	{
 		var index = 0L;
@@ -26,10 +26,11 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 		var fixture = CreateFixture();
 		fixture.Register(ref index);
 		fixture.Register(ref index);
+		fixture.Register(ref index);
 
 		var actual = () => fixture.Verify(Times.Exactly(expected));
 
-		var expectedMessage = $"Expected MyClass#MyMethod() to be called {expected} times, but instead it was called 2 times";
+		var expectedMessage = $"Expected MyClass#MyMethod() to be called {expected} times, but instead it was called 3 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -41,8 +42,20 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 		fixture.Verify(Times.Never());
 	}
 
+	[Fact]
+	public void ThrowIfVerifyTimesWrongForEmptySingle()
+	{
+		const int expected = 1;
+		var fixture = CreateFixture();
+
+		var actual = () => fixture.Verify(Times.Exactly(expected));
+
+		const string expectedMessage = $"Expected MyClass#MyMethod() to be called 1 time, but instead it was called 0 times.";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
 	[Theory]
-	[InlineData(1)]
 	[InlineData(2)]
 	[InlineData(3)]
 	public void ThrowIfVerifyTimesWrongForEmpty(int expected)
@@ -51,7 +64,7 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 
 		var actual = () => fixture.Verify(Times.Exactly(expected));
 
-		var expectedMessage = $"Expected MyClass#MyMethod() to be called {expected} times, but instead it was called 0 times";
+		var expectedMessage = $"Expected MyClass#MyMethod() to be called {expected} times, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -86,7 +99,7 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 		const long verifyIndex = 3L;
 		Action actual = () => fixture.Verify(verifyIndex);
 
-		const string expectedMessage = "Expected MyClass#MyMethod() to be invoked at index 3, but there are no invocations";
+		const string expectedMessage = "Expected MyClass#MyMethod() to be invoked at index 3, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -100,7 +113,7 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 
 		Action actual = () => fixture.Verify(verifyIndex);
 
-		var expectedMessage = $"Expected MyClass#MyMethod() to be invoked at index {verifyIndex}, but there are no invocations";
+		var expectedMessage = $"Expected MyClass#MyMethod() to be invoked at index {verifyIndex}, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}

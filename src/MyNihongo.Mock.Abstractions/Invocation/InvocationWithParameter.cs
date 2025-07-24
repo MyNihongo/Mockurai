@@ -31,11 +31,11 @@ public sealed class Invocation<TParameter>
 			count++;
 		}
 
-		if (times.Count == count)
+		if (times.Predicate(count))
 			return;
 
 		var invocations = _invocations.GetItemStrings();
-		throw new MockVerifyCountException(_name, times.Count, count, invocations);
+		throw new MockVerifyCountException(_name, times, count, invocations);
 	}
 
 	public long Verify(in It<TParameter> parameter, in long index)

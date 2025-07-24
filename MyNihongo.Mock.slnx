@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/tests/">
+    <Project Path="tests\MyNihongo.Mock.Abstractions.Tests\MyNihongo.Mock.Abstractions.Tests.csproj" Type="Classic C#" />
+  </Folder>
   <Project Path="sample\MyNihongo.Mock.Sample\MyNihongo.Mock.Sample.csproj" Type="Classic C#" />
   <Project Path="src\MyNihongo.Mock.Abstractions\MyNihongo.Mock.Abstractions.csproj" Type="Classic C#" />
   <Project Path="src\MyNihongo.Mock\MyNihongo.Mock.csproj" />
