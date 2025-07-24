@@ -228,7 +228,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, Times.Once());
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times";
+		const string exceptionMessage =
+			"""
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Performed invocations:
+			- 1: 123, 234
+			""";
+
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -247,7 +253,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, Times.Once());
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times";
+		const string exceptionMessage =
+			"""
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Performed invocations:
+			- 1: 123, 234
+			""";
+
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -267,7 +279,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, Times.Once());
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times";
+		const string exceptionMessage =
+			"""
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Performed invocations:
+			- 1: 123, 234
+			""";
+
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -287,7 +305,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, Times.Once());
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times";
+		const string exceptionMessage =
+			"""
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Performed invocations:
+			- 1: 123, 234
+			""";
+
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -306,7 +330,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, Times.Once());
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times";
+		const string exceptionMessage =
+			"""
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Performed invocations:
+			- 1: 123, 234
+			""";
+
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -325,7 +355,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, Times.Once());
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times";
+		const string exceptionMessage =
+			"""
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Performed invocations:
+			- 1: 123, 234
+			""";
+
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -344,7 +380,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, Times.Once());
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times";
+		const string exceptionMessage =
+			"""
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Performed invocations:
+			- 1: 123, 234
+			""";
+
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -364,7 +406,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, Times.Once());
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times";
+		const string exceptionMessage =
+			"""
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Performed invocations:
+			- 1: 123, 234
+			""";
+
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -384,7 +432,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, Times.Once());
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times";
+		const string exceptionMessage =
+			"""
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Performed invocations:
+			- 1: 123, 234
+			""";
+
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -404,7 +458,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, Times.Once());
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times";
+		const string exceptionMessage =
+			"""
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Performed invocations:
+			- 1: 123, 234
+			""";
+
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -652,7 +712,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 0L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 0, but there are no invocations";
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 0, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -668,7 +728,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 0L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 0, but there are no invocations";
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 0, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -684,7 +744,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 0L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 0, but there are no invocations";
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 0, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -703,7 +763,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -722,7 +782,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -742,7 +802,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -762,7 +822,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -781,7 +841,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -800,7 +860,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -819,7 +879,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -839,7 +899,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -859,7 +919,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -879,7 +939,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations";
+		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}

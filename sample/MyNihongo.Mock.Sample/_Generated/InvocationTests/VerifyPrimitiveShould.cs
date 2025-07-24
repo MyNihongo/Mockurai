@@ -29,7 +29,7 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 
 		var actual = () => fixture.Verify(Times.Exactly(expected));
 
-		var expectedMessage = $"Expected MyClass#MyMethod() to be called {expected} times, but instead it was called 2 times";
+		var expectedMessage = $"Expected MyClass#MyMethod() to be called {expected} times, but instead it was called 2 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -51,7 +51,7 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 
 		var actual = () => fixture.Verify(Times.Exactly(expected));
 
-		var expectedMessage = $"Expected MyClass#MyMethod() to be called {expected} times, but instead it was called 0 times";
+		var expectedMessage = $"Expected MyClass#MyMethod() to be called {expected} times, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -86,7 +86,7 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 		const long verifyIndex = 3L;
 		Action actual = () => fixture.Verify(verifyIndex);
 
-		const string expectedMessage = "Expected MyClass#MyMethod() to be invoked at index 3, but there are no invocations";
+		const string expectedMessage = "Expected MyClass#MyMethod() to be invoked at index 3, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -100,7 +100,7 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 
 		Action actual = () => fixture.Verify(verifyIndex);
 
-		var expectedMessage = $"Expected MyClass#MyMethod() to be invoked at index {verifyIndex}, but there are no invocations";
+		var expectedMessage = $"Expected MyClass#MyMethod() to be invoked at index {verifyIndex}, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
