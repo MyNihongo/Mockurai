@@ -79,7 +79,15 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			fixture.Verify(verify, Times.Exactly(expected));
 		};
 
-		var expectedMessage = $"Expected MyClass#MyMethod(Int32) to be called {expected} times, but instead it was called 2 times";
+		var expectedMessage =
+			$"""
+			 Expected MyClass#MyMethod(Int32) to be called {expected} times, but instead it was called 2 times.
+			 Performed invocations:
+			 - 1: 123
+			 - 2: 234
+			 - 3: 345
+			 """;
+
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -154,7 +162,15 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			fixture.Verify(verify, Times.Exactly(expected));
 		};
 
-		var expectedMessage = $"Expected MyClass#MyMethod(Int32) to be called {expected} times, but instead it was called 2 times";
+		var expectedMessage =
+			$"""
+			 Expected MyClass#MyMethod(Int32) to be called {expected} times, but instead it was called 2 times.
+			 Performed invocations:
+			 - 1: {setupValue}
+			 - 2: {setupValue}
+			 - 3: 345
+			 """;
+		
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -182,7 +198,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			fixture.Verify(verify, Times.Once());
 		};
 
-		const string expectedMessage = "Expected MyClass#MyMethod(Int32) to be called 1 times, but instead it was called 0 times";
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(Int32) to be called 1 times, but instead it was called 0 times.
+			Performed invocations:
+			- 1: 321
+			""";
+
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -201,7 +223,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			fixture.Verify(verify, Times.Once());
 		};
 
-		const string expectedMessage = "Expected MyClass#MyMethod(Int32) to be called 1 times, but instead it was called 0 times";
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(Int32) to be called 1 times, but instead it was called 0 times.
+			Performed invocations:
+			- 1: 321
+			""";
+
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
