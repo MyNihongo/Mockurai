@@ -230,7 +230,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -255,7 +255,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -281,7 +281,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -307,7 +307,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -332,7 +332,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -357,7 +357,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -382,7 +382,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -408,7 +408,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -434,7 +434,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -460,7 +460,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 times, but instead it was called 0 times.
+			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";

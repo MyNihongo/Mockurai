@@ -62,8 +62,8 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 	[Theory]
 	[InlineData(0)]
-	[InlineData(1)]
-	[InlineData(3)]
+	[InlineData(2)]
+	[InlineData(4)]
 	public void ThrowVerifyTimesWrong(int expected)
 	{
 		var index = 0L;
@@ -72,6 +72,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		fixture.Register(ref index, 123);
 		fixture.Register(ref index, 234);
 		fixture.Register(ref index, 345);
+		fixture.Register(ref index, 456);
 
 		var actual = () =>
 		{
@@ -81,11 +82,12 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		var expectedMessage =
 			$"""
-			 Expected MyClass#MyMethod(Int32) to be called {expected} times, but instead it was called 2 times.
+			 Expected MyClass#MyMethod(Int32) to be called {expected} times, but instead it was called 3 times.
 			 Performed invocations:
 			 - 1: 123
 			 - 2: 234
 			 - 3: 345
+			 - 4: 456
 			 """;
 
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
@@ -144,8 +146,8 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 	[Theory]
 	[InlineData(0)]
-	[InlineData(1)]
-	[InlineData(3)]
+	[InlineData(2)]
+	[InlineData(4)]
 	public void ThrowVerifyValueTimesWrong(int expected)
 	{
 		var index = 0L;
@@ -155,6 +157,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		fixture.Register(ref index, setupValue);
 		fixture.Register(ref index, setupValue);
 		fixture.Register(ref index, 345);
+		fixture.Register(ref index, setupValue);
 
 		var actual = () =>
 		{
@@ -164,13 +167,14 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		var expectedMessage =
 			$"""
-			 Expected MyClass#MyMethod(Int32) to be called {expected} times, but instead it was called 2 times.
+			 Expected MyClass#MyMethod(Int32) to be called {expected} times, but instead it was called 3 times.
 			 Performed invocations:
 			 - 1: {setupValue}
 			 - 2: {setupValue}
 			 - 3: 345
+			 - 4: {setupValue}
 			 """;
-		
+
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -200,7 +204,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(Int32) to be called 1 times, but instead it was called 0 times.
+			Expected MyClass#MyMethod(Int32) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 321
 			""";
@@ -225,7 +229,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(Int32) to be called 1 times, but instead it was called 0 times.
+			Expected MyClass#MyMethod(Int32) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 321
 			""";
