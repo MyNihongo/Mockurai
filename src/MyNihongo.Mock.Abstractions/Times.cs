@@ -8,11 +8,14 @@ public readonly ref struct Times
 	private Times(int count)
 	{
 		Predicate = x => x == count;
-		_stringValue = $"{count} times";
+		_stringValue = count != 1 ? $"{count} times" : "1 time";
 	}
 
 	public static Times Exactly(in int count)
 	{
+		if (count < 0)
+			throw new ArgumentException($"Count must not be negative, count=`{count}`", nameof(count));
+
 		return new Times(count);
 	}
 
