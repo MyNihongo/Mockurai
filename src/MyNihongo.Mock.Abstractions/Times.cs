@@ -2,11 +2,13 @@ namespace MyNihongo.Mock;
 
 public readonly ref struct Times
 {
-	public readonly int Count;
+	public readonly Func<int, bool> Predicate;
+	private readonly string _stringValue;
 
 	private Times(int count)
 	{
-		Count = count;
+		Predicate = x => x == count;
+		_stringValue = $"{count} times";
 	}
 
 	public static Times Exactly(in int count)
@@ -21,6 +23,11 @@ public readonly ref struct Times
 
 	public static Times Never()
 	{
-		return new Times();
+		return new Times(0);
+	}
+
+	public override string ToString()
+	{
+		return _stringValue;
 	}
 }

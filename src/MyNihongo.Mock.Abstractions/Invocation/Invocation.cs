@@ -19,8 +19,8 @@ public sealed class Invocation
 
 	public void Verify(in Times times)
 	{
-		if (_invocations.Count != times.Count)
-			throw new MockVerifyCountException(_name, times.Count, _invocations.Count);
+		if (!times.Predicate(_invocations.Count))
+			throw new MockVerifyCountException(_name, times, _invocations.Count);
 
 		_isVerified = true;
 	}
