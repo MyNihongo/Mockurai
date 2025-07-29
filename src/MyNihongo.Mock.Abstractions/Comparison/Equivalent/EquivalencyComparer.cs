@@ -58,7 +58,31 @@ public class EquivalencyComparer
 
 		if (_fields is not null)
 		{
-			// TODO: fields
+			foreach (var field in _fields)
+			{
+				var propertyPath = !string.IsNullOrEmpty(path)
+					? $"{path}.{field.Name}"
+					: field.Name;
+
+				var xValue = field.GetValue(x);
+				var yValue = field.GetValue(y);
+
+				if (xValue is null)
+				{
+					if (yValue is not null)
+						result.Add(propertyPath, "null", yValue.ToString());
+				}
+				else if (ComparedByEquivalency(field.FieldType))
+				{
+					var equalityComparer = _nestedComparers.GetOrAdd(field.FieldType, static x => new EquivalencyComparer(x));
+					equalityComparer.Equivalent(xValue, yValue, result, propertyPath);
+				}
+				else
+				{
+					if (!xValue.Equals(yValue))
+						result.Add(propertyPath, xValue.ToString(), yValue?.ToString());
+				}
+			}
 		}
 
 		if (_isEnumerable)

@@ -21,17 +21,8 @@ public sealed class EquivalentStructShould
 		const string name = "Okayama Issei";
 		const int age = 17;
 
-		var setupValue = new StructObject
-		{
-			Name = name,
-			Age = age,
-		};
-
-		var inputValue = new StructObject
-		{
-			Name = name,
-			Age = age,
-		};
+		var setupValue = new StructObject(name, age);
+		var inputValue = new StructObject(name, age);
 
 		var actual = It<StructObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
@@ -46,17 +37,8 @@ public sealed class EquivalentStructShould
 		const string name1 = "Okayama Issei", name2 = "Okayama Issei2";
 		const int age = 17;
 
-		var setupValue = new StructObject
-		{
-			Name = name1,
-			Age = age,
-		};
-
-		var inputValue = new StructObject
-		{
-			Name = name2,
-			Age = age,
-		};
+		var setupValue = new StructObject(name1, age);
+		var inputValue = new StructObject(name2, age);
 
 		var actual = It<StructObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
@@ -71,17 +53,8 @@ public sealed class EquivalentStructShould
 		const string name = "Okayama Issei";
 		const int age1 = 17, age2 = 18;
 
-		var setupValue = new StructObject
-		{
-			Name = name,
-			Age = age1,
-		};
-
-		var inputValue = new StructObject
-		{
-			Name = name,
-			Age = age2,
-		};
+		var setupValue = new StructObject(name, age1);
+		var inputValue = new StructObject(name, age2);
 
 		var actual = It<StructObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
@@ -96,17 +69,8 @@ public sealed class EquivalentStructShould
 		const string name = "Okayama Issei";
 		const int age = 17;
 
-		var setupValue = new StructObject
-		{
-			Name = null,
-			Age = age,
-		};
-
-		var inputValue = new StructObject
-		{
-			Name = name,
-			Age = age,
-		};
+		var setupValue = new StructObject(name: null, age);
+		var inputValue = new StructObject(name, age);
 
 		var actual = It<StructObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
@@ -121,17 +85,8 @@ public sealed class EquivalentStructShould
 		const string name = "Okayama Issei";
 		const int age = 17;
 
-		var setupValue = new StructObject
-		{
-			Name = name,
-			Age = age,
-		};
-
-		var inputValue = new StructObject
-		{
-			Name = null,
-			Age = age,
-		};
+		var setupValue = new StructObject(name, age);
+		var inputValue = new StructObject(name: null, age);
 
 		var actual = It<StructObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
@@ -148,27 +103,17 @@ public sealed class EquivalentStructShould
 		const string name = "Okayama Issei";
 		const int age = 17;
 
-		var setupValue = new StructNestedObject
-		{
-			Price = price,
-			DateOfBirth = dateOfBirth,
-			Child = new StructObject
-			{
-				Name = name,
-				Age = age,
-			},
-		};
+		var setupValue = new StructNestedObject(
+			price,
+			dateOfBirth,
+			new StructObject(name, age)
+		);
 
-		var inputValue = new StructNestedObject
-		{
-			Price = price,
-			DateOfBirth = dateOfBirth,
-			Child = new StructObject
-			{
-				Name = name,
-				Age = age,
-			},
-		};
+		var inputValue = new StructNestedObject(
+			price,
+			dateOfBirth,
+			new StructObject(name, age)
+		);
 
 		var actual = It<StructNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
@@ -185,27 +130,17 @@ public sealed class EquivalentStructShould
 		const string name = "Okayama Issei";
 		const int age = 17;
 
-		var setupValue = new StructNestedObject
-		{
-			Price = price1,
-			DateOfBirth = dateOfBirth,
-			Child = new StructObject
-			{
-				Name = name,
-				Age = age,
-			},
-		};
+		var setupValue = new StructNestedObject(
+			price1,
+			dateOfBirth,
+			new StructObject(name, age)
+		);
 
-		var inputValue = new StructNestedObject
-		{
-			Price = price2,
-			DateOfBirth = dateOfBirth,
-			Child = new StructObject
-			{
-				Name = name,
-				Age = age,
-			},
-		};
+		var inputValue = new StructNestedObject(
+			price2,
+			dateOfBirth,
+			new StructObject(name, age)
+		);
 
 		var actual = It<StructNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
@@ -222,27 +157,17 @@ public sealed class EquivalentStructShould
 		const string name = "Okayama Issei";
 		const int age = 17;
 
-		var setupValue = new StructNestedObject
-		{
-			Price = price,
-			DateOfBirth = dateOfBirth1,
-			Child = new StructObject
-			{
-				Name = name,
-				Age = age,
-			},
-		};
+		var setupValue = new StructNestedObject(
+			price,
+			dateOfBirth1,
+			new StructObject(name, age)
+		);
 
-		var inputValue = new StructNestedObject
-		{
-			Price = price,
-			DateOfBirth = dateOfBirth2,
-			Child = new StructObject
-			{
-				Name = name,
-				Age = age,
-			},
-		};
+		var inputValue = new StructNestedObject(
+			price,
+			dateOfBirth2,
+			new StructObject(name, age)
+		);
 
 		var actual = It<StructNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
@@ -259,27 +184,17 @@ public sealed class EquivalentStructShould
 		const string name1 = "Okayama Issei", name2 = "Okayama Issei2";
 		const int age = 17;
 
-		var setupValue = new StructNestedObject
-		{
-			Price = price,
-			DateOfBirth = dateOfBirth,
-			Child = new StructObject
-			{
-				Name = name1,
-				Age = age,
-			},
-		};
+		var setupValue = new StructNestedObject(
+			price,
+			dateOfBirth,
+			new StructObject(name1, age)
+		);
 
-		var inputValue = new StructNestedObject
-		{
-			Price = price,
-			DateOfBirth = dateOfBirth,
-			Child = new StructObject
-			{
-				Name = name2,
-				Age = age,
-			},
-		};
+		var inputValue = new StructNestedObject(
+			price,
+			dateOfBirth,
+			new StructObject(name2, age)
+		);
 
 		var actual = It<StructNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
@@ -296,27 +211,17 @@ public sealed class EquivalentStructShould
 		const string name = "Okayama Issei";
 		const int age1 = 17, age2 = 18;
 
-		var setupValue = new StructNestedObject
-		{
-			Price = price,
-			DateOfBirth = dateOfBirth,
-			Child = new StructObject
-			{
-				Name = name,
-				Age = age1,
-			},
-		};
+		var setupValue = new StructNestedObject(
+			price,
+			dateOfBirth,
+			new StructObject(name, age1)
+		);
 
-		var inputValue = new StructNestedObject
-		{
-			Price = price,
-			DateOfBirth = dateOfBirth,
-			Child = new StructObject
-			{
-				Name = name,
-				Age = age2,
-			},
-		};
+		var inputValue = new StructNestedObject(
+			price,
+			dateOfBirth,
+			new StructObject(name, age2)
+		);
 
 		var actual = It<StructNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
@@ -324,20 +229,85 @@ public sealed class EquivalentStructShould
 
 		Assert.False(actual);
 	}
+
+	[Fact]
+	public void BeFalseCollectionPropertyNotEqual()
+	{
+		const string name1 = "Okayama Issei", name2 = "Okayama Issei2";
+		const int age = 17;
+
+		var setupValue = new StructObject[]
+		{
+			new(name1, age),
+			new(name1, age),
+		};
+
+		var inputValue = new StructObject[]
+		{
+			new(name1, age),
+			new(name2, age),
+		};
+
+		var actual = It<StructObject[]>.Equivalent(setupValue)
+			.ValueSetup!.Value
+			.Predicate(inputValue);
+
+		Assert.False(actual);
+	}
+
+	[Fact]
+	public void BeFalseCollectionNestedPropertyNotEqual()
+	{
+		const decimal price = 123.45m;
+		var dateOfBirth = new DateTime(2025, 07, 29);
+		const string name1 = "Okayama Issei", name2 = "Okayama Issei2";
+		const int age = 17;
+
+		var setupValue = new[]
+		{
+			new StructNestedObject(
+				price,
+				dateOfBirth,
+				new StructObject(name1, age)
+			),
+			new StructNestedObject(
+				price,
+				dateOfBirth,
+				new StructObject(name1, age)
+			),
+		};
+
+		var inputValue = new[]
+		{
+			new StructNestedObject(
+				price,
+				dateOfBirth,
+				new StructObject(name1, age)
+			),
+			new StructNestedObject(
+				price,
+				dateOfBirth,
+				new StructObject(name2, age)
+			),
+		};
+
+		var actual = It<StructNestedObject[]>.Equivalent(setupValue)
+			.ValueSetup!.Value
+			.Predicate(inputValue);
+
+		Assert.False(actual);
+	}
 }
 
-file readonly struct StructObject
+file readonly struct StructObject(string? name, int age)
 {
-	public string? Name { get; init; }
-
-	public int Age { get; init; }
+	public readonly string? Name = name;
+	public readonly int Age = age;
 }
 
-file readonly struct StructNestedObject
+file readonly struct StructNestedObject(decimal price, DateTime dateOfBirth, StructObject? child)
 {
-	public decimal Price { get; init; }
-
-	public DateTime DateOfBirth { get; init; }
-
-	public StructObject? Child { get; init; }
+	public readonly decimal Price = price;
+	public readonly DateTime DateOfBirth = dateOfBirth;
+	public readonly StructObject? Child = child;
 }
