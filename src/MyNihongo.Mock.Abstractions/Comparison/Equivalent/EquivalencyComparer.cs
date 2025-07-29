@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Reflection;
 
@@ -5,13 +6,18 @@ namespace MyNihongo.Mock;
 
 public class EquivalencyComparer
 {
-	private readonly PropertyInfo[] _properties;
-	private readonly FieldInfo[] _fields;
+	private readonly PropertyInfo[]? _properties;
+	private readonly FieldInfo[]? _fields;
 	private readonly ConcurrentDictionary<Type, EquivalencyComparer> _nestedComparers = new();
+	private readonly Type _type;
+	private readonly bool _isEnumerable;
 
 	protected EquivalencyComparer(in Type type)
 	{
-		// TODO: for IEnumerable:
+		_type = type;
+		_isEnumerable = type.IsAssignableTo(typeof(IEnumerable));
+		if (_isEnumerable)
+			return;
 
 		const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
 
@@ -21,33 +27,113 @@ public class EquivalencyComparer
 
 	protected EquivalencyComparerResult Equivalent(in object? x, in object? y, in EquivalencyComparerResult result, in string? path)
 	{
-		foreach (var property in _properties)
+		if (_properties is not null)
 		{
-			var propertyPath = !string.IsNullOrEmpty(path)
-				? $"{path}.{property.Name}"
-				: property.Name;
+			foreach (var property in _properties)
+			{
+				var propertyPath = !string.IsNullOrEmpty(path)
+					? $"{path}.{property.Name}"
+					: property.Name;
 
-			var xValue = property.GetValue(x);
-			var yValue = property.GetValue(y);
+				var xValue = property.GetValue(x);
+				var yValue = property.GetValue(y);
 
-			if (xValue == null)
-			{
-				if (yValue != null)
-					result.Add(propertyPath, "null", yValue.ToString());
-			}
-			else if (ComparedByEquivalency(property.PropertyType))
-			{
-				var equalityComparer = _nestedComparers.GetOrAdd(property.PropertyType, static x => new EquivalencyComparer(x));
-				equalityComparer.Equivalent(xValue, yValue, result, propertyPath);
-			}
-			else
-			{
-				if (!xValue.Equals(yValue))
-					result.Add(propertyPath, xValue.ToString(), yValue?.ToString());
+				if (xValue is null)
+				{
+					if (yValue is not null)
+						result.Add(propertyPath, "null", yValue.ToString());
+				}
+				else if (ComparedByEquivalency(property.PropertyType))
+				{
+					var equalityComparer = _nestedComparers.GetOrAdd(property.PropertyType, static x => new EquivalencyComparer(x));
+					equalityComparer.Equivalent(xValue, yValue, result, propertyPath);
+				}
+				else
+				{
+					if (!xValue.Equals(yValue))
+						result.Add(propertyPath, xValue.ToString(), yValue?.ToString());
+				}
 			}
 		}
 
-		// TODO: fields
+		if (_fields is not null)
+		{
+			// TODO: fields
+		}
+
+		if (_isEnumerable)
+		{
+			var propertyPath = string.IsNullOrEmpty(path)
+				? "root"
+				: path;
+
+			if (x is null)
+			{
+				if (y is not null)
+					result.Add(propertyPath, "null", y.ToString());
+			}
+			else if (y is null)
+			{
+				result.Add(propertyPath, x.ToString(), "null");
+			}
+			else
+			{
+				int xCount = 0, yCount = 0;
+				IEnumerable xEnumerable = (IEnumerable)x, yEnumerable = (IEnumerable)y;
+				var elementType = _type.TryGetElementType();
+
+				IEnumerator xEnumerator = xEnumerable.GetEnumerator(), yEnumerator = yEnumerable.GetEnumerator();
+
+				try
+				{
+					while (xEnumerator.MoveNext())
+					{
+						xCount++;
+
+						var xValue = xEnumerator.Current;
+						elementType ??= xValue?.GetType();
+
+						if (!yEnumerator.MoveNext())
+						{
+							result.Add(propertyPath, $"collection with at least {xCount} elements", $"collection with {yCount} elements");
+							goto Exit;
+						}
+
+						yCount++;
+
+						var yValue = yEnumerator.Current;
+						elementType ??= yValue?.GetType();
+
+						if (elementType is null)
+						{
+							if (xValue is not null || yValue is not null)
+								throw new InvalidOperationException($"Unable to determine a type of the collection, type=`{_type}`");
+
+							continue;
+						}
+
+						var equalityComparer = _nestedComparers.GetOrAdd(elementType, static x => new EquivalencyComparer(x));
+						equalityComparer.Equivalent(xValue, yValue, result, $"{propertyPath}[{xCount - 1}]");
+					}
+
+					if (yEnumerator.MoveNext())
+					{
+						yCount++;
+						result.Add(propertyPath, $"collection with {xCount} elements", $"collection with at least {yCount} elements");
+					}
+
+					Exit: ;
+				}
+				finally
+				{
+					if (xEnumerator is IDisposable xDisposable)
+						xDisposable.Dispose();
+					if (yEnumerator is IDisposable yDisposable)
+						yDisposable.Dispose();
+				}
+			}
+		}
+
 		return result;
 	}
 
@@ -70,5 +156,25 @@ public sealed class EquivalencyComparer<T> : EquivalencyComparer
 	{
 		var result = new EquivalencyComparerResult();
 		return Equivalent(x, y, result, path: null);
+	}
+}
+
+file static class TypeEx
+{
+	public static Type? TryGetElementType(this Type @this)
+	{
+		if (@this.IsArray)
+			return @this.GetElementType();
+
+		if (@this.IsGenericType && @this.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+			return @this.GetGenericArguments()[0];
+
+		foreach (var @interface in @this.GetInterfaces())
+		{
+			if (@interface.IsGenericType && @interface.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+				return @interface.GetGenericArguments()[0];
+		}
+
+		return null;
 	}
 }

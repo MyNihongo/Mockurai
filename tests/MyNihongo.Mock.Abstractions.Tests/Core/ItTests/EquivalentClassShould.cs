@@ -328,13 +328,125 @@ public sealed class EquivalentClassShould
 	[Fact]
 	public void BeTrueForArrays()
 	{
-		throw new NotImplementedException();
+		const string name = "Okayama Issei";
+		const int age = 17;
+
+		var setupValue = new[]
+		{
+			new ClassObject
+			{
+				Name = name,
+				Age = age,
+			},
+		};
+
+		var inputValue = new[]
+		{
+			new ClassObject
+			{
+				Name = name,
+				Age = age,
+			},
+		};
+
+		var actual = It<ClassObject[]>.Equivalent(setupValue)
+			.ValueSetup!.Value
+			.Predicate(inputValue);
+
+		Assert.True(actual);
+	}
+
+	[Fact]
+	public void BeTrueForEnumerable()
+	{
+		const string name = "Okayama Issei";
+		const int age = 17;
+
+		var setupValue = new[]
+		{
+			new ClassObject
+			{
+				Name = name,
+				Age = age,
+			},
+		};
+
+		var inputValue = new[]
+		{
+			new ClassObject
+			{
+				Name = name,
+				Age = age,
+			},
+		};
+
+		var actual = It<IEnumerable>.Equivalent(setupValue)
+			.ValueSetup!.Value
+			.Predicate(inputValue);
+
+		Assert.True(actual);
+	}
+
+	[Fact]
+	public void BeTrueForEnumerableGeneric()
+	{
+		const string name = "Okayama Issei";
+		const int age = 17;
+
+		var setupValue = new[]
+		{
+			new ClassObject
+			{
+				Name = name,
+				Age = age,
+			},
+		};
+
+		var inputValue = new[]
+		{
+			new ClassObject
+			{
+				Name = name,
+				Age = age,
+			},
+		};
+
+		var actual = It<IEnumerable<ClassObject>>.Equivalent(setupValue)
+			.ValueSetup!.Value
+			.Predicate(inputValue);
+
+		Assert.True(actual);
 	}
 
 	[Fact]
 	public void BeTrueForLists()
 	{
-		throw new NotImplementedException();
+		const string name = "Okayama Issei";
+		const int age = 17;
+
+		var setupValue = new List<ClassObject>
+		{
+			new()
+			{
+				Name = name,
+				Age = age,
+			},
+		};
+
+		var inputValue = new List<ClassObject>
+		{
+			new()
+			{
+				Name = name,
+				Age = age,
+			},
+		};
+
+		var actual = It<List<ClassObject>>.Equivalent(setupValue)
+			.ValueSetup!.Value
+			.Predicate(inputValue);
+
+		Assert.True(actual);
 	}
 }
 
