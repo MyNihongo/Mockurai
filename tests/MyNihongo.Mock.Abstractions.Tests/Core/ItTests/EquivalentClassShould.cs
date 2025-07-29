@@ -448,6 +448,182 @@ public sealed class EquivalentClassShould
 
 		Assert.True(actual);
 	}
+
+	[Fact]
+	public void BeFalseCollectionCountDifferent1()
+	{
+		const string name = "Okayama Issei";
+		const int age = 17;
+
+		var setupValue = new[]
+		{
+			new ClassObject
+			{
+				Name = name,
+				Age = age,
+			},
+			new ClassObject
+			{
+				Name = name,
+				Age = age,
+			},
+		};
+
+		var inputValue = new[]
+		{
+			new ClassObject
+			{
+				Name = name,
+				Age = age,
+			},
+		};
+
+		var actual = It<ClassObject[]>.Equivalent(setupValue)
+			.ValueSetup!.Value
+			.Predicate(inputValue);
+
+		Assert.False(actual);
+	}
+
+	[Fact]
+	public void BeFalseCollectionCountDifferent2()
+	{
+		const string name = "Okayama Issei";
+		const int age = 17;
+
+		var setupValue = new[]
+		{
+			new ClassObject
+			{
+				Name = name,
+				Age = age,
+			},
+		};
+
+		var inputValue = new[]
+		{
+			new ClassObject
+			{
+				Name = name,
+				Age = age,
+			},
+			new ClassObject
+			{
+				Name = name,
+				Age = age,
+			},
+		};
+
+		var actual = It<ClassObject[]>.Equivalent(setupValue)
+			.ValueSetup!.Value
+			.Predicate(inputValue);
+
+		Assert.False(actual);
+	}
+
+	[Fact]
+	public void BeFalseCollectionPropertyNotEqual()
+	{
+		const string name1 = "Okayama Issei", name2 = "Okayama Issei2";
+		const int age = 17;
+
+		var setupValue = new ClassObject[]
+		{
+			new()
+			{
+				Name = name1,
+				Age = age,
+			},
+			new()
+			{
+				Name = name1,
+				Age = age,
+			},
+		};
+
+		var inputValue = new ClassObject[]
+		{
+			new()
+			{
+				Name = name1,
+				Age = age,
+			},
+			new()
+			{
+				Name = name2,
+				Age = age,
+			},
+		};
+
+		var actual = It<ClassObject[]>.Equivalent(setupValue)
+			.ValueSetup!.Value
+			.Predicate(inputValue);
+
+		Assert.False(actual);
+	}
+
+	[Fact]
+	public void BeFalseCollectionNestedPropertyNotEqual()
+	{
+		const decimal price = 123.45m;
+		var dateOfBirth = new DateTime(2025, 07, 29);
+		const string name1 = "Okayama Issei", name2 = "Okayama Issei2";
+		const int age = 17;
+
+		var setupValue = new ClassNestedObject[]
+		{
+			new()
+			{
+				Price = price,
+				DateOfBirth = dateOfBirth,
+				Child = new ClassObject
+				{
+					Name = name1,
+					Age = age,
+				},
+			},
+			new()
+			{
+				Price = price,
+				DateOfBirth = dateOfBirth,
+				Child = new ClassObject
+				{
+					Name = name1,
+					Age = age,
+				},
+			},
+		};
+
+		var inputValue = new ClassNestedObject[]
+		{
+			new()
+			{
+				Price = price,
+				DateOfBirth = dateOfBirth,
+				Child = new ClassObject
+				{
+					Name = name1,
+					Age = age,
+				},
+			},
+			new()
+			{
+				Price = price,
+				DateOfBirth = dateOfBirth,
+				Child = new ClassObject
+				{
+					Name = name2,
+					Age = age,
+				},
+			},
+		};
+
+		var actual = It<ClassNestedObject[]>.Equivalent(setupValue)
+			.ValueSetup!.Value
+			.Predicate(inputValue);
+
+		Assert.False(actual);
+	}
 }
 
 file sealed class ClassObject
