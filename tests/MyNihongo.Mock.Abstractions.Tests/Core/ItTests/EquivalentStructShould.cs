@@ -1,14 +1,14 @@
 namespace MyNihongo.Mock.Abstractions.Tests.Core.ItTests;
 
-public sealed class EquivalentShould
+public sealed class EquivalentStructShould
 {
 	[Fact]
 	public void BeTrueIfDefault()
 	{
-		var setupValue = new ClassObject();
-		var inputValue = new ClassObject();
+		var setupValue = new StructObject();
+		var inputValue = new StructObject();
 
-		var actual = It<ClassObject>.Equivalent(setupValue)
+		var actual = It<StructObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
 			.Predicate(inputValue);
 
@@ -21,19 +21,19 @@ public sealed class EquivalentShould
 		const string name = "Okayama Issei";
 		const int age = 17;
 
-		var setupValue = new ClassObject
+		var setupValue = new StructObject
 		{
 			Name = name,
 			Age = age,
 		};
 
-		var inputValue = new ClassObject
+		var inputValue = new StructObject
 		{
 			Name = name,
 			Age = age,
 		};
 
-		var actual = It<ClassObject>.Equivalent(setupValue)
+		var actual = It<StructObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
 			.Predicate(inputValue);
 
@@ -46,19 +46,19 @@ public sealed class EquivalentShould
 		const string name1 = "Okayama Issei", name2 = "Okayama Issei2";
 		const int age = 17;
 
-		var setupValue = new ClassObject
+		var setupValue = new StructObject
 		{
 			Name = name1,
 			Age = age,
 		};
 
-		var inputValue = new ClassObject
+		var inputValue = new StructObject
 		{
 			Name = name2,
 			Age = age,
 		};
 
-		var actual = It<ClassObject>.Equivalent(setupValue)
+		var actual = It<StructObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
 			.Predicate(inputValue);
 
@@ -71,19 +71,19 @@ public sealed class EquivalentShould
 		const string name = "Okayama Issei";
 		const int age1 = 17, age2 = 18;
 
-		var setupValue = new ClassObject
+		var setupValue = new StructObject
 		{
 			Name = name,
 			Age = age1,
 		};
 
-		var inputValue = new ClassObject
+		var inputValue = new StructObject
 		{
 			Name = name,
 			Age = age2,
 		};
 
-		var actual = It<ClassObject>.Equivalent(setupValue)
+		var actual = It<StructObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
 			.Predicate(inputValue);
 
@@ -96,19 +96,19 @@ public sealed class EquivalentShould
 		const string name = "Okayama Issei";
 		const int age = 17;
 
-		var setupValue = new ClassObject
+		var setupValue = new StructObject
 		{
 			Name = null,
 			Age = age,
 		};
 
-		var inputValue = new ClassObject
+		var inputValue = new StructObject
 		{
 			Name = name,
 			Age = age,
 		};
 
-		var actual = It<ClassObject>.Equivalent(setupValue)
+		var actual = It<StructObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
 			.Predicate(inputValue);
 
@@ -121,19 +121,19 @@ public sealed class EquivalentShould
 		const string name = "Okayama Issei";
 		const int age = 17;
 
-		var setupValue = new ClassObject
+		var setupValue = new StructObject
 		{
 			Name = name,
 			Age = age,
 		};
 
-		var inputValue = new ClassObject
+		var inputValue = new StructObject
 		{
 			Name = null,
 			Age = age,
 		};
 
-		var actual = It<ClassObject>.Equivalent(setupValue)
+		var actual = It<StructObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
 			.Predicate(inputValue);
 
@@ -148,29 +148,29 @@ public sealed class EquivalentShould
 		const string name = "Okayama Issei";
 		const int age = 17;
 
-		var setupValue = new ClassNestedObject
+		var setupValue = new StructNestedObject
 		{
 			Price = price,
 			DateOfBirth = dateOfBirth,
-			Child = new ClassObject
+			Child = new StructObject
 			{
 				Name = name,
 				Age = age,
 			},
 		};
 
-		var inputValue = new ClassNestedObject
+		var inputValue = new StructNestedObject
 		{
 			Price = price,
 			DateOfBirth = dateOfBirth,
-			Child = new ClassObject
+			Child = new StructObject
 			{
 				Name = name,
 				Age = age,
 			},
 		};
 
-		var actual = It<ClassNestedObject>.Equivalent(setupValue)
+		var actual = It<StructNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
 			.Predicate(inputValue);
 
@@ -185,29 +185,29 @@ public sealed class EquivalentShould
 		const string name = "Okayama Issei";
 		const int age = 17;
 
-		var setupValue = new ClassNestedObject
+		var setupValue = new StructNestedObject
 		{
 			Price = price1,
 			DateOfBirth = dateOfBirth,
-			Child = new ClassObject
+			Child = new StructObject
 			{
 				Name = name,
 				Age = age,
 			},
 		};
 
-		var inputValue = new ClassNestedObject
+		var inputValue = new StructNestedObject
 		{
 			Price = price2,
 			DateOfBirth = dateOfBirth,
-			Child = new ClassObject
+			Child = new StructObject
 			{
 				Name = name,
 				Age = age,
 			},
 		};
 
-		var actual = It<ClassNestedObject>.Equivalent(setupValue)
+		var actual = It<StructNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
 			.Predicate(inputValue);
 
@@ -222,29 +222,29 @@ public sealed class EquivalentShould
 		const string name = "Okayama Issei";
 		const int age = 17;
 
-		var setupValue = new ClassNestedObject
+		var setupValue = new StructNestedObject
 		{
 			Price = price,
 			DateOfBirth = dateOfBirth1,
-			Child = new ClassObject
+			Child = new StructObject
 			{
 				Name = name,
 				Age = age,
 			},
 		};
 
-		var inputValue = new ClassNestedObject
+		var inputValue = new StructNestedObject
 		{
 			Price = price,
 			DateOfBirth = dateOfBirth2,
-			Child = new ClassObject
+			Child = new StructObject
 			{
 				Name = name,
 				Age = age,
 			},
 		};
 
-		var actual = It<ClassNestedObject>.Equivalent(setupValue)
+		var actual = It<StructNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
 			.Predicate(inputValue);
 
@@ -259,29 +259,29 @@ public sealed class EquivalentShould
 		const string name1 = "Okayama Issei", name2 = "Okayama Issei2";
 		const int age = 17;
 
-		var setupValue = new ClassNestedObject
+		var setupValue = new StructNestedObject
 		{
 			Price = price,
 			DateOfBirth = dateOfBirth,
-			Child = new ClassObject
+			Child = new StructObject
 			{
 				Name = name1,
 				Age = age,
 			},
 		};
 
-		var inputValue = new ClassNestedObject
+		var inputValue = new StructNestedObject
 		{
 			Price = price,
 			DateOfBirth = dateOfBirth,
-			Child = new ClassObject
+			Child = new StructObject
 			{
 				Name = name2,
 				Age = age,
 			},
 		};
 
-		var actual = It<ClassNestedObject>.Equivalent(setupValue)
+		var actual = It<StructNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
 			.Predicate(inputValue);
 
@@ -296,60 +296,48 @@ public sealed class EquivalentShould
 		const string name = "Okayama Issei";
 		const int age1 = 17, age2 = 18;
 
-		var setupValue = new ClassNestedObject
+		var setupValue = new StructNestedObject
 		{
 			Price = price,
 			DateOfBirth = dateOfBirth,
-			Child = new ClassObject
+			Child = new StructObject
 			{
 				Name = name,
 				Age = age1,
 			},
 		};
 
-		var inputValue = new ClassNestedObject
+		var inputValue = new StructNestedObject
 		{
 			Price = price,
 			DateOfBirth = dateOfBirth,
-			Child = new ClassObject
+			Child = new StructObject
 			{
 				Name = name,
 				Age = age2,
 			},
 		};
 
-		var actual = It<ClassNestedObject>.Equivalent(setupValue)
+		var actual = It<StructNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
 			.Predicate(inputValue);
 
 		Assert.False(actual);
 	}
-
-	[Fact]
-	public void BeTrueForArrays()
-	{
-		throw new NotImplementedException();
-	}
-
-	[Fact]
-	public void BeTrueForLists()
-	{
-		throw new NotImplementedException();
-	}
 }
 
-file sealed class ClassObject
+file readonly struct StructObject
 {
 	public string? Name { get; init; }
 
 	public int Age { get; init; }
 }
 
-file sealed class ClassNestedObject
+file readonly struct StructNestedObject
 {
 	public decimal Price { get; init; }
 
 	public DateTime DateOfBirth { get; init; }
 
-	public ClassObject? Child { get; init; }
+	public StructObject? Child { get; init; }
 }
