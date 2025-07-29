@@ -231,6 +231,31 @@ public sealed class EquivalentStructShould
 	}
 
 	[Fact]
+	public void BeTrueForCollections()
+	{
+		const string name = "Okayama Issei";
+		const int age = 17;
+
+		var setupValue = new StructObject[]
+		{
+			new(name, age),
+			new(name, age),
+		};
+
+		var inputValue = new StructObject[]
+		{
+			new(name, age),
+			new(name, age),
+		};
+
+		var actual = It<StructObject[]>.Equivalent(setupValue)
+			.ValueSetup!.Value
+			.Predicate(inputValue);
+
+		Assert.True(actual);
+	}
+
+	[Fact]
 	public void BeFalseCollectionPropertyNotEqual()
 	{
 		const string name1 = "Okayama Issei", name2 = "Okayama Issei2";
