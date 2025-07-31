@@ -23,7 +23,7 @@ public sealed class Invocation<TParameter>
 		var count = 0;
 		foreach (var invocation in _invocations)
 		{
-			var verifyParameter = invocation.Invocation.GetParameter();
+			var verifyParameter = invocation.Invocation.GetParameter(parameter.ValueSetup?.Type);
 			if (parameter.ValueSetup.HasValue && !parameter.ValueSetup.Value.Predicate(verifyParameter))
 				continue;
 
@@ -42,7 +42,7 @@ public sealed class Invocation<TParameter>
 	{
 		foreach (var item in _invocations.GetItemsFrom(index))
 		{
-			var verifyParameter = item.Invocation.GetParameter();
+			var verifyParameter = item.Invocation.GetParameter(parameter.ValueSetup?.Type);
 
 			if (!parameter.ValueSetup.HasValue || parameter.ValueSetup.Value.Predicate(verifyParameter))
 			{
@@ -85,13 +85,10 @@ public sealed class Invocation<TParameter>
 			}
 		}
 
-		public TParameter GetParameter()
+		public TParameter? GetParameter(SetupType? setupType)
 		{
-			return _parameter;
-
-			// TODO: only for equivalent
-			return !string.IsNullOrEmpty(_jsonSnapshot)
-				? JsonSerializer.Deserialize<TParameter>(_jsonSnapshot)!
+			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshot)
+				? JsonSerializer.Deserialize<TParameter>(_jsonSnapshot)
 				: _parameter;
 		}
 

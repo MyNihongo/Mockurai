@@ -25,8 +25,8 @@ public sealed class InvocationIntInt
 		var count = 0;
 		foreach (var invocation in _invocations)
 		{
-			var verifyParameter1 = invocation.Invocation.GetParameter1();
-			var verifyParameter2 = invocation.Invocation.GetParameter2();
+			var verifyParameter1 = invocation.Invocation.GetParameter1(parameter1.ValueSetup?.Type);
+			var verifyParameter2 = invocation.Invocation.GetParameter2(parameter2.ValueSetup?.Type);
 
 			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Predicate(verifyParameter1))
 				continue;
@@ -48,8 +48,8 @@ public sealed class InvocationIntInt
 	{
 		foreach (var item in _invocations.GetItemsFrom(index))
 		{
-			var verifyParameter1 = item.Invocation.GetParameter1();
-			var verifyParameter2 = item.Invocation.GetParameter2();
+			var verifyParameter1 = item.Invocation.GetParameter1(parameter1.ValueSetup?.Type);
+			var verifyParameter2 = item.Invocation.GetParameter2(parameter2.ValueSetup?.Type);
 
 			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Predicate(verifyParameter1))
 				continue;
@@ -104,23 +104,17 @@ public sealed class InvocationIntInt
 			}
 		}
 
-		public int GetParameter1()
+		public int GetParameter1(SetupType? setupType)
 		{
-			return _parameter1;
-
-			// TODO: only for equivalent
-			return !string.IsNullOrEmpty(_jsonSnapshot1)
-				? JsonSerializer.Deserialize<int>(_jsonSnapshot1)!
+			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshot1)
+				? JsonSerializer.Deserialize<int>(_jsonSnapshot1)
 				: _parameter1;
 		}
 
-		public int GetParameter2()
+		public int GetParameter2(SetupType? setupType)
 		{
-			return _parameter2;
-
-			// TODO: only for equivalent
-			return !string.IsNullOrEmpty(_jsonSnapshot2)
-				? JsonSerializer.Deserialize<int>(_jsonSnapshot2)!
+			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshot2)
+				? JsonSerializer.Deserialize<int>(_jsonSnapshot2)
 				: _parameter2;
 		}
 
