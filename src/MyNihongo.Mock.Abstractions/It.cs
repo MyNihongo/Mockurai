@@ -4,7 +4,7 @@ public readonly ref struct It<T>
 {
 	public readonly Setup? ValueSetup;
 
-	private It(Func<T, bool> predicate, SetupType type)
+	private It(Func<T?, bool> predicate, SetupType type)
 	{
 		ValueSetup = new Setup(predicate, type);
 	}
@@ -19,7 +19,7 @@ public readonly ref struct It<T>
 		return new It<T>(x => EquivalencyComparer<T>.Default.Equivalent(value, x), SetupType.Equivalent);
 	}
 
-	public static It<T> Where(in Func<T, bool> predicate)
+	public static It<T> Where(in Func<T?, bool> predicate)
 	{
 		return new It<T>(predicate, SetupType.Where);
 	}
@@ -34,19 +34,12 @@ public readonly ref struct It<T>
 		return Value(value);
 	}
 
-	public enum SetupType
-	{
-		Where = 1,
-		Equivalent = 9,
-		Value = 10,
-	}
-
 	public readonly struct Setup : IComparable<Setup>
 	{
-		public readonly Func<T, bool> Predicate;
+		public readonly Func<T?, bool> Predicate;
 		public readonly SetupType Type;
 
-		public Setup(in Func<T, bool> predicate, in SetupType type)
+		public Setup(in Func<T?, bool> predicate, in SetupType type)
 		{
 			Predicate = predicate;
 			Type = type;
