@@ -63,6 +63,633 @@ public sealed class EquivalentShould
 
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
+
+	[Fact]
+	public void HaveEntriesIfTwoInvalid()
+	{
+		const int age1 = 17, age2 = 18;
+		const string name1 = "Okayama Issei", name2 = "Okayama Issei2";
+		var dateOfBirth = new DateOnly(2024, 6, 29);
+		var dateTimeUpdated = new DateTime(2025, 7, 30, 18, 23, 32);
+
+		var input1 = new ClassObject
+		{
+			Age = age1,
+			DateTimeUpdated = dateTimeUpdated,
+			Name = name1,
+			DateOfBirth = dateOfBirth,
+		};
+
+		var input2 = new ClassObject
+		{
+			Age = age2,
+			DateTimeUpdated = dateTimeUpdated,
+			Name = name2,
+			DateOfBirth = dateOfBirth,
+		};
+
+		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
+
+		var expected = new EquivalencyComparerResult.Entry[]
+		{
+			new("Age", "17", "18"),
+			new("Name", "Okayama Issei", "Okayama Issei2"),
+		};
+
+		Assert.Equivalent(expected, actual.Entries, true);
+	}
+
+	[Fact]
+	public void HaveEntriesIfThreeInvalid()
+	{
+		const int age1 = 17, age2 = 18;
+		const string name1 = "Okayama Issei", name2 = "Okayama Issei2";
+		DateOnly dateOfBirth1 = new(2024, 6, 29), dateOfBirth2 = new(2024, 6, 30);
+		var dateTimeUpdated = new DateTime(2025, 7, 30, 18, 23, 32);
+
+		var input1 = new ClassObject
+		{
+			Age = age1,
+			DateTimeUpdated = dateTimeUpdated,
+			Name = name1,
+			DateOfBirth = dateOfBirth1,
+		};
+
+		var input2 = new ClassObject
+		{
+			Age = age2,
+			DateTimeUpdated = dateTimeUpdated,
+			Name = name2,
+			DateOfBirth = dateOfBirth2,
+		};
+
+		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
+
+		var expected = new EquivalencyComparerResult.Entry[]
+		{
+			new("Age", "17", "18"),
+			new("Name", "Okayama Issei", "Okayama Issei2"),
+			new("DateOfBirth", "2024/06/29", "2024/06/30"),
+		};
+
+		Assert.Equivalent(expected, actual.Entries, true);
+	}
+
+	[Fact]
+	public void HaveEntriesIfFourInvalid()
+	{
+		const int age1 = 17, age2 = 18;
+		const string name1 = "Okayama Issei", name2 = "Okayama Issei2";
+		DateOnly dateOfBirth1 = new(2024, 6, 29), dateOfBirth2 = new(2024, 6, 30);
+		DateTime dateTimeUpdated1 = new(2025, 7, 30, 18, 23, 32), dateTimeUpdated2 = new(2025, 7, 30, 18, 23, 33);
+
+		var input1 = new ClassObject
+		{
+			Age = age1,
+			DateTimeUpdated = dateTimeUpdated1,
+			Name = name1,
+			DateOfBirth = dateOfBirth1,
+		};
+
+		var input2 = new ClassObject
+		{
+			Age = age2,
+			DateTimeUpdated = dateTimeUpdated2,
+			Name = name2,
+			DateOfBirth = dateOfBirth2,
+		};
+
+		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
+
+		var expected = new EquivalencyComparerResult.Entry[]
+		{
+			new("Age", "17", "18"),
+			new("Name", "Okayama Issei", "Okayama Issei2"),
+			new("DateOfBirth", "2024/06/29", "2024/06/30"),
+			new("DateTimeUpdated", "2025/07/30 18:23:32", "2025/07/30 18:23:33"),
+		};
+
+		Assert.Equivalent(expected, actual.Entries, true);
+	}
+
+	[Fact]
+	public void HaveEntryIfClassNotEquals1()
+	{
+		var input1 = new ClassObject
+		{
+			Parent = null,
+		};
+
+		var input2 = new ClassObject
+		{
+			Parent = new ClassObject.Item
+			{
+				Ticks = 123L,
+			},
+		};
+
+		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
+
+		var expected = new EquivalencyComparerResult.Entry[]
+		{
+			new("Parent", "null", "Item"),
+		};
+		Assert.Equivalent(expected, actual.Entries, true);
+	}
+
+	[Fact]
+	public void HaveEntryIfClassNotEquals2()
+	{
+		var input1 = new ClassObject
+		{
+			Parent = new ClassObject.Item
+			{
+				Ticks = 123L,
+			},
+		};
+
+		var input2 = new ClassObject
+		{
+			Parent = null,
+		};
+
+		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
+
+		var expected = new EquivalencyComparerResult.Entry[]
+		{
+			new("Parent", "Item", "null"),
+		};
+		Assert.Equivalent(expected, actual.Entries, true);
+	}
+
+	[Fact]
+	public void BeEmptyIfNestedEquals()
+	{
+		const long ticks = 1234567890L;
+		const bool isValid = true;
+
+		var input1 = new ClassObject
+		{
+			Parent = new ClassObject.Item
+			{
+				Ticks = ticks,
+				IsValid = isValid,
+			},
+		};
+
+		var input2 = new ClassObject
+		{
+			Parent = new ClassObject.Item
+			{
+				Ticks = ticks,
+				IsValid = isValid,
+			},
+		};
+
+		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
+		Assert.Empty(actual.Entries);
+	}
+
+	[Fact]
+	public void HaveOneEntryIfNestedNotEquals()
+	{
+		const long ticks1 = 1234567890L, ticks2 = 2345678901L;
+		const bool isValid = true;
+
+		var input1 = new ClassObject
+		{
+			Parent = new ClassObject.Item
+			{
+				Ticks = ticks1,
+				IsValid = isValid,
+			},
+		};
+
+		var input2 = new ClassObject
+		{
+			Parent = new ClassObject.Item
+			{
+				Ticks = ticks2,
+				IsValid = isValid,
+			},
+		};
+
+		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
+
+		var expected = new EquivalencyComparerResult.Entry[]
+		{
+			new("Parent.Ticks", "1234567890", "2345678901"),
+		};
+		Assert.Equivalent(expected, actual.Entries, true);
+	}
+
+	[Fact]
+	public void HaveEntriesIfNestedNotEquals2()
+	{
+		const long ticks1 = 1234567890L, ticks2 = 2345678901L;
+		const bool isValid1 = true, isValid2 = false;
+
+		var input1 = new ClassObject
+		{
+			Parent = new ClassObject.Item
+			{
+				Ticks = ticks1,
+				IsValid = isValid1,
+			},
+		};
+
+		var input2 = new ClassObject
+		{
+			Parent = new ClassObject.Item
+			{
+				Ticks = ticks2,
+				IsValid = isValid2,
+			},
+		};
+
+		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
+
+		var expected = new EquivalencyComparerResult.Entry[]
+		{
+			new("Parent.Ticks", "1234567890", "2345678901"),
+			new("Parent.IsValid", "True", "False"),
+		};
+		Assert.Equivalent(expected, actual.Entries, true);
+	}
+
+	[Fact]
+	public void HaveEntryIfListNotEquals1()
+	{
+		var input1 = new ClassObject
+		{
+			Children = [],
+		};
+
+		var input2 = new ClassObject
+		{
+			Children = null,
+		};
+
+		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
+
+		var expected = new EquivalencyComparerResult.Entry[]
+		{
+			new("Children", "[ClassObject]", "null"),
+		};
+		Assert.Equivalent(expected, actual.Entries, true);
+	}
+
+	[Fact]
+	public void HaveEntryIfListNotEquals2()
+	{
+		var input1 = new ClassObject
+		{
+			Children = null,
+		};
+
+		var input2 = new ClassObject
+		{
+			Children = [],
+		};
+
+		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
+
+		var expected = new EquivalencyComparerResult.Entry[]
+		{
+			new("Children", "null", "[ClassObject]"),
+		};
+		Assert.Equivalent(expected, actual.Entries, true);
+	}
+
+	[Fact]
+	public void BeEmptyIfListEmpty()
+	{
+		var input1 = new ClassObject
+		{
+			Children = [],
+		};
+
+		var input2 = new ClassObject
+		{
+			Children = [],
+		};
+
+		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
+		Assert.Empty(actual.Entries);
+	}
+
+	[Fact]
+	public void BeEmptyIfListItemEqual()
+	{
+		const long ticks = 1234567890L;
+		const bool isValid = true;
+
+		var input1 = new ClassObject
+		{
+			Children =
+			[
+				new ClassObject.Item
+				{
+					Ticks = ticks,
+					IsValid = isValid,
+				},
+			],
+		};
+
+		var input2 = new ClassObject
+		{
+			Children =
+			[
+				new ClassObject.Item
+				{
+					Ticks = ticks,
+					IsValid = isValid,
+				},
+			],
+		};
+
+		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
+		Assert.Empty(actual.Entries);
+	}
+
+	[Fact]
+	public void HaveEntryIfListItemNotEqual1()
+	{
+		const long ticks1 = 1234567890L, ticks2 = 2345678901L;
+		const bool isValid = true;
+
+		var input1 = new ClassObject
+		{
+			Children =
+			[
+				new ClassObject.Item
+				{
+					Ticks = ticks1,
+					IsValid = isValid,
+				},
+			],
+		};
+
+		var input2 = new ClassObject
+		{
+			Children =
+			[
+				new ClassObject.Item
+				{
+					Ticks = ticks2,
+					IsValid = isValid,
+				},
+			],
+		};
+
+		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
+		var expected = new EquivalencyComparerResult.Entry[]
+		{
+			new("Children[0].Ticks", "1234567890", "2345678901"),
+		};
+		Assert.Equivalent(expected, actual.Entries, true);
+	}
+
+	[Fact]
+	public void HaveEntryIfListItemNotEqual2()
+	{
+		const long ticks1 = 1234567890L, ticks2 = 2345678901L;
+		const bool isValid1 = true, isValid2 = false;
+
+		var input1 = new ClassObject
+		{
+			Children =
+			[
+				new ClassObject.Item
+				{
+					Ticks = ticks1,
+					IsValid = isValid1,
+				},
+			],
+		};
+
+		var input2 = new ClassObject
+		{
+			Children =
+			[
+				new ClassObject.Item
+				{
+					Ticks = ticks2,
+					IsValid = isValid2,
+				},
+			],
+		};
+
+		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
+		var expected = new EquivalencyComparerResult.Entry[]
+		{
+			new("Children[0].Ticks", "1234567890", "2345678901"),
+			new("Children[0].IsValid", "True", "False"),
+		};
+		Assert.Equivalent(expected, actual.Entries, true);
+	}
+
+	[Fact]
+	public void HaveEntryIfListItemNotEqual3()
+	{
+		const long ticks1 = 1234567890L, ticks2 = 2345678901L;
+		const bool isValid1 = true, isValid2 = false;
+
+		var input1 = new ClassObject
+		{
+			Children =
+			[
+				new ClassObject.Item
+				{
+					Ticks = ticks1,
+					IsValid = isValid1,
+				},
+				new ClassObject.Item
+				{
+					Ticks = ticks1,
+					IsValid = isValid1,
+				},
+			],
+		};
+
+		var input2 = new ClassObject
+		{
+			Children =
+			[
+				new ClassObject.Item
+				{
+					Ticks = ticks2,
+					IsValid = isValid2,
+				},
+			],
+		};
+
+		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
+		var expected = new EquivalencyComparerResult.Entry[]
+		{
+			new("Children[0].Ticks", "1234567890", "2345678901"),
+			new("Children[0].IsValid", "True", "False"),
+			new("Children", "collection with at least 2 elements", "collection with 1 elements"),
+		};
+		Assert.Equivalent(expected, actual.Entries, true);
+	}
+
+	[Fact]
+	public void HaveEntryIfListItemNotEqual4()
+	{
+		const long ticks1 = 1234567890L, ticks2 = 2345678901L;
+		const bool isValid1 = true, isValid2 = false;
+
+		var input1 = new ClassObject
+		{
+			Children =
+			[
+				new ClassObject.Item
+				{
+					Ticks = ticks1,
+					IsValid = isValid1,
+				},
+				new ClassObject.Item
+				{
+					Ticks = ticks1,
+					IsValid = isValid1,
+				},
+			],
+		};
+
+		var input2 = new ClassObject
+		{
+			Children =
+			[
+				new ClassObject.Item
+				{
+					Ticks = ticks1,
+					IsValid = isValid2,
+				},
+				new ClassObject.Item
+				{
+					Ticks = ticks2,
+					IsValid = isValid1,
+				},
+			],
+		};
+
+		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
+		var expected = new EquivalencyComparerResult.Entry[]
+		{
+			new("Children[1].Ticks", "1234567890", "2345678901"),
+			new("Children[0].IsValid", "True", "False"),
+		};
+		Assert.Equivalent(expected, actual.Entries, true);
+	}
+
+	[Fact]
+	public void HaveEntryIfListItemNestedNotEqual()
+	{
+		const int age1 = 17, age2 = 18;
+		const long ticks = 1234567890L;
+		const bool isValid = true;
+
+		var input1 = new ClassObject
+		{
+			Children =
+			[
+				new ClassObject.Item
+				{
+					Ticks = ticks,
+					IsValid = isValid,
+					Object = new ClassObject
+					{
+						Age = age1,
+					},
+				},
+			],
+		};
+
+		var input2 = new ClassObject
+		{
+			Children =
+			[
+				new ClassObject.Item
+				{
+					Ticks = ticks,
+					IsValid = isValid,
+					Object = new ClassObject
+					{
+						Age = age2,
+					},
+				},
+			],
+		};
+
+		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
+		var expected = new EquivalencyComparerResult.Entry[]
+		{
+			new("Children[0].Object.Age", "17", "18"),
+		};
+		Assert.Equivalent(expected, actual.Entries, true);
+	}
+
+	[Fact]
+	public void HaveEntryIfListItemNestedListNotEqual()
+	{
+		const string name1 = "Okayama Issei", name2 = "Okayama Issei2";
+		const long ticks = 1234567890L;
+		const bool isValid = true;
+
+		var input1 = new ClassObject
+		{
+			Children =
+			[
+				new ClassObject.Item
+				{
+					Ticks = ticks,
+					IsValid = isValid,
+					Objects =
+					[
+						new ClassObject
+						{
+							Name = name1,
+						},
+						new ClassObject
+						{
+							Name = name1,
+						},
+					],
+				},
+			],
+		};
+
+		var input2 = new ClassObject
+		{
+			Children =
+			[
+				new ClassObject.Item
+				{
+					Ticks = ticks,
+					IsValid = isValid,
+					Objects =
+					[
+						new ClassObject
+						{
+							Name = name1,
+						},
+						new ClassObject
+						{
+							Name = name2,
+						},
+					],
+				},
+			],
+		};
+
+		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
+		var expected = new EquivalencyComparerResult.Entry[]
+		{
+			new("Children[0].Objects[1].Name", "Okayama Issei", "Okayama Issei2"),
+		};
+		Assert.Equivalent(expected, actual.Entries, true);
+	}
 }
 
 file sealed class ClassObject
@@ -75,7 +702,12 @@ file sealed class ClassObject
 
 	public DateOnly DateOfBirth { get; init; }
 
-	public List<Item>? Children { get; init; }
+	public ListOfClass? Children { get; init; }
+
+	public override string ToString()
+	{
+		return nameof(ClassObject);
+	}
 
 	public sealed class Item
 	{
@@ -85,5 +717,18 @@ file sealed class ClassObject
 		public bool IsValid { get; init; }
 
 		public ClassObject? Object { get; init; }
+
+		public override string ToString()
+		{
+			return nameof(Item);
+		}
+	}
+}
+
+file sealed class ListOfClass : List<ClassObject.Item>
+{
+	public override string ToString()
+	{
+		return $"[{nameof(ClassObject)}]";
 	}
 }

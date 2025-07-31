@@ -72,6 +72,10 @@ public class EquivalencyComparer
 					if (yValue is not null)
 						result.Add(propertyPath, "null", yValue.ToString());
 				}
+				else if (yValue is null)
+				{
+					result.Add(propertyPath, xValue.ToString(), "null");
+				}
 				else if (ComparedByEquivalency(field.FieldType))
 				{
 					var equalityComparer = _nestedComparers.GetOrAdd(field.FieldType, static x => new EquivalencyComparer(x));
@@ -80,7 +84,7 @@ public class EquivalencyComparer
 				else
 				{
 					if (!xValue.Equals(yValue))
-						result.Add(propertyPath, xValue.ToString(), yValue?.ToString());
+						result.Add(propertyPath, xValue.ToString(), yValue.ToString());
 				}
 			}
 		}
