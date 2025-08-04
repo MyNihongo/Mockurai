@@ -4,14 +4,13 @@ namespace MyNihongo.Mock.Sample;
 public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyService>
 {
 	private Proxy? _proxy;
-	private Setup? _invoke;
-	private Invocation? _invokeInvocation;
-	private SetupWithParameter<string>? _invokeWithParameter1;
-	private SetupWithParameter<int>? _invokeWithParameter2;
-	private SetupIntInt? _invokeWithMultipleParameters;
-	private Setup<int>? _return;
-	private SetupWithParameter<string, string>? _returnWithOneParameter;
-	private SetupIntInt<decimal>? _returnWithMultipleParameters;
+	private Setup? _invoke; private Invocation? _invokeInvocation;
+	private SetupWithParameter<string>? _invokeWithParameter1; private Invocation<string>? _invokeWithParameterInvocation1;
+	private SetupWithParameter<int>? _invokeWithParameter2; private Invocation<int>? _invokeWithParameterInvocation2;
+	private SetupIntInt? _invokeWithMultipleParameters; private InvocationIntInt? _invokeWithMultipleParametersInvocation;
+	private Setup<int>? _return; private Invocation? _returnInvocation;
+	private SetupWithParameter<string, string>? _returnWithOneParameter;  private Invocation<string>? _returnWithOneParameterInvocation;
+	private SetupIntInt<decimal>? _returnWithMultipleParameters; private InvocationIntInt? _returnWithMultipleParametersInvocation;
 
 	public IPrimitiveDependencyService Object => _proxy ??= new Proxy(this);
 
@@ -69,36 +68,43 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 		public void Invoke()
 		{
+			(_mock._invokeInvocation ??= new Invocation("IPrimitiveDependencyService#Invoke()")).Register(InvocationIndex.CounterValue);
 			_mock._invoke?.Invoke();
 		}
 
 		public void InvokeWithParameter(in string parameter)
 		{
+			(_mock._invokeWithParameterInvocation1 ??= new Invocation<string>("IPrimitiveDependencyService#InvokeWithParameter({0})")).Register(InvocationIndex.CounterValue, parameter);
 			_mock._invokeWithParameter1?.Invoke(parameter);
 		}
 
 		public void InvokeWithParameter(in int parameter)
 		{
+			(_mock._invokeWithParameterInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService#InvokeWithParameter({0})")).Register(InvocationIndex.CounterValue, parameter);
 			_mock._invokeWithParameter2?.Invoke(parameter);
 		}
 
 		public void InvokeWithMultipleParameters(in int parameter1, in int parameter2)
 		{
+			(_mock._invokeWithMultipleParametersInvocation ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithMultipleParameters({0}, {1})")).Register(InvocationIndex.CounterValue, parameter1, parameter2);
 			_mock._invokeWithMultipleParameters?.Invoke(parameter1, parameter2);
 		}
 
 		public int Return()
 		{
+			(_mock._returnInvocation ??= new Invocation("IPrimitiveDependencyService#Return()")).Register(InvocationIndex.CounterValue);
 			return _mock._return?.Execute(out var returnValue) == true ? returnValue : 0;
 		}
 
 		public string ReturnWithParameter(in string parameter)
 		{
+			(_mock._returnWithOneParameterInvocation ??= new Invocation<string>("IPrimitiveDependencyService#ReturnWithParameter({0})")).Register(InvocationIndex.CounterValue, parameter);
 			return _mock._returnWithOneParameter?.Execute(parameter, out var returnValue) == true ? returnValue! : string.Empty;
 		}
 
 		public decimal ReturnWithMultipleParameters(int parameter1, int parameter2)
 		{
+			(_mock._returnWithMultipleParametersInvocation ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithMultipleParameters({0}, {1})")).Register(InvocationIndex.CounterValue, parameter1, parameter2);
 			return _mock._returnWithMultipleParameters?.Execute(parameter1, parameter2, out var returnValue) == true ? returnValue : 0m;
 		}
 	}
