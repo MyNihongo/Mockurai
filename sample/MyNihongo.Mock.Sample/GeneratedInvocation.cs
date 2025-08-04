@@ -74,8 +74,8 @@ public sealed class InvocationIntInt
 
 		if (unverifiedItems.Length > 0)
 		{
-			var verifyName = string.Format(_name, typeof(int), typeof(int));
-			throw new MockUnverifiedException(_name, unverifiedItems);
+			var verifyName = string.Format(_name, "Int32", "Int32");
+			throw new MockUnverifiedException(verifyName, unverifiedItems);
 		}
 	}
 
