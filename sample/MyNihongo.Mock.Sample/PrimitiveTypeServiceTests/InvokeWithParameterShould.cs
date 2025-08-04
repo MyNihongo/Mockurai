@@ -175,4 +175,95 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
+
+	[Fact]
+	public void VerifyTimesOverload()
+	{
+		const int parameter1 = 123, parameter2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter1);
+		fixture.InvokeWithParameter(parameter2);
+
+		DependencyServiceMock.VerifyInvokeWithParameter(parameter1, Times.Once);
+		DependencyServiceMock.VerifyInvokeWithParameter(parameter2, Times.AtLeast(1));
+		DependencyServiceMock.VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void VerifyTimesWhereOverload()
+	{
+		const int parameter1 = 123, parameter2 = 234;
+		var verify1 = It<int>.Where(x => x < 200);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter1);
+		fixture.InvokeWithParameter(parameter2);
+
+		DependencyServiceMock.VerifyInvokeWithParameter(verify1, Times.Once);
+		DependencyServiceMock.VerifyInvokeWithParameter(parameter2, Times.AtMost(1));
+		DependencyServiceMock.VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void VerifyTimesAnyOverload()
+	{
+		const int parameter1 = 123, parameter2 = 234;
+		var verify = It<int>.Any();
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter1);
+		fixture.InvokeWithParameter(parameter2);
+
+		DependencyServiceMock.VerifyInvokeWithParameter(verify, Times.Exactly(2));
+		DependencyServiceMock.VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowVerifyTimesOverload()
+	{
+		const int parameter1 = 123, parameter2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter1);
+		fixture.InvokeWithParameter(parameter2);
+
+		var actual = () =>
+		{
+			var verify = It<int>.Any();
+			DependencyServiceMock.VerifyInvokeWithParameter(verify, Times.AtLeast(3));
+		};
+
+		const string exceptionMessage =
+			"""
+			Expected IPrimitiveDependencyService#InvokeWithParameter(any) to be called at least 3 times, but instead it was called 2 times.
+			Performed invocations:
+			- 1: 123
+			- 2: 234
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowVerifyNoOtherCallsOverload()
+	{
+		const int parameter1 = 123, parameter2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter1);
+		fixture.InvokeWithParameter(parameter2);
+
+		DependencyServiceMock.VerifyInvokeWithParameter(parameter1, Times.Once);
+
+		var actual = () => DependencyServiceMock.VerifyNoOtherCalls();
+
+		const string exceptionMessage =
+			"""
+			Expected IPrimitiveDependencyService#InvokeWithParameter(Int32) to be verified, but the following invocations have not been verified:
+			- 2: 234
+			""";
+		var exception = Assert.Throws<MockUnverifiedException>(actual);
+		Assert.Equal(exceptionMessage, exception.Message);
+	}
 }
