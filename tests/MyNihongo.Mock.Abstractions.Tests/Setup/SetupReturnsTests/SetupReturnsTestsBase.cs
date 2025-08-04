@@ -1,4 +1,4 @@
-namespace MyNihongo.Mock.Sample._Generated.SetupReturnsTests;
+namespace MyNihongo.Mock.Abstractions.Tests.Setup.SetupReturnsTests;
 
 public abstract class SetupReturnsTestsBase
 {

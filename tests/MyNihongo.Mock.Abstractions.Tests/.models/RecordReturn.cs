@@ -1,4 +1,4 @@
-namespace MyNihongo.Mock.Abstractions.Tests.models;
+namespace MyNihongo.Mock.Abstractions.Tests;
 
 public record RecordReturn(
 	int Age,

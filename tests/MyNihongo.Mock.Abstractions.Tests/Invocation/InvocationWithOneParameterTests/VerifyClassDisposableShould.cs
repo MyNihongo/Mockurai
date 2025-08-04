@@ -1,7 +1,5 @@
 // ReSharper disable AccessToDisposedClosure
 
-using MyNihongo.Mock.Abstractions.Tests.models;
-
 namespace MyNihongo.Mock.Abstractions.Tests.Invocation.InvocationWithOneParameterTests;
 
 public sealed class VerifyClassDisposableShould : InvocationWithOneParameterTestsBase

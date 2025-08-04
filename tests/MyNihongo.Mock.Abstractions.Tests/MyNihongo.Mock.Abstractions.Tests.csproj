@@ -21,6 +21,7 @@
 	<ItemGroup>
 		<Using Include="Xunit" />
 		<Compile Include=".models\**" />
+		<None Remove="*.csproj.DotSettings" />
 	</ItemGroup>
 
 </Project>

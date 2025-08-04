@@ -1,4 +1,4 @@
-namespace MyNihongo.Mock.Sample._Generated.SetupWithOneParameterTests;
+namespace MyNihongo.Mock.Abstractions.Tests.Setup.SetupWithOneParameterTests;
 
 public sealed class InvokePrimitiveShould : SetupWithOneParameterTestsBase
 {

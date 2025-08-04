@@ -1,4 +1,4 @@
-namespace MyNihongo.Mock.Sample._Generated.SetupTests;
+namespace MyNihongo.Mock.Abstractions.Tests.Setup.SetupTests;
 
 public sealed class InvokePrimitiveShould : SetupTestsBase
 {
