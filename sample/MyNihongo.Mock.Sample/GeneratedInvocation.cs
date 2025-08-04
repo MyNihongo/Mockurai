@@ -14,9 +14,9 @@ public sealed class InvocationIntInt
 		_name = name;
 	}
 
-	public void Register(ref long index, in int parameter1, in int parameter2)
+	public void Register(in InvocationIndex.Counter index, in int parameter1, in int parameter2)
 	{
-		var invokedIndex = Interlocked.Increment(ref index);
+		var invokedIndex = index.Increment();
 		_invocations.Add(invokedIndex, new Item(parameter1, parameter2));
 	}
 
@@ -40,8 +40,9 @@ public sealed class InvocationIntInt
 		if (times.Predicate(count))
 			return;
 
+		var verifyName = string.Format(_name, parameter1.ToString(), parameter2.ToString());
 		var invocations = _invocations.GetItemStrings();
-		throw new MockVerifyCountException(_name, times, count, invocations);
+		throw new MockVerifyCountException(verifyName, times, count, invocations);
 	}
 
 	public long Verify(in It<int> parameter1, in It<int> parameter2, in long index)
@@ -60,7 +61,8 @@ public sealed class InvocationIntInt
 			return item.Index + 1;
 		}
 
-		throw new MockVerifySequenceOutOfRangeException(_name, index);
+		var verifyName = string.Format(_name, parameter1.ToString(), parameter2.ToString());
+		throw new MockVerifySequenceOutOfRangeException(verifyName, index);
 	}
 
 	public void VerifyNoOtherCalls()
@@ -71,7 +73,10 @@ public sealed class InvocationIntInt
 			.ToArray();
 
 		if (unverifiedItems.Length > 0)
-			throw new MockUnverifiedException(_name, unverifiedItems);
+		{
+			var verifyName = string.Format(_name, "Int32", "Int32");
+			throw new MockUnverifiedException(verifyName, unverifiedItems);
+		}
 	}
 
 	private sealed class Item

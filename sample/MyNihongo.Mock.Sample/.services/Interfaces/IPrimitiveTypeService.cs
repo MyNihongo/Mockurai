@@ -8,11 +8,11 @@ public interface IPrimitiveTypeService
 
 	void InvokeWithParameter(in int parameter);
 
-	void InvokeWithMultipleParameters(in int parameter1, in int parameter2);
+	void InvokeWithSeveralParameters(in int parameter1, in int parameter2);
 
 	decimal Return();
 
-	string ReturnWithOneParameter(in string parameter);
+	string ReturnWithParameter(in string parameter);
 
-	double ReturnWithMultipleParameters(in int parameter1, in int parameter2);
+	double ReturnWithSeveralParameters(in int parameter1, in int parameter2);
 }

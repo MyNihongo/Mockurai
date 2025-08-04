@@ -5,12 +5,12 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyAny()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Any(), verify2 = It<int>.Any();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 
 		const int expected = 2;
 		fixture.Verify(verify1, verify2, Times.Exactly(expected));
@@ -19,12 +19,12 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyWhere()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Where(x => x > 100), verify2 = It<int>.Where(x => x > 200);
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 
 		const int expected = 2;
 		fixture.Verify(verify1, verify2, Times.Exactly(expected));
@@ -33,14 +33,14 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyValue()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		const int setupValue1 = 123, setupValue2 = 234;
 		It<int> verify1 = setupValue1, verify2 = setupValue2;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, setupValue1, setupValue2);
-		fixture.Register(ref index, setupValue1, setupValue2);
+		fixture.Register(index, setupValue1, setupValue2);
+		fixture.Register(index, setupValue1, setupValue2);
 
 		const int expected = 2;
 		fixture.Verify(verify1, verify2, Times.Exactly(expected));
@@ -49,12 +49,12 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyAnyWhereAll1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Where(x => x > 100), verify2 = It<int>.Any();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 
 		const int expected = 2;
 		fixture.Verify(verify1, verify2, Times.Exactly(expected));
@@ -63,12 +63,12 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyAnyWhereAll2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Any(), verify2 = It<int>.Where(x => x > 200);
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 
 		const int expected = 2;
 		fixture.Verify(verify1, verify2, Times.Exactly(expected));
@@ -77,12 +77,12 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyAnyWherePartial1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Where(x => x > 200), verify2 = It<int>.Any();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 
 		fixture.Verify(verify1, verify2, Times.Once());
 	}
@@ -90,12 +90,12 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyAnyWherePartial2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Any(), verify2 = It<int>.Where(x => x > 300);
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 
 		fixture.Verify(verify1, verify2, Times.Once());
 	}
@@ -103,14 +103,14 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyAnyValue1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		const int setupValue1 = 123;
 		It<int> verify1 = setupValue1, verify2 = It<int>.Any();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, setupValue1, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, setupValue1, 234);
+		fixture.Register(index, 234, 345);
 
 		fixture.Verify(verify1, verify2, Times.Once());
 	}
@@ -118,13 +118,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyAnyValue2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int setupValue2 = 234;
 		It<int> verify1 = It<int>.Any(), verify2 = setupValue2;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, setupValue2);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, setupValue2);
+		fixture.Register(index, 234, 345);
 
 		fixture.Verify(verify1, verify2, Times.Once());
 	}
@@ -132,13 +132,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyWhereValueAll1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int setupValue2 = 234;
 		It<int> verify1 = It<int>.Where(x => x > 100), verify2 = setupValue2;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, setupValue2);
-		fixture.Register(ref index, 234, setupValue2);
+		fixture.Register(index, 123, setupValue2);
+		fixture.Register(index, 234, setupValue2);
 
 		const int expected = 2;
 		fixture.Verify(verify1, verify2, Times.Exactly(expected));
@@ -147,13 +147,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyWhereValueAll2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int setupValue1 = 123;
 		It<int> verify1 = setupValue1, verify2 = It<int>.Where(x => x > 200);
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, setupValue1, 234);
-		fixture.Register(ref index, setupValue1, 345);
+		fixture.Register(index, setupValue1, 234);
+		fixture.Register(index, setupValue1, 345);
 
 		const int expected = 2;
 		fixture.Verify(verify1, verify2, Times.Exactly(expected));
@@ -162,13 +162,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyWhereValuePartial1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int setupValue2 = 234;
 		It<int> verify1 = It<int>.Where(x => x > 200), verify2 = setupValue2;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, setupValue2);
-		fixture.Register(ref index, 234, setupValue2);
+		fixture.Register(index, 123, setupValue2);
+		fixture.Register(index, 234, setupValue2);
 
 		fixture.Verify(verify1, verify2, Times.Once());
 	}
@@ -176,13 +176,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyWhereValuePartial2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int setupValue1 = 123;
 		It<int> verify1 = setupValue1, verify2 = It<int>.Where(x => x > 300);
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, setupValue1, 234);
-		fixture.Register(ref index, setupValue1, 345);
+		fixture.Register(index, setupValue1, 234);
+		fixture.Register(index, setupValue1, 345);
 
 		fixture.Verify(verify1, verify2, Times.Once());
 	}
@@ -217,10 +217,10 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyAnyWhere1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
+		fixture.Register(index, 123, 234);
 
 		var actual = () =>
 		{
@@ -230,7 +230,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass#MyMethod(where(predicate), any) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -242,10 +242,10 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyAnyWhere2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
+		fixture.Register(index, 123, 234);
 
 		var actual = () =>
 		{
@@ -255,7 +255,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass#MyMethod(any, where(predicate)) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -267,11 +267,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyAnyValue1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int inputValue1 = 123;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, inputValue1, 234);
+		fixture.Register(index, inputValue1, 234);
 
 		var actual = () =>
 		{
@@ -281,7 +281,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass#MyMethod(124, any) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -293,11 +293,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyWhereAny2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int inputValue2 = 234;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, inputValue2);
+		fixture.Register(index, 123, inputValue2);
 
 		var actual = () =>
 		{
@@ -307,7 +307,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass#MyMethod(any, 235) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -319,10 +319,10 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyWhere1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
+		fixture.Register(index, 123, 234);
 
 		var actual = () =>
 		{
@@ -332,7 +332,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass#MyMethod(where(predicate), where(predicate)) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -344,10 +344,10 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyWhere2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
+		fixture.Register(index, 123, 234);
 
 		var actual = () =>
 		{
@@ -357,7 +357,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass#MyMethod(where(predicate), where(predicate)) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -369,10 +369,10 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyWhere3()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
+		fixture.Register(index, 123, 234);
 
 		var actual = () =>
 		{
@@ -382,7 +382,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass#MyMethod(where(predicate), where(predicate)) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -394,11 +394,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyValue1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int inputValue1 = 123, inputValue2 = 234;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, inputValue1, inputValue2);
+		fixture.Register(index, inputValue1, inputValue2);
 
 		var actual = () =>
 		{
@@ -408,7 +408,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass#MyMethod(234, 123) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -420,11 +420,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyValue2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int inputValue1 = 123, inputValue2 = 234;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, inputValue1, inputValue2);
+		fixture.Register(index, inputValue1, inputValue2);
 
 		var actual = () =>
 		{
@@ -434,7 +434,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass#MyMethod(123, 123) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -446,11 +446,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyValue3()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int inputValue1 = 123, inputValue2 = 234;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, inputValue1, inputValue2);
+		fixture.Register(index, inputValue1, inputValue2);
 
 		var actual = () =>
 		{
@@ -460,7 +460,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string exceptionMessage =
 			"""
-			Expected MyClass#MyMethod(Int32, Int32) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass#MyMethod(234, 234) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -472,12 +472,12 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyAnyWithIndex()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Any(), verify2 = It<int>.Any();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 
 		const long expected1 = 2L;
 		var actual1 = fixture.Verify(verify1, verify2, 1L);
@@ -491,12 +491,12 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyWhereWithIndex()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Where(x => x > 100), verify2 = It<int>.Where(x => x > 200);
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 
 		const long expected1 = 2L;
 		var actual1 = fixture.Verify(verify1, verify2, 1L);
@@ -510,14 +510,14 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyValueWithIndex()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		const int setupValue1 = 123, setupValue2 = 234;
 		It<int> verify1 = setupValue1, verify2 = setupValue2;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, setupValue1, setupValue2);
-		fixture.Register(ref index, setupValue1, setupValue2);
+		fixture.Register(index, setupValue1, setupValue2);
+		fixture.Register(index, setupValue1, setupValue2);
 
 		const long expected1 = 2L;
 		var actual1 = fixture.Verify(verify1, verify2, 1L);
@@ -531,12 +531,12 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyAnyWhereAllWithIndex1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Where(x => x > 100), verify2 = It<int>.Any();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 
 		const long expected1 = 2L;
 		var actual1 = fixture.Verify(verify1, verify2, 1L);
@@ -550,12 +550,12 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyAnyWhereAllWithIndex2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Any(), verify2 = It<int>.Where(x => x > 200);
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 
 		const long expected1 = 2L;
 		var actual1 = fixture.Verify(verify1, verify2, 1L);
@@ -569,12 +569,12 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyAnyWherePartialWithIndex1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Where(x => x > 200), verify2 = It<int>.Any();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 
 		const long expected = 3L;
 		var actual = fixture.Verify(verify1, verify2, 1L);
@@ -584,12 +584,12 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyAnyWherePartialWithIndex2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Any(), verify2 = It<int>.Where(x => x > 300);
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 
 		const long expected = 3L;
 		var actual = fixture.Verify(verify1, verify2, 1L);
@@ -599,14 +599,14 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyAnyValueWithIndex1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		const int setupValue1 = 123;
 		It<int> verify1 = setupValue1, verify2 = It<int>.Any();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, setupValue1, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, setupValue1, 234);
+		fixture.Register(index, 234, 345);
 
 		const long expected = 2L;
 		var actual = fixture.Verify(verify1, verify2, 1L);
@@ -616,13 +616,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyAnyValueWithIndex2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int setupValue2 = 234;
 		It<int> verify1 = It<int>.Any(), verify2 = setupValue2;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, setupValue2);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, setupValue2);
+		fixture.Register(index, 234, 345);
 
 		const long expected = 2L;
 		var actual = fixture.Verify(verify1, verify2, 1L);
@@ -632,13 +632,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyWhereValueAllWithIndex1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int setupValue2 = 234;
 		It<int> verify1 = It<int>.Where(x => x > 100), verify2 = setupValue2;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, setupValue2);
-		fixture.Register(ref index, 234, setupValue2);
+		fixture.Register(index, 123, setupValue2);
+		fixture.Register(index, 234, setupValue2);
 
 		const long expected1 = 2L;
 		var actual1 = fixture.Verify(verify1, verify2, 1L);
@@ -652,13 +652,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyWhereValueAllWithIndex2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int setupValue1 = 123;
 		It<int> verify1 = setupValue1, verify2 = It<int>.Where(x => x > 200);
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, setupValue1, 234);
-		fixture.Register(ref index, setupValue1, 345);
+		fixture.Register(index, setupValue1, 234);
+		fixture.Register(index, setupValue1, 345);
 
 		const long expected1 = 2L;
 		var actual1 = fixture.Verify(verify1, verify2, 1L);
@@ -672,13 +672,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyWhereValuePartialWithIndex1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int setupValue2 = 234;
 		It<int> verify1 = It<int>.Where(x => x > 200), verify2 = setupValue2;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, setupValue2);
-		fixture.Register(ref index, 234, setupValue2);
+		fixture.Register(index, 123, setupValue2);
+		fixture.Register(index, 234, setupValue2);
 
 		const long expected = 3L;
 		var actual = fixture.Verify(verify1, verify2, 1L);
@@ -688,13 +688,13 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void VerifyWhereValuePartialWithIndex2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int setupValue1 = 123;
 		It<int> verify1 = setupValue1, verify2 = It<int>.Where(x => x > 300);
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, setupValue1, 234);
-		fixture.Register(ref index, setupValue1, 345);
+		fixture.Register(index, setupValue1, 234);
+		fixture.Register(index, setupValue1, 345);
 
 		const long expected = 3L;
 		var actual = fixture.Verify(verify1, verify2, 1L);
@@ -712,7 +712,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 0L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 0, but there are no invocations.";
+		const string exceptionMessage = "Expected MyClass#MyMethod(any, any) to be invoked at index 0, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -728,7 +728,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 0L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 0, but there are no invocations.";
+		const string exceptionMessage = "Expected MyClass#MyMethod(where(predicate), where(predicate)) to be invoked at index 0, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -744,7 +744,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 0L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 0, but there are no invocations.";
+		const string exceptionMessage = "Expected MyClass#MyMethod(123, 321) to be invoked at index 0, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -752,10 +752,10 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyAnyWhereWithIndex1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
+		fixture.Register(index, 123, 234);
 
 		var actual = () =>
 		{
@@ -763,7 +763,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
+		const string exceptionMessage = "Expected MyClass#MyMethod(where(predicate), any) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -771,10 +771,10 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyAnyWhereWithIndex2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
+		fixture.Register(index, 123, 234);
 
 		var actual = () =>
 		{
@@ -782,7 +782,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
+		const string exceptionMessage = "Expected MyClass#MyMethod(any, where(predicate)) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -790,11 +790,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyAnyValueWithIndex1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int inputValue1 = 123;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, inputValue1, 234);
+		fixture.Register(index, inputValue1, 234);
 
 		var actual = () =>
 		{
@@ -802,7 +802,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
+		const string exceptionMessage = "Expected MyClass#MyMethod(124, any) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -810,11 +810,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyWhereAnyWithIndex2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int inputValue2 = 234;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, inputValue2);
+		fixture.Register(index, 123, inputValue2);
 
 		var actual = () =>
 		{
@@ -822,7 +822,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
+		const string exceptionMessage = "Expected MyClass#MyMethod(any, 235) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -830,10 +830,10 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyWhereWithIndex1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
+		fixture.Register(index, 123, 234);
 
 		var actual = () =>
 		{
@@ -841,7 +841,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
+		const string exceptionMessage = "Expected MyClass#MyMethod(where(predicate), where(predicate)) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -849,10 +849,10 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyWhereWithIndex2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
+		fixture.Register(index, 123, 234);
 
 		var actual = () =>
 		{
@@ -860,7 +860,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
+		const string exceptionMessage = "Expected MyClass#MyMethod(where(predicate), where(predicate)) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -868,10 +868,10 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyWhereWithIndex3()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
+		fixture.Register(index, 123, 234);
 
 		var actual = () =>
 		{
@@ -879,7 +879,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
+		const string exceptionMessage = "Expected MyClass#MyMethod(where(predicate), where(predicate)) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -887,11 +887,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyValueWithIndex1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int inputValue1 = 123, inputValue2 = 234;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, inputValue1, inputValue2);
+		fixture.Register(index, inputValue1, inputValue2);
 
 		var actual = () =>
 		{
@@ -899,7 +899,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
+		const string exceptionMessage = "Expected MyClass#MyMethod(234, 123) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -907,11 +907,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyValueWithIndex2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int inputValue1 = 123, inputValue2 = 234;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, inputValue1, inputValue2);
+		fixture.Register(index, inputValue1, inputValue2);
 
 		var actual = () =>
 		{
@@ -919,7 +919,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
+		const string exceptionMessage = "Expected MyClass#MyMethod(123, 123) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}
@@ -927,11 +927,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 	[Fact]
 	public void ThrowIfVerifyValueWithIndex3()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int inputValue1 = 123, inputValue2 = 234;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, inputValue1, inputValue2);
+		fixture.Register(index, inputValue1, inputValue2);
 
 		var actual = () =>
 		{
@@ -939,7 +939,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 1L);
 		};
 
-		const string exceptionMessage = "Expected MyClass#MyMethod(Int32, Int32) to be invoked at index 1, but there are no invocations.";
+		const string exceptionMessage = "Expected MyClass#MyMethod(234, 234) to be invoked at index 1, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(exceptionMessage, exception.Message);
 	}

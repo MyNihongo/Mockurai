@@ -15,11 +15,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Using Include="Xunit" />
+		<ProjectReference Include="..\..\src\MyNihongo.Mock.Abstractions\MyNihongo.Mock.Abstractions.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\src\MyNihongo.Mock.Abstractions\MyNihongo.Mock.Abstractions.csproj" />
+		<Using Include="Xunit" />
+		<Compile Include=".models\**" />
+		<None Remove="*.csproj.DotSettings" />
 	</ItemGroup>
 
 </Project>

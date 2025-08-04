@@ -1,8 +1,8 @@
 namespace MyNihongo.Mock.Sample.PrimitiveTypeServiceTests;
 
-public abstract class PrimitiveTypeServiceTestsBase
+public abstract partial class PrimitiveTypeServiceTestsBase
 {
-	protected readonly IMock<IPrimitiveDependencyService> DependencyServiceMock/* = new PrimitiveDependencyServiceMock()*/;
+	protected partial IMock<IPrimitiveDependencyService> DependencyServiceMock { get; }
 
 	protected IPrimitiveTypeService CreateFixture()
 	{
@@ -10,4 +10,11 @@ public abstract class PrimitiveTypeServiceTestsBase
 			primitiveDependencyService: DependencyServiceMock.Object
 		);
 	}
+}
+
+public abstract partial class PrimitiveTypeServiceTestsBase
+{
+	private readonly IMock<IPrimitiveDependencyService> _dependencyServiceMock = new PrimitiveDependencyServiceMock();
+
+	protected partial IMock<IPrimitiveDependencyService> DependencyServiceMock => _dependencyServiceMock;
 }
