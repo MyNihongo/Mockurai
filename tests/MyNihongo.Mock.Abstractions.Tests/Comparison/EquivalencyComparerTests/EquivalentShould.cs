@@ -3,6 +3,52 @@ namespace MyNihongo.Mock.Abstractions.Tests.Comparison.EquivalencyComparerTests;
 public sealed class EquivalentShould
 {
 	[Fact]
+	public void BeEmptyIfIntEquals()
+	{
+		const int input1 = 1, input2 = 1;
+
+		var actual = EquivalencyComparer<int>.Default.Equivalent(input1, input2);
+		Assert.Empty(actual.Entries);
+	}
+
+	[Fact]
+	public void HaveEntryIfIntNotEqual()
+	{
+		const int input1 = 1, input2 = 2;
+
+		var actual = EquivalencyComparer<int>.Default.Equivalent(input1, input2);
+
+		var expected = new EquivalencyComparerResult.Entry[]
+		{
+			new("this", "1", "2"),
+		};
+		Assert.Equivalent(expected, actual.Entries, true);
+	}
+
+	[Fact]
+	public void BeEmptyIfStringEquals()
+	{
+		const string input1 = "input", input2 = "input";
+
+		var actual = EquivalencyComparer<string>.Default.Equivalent(input1, input2);
+		Assert.Empty(actual.Entries);
+	}
+
+	[Fact]
+	public void HaveEntryIfStringNotEqual()
+	{
+		const string input1 = nameof(input1), input2 = nameof(input2);
+
+		var actual = EquivalencyComparer<string>.Default.Equivalent(input1, input2);
+
+		var expected = new EquivalencyComparerResult.Entry[]
+		{
+			new("this", "input1", "input2"),
+		};
+		Assert.Equivalent(expected, actual.Entries, true);
+	}
+
+	[Fact]
 	public void BeEmptyIfAllEqual()
 	{
 		const int age = 17;
@@ -60,7 +106,6 @@ public sealed class EquivalentShould
 		{
 			new("Age", "17", "18"),
 		};
-
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
 
@@ -95,7 +140,6 @@ public sealed class EquivalentShould
 			new("Age", "17", "18"),
 			new("Name", "Okayama Issei", "Okayama Issei2"),
 		};
-
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
 
@@ -131,7 +175,6 @@ public sealed class EquivalentShould
 			new("Name", "Okayama Issei", "Okayama Issei2"),
 			new("DateOfBirth", "2024/06/29", "2024/06/30"),
 		};
-
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
 
@@ -168,7 +211,6 @@ public sealed class EquivalentShould
 			new("DateOfBirth", "2024/06/29", "2024/06/30"),
 			new("DateTimeUpdated", "2025/07/30 18:23:32", "2025/07/30 18:23:33"),
 		};
-
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
 
@@ -687,6 +729,135 @@ public sealed class EquivalentShould
 		var expected = new EquivalencyComparerResult.Entry[]
 		{
 			new("Children[0].Objects[1].Name", "Okayama Issei", "Okayama Issei2"),
+		};
+		Assert.Equivalent(expected, actual.Entries, true);
+	}
+
+	[Fact]
+	public void BeEmptyIfArrayStringEquals()
+	{
+		const string value1 = nameof(value1), value2 = nameof(value2);
+
+		var input1 = new[]
+		{
+			value1,
+			value2,
+		};
+
+		var input2 = new[]
+		{
+			value1,
+			value2,
+		};
+
+		var actual = EquivalencyComparer<string[]>.Default.Equivalent(input1, input2);
+		Assert.Empty(actual.Entries);
+	}
+
+	[Fact]
+	public void HaveEntryIfArrayStringNotEquals()
+	{
+		const string value1 = nameof(value1), value2 = nameof(value2);
+
+		var input1 = new[]
+		{
+			value1,
+			value1,
+		};
+
+		var input2 = new[]
+		{
+			value1,
+			value2,
+		};
+
+		var actual = EquivalencyComparer<string[]>.Default.Equivalent(input1, input2);
+
+		var expected = new EquivalencyComparerResult.Entry[]
+		{
+			new("this[1]", "value1", "value2"),
+		};
+		Assert.Equivalent(expected, actual.Entries, true);
+	}
+
+	[Fact]
+	public void BeEmptyIfArrayEquals()
+	{
+		const int age = 17;
+		const string name = "Okayama Issei";
+
+		var input1 = new ClassObject[]
+		{
+			new()
+			{
+				Age = age,
+				Name = name,
+			},
+			new()
+			{
+				Age = age,
+				Name = name,
+			},
+		};
+
+		var input2 = new ClassObject[]
+		{
+			new()
+			{
+				Age = age,
+				Name = name,
+			},
+			new()
+			{
+				Age = age,
+				Name = name,
+			},
+		};
+
+		var actual = EquivalencyComparer<ClassObject[]>.Default.Equivalent(input1, input2);
+		Assert.Empty(actual.Entries);
+	}
+
+	[Fact]
+	public void HaveEntryIfArrayNotEquals()
+	{
+		const int age1 = 17, age2 = 18;
+		const string name1 = "Okayama Issei", name2 = "Okayama Issei2";
+
+		var input1 = new ClassObject[]
+		{
+			new()
+			{
+				Age = age1,
+				Name = name1,
+			},
+			new()
+			{
+				Age = age2,
+				Name = name2,
+			},
+		};
+
+		var input2 = new ClassObject[]
+		{
+			new()
+			{
+				Age = age2,
+				Name = name1,
+			},
+			new()
+			{
+				Age = age2,
+				Name = name1,
+			},
+		};
+
+		var actual = EquivalencyComparer<ClassObject[]>.Default.Equivalent(input1, input2);
+
+		var expected = new EquivalencyComparerResult.Entry[]
+		{
+			new("this[0].Age", "17", "18"),
+			new("this[1].Name", "Okayama Issei2", "Okayama Issei"),
 		};
 		Assert.Equivalent(expected, actual.Entries, true);
 	}

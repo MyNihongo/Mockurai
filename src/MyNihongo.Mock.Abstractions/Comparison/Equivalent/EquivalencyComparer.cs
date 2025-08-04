@@ -10,11 +10,16 @@ public class EquivalencyComparer
 	private readonly FieldInfo[]? _fields;
 	private readonly ConcurrentDictionary<Type, EquivalencyComparer> _nestedComparers = new();
 	private readonly Type _type;
-	private readonly bool _isEnumerable;
+	private readonly bool _isEnumerable, _isComparedByEquivalency;
 
 	protected EquivalencyComparer(in Type type)
 	{
 		_type = type;
+
+		_isComparedByEquivalency = ComparedByEquivalency(type);
+		if (!_isComparedByEquivalency)
+			return;
+
 		_isEnumerable = type.IsAssignableTo(typeof(IEnumerable));
 		if (_isEnumerable)
 			return;
@@ -91,9 +96,7 @@ public class EquivalencyComparer
 
 		if (_isEnumerable)
 		{
-			var propertyPath = string.IsNullOrEmpty(path)
-				? "root"
-				: path;
+			var propertyPath = GetPropertyPathOrRoot(path);
 
 			if (x is null)
 			{
@@ -162,12 +165,39 @@ public class EquivalencyComparer
 			}
 		}
 
+		if (!_isComparedByEquivalency)
+		{
+			var propertyPath = GetPropertyPathOrRoot(path);
+
+			if (x is null)
+			{
+				if (y is not null)
+					result.Add(propertyPath, "null", y.ToString());
+			}
+			else if (y is null)
+			{
+				result.Add(propertyPath, x.ToString(), "null");
+			}
+			else
+			{
+				if (!x.Equals(y))
+					result.Add(propertyPath, x.ToString(), y.ToString());
+			}
+		}
+
 		return result;
 	}
 
 	private static bool ComparedByEquivalency(in Type type)
 	{
-		return type.IsClass && type != typeof(string);
+		return (type.IsClass || type.IsInterface) && type != typeof(string);
+	}
+
+	private static string GetPropertyPathOrRoot(string? path)
+	{
+		return string.IsNullOrEmpty(path)
+			? "this"
+			: path;
 	}
 }
 
