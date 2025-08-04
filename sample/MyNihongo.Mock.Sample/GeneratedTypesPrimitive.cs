@@ -70,11 +70,16 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		_returnInvocation?.Verify(times);
 	}
 
-	public SetupWithParameter<string, string> SetupReturnWithOneParameter(in It<string> parameter)
+	public SetupWithParameter<string, string> SetupReturnWithParameter(in It<string> parameter)
 	{
 		_returnWithOneParameter ??= new SetupWithParameter<string, string>();
 		_returnWithOneParameter.SetupParameter(parameter);
 		return _returnWithOneParameter;
+	}
+
+	public void VerifyReturnWithParameter(in It<string> parameter, in Times times)
+	{
+		_returnWithOneParameterInvocation?.Verify(parameter, times);
 	}
 
 	public SetupIntInt<decimal> SetupReturnWithMultipleParameters(in It<int> parameter1, in It<int> parameter2)
@@ -196,8 +201,14 @@ public static class PrimitiveDependencyServiceMockEx
 	public static void VerifyReturn(this IMock<IPrimitiveDependencyService> @this, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifyReturn(times());
 
-	public static ISetup<string> SetupReturnWithOneParameter(this IMock<IPrimitiveDependencyService> @this, in It<string> parameter) =>
-		((PrimitiveDependencyServiceMock)@this).SetupReturnWithOneParameter(parameter);
+	public static ISetup<string> SetupReturnWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<string> parameter) =>
+		((PrimitiveDependencyServiceMock)@this).SetupReturnWithParameter(parameter);
+	
+	public static void VerifyReturnWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<string> parameter, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyReturnWithParameter(parameter, times);
+
+	public static void VerifyReturnWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<string> parameter, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyReturnWithParameter(parameter, times());
 
 	public static ISetup<decimal> SetupReturnWithMultipleParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1, in It<int> parameter2) =>
 		((PrimitiveDependencyServiceMock)@this).SetupReturnWithMultipleParameters(parameter1, parameter2);
