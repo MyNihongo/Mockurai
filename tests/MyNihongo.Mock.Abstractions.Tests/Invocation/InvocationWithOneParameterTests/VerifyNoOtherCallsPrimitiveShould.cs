@@ -1,4 +1,4 @@
-namespace MyNihongo.Mock.Sample._Generated.InvocationWithOneParameterTests;
+namespace MyNihongo.Mock.Abstractions.Tests.Invocation.InvocationWithOneParameterTests;
 
 public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParameterTestsBase
 {

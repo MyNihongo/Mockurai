@@ -1,4 +1,4 @@
-namespace MyNihongo.Mock.Sample._Generated.InvocationTests;
+namespace MyNihongo.Mock.Abstractions.Tests.Invocation.InvocationTests;
 
 public sealed class VerifyPrimitiveShould : InvocationTestsBase
 {
