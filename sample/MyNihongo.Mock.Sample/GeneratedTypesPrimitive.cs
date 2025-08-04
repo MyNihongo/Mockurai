@@ -43,11 +43,21 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		return _invokeWithParameter2;
 	}
 
+	public void VerifyInvokeWithParameter(in It<int> parameter, in Times times)
+	{
+		_invokeWithParameterInvocation2?.Verify(parameter, times);
+	}
+
 	public SetupIntInt SetupInvokeWithMultipleParameters(in It<int> parameter1, in It<int> parameter2)
 	{
 		_invokeWithMultipleParameters ??= new SetupIntInt();
 		_invokeWithMultipleParameters.SetupParameters(parameter1, parameter2);
 		return _invokeWithMultipleParameters;
+	}
+
+	public void VerifyInvokeWithMultipleParameters(in It<int> parameter1, in It<int> parameter2, in Times times)
+	{
+		_invokeWithMultipleParametersInvocation?.Verify(parameter1, parameter2, times);
 	}
 
 	public Setup<int> SetupReturn() =>
@@ -155,8 +165,20 @@ public static class PrimitiveDependencyServiceMockEx
 	public static ISetup SetupInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter = default) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithParameter(parameter);
 
+	public static void VerifyInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithParameter(parameter, times);
+
+	public static void VerifyInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithParameter(parameter, times());
+
 	public static ISetup SetupInvokeWithMultipleParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1 = default, in It<int> parameter2 = default) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithMultipleParameters(parameter1, parameter2);
+
+	public static void VerifyInvokeWithMultipleParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1, in It<int> parameter2, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithMultipleParameters(parameter1, parameter2, times);
+
+	public static void VerifyInvokeWithMultipleParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1, in It<int> parameter2, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithMultipleParameters(parameter1, parameter2, times());
 
 	public static ISetup<int> SetupReturn(this IMock<IPrimitiveDependencyService> @this) =>
 		((PrimitiveDependencyServiceMock)@this).SetupReturn();
