@@ -5,11 +5,11 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 	[Fact]
 	public void VerifyTimes()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixture();
-		fixture.Register(ref index);
-		fixture.Register(ref index);
+		fixture.Register(index);
+		fixture.Register(index);
 
 		const int expected = 2;
 		fixture.Verify(Times.Exactly(expected));
@@ -21,12 +21,12 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 	[InlineData(4)]
 	public void ThrowIfVerifyTimesWrong(int expected)
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixture();
-		fixture.Register(ref index);
-		fixture.Register(ref index);
-		fixture.Register(ref index);
+		fixture.Register(index);
+		fixture.Register(index);
+		fixture.Register(index);
 
 		var actual = () => fixture.Verify(Times.Exactly(expected));
 
@@ -72,11 +72,11 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 	[Fact]
 	public void VerifyWithIndex()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixture();
-		fixture.Register(ref index);
-		fixture.Register(ref index);
+		fixture.Register(index);
+		fixture.Register(index);
 
 		const long expected1 = 2L;
 		var actual1 = fixture.Verify(1L);
@@ -90,11 +90,11 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 	[Fact]
 	public void ThrowIfVerifyOutsideIndex()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixture();
-		fixture.Register(ref index);
-		fixture.Register(ref index);
+		fixture.Register(index);
+		fixture.Register(index);
 
 		const long verifyIndex = 3L;
 		Action actual = () => fixture.Verify(verifyIndex);
@@ -121,11 +121,11 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 	[Fact]
 	public void VerifyIndexBefore()
 	{
-		var index = 100L;
+		var index = new InvocationIndex.Counter(100L);
 
 		var fixture = CreateFixture();
-		fixture.Register(ref index);
-		fixture.Register(ref index);
+		fixture.Register(index);
+		fixture.Register(index);
 
 		const long expected1 = 102L;
 		var actual1 = fixture.Verify(1L);

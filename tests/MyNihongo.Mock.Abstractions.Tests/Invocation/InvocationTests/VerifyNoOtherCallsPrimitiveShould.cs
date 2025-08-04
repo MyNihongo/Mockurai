@@ -12,12 +12,12 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationTestsBase
 	[Fact]
 	public void NotThrowIfVerifiedTimes()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixture();
-		fixture.Register(ref index);
-		fixture.Register(ref index);
-		fixture.Register(ref index);
+		fixture.Register(index);
+		fixture.Register(index);
+		fixture.Register(index);
 
 		fixture.Verify(Times.Exactly(3));
 		fixture.VerifyNoOtherCalls();
@@ -26,10 +26,10 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationTestsBase
 	[Fact]
 	public void NotThrowIfVerifiedTimesOnce()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixture();
-		fixture.Register(ref index);
+		fixture.Register(index);
 
 		fixture.Verify(Times.Once());
 		fixture.VerifyNoOtherCalls();
@@ -38,10 +38,10 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationTestsBase
 	[Fact]
 	public void ThrowIfNotVerified()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixture();
-		fixture.Register(ref index);
+		fixture.Register(index);
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
@@ -58,11 +58,11 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationTestsBase
 	[Fact]
 	public void ThrowIfIndicesNotVerified()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixture();
-		fixture.Register(ref index);
-		fixture.Register(ref index);
+		fixture.Register(index);
+		fixture.Register(index);
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
@@ -80,11 +80,11 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationTestsBase
 	[Fact]
 	public void ThrowIfFirstIndexNotVerified()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixture();
-		fixture.Register(ref index);
-		fixture.Register(ref index);
+		fixture.Register(index);
+		fixture.Register(index);
 		fixture.Verify(2L);
 
 		var actual = () => fixture.VerifyNoOtherCalls();
@@ -102,11 +102,11 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationTestsBase
 	[Fact]
 	public void ThrowIfLastIndexNotVerified()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixture();
-		fixture.Register(ref index);
-		fixture.Register(ref index);
+		fixture.Register(index);
+		fixture.Register(index);
 		fixture.Verify(1L);
 
 		var actual = () => fixture.VerifyNoOtherCalls();
@@ -124,11 +124,11 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationTestsBase
 	[Fact]
 	public void NotThrowIfIndicesVerified()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixture();
-		fixture.Register(ref index);
-		fixture.Register(ref index);
+		fixture.Register(index);
+		fixture.Register(index);
 		fixture.Verify(1L);
 		fixture.Verify(2L);
 
@@ -138,11 +138,11 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationTestsBase
 	[Fact]
 	public void NotThrowIfIndicesVerifiedWithOffset()
 	{
-		var index = 123L;
+		var index = new InvocationIndex.Counter(123L);
 
 		var fixture = CreateFixture();
-		fixture.Register(ref index);
-		fixture.Register(ref index);
+		fixture.Register(index);
+		fixture.Register(index);
 		fixture.Verify(124L);
 		fixture.Verify(125L);
 
