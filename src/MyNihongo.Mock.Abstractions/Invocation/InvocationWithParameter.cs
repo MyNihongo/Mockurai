@@ -34,8 +34,9 @@ public sealed class Invocation<TParameter>
 		if (times.Predicate(count))
 			return;
 
+		var verifyName = string.Format(_name, parameter.ToString());
 		var invocations = _invocations.GetItemStrings();
-		throw new MockVerifyCountException(_name, times, count, invocations);
+		throw new MockVerifyCountException(verifyName, times, count, invocations);
 	}
 
 	public long Verify(in It<TParameter> parameter, in long index)
@@ -51,7 +52,8 @@ public sealed class Invocation<TParameter>
 			}
 		}
 
-		throw new MockVerifySequenceOutOfRangeException(_name, index);
+		var verifyName = string.Format(_name, parameter.ToString());
+		throw new MockVerifySequenceOutOfRangeException(verifyName, index);
 	}
 
 	public void VerifyNoOtherCalls()
@@ -62,7 +64,10 @@ public sealed class Invocation<TParameter>
 			.ToArray();
 
 		if (unverifiedItems.Length > 0)
-			throw new MockUnverifiedException(_name, unverifiedItems);
+		{
+			var verifyName = string.Format(_name, typeof(TParameter).Name);
+			throw new MockUnverifiedException(verifyName, unverifiedItems);
+		}
 	}
 
 	private sealed class Item
