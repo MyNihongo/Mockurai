@@ -12,12 +12,12 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void NotThrowVerifiedAny()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Any(), verify2 = It<int>.Any();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 		fixture.Verify(verify1, verify2, Times.Exactly(2));
 
 		fixture.VerifyNoOtherCalls();
@@ -26,12 +26,12 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void NotThrowVerifiedWhere()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Where(x => x > 100), verify2 = It<int>.Where(x => x > 200);
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 		fixture.Verify(verify1, verify2, Times.Exactly(2));
 
 		fixture.VerifyNoOtherCalls();
@@ -40,14 +40,14 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void NotThrowVerifiedValue()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		const int setupValue1 = 123, setupValue2 = 234;
 		It<int> verify1 = setupValue1, verify2 = setupValue2;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, setupValue1, setupValue2);
-		fixture.Register(ref index, setupValue1, setupValue2);
+		fixture.Register(index, setupValue1, setupValue2);
+		fixture.Register(index, setupValue1, setupValue2);
 		fixture.Verify(verify1, verify2, Times.Exactly(2));
 
 		fixture.VerifyNoOtherCalls();
@@ -56,12 +56,12 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void NotThrowVerifiedAnyWhere1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Where(x => x > 100), verify2 = It<int>.Any();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 		fixture.Verify(verify1, verify2, Times.Exactly(2));
 
 		fixture.VerifyNoOtherCalls();
@@ -70,12 +70,12 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void NotThrowVerifiedAnyWhere2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Any(), verify2 = It<int>.Where(x => x > 200);
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 		fixture.Verify(verify1, verify2, Times.Exactly(2));
 
 		fixture.VerifyNoOtherCalls();
@@ -84,13 +84,13 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void NotThrowVerifiedAnyValue1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		const int setupValue1 = 123;
 		It<int> verify1 = setupValue1, verify2 = It<int>.Any();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, setupValue1, 234);
+		fixture.Register(index, setupValue1, 234);
 		fixture.Verify(verify1, verify2, Times.Once());
 
 		fixture.VerifyNoOtherCalls();
@@ -99,12 +99,12 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void NotThrowVerifiedAnyValue2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int setupValue2 = 234;
 		It<int> verify1 = It<int>.Any(), verify2 = setupValue2;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, setupValue2);
+		fixture.Register(index, 123, setupValue2);
 		fixture.Verify(verify1, verify2, Times.Once());
 
 		fixture.VerifyNoOtherCalls();
@@ -113,13 +113,13 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void NotThrowVerifiedWhereValue1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int setupValue2 = 234;
 		It<int> verify1 = It<int>.Where(x => x > 100), verify2 = setupValue2;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, setupValue2);
-		fixture.Register(ref index, 234, setupValue2);
+		fixture.Register(index, 123, setupValue2);
+		fixture.Register(index, 234, setupValue2);
 		fixture.Verify(verify1, verify2, Times.Exactly(2));
 
 		fixture.VerifyNoOtherCalls();
@@ -128,13 +128,13 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void NotThrowVerifiedWhereValue2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int setupValue1 = 123;
 		It<int> verify1 = setupValue1, verify2 = It<int>.Where(x => x > 200);
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, setupValue1, 234);
-		fixture.Register(ref index, setupValue1, 345);
+		fixture.Register(index, setupValue1, 234);
+		fixture.Register(index, setupValue1, 345);
 		fixture.Verify(verify1, verify2, Times.Exactly(2));
 
 		fixture.VerifyNoOtherCalls();
@@ -143,12 +143,12 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void ThrowIfNotVerified1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
-		fixture.Register(ref index, 345, 456);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
+		fixture.Register(index, 345, 456);
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
@@ -167,12 +167,12 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void ThrowIfNotVerified2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
-		fixture.Register(ref index, 345, 456);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
+		fixture.Register(index, 345, 456);
 		fixture.Verify(It<int>.Any(), 234, Times.Once());
 
 		var actual = () => fixture.VerifyNoOtherCalls();
@@ -191,12 +191,12 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void ThrowIfNotVerified3()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
-		fixture.Register(ref index, 345, 456);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
+		fixture.Register(index, 345, 456);
 		fixture.Verify(234, 345, Times.Once());
 		fixture.Verify(It<int>.Where(x => x > 300), 456, Times.Once());
 
@@ -215,12 +215,12 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void NotThrowVerifiedAnyWithIndex()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Any(), verify2 = It<int>.Any();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 		fixture.Verify(verify1, verify2, 1L);
 		fixture.Verify(verify1, verify2, 2L);
 
@@ -230,12 +230,12 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void NotThrowVerifiedWhereWithIndex()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Where(x => x > 100), verify2 = It<int>.Where(x => x > 200);
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 		fixture.Verify(verify1, verify2, 1L);
 		fixture.Verify(verify1, verify2, 2L);
 
@@ -245,14 +245,14 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void NotThrowVerifiedValueWithIndex()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		const int setupValue1 = 123, setupValue2 = 234;
 		It<int> verify1 = setupValue1, verify2 = setupValue2;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, setupValue1, setupValue2);
-		fixture.Register(ref index, setupValue1, setupValue2);
+		fixture.Register(index, setupValue1, setupValue2);
+		fixture.Register(index, setupValue1, setupValue2);
 		fixture.Verify(verify1, verify2, 1L);
 		fixture.Verify(verify1, verify2, 2L);
 
@@ -262,12 +262,12 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void NotThrowVerifiedAnyWhereWithIndex1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Where(x => x > 100), verify2 = It<int>.Any();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 		fixture.Verify(verify1, verify2, 1L);
 		fixture.Verify(verify1, verify2, 2L);
 
@@ -277,12 +277,12 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void NotThrowVerifiedAnyWhereWithIndex2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		It<int> verify1 = It<int>.Any(), verify2 = It<int>.Where(x => x > 200);
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
 		fixture.Verify(verify1, verify2, 1L);
 		fixture.Verify(verify1, verify2, 2L);
 
@@ -292,13 +292,13 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void NotThrowVerifiedAnyValueWithIndex1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		const int setupValue1 = 123;
 		It<int> verify1 = setupValue1, verify2 = It<int>.Any();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, setupValue1, 234);
+		fixture.Register(index, setupValue1, 234);
 		fixture.Verify(verify1, verify2, 1L);
 
 		fixture.VerifyNoOtherCalls();
@@ -307,12 +307,12 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void NotThrowVerifiedAnyValueWithIndex2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int setupValue2 = 234;
 		It<int> verify1 = It<int>.Any(), verify2 = setupValue2;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, setupValue2);
+		fixture.Register(index, 123, setupValue2);
 		fixture.Verify(verify1, verify2, 1L);
 
 		fixture.VerifyNoOtherCalls();
@@ -321,13 +321,13 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void NotThrowVerifiedWhereValueWithIndex1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int setupValue2 = 234;
 		It<int> verify1 = It<int>.Where(x => x > 100), verify2 = setupValue2;
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, setupValue2);
-		fixture.Register(ref index, 234, setupValue2);
+		fixture.Register(index, 123, setupValue2);
+		fixture.Register(index, 234, setupValue2);
 		fixture.Verify(verify1, verify2, 1L);
 		fixture.Verify(verify1, verify2, 2L);
 
@@ -337,13 +337,13 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void NotThrowVerifiedWhereValueWithIndex2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const int setupValue1 = 123;
 		It<int> verify1 = setupValue1, verify2 = It<int>.Where(x => x > 200);
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, setupValue1, 234);
-		fixture.Register(ref index, setupValue1, 345);
+		fixture.Register(index, setupValue1, 234);
+		fixture.Register(index, setupValue1, 345);
 		fixture.Verify(verify1, verify2, 1L);
 		fixture.Verify(verify1, verify2, 2L);
 
@@ -353,12 +353,12 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void ThrowIfNotVerifiedWithIndex1()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
-		fixture.Register(ref index, 345, 456);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
+		fixture.Register(index, 345, 456);
 		fixture.Verify(It<int>.Any(), 345, 2L);
 
 		var actual = () => fixture.VerifyNoOtherCalls();
@@ -377,12 +377,12 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 	[Fact]
 	public void ThrowIfNotVerifiedWithIndex2()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixturePrimitive();
-		fixture.Register(ref index, 123, 234);
-		fixture.Register(ref index, 234, 345);
-		fixture.Register(ref index, 345, 456);
+		fixture.Register(index, 123, 234);
+		fixture.Register(index, 234, 345);
+		fixture.Register(index, 345, 456);
 		fixture.Verify(123, 234, 1L);
 		fixture.Verify(It<int>.Where(x => x > 300), 456, 3L);
 

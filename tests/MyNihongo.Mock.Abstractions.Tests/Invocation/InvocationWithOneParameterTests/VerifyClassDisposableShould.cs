@@ -7,13 +7,13 @@ public sealed class VerifyClassDisposableShould : InvocationWithOneParameterTest
 	[Fact]
 	public void VerifyDisposableParameter()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const string name = nameof(name);
 
 		var fixture = CreateFixture<ClassParameterDisposable>();
 
 		using (var parameter = new ClassParameterDisposable(name))
-			fixture.Register(ref index, parameter);
+			fixture.Register(index, parameter);
 
 		using var expected = new ClassParameterDisposable(name);
 		fixture.Verify(It<ClassParameterDisposable>.Equivalent(expected), Times.Once());
@@ -22,13 +22,13 @@ public sealed class VerifyClassDisposableShould : InvocationWithOneParameterTest
 	[Fact]
 	public void ThrowDisposed()
 	{
-		var index = 0L;
+		var index = new InvocationIndex.Counter();
 		const string name = nameof(name);
 
 		var fixture = CreateFixture<ClassParameterDisposable>();
 
 		using (var parameter = new ClassParameterDisposable(name))
-			fixture.Register(ref index, parameter);
+			fixture.Register(index, parameter);
 
 		using var expected = new ClassParameterDisposable(name);
 		var actual = () => fixture.Verify(expected, Times.Once());

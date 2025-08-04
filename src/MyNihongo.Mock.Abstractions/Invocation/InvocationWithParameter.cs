@@ -12,9 +12,9 @@ public sealed class Invocation<TParameter>
 		_name = name;
 	}
 
-	public void Register(ref long index, in TParameter parameter)
+	public void Register(in InvocationIndex.Counter index, in TParameter parameter)
 	{
-		var invokedIndex = Interlocked.Increment(ref index);
+		var invokedIndex = index.Increment();
 		_invocations.Add(invokedIndex, new Item(parameter));
 	}
 

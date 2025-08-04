@@ -11,7 +11,7 @@ public sealed class Invocation
 		_name = name;
 	}
 
-	public void Register(InvocationIndex.Counter index)
+	public void Register(in InvocationIndex.Counter index)
 	{
 		var invokedIndex = index.Increment();
 		_invocations.Add(invokedIndex, new Item());
