@@ -30,6 +30,11 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		_invokeWithParameter1.SetupParameter(parameter);
 		return _invokeWithParameter1;
 	}
+	
+	public void VerifyInvokeWithParameter(in It<string> parameter, in Times times)
+	{
+		_invokeWithParameterInvocation1?.Verify(parameter, times);
+	}
 
 	public SetupWithParameter<int> SetupInvokeWithParameter(in It<int> parameter)
 	{
@@ -140,6 +145,12 @@ public static class PrimitiveDependencyServiceMockEx
 
 	public static ISetup SetupInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<string> parameter = default) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithParameter(parameter);
+
+	public static void VerifyInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<string> parameter, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithParameter(parameter, times);
+
+	public static void VerifyInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<string> parameter, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithParameter(parameter, times());
 
 	public static ISetup SetupInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter = default) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithParameter(parameter);

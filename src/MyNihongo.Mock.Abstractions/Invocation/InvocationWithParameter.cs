@@ -90,10 +90,10 @@ public sealed class Invocation<TParameter>
 			}
 		}
 
-		public TParameter? GetParameter(SetupType? setupType)
+		public TParameter GetParameter(SetupType? setupType)
 		{
 			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshot)
-				? JsonSerializer.Deserialize<TParameter>(_jsonSnapshot)
+				? JsonSerializer.Deserialize<TParameter>(_jsonSnapshot)!
 				: _parameter;
 		}
 
