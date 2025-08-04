@@ -26,7 +26,7 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void VerifyCount()
+	public void VerifyTimes()
 	{
 		var fixture = CreateFixture();
 		fixture.Invoke();
@@ -37,7 +37,7 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void ThrowVerifyCount()
+	public void ThrowVerifyTimes()
 	{
 		var fixture = CreateFixture();
 		fixture.Invoke();
