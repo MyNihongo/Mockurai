@@ -9,7 +9,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	private SetupWithParameter<int>? _invokeWithParameter2; private Invocation<int>? _invokeWithParameterInvocation2;
 	private SetupIntInt? _invokeWithMultipleParameters; private InvocationIntInt? _invokeWithMultipleParametersInvocation;
 	private Setup<int>? _return; private Invocation? _returnInvocation;
-	private SetupWithParameter<string, string>? _returnWithOneParameter;  private Invocation<string>? _returnWithOneParameterInvocation;
+	private SetupWithParameter<string, string>? _returnWithOneParameter; private Invocation<string>? _returnWithOneParameterInvocation;
 	private SetupIntInt<decimal>? _returnWithMultipleParameters; private InvocationIntInt? _returnWithMultipleParametersInvocation;
 
 	public IPrimitiveDependencyService Object => _proxy ??= new Proxy(this);
@@ -17,6 +17,11 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	public Setup SetupInvoke()
 	{
 		return _invoke ??= new Setup();
+	}
+
+	public void VerifyInvoke(in Times times)
+	{
+		_invokeInvocation?.Verify(times);
 	}
 
 	public SetupWithParameter<string> SetupInvokeWithParameter(in It<string> parameter)
@@ -55,6 +60,17 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		_returnWithMultipleParameters ??= new SetupIntInt<decimal>();
 		_returnWithMultipleParameters.SetupParameters(parameter1, parameter2);
 		return _returnWithMultipleParameters;
+	}
+
+	public void VerifyNoOtherCalls()
+	{
+		_invokeInvocation?.VerifyNoOtherCalls();
+		_invokeWithParameterInvocation1?.VerifyNoOtherCalls();
+		_invokeWithParameterInvocation2?.VerifyNoOtherCalls();
+		_invokeWithMultipleParametersInvocation?.VerifyNoOtherCalls();
+		_returnInvocation?.VerifyNoOtherCalls();
+		_returnWithOneParameterInvocation?.VerifyNoOtherCalls();
+		_returnWithMultipleParametersInvocation?.VerifyNoOtherCalls();
 	}
 
 	private sealed class Proxy : IPrimitiveDependencyService
@@ -116,6 +132,12 @@ public static class PrimitiveDependencyServiceMockEx
 	public static ISetup SetupInvoke(this IMock<IPrimitiveDependencyService> @this) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvoke();
 
+	public static void VerifyInvoke(this IMock<IPrimitiveDependencyService> @this, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvoke(times);
+
+	public static void VerifyInvoke(this IMock<IPrimitiveDependencyService> @this, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvoke(times());
+
 	public static ISetup SetupInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<string> parameter = default) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithParameter(parameter);
 
@@ -133,4 +155,7 @@ public static class PrimitiveDependencyServiceMockEx
 
 	public static ISetup<decimal> SetupReturnWithMultipleParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1, in It<int> parameter2) =>
 		((PrimitiveDependencyServiceMock)@this).SetupReturnWithMultipleParameters(parameter1, parameter2);
+
+	public static void VerifyNoOtherCalls(this IMock<IPrimitiveDependencyService> @this) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyNoOtherCalls();
 }
