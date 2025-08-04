@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock.Sample.PrimitiveTypeServiceTests;
 
-public sealed class InvokeWithMultipleParametersShould : PrimitiveTypeServiceTestsBase
+public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTestsBase
 {
 	[Fact]
 	public void ExecuteWithoutSetup()
@@ -8,7 +8,7 @@ public sealed class InvokeWithMultipleParametersShould : PrimitiveTypeServiceTes
 		const int parameter1 = 2025, parameter2 = 6;
 
 		CreateFixture()
-			.InvokeWithMultipleParameters(parameter1, parameter2);
+			.InvokeWithSeveralParameters(parameter1, parameter2);
 	}
 
 	[Fact]
@@ -18,11 +18,11 @@ public sealed class InvokeWithMultipleParametersShould : PrimitiveTypeServiceTes
 		const int parameter1 = 2025, parameter2 = 6;
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters(parameter1, parameter2)
+			.SetupInvokeWithSeveralParameters(parameter1, parameter2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = () => CreateFixture()
-			.InvokeWithMultipleParameters(parameter1, parameter2);
+			.InvokeWithSeveralParameters(parameter1, parameter2);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
@@ -35,11 +35,11 @@ public sealed class InvokeWithMultipleParametersShould : PrimitiveTypeServiceTes
 		const string errorMessage = nameof(errorMessage);
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters(parameter1, parameter2)
+			.SetupInvokeWithSeveralParameters(parameter1, parameter2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		CreateFixture()
-			.InvokeWithMultipleParameters(parameter1, parameter1);
+			.InvokeWithSeveralParameters(parameter1, parameter1);
 	}
 
 	[Fact]
@@ -49,11 +49,11 @@ public sealed class InvokeWithMultipleParametersShould : PrimitiveTypeServiceTes
 		const string errorMessage = nameof(errorMessage);
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters(parameter1, parameter2)
+			.SetupInvokeWithSeveralParameters(parameter1, parameter2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		CreateFixture()
-			.InvokeWithMultipleParameters(parameter2, parameter1);
+			.InvokeWithSeveralParameters(parameter2, parameter1);
 	}
 
 	[Fact]
@@ -63,11 +63,11 @@ public sealed class InvokeWithMultipleParametersShould : PrimitiveTypeServiceTes
 		const string errorMessage = nameof(errorMessage);
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters(parameter1, parameter2)
+			.SetupInvokeWithSeveralParameters(parameter1, parameter2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		CreateFixture()
-			.InvokeWithMultipleParameters(parameter2, parameter2);
+			.InvokeWithSeveralParameters(parameter2, parameter2);
 	}
 
 	[Fact]
@@ -77,17 +77,17 @@ public sealed class InvokeWithMultipleParametersShould : PrimitiveTypeServiceTes
 		const int parameter = 0, anotherParameter = 1;
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters(parameter, parameter)
+			.SetupInvokeWithSeveralParameters(parameter, parameter)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = () => CreateFixture()
-			.InvokeWithMultipleParameters(parameter, parameter);
+			.InvokeWithSeveralParameters(parameter, parameter);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 
 		CreateFixture()
-			.InvokeWithMultipleParameters(anotherParameter, anotherParameter);
+			.InvokeWithSeveralParameters(anotherParameter, anotherParameter);
 	}
 
 	[Fact]
@@ -97,23 +97,23 @@ public sealed class InvokeWithMultipleParametersShould : PrimitiveTypeServiceTes
 		const int input1 = 123, input2 = 234;
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters()
+			.SetupInvokeWithSeveralParameters()
 			.Throws(new InvalidOperationException(errorMessage1));
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters(input1)
+			.SetupInvokeWithSeveralParameters(input1)
 			.Throws(new ArgumentException(errorMessage2));
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters(parameter2: input2)
+			.SetupInvokeWithSeveralParameters(parameter2: input2)
 			.Throws(new OutOfMemoryException(errorMessage3));
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters(input1, input2)
+			.SetupInvokeWithSeveralParameters(input1, input2)
 			.Throws(new IndexOutOfRangeException(errorMessage4));
 
 		var actual = () => CreateFixture()
-			.InvokeWithMultipleParameters(input1, input2);
+			.InvokeWithSeveralParameters(input1, input2);
 
 		var exception = Assert.Throws<IndexOutOfRangeException>(actual);
 		Assert.Equal(errorMessage4, exception.Message);
@@ -126,23 +126,23 @@ public sealed class InvokeWithMultipleParametersShould : PrimitiveTypeServiceTes
 		const int input1 = 123, input2 = 234, anotherParameter = 987654;
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters()
+			.SetupInvokeWithSeveralParameters()
 			.Throws(new InvalidOperationException(errorMessage1));
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters(input1)
+			.SetupInvokeWithSeveralParameters(input1)
 			.Throws(new ArgumentException(errorMessage2));
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters(parameter2: input2)
+			.SetupInvokeWithSeveralParameters(parameter2: input2)
 			.Throws(new OutOfMemoryException(errorMessage3));
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters(input1, input2)
+			.SetupInvokeWithSeveralParameters(input1, input2)
 			.Throws(new ArgumentOutOfRangeException(errorMessage4));
 
 		var actual = () => CreateFixture()
-			.InvokeWithMultipleParameters(input1, anotherParameter);
+			.InvokeWithSeveralParameters(input1, anotherParameter);
 
 		var exception = Assert.Throws<ArgumentException>(actual);
 		Assert.Equal(errorMessage2, exception.Message);
@@ -155,23 +155,23 @@ public sealed class InvokeWithMultipleParametersShould : PrimitiveTypeServiceTes
 		const int input1 = 123, input2 = 234, anotherParameter = 987654;
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters()
+			.SetupInvokeWithSeveralParameters()
 			.Throws(new InvalidOperationException(errorMessage1));
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters(input1)
+			.SetupInvokeWithSeveralParameters(input1)
 			.Throws(new ArgumentException(errorMessage2));
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters(parameter2: input2)
+			.SetupInvokeWithSeveralParameters(parameter2: input2)
 			.Throws(new OutOfMemoryException(errorMessage3));
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters(input1, input2)
+			.SetupInvokeWithSeveralParameters(input1, input2)
 			.Throws(new ArgumentOutOfRangeException(errorMessage4));
 
 		var actual = () => CreateFixture()
-			.InvokeWithMultipleParameters(anotherParameter, input2);
+			.InvokeWithSeveralParameters(anotherParameter, input2);
 
 		var exception = Assert.Throws<OutOfMemoryException>(actual);
 		Assert.Equal(errorMessage3, exception.Message);
@@ -184,23 +184,23 @@ public sealed class InvokeWithMultipleParametersShould : PrimitiveTypeServiceTes
 		const int input1 = 123, input2 = 234, anotherParameter = 987654;
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters()
+			.SetupInvokeWithSeveralParameters()
 			.Throws(new InvalidOperationException(errorMessage1));
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters(input1)
+			.SetupInvokeWithSeveralParameters(input1)
 			.Throws(new ArgumentException(errorMessage2));
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters(parameter2: input2)
+			.SetupInvokeWithSeveralParameters(parameter2: input2)
 			.Throws(new OutOfMemoryException(errorMessage3));
 
 		DependencyServiceMock
-			.SetupInvokeWithMultipleParameters(input1, input2)
+			.SetupInvokeWithSeveralParameters(input1, input2)
 			.Throws(new ArgumentOutOfRangeException(errorMessage4));
 
 		var actual = () => CreateFixture()
-			.InvokeWithMultipleParameters(anotherParameter, anotherParameter);
+			.InvokeWithSeveralParameters(anotherParameter, anotherParameter);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage1, exception.Message);
@@ -212,11 +212,11 @@ public sealed class InvokeWithMultipleParametersShould : PrimitiveTypeServiceTes
 		const int parameterValue1 = 123, parameterValue2 = 234;
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithMultipleParameters(parameterValue1, parameterValue2);
-		fixture.InvokeWithMultipleParameters(parameterValue2, parameterValue2);
+		fixture.InvokeWithSeveralParameters(parameterValue1, parameterValue2);
+		fixture.InvokeWithSeveralParameters(parameterValue2, parameterValue2);
 
-		DependencyServiceMock.VerifyInvokeWithMultipleParameters(parameterValue1, parameterValue2, Times.Once);
-		DependencyServiceMock.VerifyInvokeWithMultipleParameters(parameterValue2, parameterValue2, Times.Once);
+		DependencyServiceMock.VerifyInvokeWithSeveralParameters(parameterValue1, parameterValue2, Times.Once);
+		DependencyServiceMock.VerifyInvokeWithSeveralParameters(parameterValue2, parameterValue2, Times.Once);
 		DependencyServiceMock.VerifyNoOtherCalls();
 	}
 
@@ -227,10 +227,10 @@ public sealed class InvokeWithMultipleParametersShould : PrimitiveTypeServiceTes
 		var verify1 = It<int>.Where(x => x > 0);
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithMultipleParameters(parameterValue1, parameterValue2);
-		fixture.InvokeWithMultipleParameters(parameterValue2, parameterValue2);
+		fixture.InvokeWithSeveralParameters(parameterValue1, parameterValue2);
+		fixture.InvokeWithSeveralParameters(parameterValue2, parameterValue2);
 
-		DependencyServiceMock.VerifyInvokeWithMultipleParameters(verify1, parameterValue2, Times.Exactly(2));
+		DependencyServiceMock.VerifyInvokeWithSeveralParameters(verify1, parameterValue2, Times.Exactly(2));
 		DependencyServiceMock.VerifyNoOtherCalls();
 	}
 
@@ -241,10 +241,10 @@ public sealed class InvokeWithMultipleParametersShould : PrimitiveTypeServiceTes
 		var verify1 = It<int>.Any();
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithMultipleParameters(parameterValue1, parameterValue2);
-		fixture.InvokeWithMultipleParameters(parameterValue2, parameterValue2);
+		fixture.InvokeWithSeveralParameters(parameterValue1, parameterValue2);
+		fixture.InvokeWithSeveralParameters(parameterValue2, parameterValue2);
 
-		DependencyServiceMock.VerifyInvokeWithMultipleParameters(verify1, parameterValue2, Times.Exactly(2));
+		DependencyServiceMock.VerifyInvokeWithSeveralParameters(verify1, parameterValue2, Times.Exactly(2));
 		DependencyServiceMock.VerifyNoOtherCalls();
 	}
 
@@ -254,18 +254,18 @@ public sealed class InvokeWithMultipleParametersShould : PrimitiveTypeServiceTes
 		const int parameterValue1 = 123, parameterValue2 = 234;
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithMultipleParameters(parameterValue1, parameterValue2);
-		fixture.InvokeWithMultipleParameters(parameterValue2, parameterValue2);
+		fixture.InvokeWithSeveralParameters(parameterValue1, parameterValue2);
+		fixture.InvokeWithSeveralParameters(parameterValue2, parameterValue2);
 
 		var actual = () =>
 		{
 			var verify1 = It<int>.Any();
-			DependencyServiceMock.VerifyInvokeWithMultipleParameters(verify1, parameterValue2, Times.Exactly(3));
+			DependencyServiceMock.VerifyInvokeWithSeveralParameters(verify1, parameterValue2, Times.Exactly(3));
 		};
 
 		const string exceptionMessage =
 			"""
-			Expected IPrimitiveDependencyService#InvokeWithMultipleParameters(any, 234) to be called 3 times, but instead it was called 2 times.
+			Expected IPrimitiveDependencyService#InvokeWithSeveralParameters(any, 234) to be called 3 times, but instead it was called 2 times.
 			Performed invocations:
 			- 1: 123, 234
 			- 2: 234, 234
@@ -280,19 +280,19 @@ public sealed class InvokeWithMultipleParametersShould : PrimitiveTypeServiceTes
 		const int parameterValue1 = 123, parameterValue2 = 234;
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithMultipleParameters(parameterValue1, parameterValue2);
-		fixture.InvokeWithMultipleParameters(parameterValue2, parameterValue2);
-		fixture.InvokeWithMultipleParameters(parameterValue2, parameterValue1);
-		fixture.InvokeWithMultipleParameters(parameterValue1, parameterValue1);
+		fixture.InvokeWithSeveralParameters(parameterValue1, parameterValue2);
+		fixture.InvokeWithSeveralParameters(parameterValue2, parameterValue2);
+		fixture.InvokeWithSeveralParameters(parameterValue2, parameterValue1);
+		fixture.InvokeWithSeveralParameters(parameterValue1, parameterValue1);
 
-		DependencyServiceMock.VerifyInvokeWithMultipleParameters(parameterValue1, parameterValue1, Times.Once);
-		DependencyServiceMock.VerifyInvokeWithMultipleParameters(parameterValue2, parameterValue2, Times.Once);
+		DependencyServiceMock.VerifyInvokeWithSeveralParameters(parameterValue1, parameterValue1, Times.Once);
+		DependencyServiceMock.VerifyInvokeWithSeveralParameters(parameterValue2, parameterValue2, Times.Once);
 
 		var actual = () => DependencyServiceMock.VerifyNoOtherCalls();
 
 		const string exceptionMessage =
 			"""
-			Expected IPrimitiveDependencyService#InvokeWithMultipleParameters(Int32, Int32) to be verified, but the following invocations have not been verified:
+			Expected IPrimitiveDependencyService#InvokeWithSeveralParameters(Int32, Int32) to be verified, but the following invocations have not been verified:
 			- 1: 123, 234
 			- 3: 234, 123
 			""";
