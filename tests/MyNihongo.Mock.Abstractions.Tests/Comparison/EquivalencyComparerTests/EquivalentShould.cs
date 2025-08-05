@@ -18,7 +18,7 @@ public sealed class EquivalentShould
 
 		var actual = EquivalencyComparer<int>.Default.Equivalent(input1, input2);
 
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("this", "1", "2"),
 		};
@@ -41,7 +41,7 @@ public sealed class EquivalentShould
 
 		var actual = EquivalencyComparer<string>.Default.Equivalent(input1, input2);
 
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("this", "input1", "input2"),
 		};
@@ -102,7 +102,7 @@ public sealed class EquivalentShould
 
 		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
 
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("Age", "17", "18"),
 		};
@@ -135,7 +135,7 @@ public sealed class EquivalentShould
 
 		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
 
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("Age", "17", "18"),
 			new("Name", "Okayama Issei", "Okayama Issei2"),
@@ -169,7 +169,7 @@ public sealed class EquivalentShould
 
 		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
 
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("Age", "17", "18"),
 			new("Name", "Okayama Issei", "Okayama Issei2"),
@@ -204,7 +204,7 @@ public sealed class EquivalentShould
 
 		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
 
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("Age", "17", "18"),
 			new("Name", "Okayama Issei", "Okayama Issei2"),
@@ -232,7 +232,7 @@ public sealed class EquivalentShould
 
 		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
 
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("Parent", "null", "Item"),
 		};
@@ -257,7 +257,7 @@ public sealed class EquivalentShould
 
 		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
 
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("Parent", "Item", "null"),
 		};
@@ -318,7 +318,7 @@ public sealed class EquivalentShould
 
 		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
 
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("Parent.Ticks", "1234567890", "2345678901"),
 		};
@@ -351,7 +351,7 @@ public sealed class EquivalentShould
 
 		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
 
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("Parent.Ticks", "1234567890", "2345678901"),
 			new("Parent.IsValid", "True", "False"),
@@ -374,7 +374,7 @@ public sealed class EquivalentShould
 
 		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
 
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("Children", "[ClassObject]", "null"),
 		};
@@ -396,7 +396,7 @@ public sealed class EquivalentShould
 
 		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
 
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("Children", "null", "[ClassObject]"),
 		};
@@ -485,7 +485,7 @@ public sealed class EquivalentShould
 		};
 
 		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("Children[0].Ticks", "1234567890", "2345678901"),
 		};
@@ -523,7 +523,7 @@ public sealed class EquivalentShould
 		};
 
 		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("Children[0].Ticks", "1234567890", "2345678901"),
 			new("Children[0].IsValid", "True", "False"),
@@ -567,7 +567,7 @@ public sealed class EquivalentShould
 		};
 
 		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("Children[0].Ticks", "1234567890", "2345678901"),
 			new("Children[0].IsValid", "True", "False"),
@@ -617,7 +617,7 @@ public sealed class EquivalentShould
 		};
 
 		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("Children[1].Ticks", "1234567890", "2345678901"),
 			new("Children[0].IsValid", "True", "False"),
@@ -665,7 +665,7 @@ public sealed class EquivalentShould
 		};
 
 		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("Children[0].Object.Age", "17", "18"),
 		};
@@ -726,7 +726,7 @@ public sealed class EquivalentShould
 		};
 
 		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("Children[0].Objects[1].Name", "Okayama Issei", "Okayama Issei2"),
 		};
@@ -773,7 +773,7 @@ public sealed class EquivalentShould
 
 		var actual = EquivalencyComparer<string[]>.Default.Equivalent(input1, input2);
 
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("this[1]", "value1", "value2"),
 		};
@@ -854,7 +854,7 @@ public sealed class EquivalentShould
 
 		var actual = EquivalencyComparer<ClassObject[]>.Default.Equivalent(input1, input2);
 
-		var expected = new EquivalencyComparerResult.Entry[]
+		var expected = new ComparisonResult.Entry[]
 		{
 			new("this[0].Age", "17", "18"),
 			new("this[1].Name", "Okayama Issei2", "Okayama Issei"),

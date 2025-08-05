@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock;
 
-public sealed class EquivalencyComparerResult
+public sealed class ComparisonResult
 {
 	private readonly List<Entry> _entries = [];
 
@@ -12,7 +12,7 @@ public sealed class EquivalencyComparerResult
 		_entries.Add(entry);
 	}
 
-	public static implicit operator bool(EquivalencyComparerResult @this)
+	public static implicit operator bool(ComparisonResult @this)
 	{
 		return @this._entries.Count == 0;
 	}

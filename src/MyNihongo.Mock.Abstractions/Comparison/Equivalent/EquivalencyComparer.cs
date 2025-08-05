@@ -30,7 +30,7 @@ public class EquivalencyComparer
 		_fields = type.GetFields(flags);
 	}
 
-	protected EquivalencyComparerResult Equivalent(in object? x, in object? y, in EquivalencyComparerResult result, in string? path)
+	protected ComparisonResult Equivalent(in object? x, in object? y, in ComparisonResult result, in string? path)
 	{
 		if (_properties is not null)
 		{
@@ -210,9 +210,9 @@ public sealed class EquivalencyComparer<T> : EquivalencyComparer
 	{
 	}
 
-	public EquivalencyComparerResult Equivalent(T? x, T? y)
+	public ComparisonResult Equivalent(T? x, T? y)
 	{
-		var result = new EquivalencyComparerResult();
+		var result = new ComparisonResult();
 		return Equivalent(x, y, result, path: null);
 	}
 }
