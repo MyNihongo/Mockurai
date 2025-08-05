@@ -24,7 +24,7 @@ public sealed class Invocation<TParameter>
 		foreach (var invocation in _invocations)
 		{
 			var verifyParameter = invocation.Invocation.GetParameter(parameter.ValueSetup?.Type);
-			if (parameter.ValueSetup.HasValue && !parameter.ValueSetup.Value.Predicate(verifyParameter))
+			if (parameter.ValueSetup.HasValue && !parameter.ValueSetup.Value.Check(verifyParameter))
 				continue;
 
 			invocation.Invocation.IsVerified = true;
@@ -45,7 +45,7 @@ public sealed class Invocation<TParameter>
 		{
 			var verifyParameter = item.Invocation.GetParameter(parameter.ValueSetup?.Type);
 
-			if (!parameter.ValueSetup.HasValue || parameter.ValueSetup.Value.Predicate(verifyParameter))
+			if (!parameter.ValueSetup.HasValue || parameter.ValueSetup.Value.Check(verifyParameter))
 			{
 				item.Invocation.IsVerified = true;
 				return item.Index + 1;

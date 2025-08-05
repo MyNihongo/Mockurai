@@ -10,7 +10,7 @@ public sealed class EquivalentClassShould
 
 		var actual = It<ClassObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.True(actual);
 	}
@@ -35,7 +35,7 @@ public sealed class EquivalentClassShould
 
 		var actual = It<ClassObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.True(actual);
 	}
@@ -60,7 +60,7 @@ public sealed class EquivalentClassShould
 
 		var actual = It<ClassObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -85,7 +85,7 @@ public sealed class EquivalentClassShould
 
 		var actual = It<ClassObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -110,7 +110,7 @@ public sealed class EquivalentClassShould
 
 		var actual = It<ClassObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -135,7 +135,7 @@ public sealed class EquivalentClassShould
 
 		var actual = It<ClassObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -172,7 +172,7 @@ public sealed class EquivalentClassShould
 
 		var actual = It<ClassNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.True(actual);
 	}
@@ -209,7 +209,7 @@ public sealed class EquivalentClassShould
 
 		var actual = It<ClassNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -246,7 +246,7 @@ public sealed class EquivalentClassShould
 
 		var actual = It<ClassNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -283,7 +283,7 @@ public sealed class EquivalentClassShould
 
 		var actual = It<ClassNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -320,7 +320,7 @@ public sealed class EquivalentClassShould
 
 		var actual = It<ClassNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -351,7 +351,7 @@ public sealed class EquivalentClassShould
 
 		var actual = It<ClassObject[]>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.True(actual);
 	}
@@ -382,7 +382,7 @@ public sealed class EquivalentClassShould
 
 		var actual = It<IEnumerable>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.True(actual);
 	}
@@ -413,7 +413,7 @@ public sealed class EquivalentClassShould
 
 		var actual = It<IEnumerable<ClassObject>>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.True(actual);
 	}
@@ -444,7 +444,7 @@ public sealed class EquivalentClassShould
 
 		var actual = It<List<ClassObject>>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.True(actual);
 	}
@@ -480,7 +480,7 @@ public sealed class EquivalentClassShould
 
 		var actual = It<ClassObject[]>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -516,7 +516,7 @@ public sealed class EquivalentClassShould
 
 		var actual = It<ClassObject[]>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -557,7 +557,7 @@ public sealed class EquivalentClassShould
 
 		var actual = It<ClassObject[]>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -620,7 +620,7 @@ public sealed class EquivalentClassShould
 
 		var actual = It<ClassNestedObject[]>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}

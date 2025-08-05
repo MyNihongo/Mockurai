@@ -45,12 +45,12 @@ public readonly ref struct It<T>
 
 	public readonly struct Setup : IComparable<Setup>
 	{
-		public readonly Func<T, bool> Predicate;
+		private readonly Func<T, bool> _predicate;
 		public readonly SetupType Type;
 
 		public Setup(in Func<T, bool> predicate, in SetupType type)
 		{
-			Predicate = predicate;
+			_predicate = predicate;
 			Type = type;
 		}
 
@@ -59,6 +59,11 @@ public readonly ref struct It<T>
 		public int CompareTo(Setup other)
 		{
 			return Sort.CompareTo(Sort);
+		}
+
+		public bool Check(in T value)
+		{
+			return _predicate(value);
 		}
 
 		public override string ToString()

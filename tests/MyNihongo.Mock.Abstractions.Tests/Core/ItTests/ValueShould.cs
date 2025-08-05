@@ -9,7 +9,7 @@ public sealed class ValueShould
 
 		var actual = It<int>.Value(inputValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.True(actual);
 	}
@@ -23,7 +23,7 @@ public sealed class ValueShould
 
 		var actual = It<int>.Value(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}

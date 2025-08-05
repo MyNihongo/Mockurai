@@ -13,7 +13,7 @@ public sealed class SetupWithParameter<TParameter, TReturns> : ISetup<TReturns>
 
 		foreach (var setup in _setups)
 		{
-			if (setup.Parameter.HasValue && !setup.Parameter.Value.Predicate(parameter))
+			if (setup.Parameter.HasValue && !setup.Parameter.Value.Check(parameter))
 				continue;
 
 			setup.Callback?.Invoke(parameter);

@@ -10,7 +10,7 @@ public sealed class EquivalentStructShould
 
 		var actual = It<StructObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.True(actual);
 	}
@@ -26,7 +26,7 @@ public sealed class EquivalentStructShould
 
 		var actual = It<StructObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.True(actual);
 	}
@@ -42,7 +42,7 @@ public sealed class EquivalentStructShould
 
 		var actual = It<StructObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -58,7 +58,7 @@ public sealed class EquivalentStructShould
 
 		var actual = It<StructObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -74,7 +74,7 @@ public sealed class EquivalentStructShould
 
 		var actual = It<StructObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -90,7 +90,7 @@ public sealed class EquivalentStructShould
 
 		var actual = It<StructObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -117,7 +117,7 @@ public sealed class EquivalentStructShould
 
 		var actual = It<StructNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.True(actual);
 	}
@@ -144,7 +144,7 @@ public sealed class EquivalentStructShould
 
 		var actual = It<StructNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -171,7 +171,7 @@ public sealed class EquivalentStructShould
 
 		var actual = It<StructNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -198,7 +198,7 @@ public sealed class EquivalentStructShould
 
 		var actual = It<StructNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -225,7 +225,7 @@ public sealed class EquivalentStructShould
 
 		var actual = It<StructNestedObject>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -250,7 +250,7 @@ public sealed class EquivalentStructShould
 
 		var actual = It<StructObject[]>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.True(actual);
 	}
@@ -275,7 +275,7 @@ public sealed class EquivalentStructShould
 
 		var actual = It<StructObject[]>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -318,7 +318,7 @@ public sealed class EquivalentStructShould
 
 		var actual = It<StructNestedObject[]>.Equivalent(setupValue)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}

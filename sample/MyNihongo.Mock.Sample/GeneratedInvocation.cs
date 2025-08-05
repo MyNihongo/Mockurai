@@ -28,9 +28,9 @@ public sealed class InvocationIntInt
 			var verifyParameter1 = invocation.Invocation.GetParameter1(parameter1.ValueSetup?.Type);
 			var verifyParameter2 = invocation.Invocation.GetParameter2(parameter2.ValueSetup?.Type);
 
-			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Predicate(verifyParameter1))
+			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Check(verifyParameter1))
 				continue;
-			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Predicate(verifyParameter2))
+			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Check(verifyParameter2))
 				continue;
 
 			invocation.Invocation.IsVerified = true;
@@ -52,9 +52,9 @@ public sealed class InvocationIntInt
 			var verifyParameter1 = item.Invocation.GetParameter1(parameter1.ValueSetup?.Type);
 			var verifyParameter2 = item.Invocation.GetParameter2(parameter2.ValueSetup?.Type);
 
-			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Predicate(verifyParameter1))
+			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Check(verifyParameter1))
 				continue;
-			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Predicate(verifyParameter2))
+			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Check(verifyParameter2))
 				continue;
 
 			item.Invocation.IsVerified = true;
