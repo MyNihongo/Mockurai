@@ -13,6 +13,12 @@ public readonly ref struct It<T>
 		ValueSetup = new Setup(predicate, type);
 	}
 
+	private It(Func<T, ComparisonResult> predicate, SetupType type, Func<string> toString)
+	{
+		_toString = toString;
+		ValueSetup = new Setup(predicate, type);
+	}
+
 	public static It<T> Value(T value)
 	{
 		return new It<T>(x => EqualityComparer<T>.Default.Equals(value, x), SetupType.Value, () => JsonSerializer.Serialize(value));
@@ -45,12 +51,19 @@ public readonly ref struct It<T>
 
 	public readonly struct Setup : IComparable<Setup>
 	{
-		private readonly Func<T, bool> _predicate;
+		private readonly Func<T, bool>? _predicateBool;
+		private readonly Func<T, ComparisonResult>? _predicateResult;
 		public readonly SetupType Type;
 
 		public Setup(in Func<T, bool> predicate, in SetupType type)
 		{
-			_predicate = predicate;
+			_predicateBool = predicate;
+			Type = type;
+		}
+
+		public Setup(in Func<T, ComparisonResult> predicate, in SetupType type)
+		{
+			_predicateResult = predicate;
 			Type = type;
 		}
 
@@ -63,7 +76,18 @@ public readonly ref struct It<T>
 
 		public bool Check(in T value)
 		{
-			return _predicate(value);
+			return _predicateBool?.Invoke(value) ?? _predicateResult?.Invoke(value) ?? false;
+		}
+
+		public bool Check(in T value, out ComparisonResult? result)
+		{
+			if (_predicateBool is not null)
+			{
+				result = null;
+				return _predicateBool(value);
+			}
+
+			return result = _predicateResult?.Invoke(value);
 		}
 
 		public override string ToString()
