@@ -24,7 +24,7 @@ public sealed class Invocation<TParameter>
 		foreach (var invocation in _invocations)
 		{
 			var verifyParameter = invocation.Invocation.GetParameter(parameter.ValueSetup?.Type);
-			if (parameter.ValueSetup.HasValue && !parameter.ValueSetup.Value.Check(verifyParameter, out _))
+			if (parameter.ValueSetup.HasValue && !parameter.ValueSetup.Value.Check(verifyParameter, out var result))
 				continue;
 
 			invocation.Invocation.IsVerified = true;
@@ -41,14 +41,16 @@ public sealed class Invocation<TParameter>
 
 	public long Verify(in It<TParameter> parameter, in long index)
 	{
-		foreach (var item in _invocations.GetItemsFrom(index))
-		{
-			var verifyParameter = item.Invocation.GetParameter(parameter.ValueSetup?.Type);
+		var span = _invocations.GetItemsFromSpan(index);
 
-			if (!parameter.ValueSetup.HasValue || parameter.ValueSetup.Value.Check(verifyParameter, out _))
+		for (var i = 0; i < span.Length; i++)
+		{
+			var verifyParameter = span[i].Invocation.GetParameter(parameter.ValueSetup?.Type);
+
+			if (!parameter.ValueSetup.HasValue || parameter.ValueSetup.Value.Check(verifyParameter, out var result))
 			{
-				item.Invocation.IsVerified = true;
-				return item.Index + 1;
+				span[i].Invocation.IsVerified = true;
+				return span[i].Index + 1;
 			}
 		}
 

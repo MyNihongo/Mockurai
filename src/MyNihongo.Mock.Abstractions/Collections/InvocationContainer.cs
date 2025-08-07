@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace MyNihongo.Mock;
 
@@ -29,14 +30,13 @@ public sealed class InvocationContainer<T> : IEnumerable<(long Index, T Invocati
 			: null;
 	}
 
-	public IEnumerable<(long Index, T Invocation)> GetItemsFrom(long index)
+	public Span<(long Index, T Invocation)> GetItemsFromSpan(in long index)
 	{
 		var itemIndex = TryGetIndexAt(index);
-		if (!itemIndex.HasValue)
-			yield break;
 
-		for (var i = itemIndex.Value; i < _invocations.Count; i++)
-			yield return _invocations[i];
+		return itemIndex.HasValue
+			? CollectionsMarshal.AsSpan(_invocations)[itemIndex.Value..]
+			: Span<(long Index, T Invocation)>.Empty;
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]

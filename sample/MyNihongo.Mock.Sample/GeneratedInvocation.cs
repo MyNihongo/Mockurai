@@ -28,9 +28,12 @@ public sealed class InvocationIntInt
 			var verifyParameter1 = invocation.Invocation.GetParameter1(parameter1.ValueSetup?.Type);
 			var verifyParameter2 = invocation.Invocation.GetParameter2(parameter2.ValueSetup?.Type);
 
-			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Check(verifyParameter1, out _))
+			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Check(verifyParameter1, out var result))
+			{
 				continue;
-			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Check(verifyParameter2, out _))
+			}
+
+			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Check(verifyParameter2, out result))
 				continue;
 
 			invocation.Invocation.IsVerified = true;
@@ -47,18 +50,20 @@ public sealed class InvocationIntInt
 
 	public long Verify(in It<int> parameter1, in It<int> parameter2, in long index)
 	{
-		foreach (var item in _invocations.GetItemsFrom(index))
+		var span = _invocations.GetItemsFromSpan(index);
+
+		for (var i = 0; i < span.Length; i++)
 		{
-			var verifyParameter1 = item.Invocation.GetParameter1(parameter1.ValueSetup?.Type);
-			var verifyParameter2 = item.Invocation.GetParameter2(parameter2.ValueSetup?.Type);
+			var verifyParameter1 = span[i].Invocation.GetParameter1(parameter1.ValueSetup?.Type);
+			var verifyParameter2 = span[i].Invocation.GetParameter2(parameter2.ValueSetup?.Type);
 
-			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Check(verifyParameter1, out _))
+			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Check(verifyParameter1, out var result))
 				continue;
-			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Check(verifyParameter2, out _))
+			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Check(verifyParameter2, out result))
 				continue;
 
-			item.Invocation.IsVerified = true;
-			return item.Index + 1;
+			span[i].Invocation.IsVerified = true;
+			return span[i].Index + 1;
 		}
 
 		var verifyName = string.Format(_name, parameter1.ToString(), parameter2.ToString());
