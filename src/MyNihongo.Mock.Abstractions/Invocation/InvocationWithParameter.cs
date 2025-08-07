@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Text.Json;
 
 namespace MyNihongo.Mock;
@@ -22,13 +23,20 @@ public sealed class Invocation<TParameter>
 	{
 		var span = _invocations.GetItemsSpan();
 
+		var verifyOutput = new List<(long, Item, ComparisonResult?)>();
+		CollectionsMarshal.SetCount(verifyOutput, span.Length);
+
 		var count = 0;
 		for (var i = 0; i < span.Length; i++)
 		{
 			var verifyParameter = span[i].Invocation.GetParameter(parameter.ValueSetup?.Type);
 			if (parameter.ValueSetup.HasValue && !parameter.ValueSetup.Value.Check(verifyParameter, out var result))
+			{
+				verifyOutput[i] = (span[i].Index, span[i].Invocation, result);
 				continue;
+			}
 
+			verifyOutput[i] = (span[i].Index, span[i].Invocation, null);
 			span[i].Invocation.IsVerified = true;
 			count++;
 		}
@@ -36,8 +44,8 @@ public sealed class Invocation<TParameter>
 		if (times.Predicate(count))
 			return;
 
+		var invocations = verifyOutput.GetStrings();
 		var verifyName = string.Format(_name, parameter.ToString());
-		var invocations = _invocations.GetItemStrings();
 		throw new MockVerifyCountException(verifyName, times, count, invocations);
 	}
 
