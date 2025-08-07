@@ -520,13 +520,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			Expected MyClass#MyMethod(123) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 113
-			  - this:
-			    expected: 123
-			    actual: 113
+			  expected: 123
+			  actual: 113
 			- 2: 124
-			  - this:
-			    expected: 123
-			    actual: 124
+			  expected: 123
+			  actual: 124
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -556,14 +554,12 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			Expected MyClass#MyMethod(123) to be called 2 times, but instead it was called 1 time.
 			Performed invocations:
 			- 1: 113
-			  - this:
-			    expected: 123
-			    actual: 113
+			  expected: 123
+			  actual: 113
 			- 2: 123
 			- 3: 124
-			  - this:
-			    expected: 123
-			    actual: 124
+			  expected: 123
+			  actual: 124
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);

@@ -953,8 +953,239 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		var fixture = CreateFixturePrimitive();
 		fixture.Register(index, inputValue1, inputValue2);
 		fixture.Register(index, inputValue1, inputValue2 + 2);
-		
-		It<int> verify1 = It<int>.Equivalent(inputValue2), verify2 = It<int>.Equivalent(inputValue2);
+
+		It<int> verify1 = It<int>.Equivalent(inputValue1), verify2 = It<int>.Equivalent(inputValue2);
 		fixture.Verify(verify1, verify2, Times.Once());
+	}
+
+	[Fact]
+	public void ThrowVerifyNotEquivalent1()
+	{
+		var index = new InvocationIndex.Counter();
+		const int inputValue1 = 123, inputValue2 = 234;
+
+		var fixture = CreateFixturePrimitive();
+		fixture.Register(index, inputValue1 + 1, inputValue2 + 2);
+		fixture.Register(index, inputValue1 + 3, inputValue2 + 4);
+
+		var actual = () =>
+		{
+			It<int> verify1 = It<int>.Equivalent(inputValue1), verify2 = It<int>.Equivalent(inputValue2);
+			fixture.Verify(verify1, verify2, Times.Once());
+		};
+
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(123, 234) to be called 1 time, but instead it was called 0 times.
+			Performed invocations:
+			- 1: 124, 236
+			  - parameter1:
+			    expected: 123
+			    actual: 124
+			  - parameter2:
+			    expected: 234
+			    actual: 236
+			- 2: 126, 238
+			  - parameter1:
+			    expected: 123
+			    actual: 126
+			  - parameter2:
+			    expected: 234
+			    actual: 238
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowVerifyNotEquivalent2()
+	{
+		var index = new InvocationIndex.Counter();
+		const int inputValue1 = 123, inputValue2 = 234;
+
+		var fixture = CreateFixturePrimitive();
+		fixture.Register(index, inputValue1, inputValue2 + 2);
+		fixture.Register(index, inputValue1 + 3, inputValue2 + 4);
+
+		var actual = () =>
+		{
+			It<int> verify1 = It<int>.Equivalent(inputValue1), verify2 = It<int>.Equivalent(inputValue2);
+			fixture.Verify(verify1, verify2, Times.Once());
+		};
+
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(123, 234) to be called 1 time, but instead it was called 0 times.
+			Performed invocations:
+			- 1: 123, 236
+			  - parameter2:
+			    expected: 234
+			    actual: 236
+			- 2: 126, 238
+			  - parameter1:
+			    expected: 123
+			    actual: 126
+			  - parameter2:
+			    expected: 234
+			    actual: 238
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowVerifyNotEquivalent3()
+	{
+		var index = new InvocationIndex.Counter();
+		const int inputValue1 = 123, inputValue2 = 234;
+
+		var fixture = CreateFixturePrimitive();
+		fixture.Register(index, inputValue1 + 1, inputValue2);
+		fixture.Register(index, inputValue1 + 3, inputValue2 + 4);
+
+		var actual = () =>
+		{
+			It<int> verify1 = It<int>.Equivalent(inputValue1), verify2 = It<int>.Equivalent(inputValue2);
+			fixture.Verify(verify1, verify2, Times.Once());
+		};
+
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(123, 234) to be called 1 time, but instead it was called 0 times.
+			Performed invocations:
+			- 1: 124, 234
+			  - parameter1:
+			    expected: 123
+			    actual: 124
+			- 2: 126, 238
+			  - parameter1:
+			    expected: 123
+			    actual: 126
+			  - parameter2:
+			    expected: 234
+			    actual: 238
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+	
+	[Fact]
+	public void ThrowVerifyNotEquivalentOneMatched1()
+	{
+		var index = new InvocationIndex.Counter();
+		const int inputValue1 = 123, inputValue2 = 234;
+
+		var fixture = CreateFixturePrimitive();
+		fixture.Register(index, inputValue1 + 1, inputValue2 + 2);
+		fixture.Register(index, inputValue1, inputValue2);
+		fixture.Register(index, inputValue1 + 3, inputValue2 + 4);
+
+		var actual = () =>
+		{
+			It<int> verify1 = It<int>.Equivalent(inputValue1), verify2 = It<int>.Equivalent(inputValue2);
+			const int expected = 2;
+			fixture.Verify(verify1, verify2, Times.Exactly(expected));
+		};
+
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(123, 234) to be called 2 times, but instead it was called 1 time.
+			Performed invocations:
+			- 1: 124, 236
+			  - parameter1:
+			    expected: 123
+			    actual: 124
+			  - parameter2:
+			    expected: 234
+			    actual: 236
+			- 2: 123, 234
+			- 3: 126, 238
+			  - parameter1:
+			    expected: 123
+			    actual: 126
+			  - parameter2:
+			    expected: 234
+			    actual: 238
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowVerifyNotEquivalentOneMatched2()
+	{
+		var index = new InvocationIndex.Counter();
+		const int inputValue1 = 123, inputValue2 = 234;
+
+		var fixture = CreateFixturePrimitive();
+		fixture.Register(index, inputValue1, inputValue2 + 2);
+		fixture.Register(index, inputValue1, inputValue2);
+		fixture.Register(index, inputValue1 + 3, inputValue2 + 4);
+
+		var actual = () =>
+		{
+			It<int> verify1 = It<int>.Equivalent(inputValue1), verify2 = It<int>.Equivalent(inputValue2);
+			const int expected = 2;
+			fixture.Verify(verify1, verify2, Times.Exactly(expected));
+		};
+
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(123, 234) to be called 2 times, but instead it was called 1 time.
+			Performed invocations:
+			- 1: 123, 236
+			  - parameter2:
+			    expected: 234
+			    actual: 236
+			- 2: 123, 234
+			- 3: 126, 238
+			  - parameter1:
+			    expected: 123
+			    actual: 126
+			  - parameter2:
+			    expected: 234
+			    actual: 238
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowVerifyNotEquivalentOneMatched3()
+	{
+		var index = new InvocationIndex.Counter();
+		const int inputValue1 = 123, inputValue2 = 234;
+
+		var fixture = CreateFixturePrimitive();
+		fixture.Register(index, inputValue1 + 1, inputValue2);
+		fixture.Register(index, inputValue1, inputValue2);
+		fixture.Register(index, inputValue1 + 3, inputValue2 + 4);
+
+		var actual = () =>
+		{
+			It<int> verify1 = It<int>.Equivalent(inputValue1), verify2 = It<int>.Equivalent(inputValue2);
+			const int expected = 2;
+			fixture.Verify(verify1, verify2, Times.Exactly(expected));
+		};
+
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(123, 234) to be called 2 times, but instead it was called 1 time.
+			Performed invocations:
+			- 1: 124, 234
+			  - parameter1:
+			    expected: 123
+			    actual: 124
+			- 2: 123, 234
+			- 3: 126, 238
+			  - parameter1:
+			    expected: 123
+			    actual: 126
+			  - parameter2:
+			    expected: 234
+			    actual: 238
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 }

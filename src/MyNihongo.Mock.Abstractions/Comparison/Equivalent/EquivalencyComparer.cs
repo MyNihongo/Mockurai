@@ -196,7 +196,7 @@ public class EquivalencyComparer
 	private static string GetPropertyPathOrRoot(string? path)
 	{
 		return string.IsNullOrEmpty(path)
-			? "this"
+			? ComparisonResult.RootPath
 			: path;
 	}
 }

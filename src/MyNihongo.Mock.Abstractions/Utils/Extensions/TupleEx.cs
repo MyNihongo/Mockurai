@@ -29,10 +29,19 @@ public static class TupleEx
 				if (i > 0)
 					stringBuilder.AppendLine();
 
-				stringBuilder
-					.AppendLine($"  - {item.Item3.Entries[i].Path}:")
-					.AppendLine($"    expected: {item.Item3.Entries[i].ExpectedValue}")
-					.Append($"    actual: {item.Item3.Entries[i].ActualValue}");
+				if (item.Item3.Entries[i].Path == ComparisonResult.RootPath)
+				{
+					stringBuilder
+						.AppendLine($"  expected: {item.Item3.Entries[i].ExpectedValue}")
+						.Append($"  actual: {item.Item3.Entries[i].ActualValue}");
+				}
+				else
+				{
+					stringBuilder
+						.AppendLine($"  - {item.Item3.Entries[i].Path}:")
+						.AppendLine($"    expected: {item.Item3.Entries[i].ExpectedValue}")
+						.Append($"    actual: {item.Item3.Entries[i].ActualValue}");
+				}
 			}
 
 			yield return stringBuilder.ToString();
@@ -68,10 +77,19 @@ public static class TupleEx
 					if (i > 0)
 						stringBuilder.AppendLine();
 
-					stringBuilder
-						.AppendLine($"    - {resultItem.Item2.Entries[i].Path}:")
-						.AppendLine($"      expected: {resultItem.Item2.Entries[i].ExpectedValue}")
-						.Append($"      actual: {resultItem.Item2.Entries[i].ActualValue}");
+					if (resultItem.Item2.Entries[i].Path == ComparisonResult.RootPath)
+					{
+						stringBuilder
+							.AppendLine($"    expected: {resultItem.Item2.Entries[i].ExpectedValue}")
+							.Append($"    actual: {resultItem.Item2.Entries[i].ActualValue}");
+					}
+					else
+					{
+						stringBuilder
+							.AppendLine($"    - {resultItem.Item2.Entries[i].Path}:")
+							.AppendLine($"      expected: {resultItem.Item2.Entries[i].ExpectedValue}")
+							.Append($"      actual: {resultItem.Item2.Entries[i].ActualValue}");
+					}
 				}
 			}
 

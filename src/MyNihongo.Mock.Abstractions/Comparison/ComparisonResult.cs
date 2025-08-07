@@ -2,6 +2,7 @@ namespace MyNihongo.Mock;
 
 public sealed class ComparisonResult
 {
+	public const string RootPath = "this";
 	private readonly List<Entry> _entries = [];
 
 	public IReadOnlyList<Entry> Entries => _entries;
