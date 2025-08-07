@@ -22,11 +22,13 @@ public sealed class InvocationIntInt
 
 	public void Verify(in It<int> parameter1, in It<int> parameter2, in Times times)
 	{
+		var span = _invocations.GetItemsSpan();
+
 		var count = 0;
-		foreach (var invocation in _invocations)
+		for (var i = 0; i < span.Length; i++)
 		{
-			var verifyParameter1 = invocation.Invocation.GetParameter1(parameter1.ValueSetup?.Type);
-			var verifyParameter2 = invocation.Invocation.GetParameter2(parameter2.ValueSetup?.Type);
+			var verifyParameter1 = span[i].Invocation.GetParameter1(parameter1.ValueSetup?.Type);
+			var verifyParameter2 = span[i].Invocation.GetParameter2(parameter2.ValueSetup?.Type);
 
 			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Check(verifyParameter1, out var result))
 			{
@@ -36,7 +38,7 @@ public sealed class InvocationIntInt
 			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Check(verifyParameter2, out result))
 				continue;
 
-			invocation.Invocation.IsVerified = true;
+			span[i].Invocation.IsVerified = true;
 			count++;
 		}
 
@@ -50,7 +52,7 @@ public sealed class InvocationIntInt
 
 	public long Verify(in It<int> parameter1, in It<int> parameter2, in long index)
 	{
-		var span = _invocations.GetItemsFromSpan(index);
+		var span = _invocations.GetItemsSpanFrom(index);
 
 		for (var i = 0; i < span.Length; i++)
 		{

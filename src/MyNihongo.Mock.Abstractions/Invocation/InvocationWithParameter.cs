@@ -20,14 +20,16 @@ public sealed class Invocation<TParameter>
 
 	public void Verify(in It<TParameter> parameter, in Times times)
 	{
+		var span = _invocations.GetItemsSpan();
+
 		var count = 0;
-		foreach (var invocation in _invocations)
+		for (var i = 0; i < span.Length; i++)
 		{
-			var verifyParameter = invocation.Invocation.GetParameter(parameter.ValueSetup?.Type);
+			var verifyParameter = span[i].Invocation.GetParameter(parameter.ValueSetup?.Type);
 			if (parameter.ValueSetup.HasValue && !parameter.ValueSetup.Value.Check(verifyParameter, out var result))
 				continue;
 
-			invocation.Invocation.IsVerified = true;
+			span[i].Invocation.IsVerified = true;
 			count++;
 		}
 
@@ -41,7 +43,7 @@ public sealed class Invocation<TParameter>
 
 	public long Verify(in It<TParameter> parameter, in long index)
 	{
-		var span = _invocations.GetItemsFromSpan(index);
+		var span = _invocations.GetItemsSpanFrom(index);
 
 		for (var i = 0; i < span.Length; i++)
 		{

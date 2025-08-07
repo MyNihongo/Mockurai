@@ -30,7 +30,12 @@ public sealed class InvocationContainer<T> : IEnumerable<(long Index, T Invocati
 			: null;
 	}
 
-	public Span<(long Index, T Invocation)> GetItemsFromSpan(in long index)
+	public Span<(long Index, T Invocation)> GetItemsSpan()
+	{
+		return CollectionsMarshal.AsSpan(_invocations);
+	}
+
+	public Span<(long Index, T Invocation)> GetItemsSpanFrom(in long index)
 	{
 		var itemIndex = TryGetIndexAt(index);
 
