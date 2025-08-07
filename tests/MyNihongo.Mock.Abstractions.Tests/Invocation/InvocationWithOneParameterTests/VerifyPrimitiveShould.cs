@@ -481,4 +481,91 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		var actual2 = fixture.Verify(verify2, 103L);
 		Assert.Equal(expected2, actual2);
 	}
+
+	[Fact]
+	public void VerifyEquivalent()
+	{
+		const int inputValue = 123;
+
+		var index = new InvocationIndex.Counter();
+
+		var fixture = CreateFixture<int>();
+		fixture.Register(index, inputValue);
+		fixture.Register(index, inputValue + 1);
+
+		var verify = It<int>.Equivalent(inputValue);
+		const int expected = 1;
+		fixture.Verify(verify, Times.Exactly(expected));
+	}
+
+	[Fact]
+	public void ThrowVerifyNotEquivalent()
+	{
+		const int inputValue = 123;
+
+		var index = new InvocationIndex.Counter();
+
+		var fixture = CreateFixture<int>();
+		fixture.Register(index, inputValue - 10);
+		fixture.Register(index, inputValue + 1);
+
+		var actual = () =>
+		{
+			var verify = It<int>.Equivalent(inputValue);
+			fixture.Verify(verify, Times.Once());
+		};
+
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(123) to be called 1 time, but instead it was called 0 times.
+			Performed invocations:
+			- 1: 113
+			  - this:
+			    expected: 123
+			    actual: 113
+			- 2: 124
+			  - this:
+			    expected: 123
+			    actual: 124
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowVerifyNotEquivalentOneMatched()
+	{
+		const int inputValue = 123;
+
+		var index = new InvocationIndex.Counter();
+
+		var fixture = CreateFixture<int>();
+		fixture.Register(index, inputValue - 10);
+		fixture.Register(index, inputValue);
+		fixture.Register(index, inputValue + 1);
+
+		var actual = () =>
+		{
+			var verify = It<int>.Equivalent(inputValue);
+			const int expected = 2;
+			fixture.Verify(verify, Times.Exactly(expected));
+		};
+
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(123) to be called 2 times, but instead it was called 1 time.
+			Performed invocations:
+			- 1: 113
+			  - this:
+			    expected: 123
+			    actual: 113
+			- 2: 123
+			- 3: 124
+			  - this:
+			    expected: 123
+			    actual: 124
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
 }

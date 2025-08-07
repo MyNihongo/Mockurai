@@ -66,10 +66,4 @@ public sealed class InvocationContainer<T> : IEnumerable<(long Index, T Invocati
 
 	IEnumerator IEnumerable.GetEnumerator() =>
 		GetEnumerator();
-
-	public IEnumerable<string> GetItemStrings()
-	{
-		for (var i = 0; i < _invocations.Count; i++)
-			yield return _invocations[i].GetString();
-	}
 }

@@ -143,7 +143,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 1: 123
@@ -152,7 +152,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -169,7 +169,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 1: 123
@@ -177,7 +177,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -194,14 +194,14 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 1: 123
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -220,7 +220,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 2: 234
@@ -228,7 +228,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -247,14 +247,14 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 2: 234
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -271,14 +271,14 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 2: 234
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -295,14 +295,14 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 1: 123
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -318,14 +318,14 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 2: 234
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -341,14 +341,14 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 1: 123
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -364,14 +364,14 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 2: 234
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -387,14 +387,14 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 1: 123
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]

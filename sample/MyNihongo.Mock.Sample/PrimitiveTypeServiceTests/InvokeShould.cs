@@ -45,9 +45,9 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => DependencyServiceMock.VerifyInvoke(Times.Once);
 
-		const string exceptionMessage = "Expected IPrimitiveDependencyService#Invoke() to be called 1 time, but instead it was called 2 times.";
+		const string expectedMessage = "Expected IPrimitiveDependencyService#Invoke() to be called 1 time, but instead it was called 2 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -61,12 +61,12 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => DependencyServiceMock.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService#InvokeWithParameter(String) to be verified, but the following invocations have not been verified:
 			- 2: "value"
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 }

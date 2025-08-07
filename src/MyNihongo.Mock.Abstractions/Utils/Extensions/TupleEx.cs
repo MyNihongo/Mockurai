@@ -39,4 +39,44 @@ public static class TupleEx
 			stringBuilder.Clear();
 		}
 	}
+
+	public static IEnumerable<string> GetStrings<T>(this List<(long, T, (string, ComparisonResult?)[]?)> @this)
+	{
+		var stringBuilder = new StringBuilder();
+
+		foreach (var item in @this)
+		{
+			var message = $"{item.Item1}: {item.Item2}";
+			if (item.Item3 is null || item.Item3.Length == 0)
+			{
+				yield return message;
+				continue;
+			}
+
+			stringBuilder.Append(message);
+
+			foreach (var resultItem in item.Item3)
+			{
+				if (resultItem.Item2 is null || resultItem.Item2.Entries.Count == 0)
+					continue;
+
+				stringBuilder.AppendLine();
+				stringBuilder.AppendLine($"  - {resultItem.Item1}:");
+
+				for (var i = 0; i < resultItem.Item2.Entries.Count; i++)
+				{
+					if (i > 0)
+						stringBuilder.AppendLine();
+
+					stringBuilder
+						.AppendLine($"    - {resultItem.Item2.Entries[i].Path}:")
+						.AppendLine($"      expected: {resultItem.Item2.Entries[i].ExpectedValue}")
+						.Append($"      actual: {resultItem.Item2.Entries[i].ActualValue}");
+				}
+			}
+
+			yield return stringBuilder.ToString();
+			stringBuilder.Clear();
+		}
+	}
 }

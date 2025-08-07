@@ -8,12 +8,6 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 		const int number = 1;
 		const string name = "Okayama Issei";
 
-		var verify = It<ClassParameter1>.Equivalent(new ClassParameter1
-		{
-			Number = number,
-			Text = name,
-		});
-
 		var index = new InvocationIndex.Counter();
 
 		var fixture = CreateFixture<ClassParameter1>();
@@ -28,6 +22,11 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 			Text = name + '2',
 		});
 
+		var verify = It<ClassParameter1>.Equivalent(new ClassParameter1
+		{
+			Number = number,
+			Text = name,
+		});
 		const int expected = 1;
 		fixture.Verify(verify, Times.Exactly(expected));
 	}
@@ -62,7 +61,7 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 			fixture.Verify(verify, Times.Once());
 		};
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected MyClass#MyMethod({"Text":"Okayama Issei","Number":1}) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
@@ -82,7 +81,7 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 			    actual: 2
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -121,7 +120,7 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 			fixture.Verify(verify, Times.Exactly(expected));
 		};
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected MyClass#MyMethod({"Text":"Okayama Issei","Number":1}) to be called 2 times, but instead it was called 1 time.
 			Performed invocations:
@@ -136,6 +135,6 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 			    actual: Okayama Issei2
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 }
