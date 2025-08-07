@@ -47,11 +47,11 @@ public sealed class Invocation<TParameter>
 		{
 			var verifyParameter = span[i].Invocation.GetParameter(parameter.ValueSetup?.Type);
 
-			if (!parameter.ValueSetup.HasValue || parameter.ValueSetup.Value.Check(verifyParameter, out var result))
-			{
-				span[i].Invocation.IsVerified = true;
-				return span[i].Index + 1;
-			}
+			if (parameter.ValueSetup.HasValue && !parameter.ValueSetup.Value.Check(verifyParameter, out var result))
+				continue;
+
+			span[i].Invocation.IsVerified = true;
+			return span[i].Index + 1;
 		}
 
 		var verifyName = string.Format(_name, parameter.ToString());
