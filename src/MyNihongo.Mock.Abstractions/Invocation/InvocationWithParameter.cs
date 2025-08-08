@@ -53,19 +53,31 @@ public sealed class Invocation<TParameter>
 	{
 		var span = _invocations.GetItemsSpanFrom(index);
 
+		var verifyOutput = new List<(long, Item, ComparisonResult?)>();
+		CollectionsMarshal.SetCount(verifyOutput, span.Length);
+
 		for (var i = 0; i < span.Length; i++)
 		{
 			var verifyParameter = span[i].Invocation.GetParameter(parameter.ValueSetup?.Type);
 
 			if (parameter.ValueSetup.HasValue && !parameter.ValueSetup.Value.Check(verifyParameter, out var result))
+			{
+				verifyOutput[i] = (span[i].Index, span[i].Invocation, result);
 				continue;
+			}
 
+			verifyOutput[i] = (span[i].Index, span[i].Invocation, null);
 			span[i].Invocation.IsVerified = true;
 			return span[i].Index + 1;
 		}
 
+		span = _invocations.GetItemsSpanBefore(index);
+		for (var i = 0; i < span.Length; i++)
+			verifyOutput.Insert(i, (span[i].Index, span[i].Invocation, null));
+
+		var invocations = verifyOutput.GetStrings();
 		var verifyName = string.Format(_name, parameter.ToString());
-		throw new MockVerifySequenceOutOfRangeException(verifyName, index);
+		throw new MockVerifySequenceOutOfRangeException(verifyName, index, invocations);
 	}
 
 	public void VerifyNoOtherCalls()

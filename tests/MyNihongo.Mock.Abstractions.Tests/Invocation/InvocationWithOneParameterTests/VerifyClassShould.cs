@@ -137,4 +137,138 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public void VerifyEquivalentIndex()
+	{
+		const int number = 1;
+		const string name = "Okayama Issei";
+
+		var index = new InvocationIndex.Counter();
+
+		var fixture = CreateFixture<ClassParameter1>();
+		fixture.Register(index, new ClassParameter1
+		{
+			Number = number,
+			Text = name,
+		});
+		fixture.Register(index, new ClassParameter1
+		{
+			Number = number + 1,
+			Text = name + '2',
+		});
+
+		var verify = It<ClassParameter1>.Equivalent(new ClassParameter1
+		{
+			Number = number,
+			Text = name,
+		});
+		const long expected = 1L;
+		fixture.Verify(verify, expected);
+	}
+
+	[Fact]
+	public void ThrowVerifyNotEquivalentIndex()
+	{
+		const int number = 1;
+		const string name = "Okayama Issei";
+
+		var index = new InvocationIndex.Counter();
+
+		var fixture = CreateFixture<ClassParameter1>();
+		fixture.Register(index, new ClassParameter1
+		{
+			Number = number + 12345,
+			Text = name + " another name",
+		});
+		fixture.Register(index, new ClassParameter1
+		{
+			Number = number + 1,
+			Text = name + '2',
+		});
+
+		var actual = () =>
+		{
+			var verify = It<ClassParameter1>.Equivalent(new ClassParameter1
+			{
+				Number = number,
+				Text = name,
+			});
+			const long expected = 1L;
+			fixture.Verify(verify, expected);
+		};
+
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod({"Text":"Okayama Issei","Number":1}) to be invoked at index 1, but there are no invocations.
+			Performed invocations:
+			- 1: {"Text":"Okayama Issei another name","Number":12346}
+			  - Text:
+			    expected: Okayama Issei
+			    actual: Okayama Issei another name
+			  - Number:
+			    expected: 1
+			    actual: 12346
+			- 2: {"Text":"Okayama Issei2","Number":2}
+			  - Text:
+			    expected: Okayama Issei
+			    actual: Okayama Issei2
+			  - Number:
+			    expected: 1
+			    actual: 2
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowVerifyNotEquivalentOneMatchedIndex()
+	{
+		const int number = 1;
+		const string name = "Okayama Issei";
+
+		var index = new InvocationIndex.Counter();
+
+		var fixture = CreateFixture<ClassParameter1>();
+		fixture.Register(index, new ClassParameter1
+		{
+			Number = number + 12345,
+			Text = name,
+		});
+		fixture.Register(index, new ClassParameter1
+		{
+			Number = number,
+			Text = name,
+		});
+		fixture.Register(index, new ClassParameter1
+		{
+			Number = number,
+			Text = name + '2',
+		});
+
+		var actual = () =>
+		{
+			var verify = It<ClassParameter1>.Equivalent(new ClassParameter1
+			{
+				Number = number,
+				Text = name,
+			});
+			const long expected = 3L;
+			fixture.Verify(verify, expected);
+		};
+
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod({"Text":"Okayama Issei","Number":1}) to be invoked at index 3, but there are no invocations.
+			Performed invocations:
+			- 1: {"Text":"Okayama Issei","Number":12346}
+			- 2: {"Text":"Okayama Issei","Number":1}
+			- 3: {"Text":"Okayama Issei2","Number":1}
+			  - Text:
+			    expected: Okayama Issei
+			    actual: Okayama Issei2
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
 }
