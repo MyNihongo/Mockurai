@@ -765,7 +765,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(where(predicate), any) to be invoked at index 1, but there are no invocations.
+			Expected MyClass#MyMethod(where(predicate), any) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -789,7 +789,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(any, where(predicate)) to be invoked at index 1, but there are no invocations.
+			Expected MyClass#MyMethod(any, where(predicate)) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -814,7 +814,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(124, any) to be invoked at index 1, but there are no invocations.
+			Expected MyClass#MyMethod(124, any) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -839,7 +839,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(any, 235) to be invoked at index 1, but there are no invocations.
+			Expected MyClass#MyMethod(any, 235) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -863,7 +863,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(where(predicate), where(predicate)) to be invoked at index 1, but there are no invocations.
+			Expected MyClass#MyMethod(where(predicate), where(predicate)) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -887,7 +887,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(where(predicate), where(predicate)) to be invoked at index 1, but there are no invocations.
+			Expected MyClass#MyMethod(where(predicate), where(predicate)) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -911,7 +911,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(where(predicate), where(predicate)) to be invoked at index 1, but there are no invocations.
+			Expected MyClass#MyMethod(where(predicate), where(predicate)) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -936,7 +936,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(234, 123) to be invoked at index 1, but there are no invocations.
+			Expected MyClass#MyMethod(234, 123) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -961,7 +961,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 123) to be invoked at index 1, but there are no invocations.
+			Expected MyClass#MyMethod(123, 123) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -986,7 +986,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(234, 234) to be invoked at index 1, but there are no invocations.
+			Expected MyClass#MyMethod(234, 234) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -1273,7 +1273,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 234) to be invoked at index 3, but there are no invocations.
+			Expected MyClass#MyMethod(123, 234) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: 124, 236
 			- 2: 126, 238
@@ -1301,7 +1301,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 234) to be invoked at index 3, but there are no invocations.
+			Expected MyClass#MyMethod(123, 234) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: 123, 236
 			- 2: 126, 238
@@ -1329,7 +1329,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 234) to be invoked at index 3, but there are no invocations.
+			Expected MyClass#MyMethod(123, 234) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: 124, 234
 			- 2: 126, 238
@@ -1358,7 +1358,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 234) to be invoked at index 3, but there are no invocations.
+			Expected MyClass#MyMethod(123, 234) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: 124, 236
 			- 2: 123, 234
@@ -1394,7 +1394,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 234) to be invoked at index 3, but there are no invocations.
+			Expected MyClass#MyMethod(123, 234) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: 123, 236
 			- 2: 123, 234
@@ -1430,7 +1430,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 234) to be invoked at index 3, but there are no invocations.
+			Expected MyClass#MyMethod(123, 234) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: 124, 234
 			- 2: 123, 234
