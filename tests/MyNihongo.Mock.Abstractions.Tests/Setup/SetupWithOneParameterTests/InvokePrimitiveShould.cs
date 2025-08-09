@@ -233,19 +233,19 @@ public sealed class InvokePrimitiveShould : SetupWithOneParameterTestsBase
 	[Fact]
 	public void InvokeCallbackForAnyBeforeThrows()
 	{
-		const string exceptionMessage = nameof(exceptionMessage);
+		const string expectedMessage = nameof(expectedMessage);
 		var setup = It<int>.Any();
 		var callbackValue = 0;
 
 		var fixture = CreateFixture(setup);
-		fixture.Throws(new Exception(exceptionMessage));
+		fixture.Throws(new Exception(expectedMessage));
 		fixture.Callback(x => callbackValue = x + 1);
 
 		const int inputValue = 12345678;
 		var actual = () => fixture.Invoke(inputValue);
 
 		var exception = Assert.Throws<Exception>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 		Assert.Equal(inputValue + 1, callbackValue);
 	}
 
@@ -266,20 +266,20 @@ public sealed class InvokePrimitiveShould : SetupWithOneParameterTestsBase
 	[Fact]
 	public void InvokeCallbackForValueBeforeThrows()
 	{
-		const string exceptionMessage = nameof(exceptionMessage);
+		const string expectedMessage = nameof(expectedMessage);
 		const int setupValue = 12345678;
 		var setup = It<int>.Value(setupValue);
 		var callbackValue = 0;
 
 		var fixture = CreateFixture(setup);
-		fixture.Throws(new Exception(exceptionMessage));
+		fixture.Throws(new Exception(expectedMessage));
 		fixture.Callback(x => callbackValue = x + 1);
 
 		const int inputValue = 12345678;
 		var actual = () => fixture.Invoke(inputValue);
 
 		var exception = Assert.Throws<Exception>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 		Assert.Equal(inputValue + 1, callbackValue);
 	}
 
@@ -318,19 +318,19 @@ public sealed class InvokePrimitiveShould : SetupWithOneParameterTestsBase
 	[Fact]
 	public void InvokeCallbackForWhereBeforeThrows()
 	{
-		const string exceptionMessage = nameof(exceptionMessage);
+		const string expectedMessage = nameof(expectedMessage);
 		var setup = It<int>.Where(x => x > 10);
 		var callbackValue = 0;
 
 		var fixture = CreateFixture(setup);
-		fixture.Throws(new Exception(exceptionMessage));
+		fixture.Throws(new Exception(expectedMessage));
 		fixture.Callback(x => callbackValue = x + 1);
 
 		const int inputValue = 12345678;
 		var actual = () => fixture.Invoke(inputValue);
 
 		var exception = Assert.Throws<Exception>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 		Assert.Equal(inputValue + 1, callbackValue);
 	}
 
@@ -390,15 +390,15 @@ public sealed class InvokePrimitiveShould : SetupWithOneParameterTestsBase
 		fixture.SetupParameter(It<int>.Any());
 		fixture.Throws(new Exception("random text"));
 
-		const string exceptionMessage = nameof(exceptionMessage);
+		const string expectedMessage = nameof(expectedMessage);
 		fixture.SetupParameter(It<int>.Any());
-		fixture.Throws(new NullReferenceException(exceptionMessage));
+		fixture.Throws(new NullReferenceException(expectedMessage));
 
 		const int inputValue = 12345678;
 		var actual = () => fixture.Invoke(inputValue);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -409,15 +409,15 @@ public sealed class InvokePrimitiveShould : SetupWithOneParameterTestsBase
 		fixture.SetupParameter(It<int>.Where(x => x > 10));
 		fixture.Throws(new Exception("random text"));
 
-		const string exceptionMessage = nameof(exceptionMessage);
+		const string expectedMessage = nameof(expectedMessage);
 		fixture.SetupParameter(It<int>.Where(x => x > 100));
-		fixture.Throws(new NullReferenceException(exceptionMessage));
+		fixture.Throws(new NullReferenceException(expectedMessage));
 
 		const int inputValue = 12345678;
 		var actual = () => fixture.Invoke(inputValue);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -429,13 +429,13 @@ public sealed class InvokePrimitiveShould : SetupWithOneParameterTestsBase
 		fixture.SetupParameter(setupValue);
 		fixture.Throws(new Exception("random text"));
 
-		const string exceptionMessage = nameof(exceptionMessage);
+		const string expectedMessage = nameof(expectedMessage);
 		fixture.SetupParameter(setupValue);
-		fixture.Throws(new NullReferenceException(exceptionMessage));
+		fixture.Throws(new NullReferenceException(expectedMessage));
 
 		var actual = () => fixture.Invoke(setupValue);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 }

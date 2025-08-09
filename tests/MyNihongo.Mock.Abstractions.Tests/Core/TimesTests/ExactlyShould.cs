@@ -59,8 +59,8 @@ public sealed class ExactlyShould
 		var actual = () => Times.Exactly(inputValue)
 			.ToString();
 
-		const string exceptionMessage = "Count must not be negative, count=`-1` (Parameter 'count')";
+		const string expectedMessage = "Count must not be negative, count=`-1` (Parameter 'count')";
 		var exception = Assert.Throws<ArgumentException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 }

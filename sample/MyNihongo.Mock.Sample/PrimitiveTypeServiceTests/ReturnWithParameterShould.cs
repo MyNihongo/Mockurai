@@ -143,7 +143,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 			DependencyServiceMock.VerifyReturnWithParameter(verify, Times.AtLeast(3));
 		};
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService#ReturnWithParameter(any) to be called at least 3 times, but instead it was called 2 times.
 			Performed invocations:
@@ -151,7 +151,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 			- 2: "parameter2"
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -167,12 +167,12 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => DependencyServiceMock.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService#ReturnWithParameter(String) to be verified, but the following invocations have not been verified:
 			- 2: "parameter2"
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 }

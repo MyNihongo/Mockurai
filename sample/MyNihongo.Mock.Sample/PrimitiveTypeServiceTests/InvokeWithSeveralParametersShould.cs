@@ -263,7 +263,7 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 			DependencyServiceMock.VerifyInvokeWithSeveralParameters(verify1, parameterValue2, Times.Exactly(3));
 		};
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService#InvokeWithSeveralParameters(any, 234) to be called 3 times, but instead it was called 2 times.
 			Performed invocations:
@@ -271,7 +271,7 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 			- 2: 234, 234
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -290,13 +290,13 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 
 		var actual = () => DependencyServiceMock.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService#InvokeWithSeveralParameters(Int32, Int32) to be verified, but the following invocations have not been verified:
 			- 1: 123, 234
 			- 3: 234, 123
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 }

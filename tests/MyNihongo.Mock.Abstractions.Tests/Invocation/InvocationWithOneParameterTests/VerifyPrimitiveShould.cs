@@ -313,7 +313,14 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			fixture.Verify(verify, verifyIndex);
 		};
 
-		const string expectedMessage = "Expected MyClass#MyMethod(any) to be invoked at index 4, but there are no invocations.";
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(any) to be invoked at index 4, but it has not been called.
+			Performed invocations:
+			- 1: 123
+			- 2: 234
+			- 3: 345
+			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -335,7 +342,14 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			fixture.Verify(verify, verifyIndex);
 		};
 
-		const string expectedMessage = "Expected MyClass#MyMethod(where(predicate)) to be invoked at index 2, but there are no invocations.";
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(where(predicate)) to be invoked at index 2, but it has not been called.
+			Performed invocations:
+			- 1: 123
+			- 2: 234
+			- 3: 345
+			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -358,7 +372,14 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			fixture.Verify(verify, verifyIndex);
 		};
 
-		const string expectedMessage = "Expected MyClass#MyMethod(123) to be invoked at index 2, but there are no invocations.";
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(123) to be invoked at index 2, but it has not been called.
+			Performed invocations:
+			- 1: 123
+			- 2: 234
+			- 3: 345
+			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -480,5 +501,170 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		const long expected2 = 105L;
 		var actual2 = fixture.Verify(verify2, 103L);
 		Assert.Equal(expected2, actual2);
+	}
+
+	[Fact]
+	public void VerifyEquivalent()
+	{
+		const int inputValue = 123;
+
+		var index = new InvocationIndex.Counter();
+
+		var fixture = CreateFixture<int>();
+		fixture.Register(index, inputValue);
+		fixture.Register(index, inputValue + 1);
+
+		var verify = It<int>.Equivalent(inputValue);
+		const int expected = 1;
+		fixture.Verify(verify, Times.Exactly(expected));
+	}
+
+	[Fact]
+	public void ThrowVerifyNotEquivalent()
+	{
+		const int inputValue = 123;
+
+		var index = new InvocationIndex.Counter();
+
+		var fixture = CreateFixture<int>();
+		fixture.Register(index, inputValue - 10);
+		fixture.Register(index, inputValue + 1);
+
+		var actual = () =>
+		{
+			var verify = It<int>.Equivalent(inputValue);
+			fixture.Verify(verify, Times.Once());
+		};
+
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(123) to be called 1 time, but instead it was called 0 times.
+			Performed invocations:
+			- 1: 113
+			  expected: 123
+			  actual: 113
+			- 2: 124
+			  expected: 123
+			  actual: 124
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowVerifyNotEquivalentOneMatched()
+	{
+		const int inputValue = 123;
+
+		var index = new InvocationIndex.Counter();
+
+		var fixture = CreateFixture<int>();
+		fixture.Register(index, inputValue - 10);
+		fixture.Register(index, inputValue);
+		fixture.Register(index, inputValue + 1);
+
+		var actual = () =>
+		{
+			var verify = It<int>.Equivalent(inputValue);
+			const int expected = 2;
+			fixture.Verify(verify, Times.Exactly(expected));
+		};
+
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(123) to be called 2 times, but instead it was called 1 time.
+			Performed invocations:
+			- 1: 113
+			  expected: 123
+			  actual: 113
+			- 2: 123
+			- 3: 124
+			  expected: 123
+			  actual: 124
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void VerifyEquivalentIndex()
+	{
+		const int inputValue = 123;
+
+		var index = new InvocationIndex.Counter();
+
+		var fixture = CreateFixture<int>();
+		fixture.Register(index, inputValue);
+		fixture.Register(index, inputValue + 1);
+
+		var verify = It<int>.Equivalent(inputValue);
+		const long expected = 1L;
+		fixture.Verify(verify, expected);
+	}
+
+	[Fact]
+	public void ThrowVerifyNotEquivalentIndex()
+	{
+		const int inputValue = 123;
+
+		var index = new InvocationIndex.Counter();
+
+		var fixture = CreateFixture<int>();
+		fixture.Register(index, inputValue - 10);
+		fixture.Register(index, inputValue + 1);
+
+		var actual = () =>
+		{
+			var verify = It<int>.Equivalent(inputValue);
+			const long expected = 1L;
+			fixture.Verify(verify, expected);
+		};
+
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(123) to be invoked at index 1, but it has not been called.
+			Performed invocations:
+			- 1: 113
+			  expected: 123
+			  actual: 113
+			- 2: 124
+			  expected: 123
+			  actual: 124
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowVerifyNotEquivalentOneMatchedIndex()
+	{
+		const int inputValue = 123;
+
+		var index = new InvocationIndex.Counter();
+
+		var fixture = CreateFixture<int>();
+		fixture.Register(index, inputValue - 10);
+		fixture.Register(index, inputValue);
+		fixture.Register(index, inputValue + 1);
+
+		var actual = () =>
+		{
+			var verify = It<int>.Equivalent(inputValue);
+			const long expected = 3L;
+			fixture.Verify(verify, expected);
+		};
+
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(123) to be invoked at index 3, but it has not been called.
+			Performed invocations:
+			- 1: 113
+			- 2: 123
+			- 3: 124
+			  expected: 123
+			  actual: 124
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 }

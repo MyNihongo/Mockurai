@@ -9,7 +9,7 @@ public sealed class WhereShould
 	{
 		var actual = It<int>.Where(x => x > 10)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.True(actual);
 	}
@@ -23,7 +23,7 @@ public sealed class WhereShould
 	{
 		var actual = It<int>.Where(x => x > 10)
 			.ValueSetup!.Value
-			.Predicate(inputValue);
+			.Check(inputValue);
 
 		Assert.False(actual);
 	}

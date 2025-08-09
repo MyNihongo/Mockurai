@@ -14,9 +14,9 @@ public sealed class SetupIntInt : ISetup
 
 		foreach (var setup in _setups)
 		{
-			if (setup.Parameter1.HasValue && !setup.Parameter1.Value.Predicate(parameter1))
+			if (setup.Parameter1.HasValue && !setup.Parameter1.Value.Check(parameter1))
 				continue;
-			if (setup.Parameter2.HasValue && !setup.Parameter2.Value.Predicate(parameter2))
+			if (setup.Parameter2.HasValue && !setup.Parameter2.Value.Check(parameter2))
 				continue;
 
 			setup.Callback?.Invoke(parameter1, parameter2);
@@ -100,9 +100,9 @@ public sealed class SetupIntInt<TReturns> : ISetup<TReturns>
 
 		foreach (var setup in _setups)
 		{
-			if (setup.Parameter1.HasValue && !setup.Parameter1.Value.Predicate(parameter1))
+			if (setup.Parameter1.HasValue && !setup.Parameter1.Value.Check(parameter1))
 				continue;
-			if (setup.Parameter2.HasValue && !setup.Parameter2.Value.Predicate(parameter2))
+			if (setup.Parameter2.HasValue && !setup.Parameter2.Value.Check(parameter2))
 				continue;
 
 			setup.Callback?.Invoke(parameter1, parameter2);

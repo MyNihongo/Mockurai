@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace MyNihongo.Mock;
 
@@ -29,18 +30,31 @@ public sealed class InvocationContainer<T> : IEnumerable<(long Index, T Invocati
 			: null;
 	}
 
-	public IEnumerable<(long Index, T Invocation)> GetItemsFrom(long index)
+	public Span<(long Index, T Invocation)> GetItemsSpan()
+	{
+		return CollectionsMarshal.AsSpan(_invocations);
+	}
+
+	public Span<(long Index, T Invocation)> GetItemsSpanFrom(in long index)
 	{
 		var itemIndex = TryGetIndexAt(index);
-		if (!itemIndex.HasValue)
-			yield break;
 
-		for (var i = itemIndex.Value; i < _invocations.Count; i++)
-			yield return _invocations[i];
+		return itemIndex.HasValue
+			? CollectionsMarshal.AsSpan(_invocations)[itemIndex.Value..]
+			: Span<(long Index, T Invocation)>.Empty;
+	}
+
+	public Span<(long Index, T Invocation)> GetItemsSpanBefore(in long index)
+	{
+		var itemIndex = TryGetIndexAt(index, inclusive: true);
+
+		return itemIndex.HasValue
+			? CollectionsMarshal.AsSpan(_invocations)[..itemIndex.Value]
+			: Span<(long Index, T Invocation)>.Empty;
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private int? TryGetIndexAt(in long index)
+	private int? TryGetIndexAt(in long index, in bool inclusive = false)
 	{
 		if (_invocations.Count == 0)
 			return null;
@@ -51,7 +65,7 @@ public sealed class InvocationContainer<T> : IEnumerable<(long Index, T Invocati
 		if (itemIndex < 0)
 			itemIndex = ~itemIndex;
 
-		return itemIndex < _invocations.Count
+		return inclusive || itemIndex < _invocations.Count
 			? itemIndex
 			: null;
 	}
@@ -61,10 +75,4 @@ public sealed class InvocationContainer<T> : IEnumerable<(long Index, T Invocati
 
 	IEnumerator IEnumerable.GetEnumerator() =>
 		GetEnumerator();
-
-	public IEnumerable<string> GetItemStrings()
-	{
-		for (var i = 0; i < _invocations.Count; i++)
-			yield return _invocations[i].GetString();
-	}
 }

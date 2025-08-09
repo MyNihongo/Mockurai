@@ -143,7 +143,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 			DependencyServiceMock.VerifyInvokeWithParameter(verify, Times.AtLeast(3));
 		};
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService#InvokeWithParameter(any) to be called at least 3 times, but instead it was called 2 times.
 			Performed invocations:
@@ -151,7 +151,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 			- 2: "parameter2"
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -167,13 +167,13 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => DependencyServiceMock.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService#InvokeWithParameter(String) to be verified, but the following invocations have not been verified:
 			- 2: "parameter2"
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -234,7 +234,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 			DependencyServiceMock.VerifyInvokeWithParameter(verify, Times.AtLeast(3));
 		};
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService#InvokeWithParameter(any) to be called at least 3 times, but instead it was called 2 times.
 			Performed invocations:
@@ -242,7 +242,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 			- 2: 234
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -258,12 +258,12 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => DependencyServiceMock.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService#InvokeWithParameter(Int32) to be verified, but the following invocations have not been verified:
 			- 2: 234
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 }

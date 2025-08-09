@@ -2525,13 +2525,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 	[Fact]
 	public void InvokeCallbackForAnyBeforeThrows()
 	{
-		const string exceptionMessage = nameof(exceptionMessage);
+		const string expectedMessage = nameof(expectedMessage);
 		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
 		var callbackValue = 0;
 
 		var fixture = CreateFixture<SetupIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Throws(new Exception(exceptionMessage));
+		fixture.Throws(new Exception(expectedMessage));
 		fixture.Callback((x, y) => callbackValue = x - y + 1);
 
 		const int inputValue1 = 99, inputValue2 = 11;
@@ -2539,7 +2539,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 
 		const int expected = 89;
 		var exception = Assert.Throws<Exception>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 		Assert.Equal(expected, callbackValue);
 	}
 
@@ -2585,21 +2585,21 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 	[Fact]
 	public void InvokeCallbackForValueBeforeThrows()
 	{
-		const string exceptionMessage = nameof(exceptionMessage);
+		const string expectedMessage = nameof(expectedMessage);
 		const int setupValue1 = 12345678, setupValue2 = 23456789;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 		var callbackValue = 0;
 
 		var fixture = CreateFixture<SetupIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Throws(new Exception(exceptionMessage));
+		fixture.Throws(new Exception(expectedMessage));
 		fixture.Callback((x, y) => callbackValue = x - y + 1);
 
 		Action actual = () => fixture.Execute(setupValue1, setupValue2, out _);
 
 		const int expected = -11111110;
 		var exception = Assert.Throws<Exception>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 		Assert.Equal(expected, callbackValue);
 	}
 
@@ -2645,13 +2645,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 	[Fact]
 	public void InvokeCallbackForWhereBeforeThrows()
 	{
-		const string exceptionMessage = nameof(exceptionMessage);
+		const string expectedMessage = nameof(expectedMessage);
 		It<int> setup1 = It<int>.Where(x => x > 20), setup2 = It<int>.Where(x => x < 15);
 		var callbackValue = 0;
 
 		var fixture = CreateFixture<SetupIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Throws(new Exception(exceptionMessage));
+		fixture.Throws(new Exception(expectedMessage));
 		fixture.Callback((x, y) => callbackValue = x - y + 1);
 
 		const int inputValue1 = 99, inputValue2 = 11;
@@ -2659,7 +2659,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 
 		const int expected = 89;
 		var exception = Assert.Throws<Exception>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 		Assert.Equal(expected, callbackValue);
 	}
 
@@ -2924,15 +2924,15 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Throws(new Exception("random text"));
 
-		const string exceptionMessage = nameof(exceptionMessage);
+		const string expectedMessage = nameof(expectedMessage);
 		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
-		fixture.Throws(new NullReferenceException(exceptionMessage));
+		fixture.Throws(new NullReferenceException(expectedMessage));
 
 		const int inputValue1 = 12345678, inputValue2 = 23456;
 		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -2960,15 +2960,15 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 		fixture.SetupParameters(It<int>.Any(), It<int>.Where(x => x > 10));
 		fixture.Throws(new Exception("random text"));
 
-		const string exceptionMessage = nameof(exceptionMessage);
+		const string expectedMessage = nameof(expectedMessage);
 		fixture.SetupParameters(It<int>.Any(), It<int>.Where(x => x > 10));
-		fixture.Throws(new NullReferenceException(exceptionMessage));
+		fixture.Throws(new NullReferenceException(expectedMessage));
 
 		const int inputValue1 = 12345678, inputValue2 = 23456;
 		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -3000,15 +3000,15 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 		fixture.SetupParameters(It<int>.Any(), It<int>.Value(setupValue2));
 		fixture.Throws(new Exception("random text"));
 
-		const string exceptionMessage = nameof(exceptionMessage);
+		const string expectedMessage = nameof(expectedMessage);
 		fixture.SetupParameters(It<int>.Any(), It<int>.Value(setupValue2));
-		fixture.Throws(new NullReferenceException(exceptionMessage));
+		fixture.Throws(new NullReferenceException(expectedMessage));
 
 		const int inputValue1 = 12345678;
 		Action actual = () => fixture.Execute(inputValue1, setupValue2, out _);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -3036,15 +3036,15 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 		fixture.SetupParameters(It<int>.Where(x => x > 100), It<int>.Where(x => x < 20));
 		fixture.Throws(new Exception("random text"));
 
-		const string exceptionMessage = nameof(exceptionMessage);
+		const string expectedMessage = nameof(expectedMessage);
 		fixture.SetupParameters(It<int>.Where(x => x > 100), It<int>.Where(x => x < 20));
-		fixture.Throws(new NullReferenceException(exceptionMessage));
+		fixture.Throws(new NullReferenceException(expectedMessage));
 
 		const int inputValue1 = 123, inputValue2 = 15;
 		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -3076,15 +3076,15 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 		fixture.SetupParameters(It<int>.Where(x => x > 100), setupValue2);
 		fixture.Throws(new Exception("random text"));
 
-		const string exceptionMessage = nameof(exceptionMessage);
+		const string expectedMessage = nameof(expectedMessage);
 		fixture.SetupParameters(It<int>.Where(x => x > 100), setupValue2);
-		fixture.Throws(new NullReferenceException(exceptionMessage));
+		fixture.Throws(new NullReferenceException(expectedMessage));
 
 		const int inputValue1 = 123;
 		Action actual = () => fixture.Execute(inputValue1, setupValue2, out _);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -3115,13 +3115,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 		fixture.SetupParameters(setupValue1, setupValue2);
 		fixture.Throws(new Exception("random text"));
 
-		const string exceptionMessage = nameof(exceptionMessage);
+		const string expectedMessage = nameof(expectedMessage);
 		fixture.SetupParameters(setupValue1, setupValue2);
-		fixture.Throws(new NullReferenceException(exceptionMessage));
+		fixture.Throws(new NullReferenceException(expectedMessage));
 
 		Action actual = () => fixture.Execute(setupValue1, setupValue2, out _);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 }

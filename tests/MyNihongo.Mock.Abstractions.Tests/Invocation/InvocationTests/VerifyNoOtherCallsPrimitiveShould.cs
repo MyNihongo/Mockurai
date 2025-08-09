@@ -45,14 +45,14 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationTestsBase
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected MyClass#MyMethod() to be verified, but the following invocations have not been verified:
 			- index 1
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -66,7 +66,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationTestsBase
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected MyClass#MyMethod() to be verified, but the following invocations have not been verified:
 			- index 1
@@ -74,7 +74,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationTestsBase
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -89,14 +89,14 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationTestsBase
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected MyClass#MyMethod() to be verified, but the following invocations have not been verified:
 			- index 1
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
@@ -111,14 +111,14 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationTestsBase
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
-		const string exceptionMessage =
+		const string expectedMessage =
 			"""
 			Expected MyClass#MyMethod() to be verified, but the following invocations have not been verified:
 			- index 2
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(exceptionMessage, exception.Message);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]

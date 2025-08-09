@@ -1,7 +1,8 @@
 namespace MyNihongo.Mock;
 
-public sealed class EquivalencyComparerResult
+public sealed class ComparisonResult
 {
+	public const string RootPath = "this";
 	private readonly List<Entry> _entries = [];
 
 	public IReadOnlyList<Entry> Entries => _entries;
@@ -12,9 +13,9 @@ public sealed class EquivalencyComparerResult
 		_entries.Add(entry);
 	}
 
-	public static implicit operator bool(EquivalencyComparerResult @this)
+	public static implicit operator bool(ComparisonResult? @this)
 	{
-		return @this._entries.Count == 0;
+		return @this is not null && @this._entries.Count == 0;
 	}
 
 	public sealed class Entry(in string path, in string? expectedValue, in string? actualValue)
