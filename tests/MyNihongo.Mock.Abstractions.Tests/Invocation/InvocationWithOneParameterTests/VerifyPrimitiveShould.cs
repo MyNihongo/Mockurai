@@ -315,7 +315,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(any) to be invoked at index 4, but there are no invocations.
+			Expected MyClass#MyMethod(any) to be invoked at index 4, but it has not been called.
 			Performed invocations:
 			- 1: 123
 			- 2: 234
@@ -344,7 +344,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(where(predicate)) to be invoked at index 2, but there are no invocations.
+			Expected MyClass#MyMethod(where(predicate)) to be invoked at index 2, but it has not been called.
 			Performed invocations:
 			- 1: 123
 			- 2: 234
@@ -374,7 +374,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123) to be invoked at index 2, but there are no invocations.
+			Expected MyClass#MyMethod(123) to be invoked at index 2, but it has not been called.
 			Performed invocations:
 			- 1: 123
 			- 2: 234
@@ -583,6 +583,88 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			  actual: 124
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void VerifyEquivalentIndex()
+	{
+		const int inputValue = 123;
+
+		var index = new InvocationIndex.Counter();
+
+		var fixture = CreateFixture<int>();
+		fixture.Register(index, inputValue);
+		fixture.Register(index, inputValue + 1);
+
+		var verify = It<int>.Equivalent(inputValue);
+		const long expected = 1L;
+		fixture.Verify(verify, expected);
+	}
+
+	[Fact]
+	public void ThrowVerifyNotEquivalentIndex()
+	{
+		const int inputValue = 123;
+
+		var index = new InvocationIndex.Counter();
+
+		var fixture = CreateFixture<int>();
+		fixture.Register(index, inputValue - 10);
+		fixture.Register(index, inputValue + 1);
+
+		var actual = () =>
+		{
+			var verify = It<int>.Equivalent(inputValue);
+			const long expected = 1L;
+			fixture.Verify(verify, expected);
+		};
+
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(123) to be invoked at index 1, but it has not been called.
+			Performed invocations:
+			- 1: 113
+			  expected: 123
+			  actual: 113
+			- 2: 124
+			  expected: 123
+			  actual: 124
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowVerifyNotEquivalentOneMatchedIndex()
+	{
+		const int inputValue = 123;
+
+		var index = new InvocationIndex.Counter();
+
+		var fixture = CreateFixture<int>();
+		fixture.Register(index, inputValue - 10);
+		fixture.Register(index, inputValue);
+		fixture.Register(index, inputValue + 1);
+
+		var actual = () =>
+		{
+			var verify = It<int>.Equivalent(inputValue);
+			const long expected = 3L;
+			fixture.Verify(verify, expected);
+		};
+
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(123) to be invoked at index 3, but it has not been called.
+			Performed invocations:
+			- 1: 113
+			- 2: 123
+			- 3: 124
+			  expected: 123
+			  actual: 124
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
 }

@@ -200,7 +200,7 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod({"Text":"Okayama Issei","Number":1}) to be invoked at index 1, but there are no invocations.
+			Expected MyClass#MyMethod({"Text":"Okayama Issei","Number":1}) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: {"Text":"Okayama Issei another name","Number":12346}
 			  - Text:
@@ -259,7 +259,7 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod({"Text":"Okayama Issei","Number":1}) to be invoked at index 3, but there are no invocations.
+			Expected MyClass#MyMethod({"Text":"Okayama Issei","Number":1}) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: {"Text":"Okayama Issei","Number":12346}
 			- 2: {"Text":"Okayama Issei","Number":1}
