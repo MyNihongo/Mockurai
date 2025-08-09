@@ -313,7 +313,14 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			fixture.Verify(verify, verifyIndex);
 		};
 
-		const string expectedMessage = "Expected MyClass#MyMethod(any) to be invoked at index 4, but there are no invocations.";
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(any) to be invoked at index 4, but there are no invocations.
+			Performed invocations:
+			- 1: 123
+			- 2: 234
+			- 3: 345
+			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -335,7 +342,14 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			fixture.Verify(verify, verifyIndex);
 		};
 
-		const string expectedMessage = "Expected MyClass#MyMethod(where(predicate)) to be invoked at index 2, but there are no invocations.";
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(where(predicate)) to be invoked at index 2, but there are no invocations.
+			Performed invocations:
+			- 1: 123
+			- 2: 234
+			- 3: 345
+			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -358,7 +372,14 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			fixture.Verify(verify, verifyIndex);
 		};
 
-		const string expectedMessage = "Expected MyClass#MyMethod(123) to be invoked at index 2, but there are no invocations.";
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod(123) to be invoked at index 2, but there are no invocations.
+			Performed invocations:
+			- 1: 123
+			- 2: 234
+			- 3: 345
+			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}

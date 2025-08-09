@@ -46,7 +46,7 @@ public sealed class InvocationContainer<T> : IEnumerable<(long Index, T Invocati
 
 	public Span<(long Index, T Invocation)> GetItemsSpanBefore(in long index)
 	{
-		var itemIndex = TryGetIndexAt(index);
+		var itemIndex = TryGetIndexAt(index, inclusive: true);
 
 		return itemIndex.HasValue
 			? CollectionsMarshal.AsSpan(_invocations)[..itemIndex.Value]
@@ -54,7 +54,7 @@ public sealed class InvocationContainer<T> : IEnumerable<(long Index, T Invocati
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private int? TryGetIndexAt(in long index)
+	private int? TryGetIndexAt(in long index, in bool inclusive = false)
 	{
 		if (_invocations.Count == 0)
 			return null;
@@ -65,7 +65,7 @@ public sealed class InvocationContainer<T> : IEnumerable<(long Index, T Invocati
 		if (itemIndex < 0)
 			itemIndex = ~itemIndex;
 
-		return itemIndex < _invocations.Count
+		return inclusive || itemIndex < _invocations.Count
 			? itemIndex
 			: null;
 	}

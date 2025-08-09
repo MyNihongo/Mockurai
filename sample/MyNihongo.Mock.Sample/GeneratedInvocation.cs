@@ -61,8 +61,8 @@ public sealed class InvocationIntInt
 		if (times.Predicate(count))
 			return;
 
-		var verifyName = string.Format(_name, parameter1.ToString(), parameter2.ToString());
 		var invocations = verifyOutput.GetStrings();
+		var verifyName = string.Format(_name, parameter1.ToString(), parameter2.ToString());
 		throw new MockVerifyCountException(verifyName, times, count, invocations);
 	}
 
@@ -70,22 +70,45 @@ public sealed class InvocationIntInt
 	{
 		var span = _invocations.GetItemsSpanFrom(index);
 
+		var verifyOutput = new List<(long, Item, (string, ComparisonResult?)[]?)>();
+		CollectionsMarshal.SetCount(verifyOutput, span.Length);
+
 		for (var i = 0; i < span.Length; i++)
 		{
 			var verifyParameter1 = span[i].Invocation.GetParameter1(parameter1.ValueSetup?.Type);
 			var verifyParameter2 = span[i].Invocation.GetParameter2(parameter2.ValueSetup?.Type);
+			(string, ComparisonResult?)[]? verifyResults = null;
 
 			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Check(verifyParameter1, out var result))
-				continue;
-			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Check(verifyParameter2, out result))
-				continue;
+			{
+				verifyResults = [("parameter1", result)];
+			}
 
+			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Check(verifyParameter2, out result))
+			{
+				verifyResults = verifyResults is not null
+					? [..verifyResults, ("parameter2", result)]
+					: [("parameter2", result)];
+			}
+
+			if (verifyResults is not null)
+			{
+				verifyOutput[i] = (span[i].Index, span[i].Invocation, verifyResults);
+				continue;
+			}
+
+			verifyOutput[i] = (span[i].Index, span[i].Invocation, null);
 			span[i].Invocation.IsVerified = true;
 			return span[i].Index + 1;
 		}
 
+		span = _invocations.GetItemsSpanBefore(index);
+		for (var i = 0; i < span.Length; i++)
+			verifyOutput.Insert(i, (span[i].Index, span[i].Invocation, null));
+
+		var invocations = verifyOutput.GetStrings();
 		var verifyName = string.Format(_name, parameter1.ToString(), parameter2.ToString());
-		throw new MockVerifySequenceOutOfRangeException(verifyName, index);
+		throw new MockVerifySequenceOutOfRangeException(verifyName, index, invocations);
 	}
 
 	public void VerifyNoOtherCalls()
