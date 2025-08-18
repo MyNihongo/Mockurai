@@ -12,9 +12,19 @@ public abstract partial class PrimitiveTypeServiceTestsBase
 	}
 }
 
-public abstract partial class PrimitiveTypeServiceTestsBase
+public partial class PrimitiveTypeServiceTestsBase
 {
-	private readonly IMock<IPrimitiveDependencyService> _dependencyServiceMock = new PrimitiveDependencyServiceMock();
+	private readonly PrimitiveDependencyServiceMock _dependencyServiceMock = new PrimitiveDependencyServiceMock();
 
 	protected partial IMock<IPrimitiveDependencyService> DependencyServiceMock => _dependencyServiceMock;
+
+	protected void VerifyInSequence()
+	{
+		
+	}
+
+	protected void VerifyNoOtherCalls()
+	{
+		_dependencyServiceMock.VerifyNoOtherCalls();
+	}
 }
