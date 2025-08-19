@@ -30,7 +30,14 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 
 		var actual = () => fixture.Verify(Times.Exactly(expected));
 
-		var expectedMessage = $"Expected MyClass#MyMethod() to be called {expected} times, but instead it was called 3 times.";
+		var expectedMessage =
+			$"""
+			 Expected MyClass#MyMethod() to be called {expected} times, but instead it was called 3 times.
+			 Performed invocations:
+			 - 1
+			 - 2
+			 - 3
+			 """;
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
