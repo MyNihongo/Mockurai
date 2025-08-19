@@ -89,6 +89,12 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		_invokeWithSeveralParametersInvocation.Verify(parameter1, parameter2, times);
 	}
 
+	public long VerifyInvokeWithSeveralParameters(in It<int> parameter1, in It<int> parameter2, in long index)
+	{
+		_invokeWithSeveralParametersInvocation ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters({0}, {1})");
+		return _invokeWithSeveralParametersInvocation.Verify(parameter1, parameter2, index);
+	}
+
 	public Setup<int> SetupReturn()
 	{
 		return _return ??= new Setup<int>();
@@ -277,6 +283,12 @@ public static class PrimitiveDependencyServiceMockSequenceEx
 	public static void InvokeWithParameter(this IMockSequence<IPrimitiveDependencyService> @this, in It<int> parameter)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvokeWithParameter(parameter, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	public static void InvokeWithSeveralParameters(this IMockSequence<IPrimitiveDependencyService> @this, in It<int> parameter1, in It<int> parameter2)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvokeWithSeveralParameters(parameter1, parameter2, @this.VerifyIndex);
 		@this.VerifyIndex.Set(nextIndex);
 	}
 }

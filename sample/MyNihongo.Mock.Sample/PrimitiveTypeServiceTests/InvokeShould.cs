@@ -45,7 +45,13 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => DependencyServiceMock.VerifyInvoke(Times.Once);
 
-		const string expectedMessage = "Expected IPrimitiveDependencyService#Invoke() to be called 1 time, but instead it was called 2 times.";
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService#Invoke() to be called 1 time, but instead it was called 2 times.
+			Performed invocations:
+			- 1
+			- 2
+			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
