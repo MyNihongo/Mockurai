@@ -266,4 +266,252 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public void VerifyValidSequence()
+	{
+		const string parameter1 = nameof(parameter1), parameter2 = nameof(parameter2);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter1);
+		fixture.InvokeWithParameter(parameter2);
+
+		VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.InvokeWithParameter(parameter1);
+			ctx.DependencyServiceMock.InvokeWithParameter(parameter2);
+		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void VerifyValidSequenceOverload()
+	{
+		const int parameter1 = 123, parameter2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter1);
+		fixture.InvokeWithParameter(parameter2);
+
+		VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.InvokeWithParameter(parameter1);
+			ctx.DependencyServiceMock.InvokeWithParameter(parameter2);
+		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void VerifyValidSequenceEquivalent()
+	{
+		const string parameter1 = nameof(parameter1), parameter2 = nameof(parameter2);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter1);
+		fixture.InvokeWithParameter(parameter2);
+
+		VerifyInSequence(static ctx =>
+		{
+			It<string> verify1 = It<string>.Equivalent(parameter1), verify2 = It<string>.Equivalent(parameter2);
+			ctx.DependencyServiceMock.InvokeWithParameter(verify1);
+			ctx.DependencyServiceMock.InvokeWithParameter(verify2);
+		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void VerifyValidSequenceEquivalentOverload()
+	{
+		const int parameter1 = 123, parameter2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter1);
+		fixture.InvokeWithParameter(parameter2);
+
+		VerifyInSequence(static ctx =>
+		{
+			It<int> verify1 = It<int>.Equivalent(parameter1), verify2 = It<int>.Equivalent(parameter2);
+			ctx.DependencyServiceMock.InvokeWithParameter(verify1);
+			ctx.DependencyServiceMock.InvokeWithParameter(verify2);
+		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void VerifyValidSequenceAny()
+	{
+		const string parameter1 = nameof(parameter1), parameter2 = nameof(parameter2);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter1);
+		fixture.InvokeWithParameter(parameter2);
+
+		VerifyInSequence(static ctx =>
+		{
+			var verify = It<string>.Any();
+			ctx.DependencyServiceMock.InvokeWithParameter(verify);
+			ctx.DependencyServiceMock.InvokeWithParameter(verify);
+		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void VerifyValidSequenceAnyOverload()
+	{
+		const int parameter1 = 123, parameter2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter1);
+		fixture.InvokeWithParameter(parameter2);
+
+		VerifyInSequence(static ctx =>
+		{
+			var verify = It<int>.Any();
+			ctx.DependencyServiceMock.InvokeWithParameter(verify);
+			ctx.DependencyServiceMock.InvokeWithParameter(verify);
+		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void VerifyValidSequenceWhere()
+	{
+		const string parameter1 = nameof(parameter1), parameter2 = nameof(parameter2);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter1);
+		fixture.InvokeWithParameter(parameter2);
+
+		VerifyInSequence(static ctx =>
+		{
+			It<string> verify1 = It<string>.Where(x => x.StartsWith("pa")), verify2 = It<string>.Where(x => x.EndsWith("r2"));
+			ctx.DependencyServiceMock.InvokeWithParameter(verify1);
+			ctx.DependencyServiceMock.InvokeWithParameter(verify2);
+		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void VerifyValidSequenceWhereOverload()
+	{
+		const int parameter1 = 123, parameter2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter1);
+		fixture.InvokeWithParameter(parameter2);
+
+		VerifyInSequence(static ctx =>
+		{
+			It<int> verify1 = It<int>.Where(x => x < 200), verify2 = It<int>.Where(x => x > 200);
+			ctx.DependencyServiceMock.InvokeWithParameter(verify1);
+			ctx.DependencyServiceMock.InvokeWithParameter(verify2);
+		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowInvalidSequence()
+	{
+		const string parameter1 = nameof(parameter1), parameter2 = nameof(parameter2);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter1);
+		fixture.InvokeWithParameter(parameter2);
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.InvokeWithParameter(parameter2);
+			ctx.DependencyServiceMock.InvokeWithParameter(parameter1);
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService#InvokeWithParameter("parameter1") to be invoked at index 3, but it has not been called.
+			Performed invocations:
+			- 1: "parameter1"
+			- 2: "parameter2"
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowInvalidSequenceOverload()
+	{
+		const int parameter1 = 123, parameter2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter1);
+		fixture.InvokeWithParameter(parameter2);
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.InvokeWithParameter(parameter2);
+			ctx.DependencyServiceMock.InvokeWithParameter(parameter1);
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService#InvokeWithParameter(123) to be invoked at index 3, but it has not been called.
+			Performed invocations:
+			- 1: 123
+			- 2: 234
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowInvalidSequenceWhere()
+	{
+		const string parameter1 = nameof(parameter1), parameter2 = nameof(parameter2);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter1);
+		fixture.InvokeWithParameter(parameter2);
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			It<string> verify1 = It<string>.Where(x => x.EndsWith("r2")), verify2 = It<string>.Where(x => x.StartsWith("pa"));
+			ctx.DependencyServiceMock.InvokeWithParameter(verify1);
+			ctx.DependencyServiceMock.InvokeWithParameter(verify2);
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService#InvokeWithParameter(where(predicate)) to be invoked at index 3, but it has not been called.
+			Performed invocations:
+			- 1: "parameter1"
+			- 2: "parameter2"
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowInvalidSequenceWhereOverload()
+	{
+		const int parameter1 = 123, parameter2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter1);
+		fixture.InvokeWithParameter(parameter2);
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			It<int> verify1 = It<int>.Where(x => x > 200), verify2 = It<int>.Where(x => x < 200);
+			ctx.DependencyServiceMock.InvokeWithParameter(verify1);
+			ctx.DependencyServiceMock.InvokeWithParameter(verify2);
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService#InvokeWithParameter(where(predicate)) to be invoked at index 3, but it has not been called.
+			Performed invocations:
+			- 1: 123
+			- 2: 234
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
 }

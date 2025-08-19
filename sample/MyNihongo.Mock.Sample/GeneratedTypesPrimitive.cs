@@ -51,6 +51,12 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		_invokeWithParameterInvocation1.Verify(parameter, times);
 	}
 
+	public long VerifyInvokeWithParameter(in It<string> parameter, in long index)
+	{
+		_invokeWithParameterInvocation1 ??= new Invocation<string>("IPrimitiveDependencyService#InvokeWithParameter({0})");
+		return _invokeWithParameterInvocation1.Verify(parameter, index);
+	}
+
 	public SetupWithParameter<int> SetupInvokeWithParameter(in It<int> parameter)
 	{
 		_invokeWithParameter2 ??= new SetupWithParameter<int>();
@@ -62,6 +68,12 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	{
 		_invokeWithParameterInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService#InvokeWithParameter({0})");
 		_invokeWithParameterInvocation2.Verify(parameter, times);
+	}
+
+	public long VerifyInvokeWithParameter(in It<int> parameter, in long index)
+	{
+		_invokeWithParameterInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService#InvokeWithParameter({0})");
+		return _invokeWithParameterInvocation2.Verify(parameter, index);
 	}
 
 	public SetupIntInt SetupInvokeWithSeveralParameters(in It<int> parameter1, in It<int> parameter2)
@@ -253,6 +265,18 @@ public static class PrimitiveDependencyServiceMockSequenceEx
 	public static void Invoke(this IMockSequence<IPrimitiveDependencyService> @this)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvoke(@this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	public static void InvokeWithParameter(this IMockSequence<IPrimitiveDependencyService> @this, in It<string> parameter)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvokeWithParameter(parameter, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	public static void InvokeWithParameter(this IMockSequence<IPrimitiveDependencyService> @this, in It<int> parameter)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvokeWithParameter(parameter, @this.VerifyIndex);
 		@this.VerifyIndex.Set(nextIndex);
 	}
 }
