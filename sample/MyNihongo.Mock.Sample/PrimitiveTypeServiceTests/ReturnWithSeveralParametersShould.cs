@@ -259,4 +259,209 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public void VerifyValidSequence()
+	{
+		const int parameterValue1 = 123, parameterValue2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.ReturnWithSeveralParameters(parameterValue1, parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, parameterValue1);
+
+		VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue1, parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue2, parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue2, parameterValue1);
+		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void VerifyValidSequenceWhere()
+	{
+		const int parameterValue1 = 123, parameterValue2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.ReturnWithSeveralParameters(parameterValue1, parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, parameterValue1);
+
+		VerifyInSequence(static ctx =>
+		{
+			It<int> verify1 = It<int>.Where(x => x < 200), verify2 = It<int>.Where(x => x > 200);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(verify1, verify2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(verify2, verify2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(verify2, verify1);
+		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void VerifyValidSequenceEquivalent()
+	{
+		const int parameterValue1 = 123, parameterValue2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.ReturnWithSeveralParameters(parameterValue1, parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, parameterValue1);
+
+		VerifyInSequence(static ctx =>
+		{
+			It<int> verify1 = It<int>.Equivalent(parameterValue1), verify2 = It<int>.Equivalent(parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(verify1, verify2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(verify2, verify2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(verify2, verify1);
+		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void VerifyValidSequenceAny()
+	{
+		const int parameterValue1 = 123, parameterValue2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.ReturnWithSeveralParameters(parameterValue1, parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, parameterValue1);
+
+		VerifyInSequence(static ctx =>
+		{
+			var verify = It<int>.Any();
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(verify, verify);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(verify, verify);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(verify, verify);
+		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowInvalidSequence()
+	{
+		const int parameterValue1 = 123, parameterValue2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.ReturnWithSeveralParameters(parameterValue1, parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, parameterValue1);
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue1, parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue2, parameterValue1);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue2, parameterValue2);
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService#ReturnWithSeveralParameters(234, 234) to be invoked at index 4, but it has not been called.
+			Performed invocations:
+			- 1: 123, 234
+			- 2: 234, 234
+			- 3: 234, 123
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowInvalidSequenceWhere()
+	{
+		const int parameterValue1 = 123, parameterValue2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.ReturnWithSeveralParameters(parameterValue1, parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, parameterValue1);
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			It<int> verify1 = It<int>.Where(x => x < 200), verify2 = It<int>.Where(x => x > 200);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(verify2, verify2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(verify2, verify1);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(verify1, verify2);
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService#ReturnWithSeveralParameters(where(predicate), where(predicate)) to be invoked at index 4, but it has not been called.
+			Performed invocations:
+			- 1: 123, 234
+			- 2: 234, 234
+			- 3: 234, 123
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowInvalidSequenceEquivalent()
+	{
+		const int parameterValue1 = 123, parameterValue2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.ReturnWithSeveralParameters(parameterValue1, parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, parameterValue1);
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			It<int> verify1 = It<int>.Equivalent(parameterValue1), verify2 = It<int>.Equivalent(parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(verify2, verify2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(verify1, verify2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(verify2, verify1);
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService#ReturnWithSeveralParameters(123, 234) to be invoked at index 3, but it has not been called.
+			Performed invocations:
+			- 1: 123, 234
+			- 2: 234, 234
+			- 3: 234, 123
+			  - parameter1:
+			    expected: 123
+			    actual: 234
+			  - parameter2:
+			    expected: 234
+			    actual: 123
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowInvalidSequenceAny()
+	{
+		const int parameterValue1 = 123, parameterValue2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.ReturnWithSeveralParameters(parameterValue1, parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, parameterValue1);
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			var verify = It<int>.Any();
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(verify, verify);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(verify, verify);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(verify, verify);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(verify, verify);
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService#ReturnWithSeveralParameters(any, any) to be invoked at index 4, but it has not been called.
+			Performed invocations:
+			- 1: 123, 234
+			- 2: 234, 234
+			- 3: 234, 123
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
 }

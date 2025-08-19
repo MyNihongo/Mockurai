@@ -13,7 +13,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		Assert.Equal(expected, actual);
 	}
-	
+
 	[Fact]
 	public void VerifyIfNotCalled()
 	{
@@ -189,6 +189,130 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 			- 2: "parameter2"
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void VerifyValidSequence()
+	{
+		const string parameter1 = nameof(parameter1), parameter2 = nameof(parameter2);
+
+		var fixture = CreateFixture();
+		fixture.ReturnWithParameter(parameter1);
+		fixture.ReturnWithParameter(parameter2);
+
+		VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.ReturnWithParameter(parameter1);
+			ctx.DependencyServiceMock.ReturnWithParameter(parameter2);
+		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void VerifyValidSequenceEquivalent()
+	{
+		const string parameter1 = nameof(parameter1), parameter2 = nameof(parameter2);
+
+		var fixture = CreateFixture();
+		fixture.ReturnWithParameter(parameter1);
+		fixture.ReturnWithParameter(parameter2);
+
+		VerifyInSequence(static ctx =>
+		{
+			It<string> verify1 = It<string>.Equivalent(parameter1), verify2 = It<string>.Equivalent(parameter2);
+			ctx.DependencyServiceMock.ReturnWithParameter(verify1);
+			ctx.DependencyServiceMock.ReturnWithParameter(verify2);
+		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void VerifyValidSequenceAny()
+	{
+		const string parameter1 = nameof(parameter1), parameter2 = nameof(parameter2);
+
+		var fixture = CreateFixture();
+		fixture.ReturnWithParameter(parameter1);
+		fixture.ReturnWithParameter(parameter2);
+
+		VerifyInSequence(static ctx =>
+		{
+			var verify = It<string>.Any();
+			ctx.DependencyServiceMock.ReturnWithParameter(verify);
+			ctx.DependencyServiceMock.ReturnWithParameter(verify);
+		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void VerifyValidSequenceWhere()
+	{
+		const string parameter1 = nameof(parameter1), parameter2 = nameof(parameter2);
+
+		var fixture = CreateFixture();
+		fixture.ReturnWithParameter(parameter1);
+		fixture.ReturnWithParameter(parameter2);
+
+		VerifyInSequence(static ctx =>
+		{
+			It<string> verify1 = It<string>.Where(x => x.StartsWith("pa")), verify2 = It<string>.Where(x => x.EndsWith("r2"));
+			ctx.DependencyServiceMock.ReturnWithParameter(verify1);
+			ctx.DependencyServiceMock.ReturnWithParameter(verify2);
+		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowInvalidSequence()
+	{
+		const string parameter1 = nameof(parameter1), parameter2 = nameof(parameter2);
+
+		var fixture = CreateFixture();
+		fixture.ReturnWithParameter(parameter1);
+		fixture.ReturnWithParameter(parameter2);
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.ReturnWithParameter(parameter2);
+			ctx.DependencyServiceMock.ReturnWithParameter(parameter1);
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService#ReturnWithParameter("parameter1") to be invoked at index 3, but it has not been called.
+			Performed invocations:
+			- 1: "parameter1"
+			- 2: "parameter2"
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowInvalidSequenceWhere()
+	{
+		const string parameter1 = nameof(parameter1), parameter2 = nameof(parameter2);
+
+		var fixture = CreateFixture();
+		fixture.ReturnWithParameter(parameter1);
+		fixture.ReturnWithParameter(parameter2);
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			It<string> verify1 = It<string>.Where(x => x.EndsWith("r2")), verify2 = It<string>.Where(x => x.StartsWith("pa"));
+			ctx.DependencyServiceMock.ReturnWithParameter(verify1);
+			ctx.DependencyServiceMock.ReturnWithParameter(verify2);
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService#ReturnWithParameter(where(predicate)) to be invoked at index 3, but it has not been called.
+			Performed invocations:
+			- 1: "parameter1"
+			- 2: "parameter2"
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
 }

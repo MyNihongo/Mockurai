@@ -111,4 +111,44 @@ public sealed class ReturnShould : PrimitiveTypeServiceTestsBase
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public void VerifyValidSequence()
+	{
+		var fixture = CreateFixture();
+		fixture.Return();
+		fixture.Return();
+
+		VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.Return();
+			ctx.DependencyServiceMock.Return();
+		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowInvalidSequence()
+	{
+		var fixture = CreateFixture();
+		fixture.Return();
+		fixture.Return();
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.Return();
+			ctx.DependencyServiceMock.Return();
+			ctx.DependencyServiceMock.Return();
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService#Return() to be invoked at index 3, but it has not been called.
+			Performed invocations:
+			- 1
+			- 2
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
 }
