@@ -69,4 +69,19 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public void VerifyValidSequence()
+	{
+		var fixture = CreateFixture();
+		fixture.Invoke();
+		fixture.Invoke();
+		
+		VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.Invoke();
+			ctx.DependencyServiceMock.Invoke();
+		});
+		VerifyNoOtherCalls();
+	}
 }
