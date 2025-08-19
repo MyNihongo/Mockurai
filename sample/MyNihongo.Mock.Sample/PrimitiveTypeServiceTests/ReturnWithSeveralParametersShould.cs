@@ -15,6 +15,22 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 	}
 
 	[Fact]
+	public void VerifyIfNotCalled()
+	{
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(default, default, Times.Never);
+	}
+
+	[Fact]
+	public void ThrowIfNotCalled()
+	{
+		var actual = () => DependencyServiceMock.VerifyReturnWithSeveralParameters(default, default, Times.Once);
+
+		const string errorMessage = "Expected IPrimitiveDependencyService#ReturnWithSeveralParameters(any, any) to be called 1 time, but instead it was called 0 times.";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
 	public void ReturnValueWithSetup()
 	{
 		const double expected = 225d;

@@ -10,6 +10,22 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
+	public void VerifyIfNotCalled()
+	{
+		DependencyServiceMock.VerifyInvoke(Times.Never);
+	}
+
+	[Fact]
+	public void ThrowIfNotCalled()
+	{
+		var actual = () => DependencyServiceMock.VerifyInvoke(Times.Once);
+
+		const string errorMessage = "Expected IPrimitiveDependencyService#Invoke() to be called 1 time, but instead it was called 0 times.";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
 	public void ThrowWithSetup()
 	{
 		const string errorMessage = nameof(errorMessage);

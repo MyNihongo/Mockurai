@@ -14,6 +14,22 @@ public sealed class ReturnShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
+	public void VerifyIfNotCalled()
+	{
+		DependencyServiceMock.VerifyReturn(Times.Never);
+	}
+
+	[Fact]
+	public void ThrowIfNotCalled()
+	{
+		var actual = () => DependencyServiceMock.VerifyReturn(Times.Once);
+
+		const string errorMessage = "Expected IPrimitiveDependencyService#Return() to be called 1 time, but instead it was called 0 times.";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
 	public void ReturnValueWithSetup()
 	{
 		const int setupCount = 5;

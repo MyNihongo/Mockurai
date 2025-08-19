@@ -102,7 +102,8 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	public void VerifyReturn(in Times times)
 	{
-		_returnInvocation?.Verify(times);
+		_returnInvocation ??= new Invocation("IPrimitiveDependencyService#Return()");
+		_returnInvocation.Verify(times);
 	}
 
 	public SetupWithParameter<string, string> SetupReturnWithParameter(in It<string> parameter)

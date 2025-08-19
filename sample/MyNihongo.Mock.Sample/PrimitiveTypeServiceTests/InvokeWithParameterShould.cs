@@ -12,6 +12,33 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
+	public void VerifyIfNotCalled()
+	{
+		DependencyServiceMock.VerifyInvokeWithParameter(It<string>.Any(), Times.Never);
+		DependencyServiceMock.VerifyInvokeWithParameter(It<int>.Any(), Times.Never);
+	}
+
+	[Fact]
+	public void ThrowIfNotCalled()
+	{
+		var actual = () => DependencyServiceMock.VerifyInvokeWithParameter(It<string>.Any(), Times.Once);
+
+		const string errorMessage = "Expected IPrimitiveDependencyService#InvokeWithParameter(any) to be called 1 time, but instead it was called 0 times.";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowIfNotCalledOverload()
+	{
+		var actual = () => DependencyServiceMock.VerifyInvokeWithParameter(It<int>.Any(), Times.Once);
+
+		const string errorMessage = "Expected IPrimitiveDependencyService#InvokeWithParameter(any) to be called 1 time, but instead it was called 0 times.";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
 	public void ThrowWithSetup()
 	{
 		const string parameter = "ZFJ2XHcBRAuyJZJX",

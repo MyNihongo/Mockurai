@@ -12,6 +12,22 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 	}
 
 	[Fact]
+	public void VerifyIfNotCalled()
+	{
+		DependencyServiceMock.VerifyInvokeWithSeveralParameters(default, default, Times.Never);
+	}
+
+	[Fact]
+	public void ThrowIfNotCalled()
+	{
+		var actual = () => DependencyServiceMock.VerifyInvokeWithSeveralParameters(default, default, Times.Once);
+
+		const string errorMessage = "Expected IPrimitiveDependencyService#InvokeWithSeveralParameters(any, any) to be called 1 time, but instead it was called 0 times.";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
 	public void ThrowWithSetup()
 	{
 		const string errorMessage = nameof(errorMessage);
