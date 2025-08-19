@@ -99,7 +99,13 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 		const long verifyIndex = 3L;
 		Action actual = () => fixture.Verify(verifyIndex);
 
-		const string expectedMessage = "Expected MyClass#MyMethod() to be invoked at index 3, but there are no invocations.";
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod() to be invoked at index 3, but it has not been called.
+			Performed invocations:
+			- 1
+			- 2
+			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}

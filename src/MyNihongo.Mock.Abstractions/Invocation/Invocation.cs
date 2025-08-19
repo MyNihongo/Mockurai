@@ -29,7 +29,13 @@ public sealed class Invocation
 	{
 		var item = _invocations.TryGetItemAt(index);
 		if (!item.HasValue)
-			throw new MockVerifySequenceOutOfRangeException(_name, index);
+		{
+			var invocations = _invocations.Count > 0
+				? _invocations.Select(static x => x.Index.ToString())
+				: null;
+
+			throw new MockVerifySequenceOutOfRangeException(_name, index, invocations);
+		}
 
 		item.Value.Invocation.IsVerified = true;
 		return item.Value.Index + 1;

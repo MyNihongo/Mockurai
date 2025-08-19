@@ -76,12 +76,37 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 		var fixture = CreateFixture();
 		fixture.Invoke();
 		fixture.Invoke();
-		
+
 		VerifyInSequence(static ctx =>
 		{
 			ctx.DependencyServiceMock.Invoke();
 			ctx.DependencyServiceMock.Invoke();
 		});
 		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowInvalidSequence()
+	{
+		var fixture = CreateFixture();
+		fixture.Invoke();
+		fixture.Invoke();
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.Invoke();
+			ctx.DependencyServiceMock.Invoke();
+			ctx.DependencyServiceMock.Invoke();
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService#Invoke() to be invoked at index 3, but it has not been called.
+			Performed invocations:
+			- 1
+			- 2
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 }
