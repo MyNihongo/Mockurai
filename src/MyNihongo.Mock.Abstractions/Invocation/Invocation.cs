@@ -20,7 +20,10 @@ public sealed class Invocation
 	public void Verify(in Times times)
 	{
 		if (!times.Predicate(_invocations.Count))
-			throw new MockVerifyCountException(_name, times, _invocations.Count);
+		{
+			var invocations = GetStrings(_invocations);
+			throw new MockVerifyCountException(_name, times, _invocations.Count, invocations);
+		}
 
 		_isVerified = true;
 	}
@@ -29,7 +32,10 @@ public sealed class Invocation
 	{
 		var item = _invocations.TryGetItemAt(index);
 		if (!item.HasValue)
-			throw new MockVerifySequenceOutOfRangeException(_name, index);
+		{
+			var invocations = GetStrings(_invocations);
+			throw new MockVerifySequenceOutOfRangeException(_name, index, invocations);
+		}
 
 		item.Value.Invocation.IsVerified = true;
 		return item.Value.Index + 1;
@@ -47,6 +53,13 @@ public sealed class Invocation
 
 		if (unverifiedItems.Length > 0)
 			throw new MockUnverifiedException(_name, unverifiedItems);
+	}
+
+	private static IEnumerable<string>? GetStrings(in InvocationContainer<Item> invocations)
+	{
+		return invocations.Count > 0
+			? invocations.Select(static x => x.Index.ToString())
+			: null;
 	}
 
 	private sealed class Item

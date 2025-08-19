@@ -26,9 +26,8 @@ public sealed class SourceGenerator : IIncrementalGenerator
 					$$"""
 					  namespace {{source.Options.RootNamespace}};
 
-					  public interface IMock<T>
+					  public interface ITest
 					  {
-					  	T Object { get; }
 					  }
 					  """;
 

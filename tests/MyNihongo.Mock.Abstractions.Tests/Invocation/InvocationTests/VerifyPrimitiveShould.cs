@@ -30,7 +30,14 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 
 		var actual = () => fixture.Verify(Times.Exactly(expected));
 
-		var expectedMessage = $"Expected MyClass#MyMethod() to be called {expected} times, but instead it was called 3 times.";
+		var expectedMessage =
+			$"""
+			 Expected MyClass#MyMethod() to be called {expected} times, but instead it was called 3 times.
+			 Performed invocations:
+			 - 1
+			 - 2
+			 - 3
+			 """;
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -99,7 +106,13 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 		const long verifyIndex = 3L;
 		Action actual = () => fixture.Verify(verifyIndex);
 
-		const string expectedMessage = "Expected MyClass#MyMethod() to be invoked at index 3, but there are no invocations.";
+		const string expectedMessage =
+			"""
+			Expected MyClass#MyMethod() to be invoked at index 3, but it has not been called.
+			Performed invocations:
+			- 1
+			- 2
+			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}

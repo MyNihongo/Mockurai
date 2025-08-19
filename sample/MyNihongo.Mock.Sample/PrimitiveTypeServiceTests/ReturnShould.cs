@@ -14,6 +14,22 @@ public sealed class ReturnShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
+	public void VerifyIfNotCalled()
+	{
+		DependencyServiceMock.VerifyReturn(Times.Never);
+	}
+
+	[Fact]
+	public void ThrowIfNotCalled()
+	{
+		var actual = () => DependencyServiceMock.VerifyReturn(Times.Once);
+
+		const string errorMessage = "Expected IPrimitiveDependencyService#Return() to be called 1 time, but instead it was called 0 times.";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
 	public void ReturnValueWithSetup()
 	{
 		const int setupCount = 5;
@@ -65,7 +81,13 @@ public sealed class ReturnShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => DependencyServiceMock.VerifyReturn(Times.Once);
 
-		const string expectedMessage = "Expected IPrimitiveDependencyService#Return() to be called 1 time, but instead it was called 2 times.";
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService#Return() to be called 1 time, but instead it was called 2 times.
+			Performed invocations:
+			- 1
+			- 2
+			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -87,6 +109,46 @@ public sealed class ReturnShould : PrimitiveTypeServiceTestsBase
 			- 2: "value"
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void VerifyValidSequence()
+	{
+		var fixture = CreateFixture();
+		fixture.Return();
+		fixture.Return();
+
+		VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.Return();
+			ctx.DependencyServiceMock.Return();
+		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowInvalidSequence()
+	{
+		var fixture = CreateFixture();
+		fixture.Return();
+		fixture.Return();
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.Return();
+			ctx.DependencyServiceMock.Return();
+			ctx.DependencyServiceMock.Return();
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService#Return() to be invoked at index 3, but it has not been called.
+			Performed invocations:
+			- 1
+			- 2
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
 }
