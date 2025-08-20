@@ -63,13 +63,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	public void VerifySetSetOnly(in It<decimal> value, in Times times)
 	{
-		_setOnlySetInvocation ??= new Invocation<decimal>("IPrimitiveDependencyService#SetOnly#set");
+		_setOnlySetInvocation ??= new Invocation<decimal>("IPrimitiveDependencyService#SetOnly#set = {0}");
 		_setOnlySetInvocation.Verify(value, times);
 	}
 
 	public long VerifySetSetOnly(in It<decimal> value, in long index)
 	{
-		_setOnlySetInvocation ??= new Invocation<decimal>("IPrimitiveDependencyService#SetOnly#set");
+		_setOnlySetInvocation ??= new Invocation<decimal>("IPrimitiveDependencyService#SetOnly#set = {0}");
 		return _setOnlySetInvocation.Verify(value, index);
 	}
 
@@ -273,7 +273,11 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 		public decimal SetOnly
 		{
-			set => (_mock._setOnlySetInvocation ??= new Invocation<decimal>("IPrimitiveDependencyService#SetOnly#set")).Register(InvocationIndex.CounterValue, value);
+			set
+			{
+				(_mock._setOnlySetInvocation ??= new Invocation<decimal>("IPrimitiveDependencyService#SetOnly#set = {0}")).Register(InvocationIndex.CounterValue, value);
+				_mock._setOnlySet?.Invoke(value);
+			}
 		}
 
 		public string GetInit
@@ -283,7 +287,11 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 				(_mock._getInitGetInvocation ??= new Invocation("IPrimitiveDependencyService#GetInit#get")).Register(InvocationIndex.CounterValue);
 				return _mock._getInitGet?.Execute(out var returnValue) == true ? returnValue! : string.Empty;
 			}
-			set => (_mock._getInitSetInvocation ??= new Invocation<string>("IPrimitiveDependencyService#GetInit#set")).Register(InvocationIndex.CounterValue, value);
+			set
+			{
+				(_mock._getInitSetInvocation ??= new Invocation<string>("IPrimitiveDependencyService#GetInit#set = {0}")).Register(InvocationIndex.CounterValue, value);
+				_mock._getInitSet?.Invoke(value);
+			}
 		}
 
 		public void Invoke()
