@@ -4,6 +4,22 @@ namespace MyNihongo.Mock.Sample;
 public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyService>
 {
 	private Proxy? _proxy;
+
+	// GetOnly
+	private Setup<int>? _getOnlyGet;
+	private Invocation? _getOnlyGetInvocation;
+
+	// SetOnly
+	private SetupWithParameter<decimal>? _setOnlySet;
+	private Invocation<decimal>? _setOnlySetInvocation;
+
+	// GetInit
+	private Setup<string>? _getInitGet;
+	private Invocation? _getInitGetInvocation;
+	private SetupWithParameter<string>? _getInitSet;
+	private Invocation<string>? _getInitSetInvocation;
+
+	// Functions
 	private Setup? _invoke;
 	private Invocation? _invokeInvocation;
 	private SetupWithParameter<string>? _invokeWithParameter1;
@@ -20,6 +36,30 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	private InvocationIntInt? _returnWithSeveralParametersInvocation;
 
 	public IPrimitiveDependencyService Object => _proxy ??= new Proxy(this);
+
+	public Setup<int> SetupGetGetOnly()
+	{
+		return _getOnlyGet ??= new Setup<int>();
+	}
+
+	public SetupWithParameter<decimal> SetupSetSetOnly(in It<decimal> value)
+	{
+		_setOnlySet ??= new SetupWithParameter<decimal>();
+		_setOnlySet.SetupParameter(value);
+		return _setOnlySet;
+	}
+
+	public Setup<string> SetupGetGetInit()
+	{
+		return _getInitGet ??= new Setup<string>();
+	}
+
+	public SetupWithParameter<string> SetupSetGetInit(in It<string> value)
+	{
+		_getInitSet ??= new SetupWithParameter<string>();
+		_getInitSet.SetupParameter(value);
+		return _getInitSet;
+	}
 
 	public Setup SetupInvoke()
 	{
@@ -152,6 +192,10 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	public void VerifyNoOtherCalls()
 	{
+		_getOnlyGetInvocation?.VerifyNoOtherCalls();
+		_setOnlySetInvocation?.VerifyNoOtherCalls();
+		_getInitGetInvocation?.VerifyNoOtherCalls();
+		_getInitSetInvocation?.VerifyNoOtherCalls();
 		_invokeInvocation?.VerifyNoOtherCalls();
 		_invokeWithParameterInvocation1?.VerifyNoOtherCalls();
 		_invokeWithParameterInvocation2?.VerifyNoOtherCalls();
@@ -168,6 +212,30 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		public Proxy(PrimitiveDependencyServiceMock mock)
 		{
 			_mock = mock;
+		}
+
+		public int GetOnly
+		{
+			get
+			{
+				(_mock._getOnlyGetInvocation ??= new Invocation("IPrimitiveDependencyService#GetOnly#get")).Register(InvocationIndex.CounterValue);
+				return _mock._getOnlyGet?.Execute(out var returnValue) == true ? returnValue : 0;
+			}
+		}
+
+		public decimal SetOnly
+		{
+			set => (_mock._setOnlySetInvocation ??= new Invocation<decimal>("IPrimitiveDependencyService#SetOnly#set")).Register(InvocationIndex.CounterValue, value);
+		}
+
+		public string GetInit
+		{
+			get
+			{
+				(_mock._getInitGetInvocation ??= new Invocation("IPrimitiveDependencyService#GetInit#get")).Register(InvocationIndex.CounterValue);
+				return _mock._getInitGet?.Execute(out var returnValue) == true ? returnValue! : string.Empty;
+			}
+			init => (_mock._getInitSetInvocation ??= new Invocation<string>("IPrimitiveDependencyService#GetInit#set")).Register(InvocationIndex.CounterValue, value);
 		}
 
 		public void Invoke()
@@ -217,6 +285,18 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 [Obsolete("Will be generated")]
 public static class PrimitiveDependencyServiceMockEx
 {
+	public static ISetup<int> SetupGetGetOnly(this IMock<IPrimitiveDependencyService> @this) =>
+		((PrimitiveDependencyServiceMock)@this).SetupGetGetOnly();
+
+	public static ISetup SetupSetSetOnly(this IMock<IPrimitiveDependencyService> @this, in It<decimal> value) =>
+		((PrimitiveDependencyServiceMock)@this).SetupSetSetOnly(value);
+
+	public static ISetup<string> SetupGetGetInit(this IMock<IPrimitiveDependencyService> @this) =>
+		((PrimitiveDependencyServiceMock)@this).SetupGetGetInit();
+
+	public static ISetup SetupSetGetInit(this IMock<IPrimitiveDependencyService> @this, in It<string> value) =>
+		((PrimitiveDependencyServiceMock)@this).SetupSetGetInit(value);
+
 	public static ISetup SetupInvoke(this IMock<IPrimitiveDependencyService> @this) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvoke();
 
