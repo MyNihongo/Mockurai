@@ -42,6 +42,18 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		return _getOnlyGet ??= new Setup<int>();
 	}
 
+	public void VerifyGetGetOnly(in Times times)
+	{
+		_getOnlyGetInvocation ??= new Invocation("IPrimitiveDependencyService#GetOnly#get");
+		_getOnlyGetInvocation.Verify(times);
+	}
+
+	public long VerifyGetGetOnly(in long index)
+	{
+		_getOnlyGetInvocation ??= new Invocation("IPrimitiveDependencyService#GetOnly#get");
+		return _getOnlyGetInvocation.Verify(index);
+	}
+
 	public SetupWithParameter<decimal> SetupSetSetOnly(in It<decimal> value)
 	{
 		_setOnlySet ??= new SetupWithParameter<decimal>();
@@ -49,9 +61,33 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		return _setOnlySet;
 	}
 
+	public void VerifySetSetOnly(in It<decimal> value, in Times times)
+	{
+		_setOnlySetInvocation ??= new Invocation<decimal>("IPrimitiveDependencyService#SetOnly#set");
+		_setOnlySetInvocation.Verify(value, times);
+	}
+
+	public long VerifySetSetOnly(in It<decimal> value, in long index)
+	{
+		_setOnlySetInvocation ??= new Invocation<decimal>("IPrimitiveDependencyService#SetOnly#set");
+		return _setOnlySetInvocation.Verify(value, index);
+	}
+
 	public Setup<string> SetupGetGetInit()
 	{
 		return _getInitGet ??= new Setup<string>();
+	}
+
+	public void VerifyGetGetInit(in Times times)
+	{
+		_getInitGetInvocation ??= new Invocation("IPrimitiveDependencyService#GetInit#get");
+		_getInitGetInvocation.Verify(times);
+	}
+
+	public long VerifyGetGetInit(in long index)
+	{
+		_getInitGetInvocation ??= new Invocation("IPrimitiveDependencyService#GetInit#get");
+		return _getInitGetInvocation.Verify(index);
 	}
 
 	public SetupWithParameter<string> SetupSetGetInit(in It<string> value)
@@ -59,6 +95,18 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		_getInitSet ??= new SetupWithParameter<string>();
 		_getInitSet.SetupParameter(value);
 		return _getInitSet;
+	}
+
+	public void VerifySetGetInit(in It<string> value, in Times times)
+	{
+		_getInitSetInvocation ??= new Invocation<string>("IPrimitiveDependencyService#GetInit#get");
+		_getInitSetInvocation.Verify(value, times);
+	}
+
+	public long VerifySetGetInit(in It<string> value, in long index)
+	{
+		_getInitSetInvocation ??= new Invocation<string>("IPrimitiveDependencyService#GetInit#get");
+		return _getInitSetInvocation.Verify(value, index);
 	}
 
 	public Setup SetupInvoke()
@@ -288,14 +336,38 @@ public static class PrimitiveDependencyServiceMockEx
 	public static ISetup<int> SetupGetGetOnly(this IMock<IPrimitiveDependencyService> @this) =>
 		((PrimitiveDependencyServiceMock)@this).SetupGetGetOnly();
 
+	public static void VerifyGetGetOnly(this IMock<IPrimitiveDependencyService> @this, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyGetGetOnly(times);
+
+	public static void VerifyGetGetOnly(this IMock<IPrimitiveDependencyService> @this, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyGetGetOnly(times());
+
 	public static ISetup SetupSetSetOnly(this IMock<IPrimitiveDependencyService> @this, in It<decimal> value) =>
 		((PrimitiveDependencyServiceMock)@this).SetupSetSetOnly(value);
+
+	public static void VerifySetSetOnly(this IMock<IPrimitiveDependencyService> @this, in It<decimal> value, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifySetSetOnly(value, times);
+
+	public static void VerifySetSetOnly(this IMock<IPrimitiveDependencyService> @this, in It<decimal> value, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifySetSetOnly(value, times());
 
 	public static ISetup<string> SetupGetGetInit(this IMock<IPrimitiveDependencyService> @this) =>
 		((PrimitiveDependencyServiceMock)@this).SetupGetGetInit();
 
+	public static void VerifyGetGetInit(this IMock<IPrimitiveDependencyService> @this, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyGetGetInit(times);
+
+	public static void VerifyGetGetInit(this IMock<IPrimitiveDependencyService> @this, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyGetGetInit(times());
+
 	public static ISetup SetupSetGetInit(this IMock<IPrimitiveDependencyService> @this, in It<string> value) =>
 		((PrimitiveDependencyServiceMock)@this).SetupSetGetInit(value);
+
+	public static void VerifySetGetInit(this IMock<IPrimitiveDependencyService> @this, in It<string> value, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifySetGetInit(value, times);
+
+	public static void VerifySetGetInit(this IMock<IPrimitiveDependencyService> @this, in It<string> value, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifySetGetInit(value, times());
 
 	public static ISetup SetupInvoke(this IMock<IPrimitiveDependencyService> @this) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvoke();
@@ -367,6 +439,30 @@ public static class PrimitiveDependencyServiceMockEx
 [Obsolete("Will be generated")]
 public static class PrimitiveDependencyServiceMockSequenceEx
 {
+	public static void GetGetOnly(this IMockSequence<IPrimitiveDependencyService> @this)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyGetGetOnly(@this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	public static void SetSetOnly(this IMockSequence<IPrimitiveDependencyService> @this, in It<decimal> value)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifySetSetOnly(value, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	public static void GetGetInit(this IMockSequence<IPrimitiveDependencyService> @this)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyGetGetInit(@this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	public static void SetGetInit(this IMockSequence<IPrimitiveDependencyService> @this, in It<string> value)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifySetGetInit(value, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
 	public static void Invoke(this IMockSequence<IPrimitiveDependencyService> @this)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvoke(@this.VerifyIndex);
