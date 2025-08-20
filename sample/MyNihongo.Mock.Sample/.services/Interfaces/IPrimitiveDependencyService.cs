@@ -2,6 +2,12 @@ namespace MyNihongo.Mock.Sample;
 
 public interface IPrimitiveDependencyService
 {
+	int GetOnly { get; }
+
+	decimal SetOnly { set; }
+
+	string GetInit { get; set; }
+
 	void Invoke();
 
 	void InvokeWithParameter(in string parameter);

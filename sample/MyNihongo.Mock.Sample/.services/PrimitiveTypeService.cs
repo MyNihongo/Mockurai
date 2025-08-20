@@ -9,6 +9,19 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		_primitiveDependencyService = primitiveDependencyService;
 	}
 
+	public int GetOnly => _primitiveDependencyService.GetOnly;
+
+	public decimal SetOnly
+	{
+		set => _primitiveDependencyService.SetOnly = value;
+	}
+
+	public string GetInit
+	{
+		get => _primitiveDependencyService.GetInit;
+		set => _primitiveDependencyService.GetInit = value;
+	}
+
 	public void Invoke()
 	{
 		_primitiveDependencyService.Invoke();
