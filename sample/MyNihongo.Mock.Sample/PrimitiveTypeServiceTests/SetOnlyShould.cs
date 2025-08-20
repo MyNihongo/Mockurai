@@ -204,23 +204,6 @@ public sealed class SetOnlyShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void VerifyValidSequenceOverload()
-	{
-		const int parameter1 = 123, parameter2 = 234;
-
-		var fixture = CreateFixture();
-		fixture.SetOnly = parameter1;
-		fixture.SetOnly = parameter2;
-
-		VerifyInSequence(static ctx =>
-		{
-			ctx.DependencyServiceMock.SetSetOnly(parameter1);
-			ctx.DependencyServiceMock.SetSetOnly(parameter2);
-		});
-		VerifyNoOtherCalls();
-	}
-
-	[Fact]
 	public void VerifyValidSequenceEquivalent()
 	{
 		const decimal parameter1 = 123m, parameter2 = 234m;

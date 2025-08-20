@@ -99,13 +99,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	public void VerifySetGetInit(in It<string> value, in Times times)
 	{
-		_getInitSetInvocation ??= new Invocation<string>("IPrimitiveDependencyService#GetInit#get");
+		_getInitSetInvocation ??= new Invocation<string>("IPrimitiveDependencyService#GetInit#set = {0}");
 		_getInitSetInvocation.Verify(value, times);
 	}
 
 	public long VerifySetGetInit(in It<string> value, in long index)
 	{
-		_getInitSetInvocation ??= new Invocation<string>("IPrimitiveDependencyService#GetInit#get");
+		_getInitSetInvocation ??= new Invocation<string>("IPrimitiveDependencyService#GetInit#set = {0}");
 		return _getInitSetInvocation.Verify(value, index);
 	}
 
