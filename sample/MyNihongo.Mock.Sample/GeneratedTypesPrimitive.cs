@@ -283,7 +283,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 				(_mock._getInitGetInvocation ??= new Invocation("IPrimitiveDependencyService#GetInit#get")).Register(InvocationIndex.CounterValue);
 				return _mock._getInitGet?.Execute(out var returnValue) == true ? returnValue! : string.Empty;
 			}
-			init => (_mock._getInitSetInvocation ??= new Invocation<string>("IPrimitiveDependencyService#GetInit#set")).Register(InvocationIndex.CounterValue, value);
+			set => (_mock._getInitSetInvocation ??= new Invocation<string>("IPrimitiveDependencyService#GetInit#set")).Register(InvocationIndex.CounterValue, value);
 		}
 
 		public void Invoke()

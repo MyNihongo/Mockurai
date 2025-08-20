@@ -6,7 +6,7 @@ public interface IPrimitiveDependencyService
 
 	decimal SetOnly { set; }
 
-	string GetInit { get; init; }
+	string GetInit { get; set; }
 
 	void Invoke();
 
