@@ -15,6 +15,12 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		remove => _primitiveDependencyService.Handler -= value;
 	}
 
+	public event EventHandler<string>? HandlerEvent
+	{
+		add => _primitiveDependencyService.HandlerEvent += value;
+		remove => _primitiveDependencyService.HandlerEvent -= value;
+	}
+
 	public int GetOnly => _primitiveDependencyService.GetOnly;
 
 	public decimal SetOnly

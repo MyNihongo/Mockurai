@@ -6,8 +6,14 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	private Proxy? _proxy;
 
 	// Handler
-	private Invocation<int>? _handlerAddInvocation;
-	private Invocation<int>? _handlerRemoveInvocation;
+	private PrimitiveHandler? _handler;
+	private Invocation<PrimitiveHandler?>? _handlerAddInvocation;
+	private Invocation<PrimitiveHandler?>? _handlerRemoveInvocation;
+
+	// HandlerEvent
+	private EventHandler<string>? _handlerEvent;
+	private Invocation<EventHandler<string>?>? _handlerEventAddInvocation;
+	private Invocation<EventHandler<string>?>? _handlerEventRemoveInvocation;
 
 	// GetOnly
 	private Setup<int>? _getOnlyGet;
@@ -268,8 +274,34 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 		public event PrimitiveHandler? Handler
 		{
-			add { _mock._handlerAddInvocation ??= new Invocation<int>("IPrimitiveDependencyService#Handler#add"); }
-			remove { _mock._handlerRemoveInvocation ??= new Invocation<int>("IPrimitiveDependencyService#Handler#remove"); }
+			add
+			{
+				_mock._handlerAddInvocation ??= new Invocation<PrimitiveHandler?>("IPrimitiveDependencyService#Handler#add");
+				_mock._handlerAddInvocation.Register(InvocationIndex.CounterValue, value);
+				_mock._handler += value;
+			}
+			remove
+			{
+				_mock._handlerRemoveInvocation ??= new Invocation<PrimitiveHandler?>("IPrimitiveDependencyService#Handler#remove");
+				_mock._handlerRemoveInvocation.Register(InvocationIndex.CounterValue, value);
+				_mock._handler -= value;
+			}
+		}
+
+		public event EventHandler<string>? HandlerEvent
+		{
+			add
+			{
+				_mock._handlerEventAddInvocation ??= new Invocation<EventHandler<string>?>("IPrimitiveDependencyService#HandlerEvent#add");
+				_mock._handlerEventAddInvocation.Register(InvocationIndex.CounterValue, value);
+				_mock._handlerEvent += value;
+			}
+			remove
+			{
+				_mock._handlerEventRemoveInvocation ??= new Invocation<EventHandler<string>?>("IPrimitiveDependencyService#HandlerEvent#remove");
+				_mock._handlerEventRemoveInvocation.Register(InvocationIndex.CounterValue, value);
+				_mock._handlerEvent -= value;
+			}
 		}
 
 		public int GetOnly

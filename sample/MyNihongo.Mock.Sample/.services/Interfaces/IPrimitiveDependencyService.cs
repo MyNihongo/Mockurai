@@ -2,7 +2,8 @@ namespace MyNihongo.Mock.Sample;
 
 public interface IPrimitiveDependencyService
 {
-	public event PrimitiveHandler? Handler;
+	event PrimitiveHandler? Handler;
+	event EventHandler<string>? HandlerEvent;
 
 	int GetOnly { get; }
 
