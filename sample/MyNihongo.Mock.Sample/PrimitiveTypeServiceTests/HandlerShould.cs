@@ -18,4 +18,116 @@ public sealed class HandlerShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.VerifyRemoveHandler(((PrimitiveTypeService)fixture).PrimitiveDependencyServiceOnHandler, Times.Once);
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void ThrowIfInvalidFunction()
+	{
+		const int inputValue1 = 123, inputValue2 = 234;
+
+		var fixture = CreateFixture();
+		DependencyServiceMock.RaiseHandler(inputValue1);
+		DependencyServiceMock.RaiseHandler(inputValue2);
+		fixture.Dispose();
+
+		var actual = () => DependencyServiceMock.VerifyAddHandler((_, _) => { }, Times.Once);
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService#Handler#add to be called 1 time, but instead it was called 0 times.
+			Performed invocations:
+			- 1: MyNihongo.Mock.Sample.PrimitiveHandler
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowIfAddNotVerified()
+	{
+		const int inputValue1 = 123, inputValue2 = 234;
+
+		var fixture = CreateFixture();
+		DependencyServiceMock.RaiseHandler(inputValue1);
+		DependencyServiceMock.RaiseHandler(inputValue2);
+		fixture.Dispose();
+
+		DependencyServiceMock.VerifyRemoveHandler(((PrimitiveTypeService)fixture).PrimitiveDependencyServiceOnHandler, Times.Once);
+
+		var actual = () => VerifyNoOtherCalls();
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService#Handler#add to be verified, but the following invocations have not been verified:
+			- 1: MyNihongo.Mock.Sample.PrimitiveHandler
+			""";
+		var exception = Assert.Throws<MockUnverifiedException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowIfRemoveNotVerified()
+	{
+		const int inputValue1 = 123, inputValue2 = 234;
+
+		var fixture = CreateFixture();
+		DependencyServiceMock.RaiseHandler(inputValue1);
+		DependencyServiceMock.RaiseHandler(inputValue2);
+		fixture.Dispose();
+
+		DependencyServiceMock.VerifyAddHandler(((PrimitiveTypeService)fixture).PrimitiveDependencyServiceOnHandler, Times.Once);
+
+		var actual = () => VerifyNoOtherCalls();
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService#Handler#remove to be verified, but the following invocations have not been verified:
+			- 2: MyNihongo.Mock.Sample.PrimitiveHandler
+			""";
+		var exception = Assert.Throws<MockUnverifiedException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void VerifyValidSequence()
+	{
+		const int inputValue1 = 123, inputValue2 = 234;
+
+		var fixture = CreateFixture();
+		DependencyServiceMock.RaiseHandler(inputValue1);
+		DependencyServiceMock.RaiseHandler(inputValue2);
+		fixture.Dispose();
+
+		VerifyInSequence(ctx =>
+		{
+			ctx.DependencyServiceMock.AddHandler(((PrimitiveTypeService)fixture).PrimitiveDependencyServiceOnHandler);
+			ctx.DependencyServiceMock.RemoveHandler(((PrimitiveTypeService)fixture).PrimitiveDependencyServiceOnHandler);
+		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowIfInvalidSequence()
+	{
+		const int inputValue1 = 123, inputValue2 = 234;
+
+		var fixture = CreateFixture();
+		DependencyServiceMock.RaiseHandler(inputValue1);
+		DependencyServiceMock.RaiseHandler(inputValue2);
+		fixture.Dispose();
+
+		var actual = () => VerifyInSequence(ctx =>
+		{
+			ctx.DependencyServiceMock.RemoveHandler(((PrimitiveTypeService)fixture).PrimitiveDependencyServiceOnHandler);
+			ctx.DependencyServiceMock.AddHandler(((PrimitiveTypeService)fixture).PrimitiveDependencyServiceOnHandler);
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService#Handler#add to be invoked at index 3, but it has not been called.
+			Performed invocations:
+			- 1: MyNihongo.Mock.Sample.PrimitiveHandler
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
 }
