@@ -145,4 +145,27 @@ public sealed class HandlerEventShould : PrimitiveTypeServiceTestsBase
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public void ThrowInvalidMethodInSequence()
+	{
+		const string inputValue1 = nameof(inputValue1), inputValue2 = nameof(inputValue2);
+
+		var fixture = CreateFixture();
+		fixture.HandlerEvent += OnEventHandler;
+		DependencyServiceMock.RaiseHandlerEvent(inputValue1);
+		DependencyServiceMock.RaiseHandlerEvent(inputValue2);
+		fixture.HandlerEvent -= OnEventHandler;
+
+		var actual = () => VerifyInSequence(ctx =>
+		{
+			ctx.DependencyServiceMock.AddHandlerEvent(OnEventHandler);
+			ctx.DependencyServiceMock.InvokeWithSeveralParameters(123, 321);
+			ctx.DependencyServiceMock.RemoveHandlerEvent(OnEventHandler);
+		});
+
+		const string expectedMessage = "Expected IPrimitiveDependencyService#InvokeWithSeveralParameters(123, 321) to be invoked at index 2, but there are no invocations.";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
 }

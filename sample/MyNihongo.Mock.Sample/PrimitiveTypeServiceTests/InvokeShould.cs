@@ -131,4 +131,23 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public void ThrowInvalidMethodInSequence()
+	{
+		var fixture = CreateFixture();
+		fixture.Invoke();
+		fixture.Invoke();
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.Invoke();
+			ctx.DependencyServiceMock.Return();
+			ctx.DependencyServiceMock.Invoke();
+		});
+
+		const string expectedMessage = "Expected IPrimitiveDependencyService#Return() to be invoked at index 2, but there are no invocations.";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
 }

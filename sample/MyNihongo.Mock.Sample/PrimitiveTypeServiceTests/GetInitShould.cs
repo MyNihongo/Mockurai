@@ -480,4 +480,25 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 		});
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void ThrowInvalidMethodInSequence()
+	{
+		const string parameter1 = nameof(parameter1);
+
+		var fixture = CreateFixture();
+		fixture.GetInit = parameter1;
+		_ = fixture.GetInit;
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.SetGetInit(parameter1);
+			ctx.DependencyServiceMock.InvokeWithParameter(123);
+			ctx.DependencyServiceMock.GetGetInit();
+		});
+
+		const string expectedMessage = "Expected IPrimitiveDependencyService#InvokeWithParameter(123) to be invoked at index 2, but there are no invocations.";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
 }

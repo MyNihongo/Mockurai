@@ -464,4 +464,27 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public void ThrowInvalidMethodInSequence()
+	{
+		const int parameterValue1 = 123, parameterValue2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.ReturnWithSeveralParameters(parameterValue1, parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, parameterValue1);
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue1, parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue2, parameterValue2);
+			ctx.DependencyServiceMock.GetGetInit();
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue2, parameterValue1);
+		});
+
+		const string expectedMessage = "Expected IPrimitiveDependencyService#GetInit#get to be invoked at index 3, but there are no invocations.";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
 }
