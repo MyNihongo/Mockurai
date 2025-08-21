@@ -562,7 +562,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
-	
+
 	[Fact]
 	public void ThrowInvalidMethodInSequenceOverload()
 	{

@@ -324,14 +324,14 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		var fixture = CreateFixture();
 		fixture.ReturnWithParameter(parameter1);
 		fixture.ReturnWithParameter(parameter2);
-		
+
 		var actual = () => VerifyInSequence(static ctx =>
 		{
 			ctx.DependencyServiceMock.ReturnWithParameter(parameter1);
 			ctx.DependencyServiceMock.InvokeWithSeveralParameters(123, 321);
 			ctx.DependencyServiceMock.ReturnWithParameter(parameter2);
 		});
-		
+
 		const string expectedMessage = "Expected IPrimitiveDependencyService#InvokeWithSeveralParameters(123, 321) to be invoked at index 2, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
