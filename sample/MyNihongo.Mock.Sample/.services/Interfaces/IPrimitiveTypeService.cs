@@ -1,7 +1,11 @@
 namespace MyNihongo.Mock.Sample;
 
-public interface IPrimitiveTypeService
+public interface IPrimitiveTypeService : IDisposable
 {
+	event EventHandler<string>? HandlerEvent;
+	
+	int Sum { get; }
+
 	int GetOnly { get; }
 
 	decimal SetOnly { set; }

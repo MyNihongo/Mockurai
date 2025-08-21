@@ -149,4 +149,23 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public void ThrowInvalidMethodInSequence()
+	{
+		var fixture = CreateFixture();
+		_ = fixture.GetOnly;
+		_ = fixture.GetOnly;
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.GetGetOnly();
+			ctx.DependencyServiceMock.GetGetOnly();
+			ctx.DependencyServiceMock.InvokeWithSeveralParameters(123, 321);
+		});
+
+		const string expectedMessage = "Expected IPrimitiveDependencyService#InvokeWithSeveralParameters(123, 321) to be invoked at index 3, but there are no invocations.";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
 }

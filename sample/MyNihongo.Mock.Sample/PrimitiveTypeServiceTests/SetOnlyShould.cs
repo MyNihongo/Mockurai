@@ -309,4 +309,25 @@ public sealed class SetOnlyShould : PrimitiveTypeServiceTestsBase
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public void ThrowInvalidMethodInSequence()
+	{
+		const decimal parameter1 = 123m, parameter2 = 234m;
+
+		var fixture = CreateFixture();
+		fixture.SetOnly = parameter1;
+		fixture.SetOnly = parameter2;
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.SetSetOnly(parameter1);
+			ctx.DependencyServiceMock.Return();
+			ctx.DependencyServiceMock.SetSetOnly(parameter2);
+		});
+
+		const string expectedMessage = "Expected IPrimitiveDependencyService#Return() to be invoked at index 2, but there are no invocations.";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
 }

@@ -4,38 +4,79 @@ namespace MyNihongo.Mock.Sample;
 public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyService>
 {
 	private Proxy? _proxy;
+	public IPrimitiveDependencyService Object => _proxy ??= new Proxy(this);
+
+	// Handler
+	private PrimitiveHandler? _handler;
+	private Invocation<PrimitiveHandler?>? _handlerAddInvocation;
+	private Invocation<PrimitiveHandler?>? _handlerRemoveInvocation;
+
+	public void RaiseHandler(in int value)
+	{
+		_handler?.Invoke(Object, value);
+	}
+
+	public void VerifyAddHandler(in PrimitiveHandler handler, in Times times)
+	{
+		_handlerAddInvocation ??= new Invocation<PrimitiveHandler?>("IPrimitiveDependencyService#Handler#add");
+		_handlerAddInvocation.Verify(handler, times);
+	}
+
+	public long VerifyAddHandler(in PrimitiveHandler handler, in long index)
+	{
+		_handlerAddInvocation ??= new Invocation<PrimitiveHandler?>("IPrimitiveDependencyService#Handler#add");
+		return _handlerAddInvocation.Verify(handler, index);
+	}
+
+	public void VerifyRemoveHandler(in PrimitiveHandler handler, in Times times)
+	{
+		_handlerRemoveInvocation ??= new Invocation<PrimitiveHandler?>("IPrimitiveDependencyService#Handler#remove");
+		_handlerRemoveInvocation.Verify(handler, times);
+	}
+
+	public long VerifyRemoveHandler(in PrimitiveHandler handler, in long index)
+	{
+		_handlerRemoveInvocation ??= new Invocation<PrimitiveHandler?>("IPrimitiveDependencyService#Handler#remove");
+		return _handlerRemoveInvocation.Verify(handler, index);
+	}
+
+	// HandlerEvent
+	private EventHandler<string>? _handlerEvent;
+	private Invocation<EventHandler<string>?>? _handlerEventAddInvocation;
+	private Invocation<EventHandler<string>?>? _handlerEventRemoveInvocation;
+
+	public void RaiseHandlerEvent(in string value)
+	{
+		_handlerEvent?.Invoke(Object, value);
+	}
+	
+	public void VerifyAddHandlerEvent(in EventHandler<string> handler, in Times times)
+	{
+		_handlerEventAddInvocation ??= new Invocation<EventHandler<string>?>("IPrimitiveDependencyService#HandlerEvent#add");
+		_handlerEventAddInvocation.Verify(handler, times);
+	}
+
+	public long VerifyAddHandlerEvent(in EventHandler<string> handler, in long index)
+	{
+		_handlerEventAddInvocation ??= new Invocation<EventHandler<string>?>("IPrimitiveDependencyService#HandlerEvent#add");
+		return _handlerEventAddInvocation.Verify(handler, index);
+	}
+
+	public void VerifyRemoveHandlerEvent(in EventHandler<string> handler, in Times times)
+	{
+		_handlerEventRemoveInvocation ??= new Invocation<EventHandler<string>?>("IPrimitiveDependencyService#HandlerEvent#remove");
+		_handlerEventRemoveInvocation.Verify(handler, times);
+	}
+
+	public long VerifyRemoveHandlerEvent(in EventHandler<string> handler, in long index)
+	{
+		_handlerEventRemoveInvocation ??= new Invocation<EventHandler<string>?>("IPrimitiveDependencyService#HandlerEvent#remove");
+		return _handlerEventRemoveInvocation.Verify(handler, index);
+	}
 
 	// GetOnly
 	private Setup<int>? _getOnlyGet;
 	private Invocation? _getOnlyGetInvocation;
-
-	// SetOnly
-	private SetupWithParameter<decimal>? _setOnlySet;
-	private Invocation<decimal>? _setOnlySetInvocation;
-
-	// GetInit
-	private Setup<string>? _getInitGet;
-	private Invocation? _getInitGetInvocation;
-	private SetupWithParameter<string>? _getInitSet;
-	private Invocation<string>? _getInitSetInvocation;
-
-	// Functions
-	private Setup? _invoke;
-	private Invocation? _invokeInvocation;
-	private SetupWithParameter<string>? _invokeWithParameter1;
-	private Invocation<string>? _invokeWithParameterInvocation1;
-	private SetupWithParameter<int>? _invokeWithParameter2;
-	private Invocation<int>? _invokeWithParameterInvocation2;
-	private SetupIntInt? _invokeWithSeveralParameters;
-	private InvocationIntInt? _invokeWithSeveralParametersInvocation;
-	private Setup<int>? _return;
-	private Invocation? _returnInvocation;
-	private SetupWithParameter<string, string>? _returnWithParameter;
-	private Invocation<string>? _returnWithParameterInvocation;
-	private SetupIntInt<decimal>? _returnWithSeveralParameters;
-	private InvocationIntInt? _returnWithSeveralParametersInvocation;
-
-	public IPrimitiveDependencyService Object => _proxy ??= new Proxy(this);
 
 	public Setup<int> SetupGetGetOnly()
 	{
@@ -53,6 +94,10 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		_getOnlyGetInvocation ??= new Invocation("IPrimitiveDependencyService#GetOnly#get");
 		return _getOnlyGetInvocation.Verify(index);
 	}
+
+	// SetOnly
+	private SetupWithParameter<decimal>? _setOnlySet;
+	private Invocation<decimal>? _setOnlySetInvocation;
 
 	public SetupWithParameter<decimal> SetupSetSetOnly(in It<decimal> value)
 	{
@@ -72,6 +117,12 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		_setOnlySetInvocation ??= new Invocation<decimal>("IPrimitiveDependencyService#SetOnly#set = {0}");
 		return _setOnlySetInvocation.Verify(value, index);
 	}
+
+	// GetInit
+	private Setup<string>? _getInitGet;
+	private Invocation? _getInitGetInvocation;
+	private SetupWithParameter<string>? _getInitSet;
+	private Invocation<string>? _getInitSetInvocation;
 
 	public Setup<string> SetupGetGetInit()
 	{
@@ -109,6 +160,10 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		return _getInitSetInvocation.Verify(value, index);
 	}
 
+	// Invoke
+	private Setup? _invoke;
+	private Invocation? _invokeInvocation;
+
 	public Setup SetupInvoke()
 	{
 		return _invoke ??= new Setup();
@@ -125,6 +180,10 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		_invokeInvocation ??= new Invocation("IPrimitiveDependencyService#Invoke()");
 		return _invokeInvocation.Verify(index);
 	}
+
+	// InvokeWithParameter
+	private SetupWithParameter<string>? _invokeWithParameter1;
+	private Invocation<string>? _invokeWithParameterInvocation1;
 
 	public SetupWithParameter<string> SetupInvokeWithParameter(in It<string> parameter)
 	{
@@ -145,6 +204,10 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		return _invokeWithParameterInvocation1.Verify(parameter, index);
 	}
 
+	// InvokeWithParameter
+	private SetupWithParameter<int>? _invokeWithParameter2;
+	private Invocation<int>? _invokeWithParameterInvocation2;
+
 	public SetupWithParameter<int> SetupInvokeWithParameter(in It<int> parameter)
 	{
 		_invokeWithParameter2 ??= new SetupWithParameter<int>();
@@ -163,6 +226,10 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		_invokeWithParameterInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService#InvokeWithParameter({0})");
 		return _invokeWithParameterInvocation2.Verify(parameter, index);
 	}
+
+	// InvokeWithSeveralParameters
+	private SetupIntInt? _invokeWithSeveralParameters;
+	private InvocationIntInt? _invokeWithSeveralParametersInvocation;
 
 	public SetupIntInt SetupInvokeWithSeveralParameters(in It<int> parameter1, in It<int> parameter2)
 	{
@@ -183,6 +250,10 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		return _invokeWithSeveralParametersInvocation.Verify(parameter1, parameter2, index);
 	}
 
+	// Return
+	private Setup<int>? _return;
+	private Invocation? _returnInvocation;
+
 	public Setup<int> SetupReturn()
 	{
 		return _return ??= new Setup<int>();
@@ -199,6 +270,10 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		_returnInvocation ??= new Invocation("IPrimitiveDependencyService#Return()");
 		return _returnInvocation.Verify(index);
 	}
+
+	// ReturnWithParameter
+	private SetupWithParameter<string, string>? _returnWithParameter;
+	private Invocation<string>? _returnWithParameterInvocation;
 
 	public SetupWithParameter<string, string> SetupReturnWithParameter(in It<string> parameter)
 	{
@@ -218,6 +293,10 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		_returnWithParameterInvocation ??= new Invocation<string>("IPrimitiveDependencyService#ReturnWithParameter({0})");
 		return _returnWithParameterInvocation.Verify(parameter, index);
 	}
+
+	// ReturnWithSeveralParameters
+	private SetupIntInt<decimal>? _returnWithSeveralParameters;
+	private InvocationIntInt? _returnWithSeveralParametersInvocation;
 
 	public SetupIntInt<decimal> SetupReturnWithSeveralParameters(in It<int> parameter1, in It<int> parameter2)
 	{
@@ -240,6 +319,10 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	public void VerifyNoOtherCalls()
 	{
+		_handlerAddInvocation?.VerifyNoOtherCalls();
+		_handlerRemoveInvocation?.VerifyNoOtherCalls();
+		_handlerEventAddInvocation?.VerifyNoOtherCalls();
+		_handlerEventRemoveInvocation?.VerifyNoOtherCalls();
 		_getOnlyGetInvocation?.VerifyNoOtherCalls();
 		_setOnlySetInvocation?.VerifyNoOtherCalls();
 		_getInitGetInvocation?.VerifyNoOtherCalls();
@@ -262,11 +345,44 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 			_mock = mock;
 		}
 
+		public event PrimitiveHandler? Handler
+		{
+			add
+			{
+				_mock._handlerAddInvocation ??= new Invocation<PrimitiveHandler?>("IPrimitiveDependencyService#Handler#add");
+				_mock._handlerAddInvocation.Register(InvocationIndex.CounterValue, value);
+				_mock._handler += value;
+			}
+			remove
+			{
+				_mock._handlerRemoveInvocation ??= new Invocation<PrimitiveHandler?>("IPrimitiveDependencyService#Handler#remove");
+				_mock._handlerRemoveInvocation.Register(InvocationIndex.CounterValue, value);
+				_mock._handler -= value;
+			}
+		}
+
+		public event EventHandler<string>? HandlerEvent
+		{
+			add
+			{
+				_mock._handlerEventAddInvocation ??= new Invocation<EventHandler<string>?>("IPrimitiveDependencyService#HandlerEvent#add");
+				_mock._handlerEventAddInvocation.Register(InvocationIndex.CounterValue, value);
+				_mock._handlerEvent += value;
+			}
+			remove
+			{
+				_mock._handlerEventRemoveInvocation ??= new Invocation<EventHandler<string>?>("IPrimitiveDependencyService#HandlerEvent#remove");
+				_mock._handlerEventRemoveInvocation.Register(InvocationIndex.CounterValue, value);
+				_mock._handlerEvent -= value;
+			}
+		}
+
 		public int GetOnly
 		{
 			get
 			{
-				(_mock._getOnlyGetInvocation ??= new Invocation("IPrimitiveDependencyService#GetOnly#get")).Register(InvocationIndex.CounterValue);
+				_mock._getOnlyGetInvocation ??= new Invocation("IPrimitiveDependencyService#GetOnly#get");
+				_mock._getOnlyGetInvocation.Register(InvocationIndex.CounterValue);
 				return _mock._getOnlyGet?.Execute(out var returnValue) == true ? returnValue : 0;
 			}
 		}
@@ -275,7 +391,8 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		{
 			set
 			{
-				(_mock._setOnlySetInvocation ??= new Invocation<decimal>("IPrimitiveDependencyService#SetOnly#set = {0}")).Register(InvocationIndex.CounterValue, value);
+				_mock._setOnlySetInvocation ??= new Invocation<decimal>("IPrimitiveDependencyService#SetOnly#set = {0}");
+				_mock._setOnlySetInvocation.Register(InvocationIndex.CounterValue, value);
 				_mock._setOnlySet?.Invoke(value);
 			}
 		}
@@ -284,55 +401,64 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		{
 			get
 			{
-				(_mock._getInitGetInvocation ??= new Invocation("IPrimitiveDependencyService#GetInit#get")).Register(InvocationIndex.CounterValue);
+				_mock._getInitGetInvocation ??= new Invocation("IPrimitiveDependencyService#GetInit#get");
+				_mock._getInitGetInvocation.Register(InvocationIndex.CounterValue);
 				return _mock._getInitGet?.Execute(out var returnValue) == true ? returnValue! : string.Empty;
 			}
 			set
 			{
-				(_mock._getInitSetInvocation ??= new Invocation<string>("IPrimitiveDependencyService#GetInit#set = {0}")).Register(InvocationIndex.CounterValue, value);
+				_mock._getInitSetInvocation ??= new Invocation<string>("IPrimitiveDependencyService#GetInit#set = {0}");
+				_mock._getInitSetInvocation.Register(InvocationIndex.CounterValue, value);
 				_mock._getInitSet?.Invoke(value);
 			}
 		}
 
 		public void Invoke()
 		{
-			(_mock._invokeInvocation ??= new Invocation("IPrimitiveDependencyService#Invoke()")).Register(InvocationIndex.CounterValue);
+			_mock._invokeInvocation ??= new Invocation("IPrimitiveDependencyService#Invoke()");
+			_mock._invokeInvocation.Register(InvocationIndex.CounterValue);
 			_mock._invoke?.Invoke();
 		}
 
 		public void InvokeWithParameter(in string parameter)
 		{
-			(_mock._invokeWithParameterInvocation1 ??= new Invocation<string>("IPrimitiveDependencyService#InvokeWithParameter({0})")).Register(InvocationIndex.CounterValue, parameter);
+			_mock._invokeWithParameterInvocation1 ??= new Invocation<string>("IPrimitiveDependencyService#InvokeWithParameter({0})");
+			_mock._invokeWithParameterInvocation1.Register(InvocationIndex.CounterValue, parameter);
 			_mock._invokeWithParameter1?.Invoke(parameter);
 		}
 
 		public void InvokeWithParameter(in int parameter)
 		{
-			(_mock._invokeWithParameterInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService#InvokeWithParameter({0})")).Register(InvocationIndex.CounterValue, parameter);
+			_mock._invokeWithParameterInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService#InvokeWithParameter({0})");
+			_mock._invokeWithParameterInvocation2.Register(InvocationIndex.CounterValue, parameter);
 			_mock._invokeWithParameter2?.Invoke(parameter);
 		}
 
 		public void InvokeWithSeveralParameters(in int parameter1, in int parameter2)
 		{
-			(_mock._invokeWithSeveralParametersInvocation ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters({0}, {1})")).Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			_mock._invokeWithSeveralParametersInvocation ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters({0}, {1})");
+			_mock._invokeWithSeveralParametersInvocation.Register(InvocationIndex.CounterValue, parameter1, parameter2);
 			_mock._invokeWithSeveralParameters?.Invoke(parameter1, parameter2);
 		}
 
 		public int Return()
 		{
-			(_mock._returnInvocation ??= new Invocation("IPrimitiveDependencyService#Return()")).Register(InvocationIndex.CounterValue);
+			_mock._returnInvocation ??= new Invocation("IPrimitiveDependencyService#Return()");
+			_mock._returnInvocation.Register(InvocationIndex.CounterValue);
 			return _mock._return?.Execute(out var returnValue) == true ? returnValue : 0;
 		}
 
 		public string ReturnWithParameter(in string parameter)
 		{
-			(_mock._returnWithParameterInvocation ??= new Invocation<string>("IPrimitiveDependencyService#ReturnWithParameter({0})")).Register(InvocationIndex.CounterValue, parameter);
+			_mock._returnWithParameterInvocation ??= new Invocation<string>("IPrimitiveDependencyService#ReturnWithParameter({0})");
+			_mock._returnWithParameterInvocation.Register(InvocationIndex.CounterValue, parameter);
 			return _mock._returnWithParameter?.Execute(parameter, out var returnValue) == true ? returnValue! : string.Empty;
 		}
 
 		public decimal ReturnWithSeveralParameters(int parameter1, int parameter2)
 		{
-			(_mock._returnWithSeveralParametersInvocation ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters({0}, {1})")).Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			_mock._returnWithSeveralParametersInvocation ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters({0}, {1})");
+			_mock._returnWithSeveralParametersInvocation.Register(InvocationIndex.CounterValue, parameter1, parameter2);
 			return _mock._returnWithSeveralParameters?.Execute(parameter1, parameter2, out var returnValue) == true ? returnValue : 0m;
 		}
 	}
@@ -341,6 +467,36 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 [Obsolete("Will be generated")]
 public static class PrimitiveDependencyServiceMockEx
 {
+	public static void RaiseHandler(this IMock<IPrimitiveDependencyService> @this, in int value) =>
+		((PrimitiveDependencyServiceMock)@this).RaiseHandler(value);
+
+	public static void VerifyAddHandler(this IMock<IPrimitiveDependencyService> @this, in PrimitiveHandler handler, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyAddHandler(handler, times);
+
+	public static void VerifyAddHandler(this IMock<IPrimitiveDependencyService> @this, in PrimitiveHandler handler, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyAddHandler(handler, times());
+
+	public static void VerifyRemoveHandler(this IMock<IPrimitiveDependencyService> @this, in PrimitiveHandler handler, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyRemoveHandler(handler, times);
+
+	public static void VerifyRemoveHandler(this IMock<IPrimitiveDependencyService> @this, in PrimitiveHandler handler, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyRemoveHandler(handler, times());
+
+	public static void RaiseHandlerEvent(this IMock<IPrimitiveDependencyService> @this, in string value) =>
+		((PrimitiveDependencyServiceMock)@this).RaiseHandlerEvent(value);
+	
+	public static void VerifyAddHandlerEvent(this IMock<IPrimitiveDependencyService> @this, in EventHandler<string> handler, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyAddHandlerEvent(handler, times);
+
+	public static void VerifyAddHandlerEvent(this IMock<IPrimitiveDependencyService> @this, in EventHandler<string> handler, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyAddHandlerEvent(handler, times());
+
+	public static void VerifyRemoveHandlerEvent(this IMock<IPrimitiveDependencyService> @this, in EventHandler<string> handler, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyRemoveHandlerEvent(handler, times);
+
+	public static void VerifyRemoveHandlerEvent(this IMock<IPrimitiveDependencyService> @this, in EventHandler<string> handler, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyRemoveHandlerEvent(handler, times());
+
 	public static ISetup<int> SetupGetGetOnly(this IMock<IPrimitiveDependencyService> @this) =>
 		((PrimitiveDependencyServiceMock)@this).SetupGetGetOnly();
 
@@ -447,6 +603,30 @@ public static class PrimitiveDependencyServiceMockEx
 [Obsolete("Will be generated")]
 public static class PrimitiveDependencyServiceMockSequenceEx
 {
+	public static void AddHandler(this IMockSequence<IPrimitiveDependencyService> @this, PrimitiveHandler value)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyAddHandler(value, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	public static void RemoveHandler(this IMockSequence<IPrimitiveDependencyService> @this, PrimitiveHandler value)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyRemoveHandler(value, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+	
+	public static void AddHandlerEvent(this IMockSequence<IPrimitiveDependencyService> @this, EventHandler<string> value)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyAddHandlerEvent(value, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	public static void RemoveHandlerEvent(this IMockSequence<IPrimitiveDependencyService> @this, EventHandler<string> value)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyRemoveHandlerEvent(value, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
 	public static void GetGetOnly(this IMockSequence<IPrimitiveDependencyService> @this)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyGetGetOnly(@this.VerifyIndex);

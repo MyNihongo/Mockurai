@@ -4,10 +4,21 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 {
 	private readonly IPrimitiveDependencyService _primitiveDependencyService;
 
-	public PrimitiveTypeService(IPrimitiveDependencyService primitiveDependencyService)
+	public PrimitiveTypeService(IPrimitiveDependencyService primitiveDependencyService, bool subscribeToHandler)
 	{
 		_primitiveDependencyService = primitiveDependencyService;
+
+		if (subscribeToHandler)
+			primitiveDependencyService.Handler += PrimitiveDependencyServiceOnHandler;
 	}
+
+	public event EventHandler<string>? HandlerEvent
+	{
+		add => _primitiveDependencyService.HandlerEvent += value;
+		remove => _primitiveDependencyService.HandlerEvent -= value;
+	}
+
+	public int Sum { get; private set; }
 
 	public int GetOnly => _primitiveDependencyService.GetOnly;
 
@@ -60,5 +71,15 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		var spendingDouble = Convert.ToDouble(spending);
 
 		return Math.Pow(spendingDouble, 2d);
+	}
+
+	public void Dispose()
+	{
+		_primitiveDependencyService.Handler -= PrimitiveDependencyServiceOnHandler;
+	}
+
+	public void PrimitiveDependencyServiceOnHandler(object sender, int value)
+	{
+		Sum += value;
 	}
 }

@@ -2,6 +2,9 @@ namespace MyNihongo.Mock.Sample;
 
 public interface IPrimitiveDependencyService
 {
+	event PrimitiveHandler? Handler;
+	event EventHandler<string>? HandlerEvent;
+
 	int GetOnly { get; }
 
 	decimal SetOnly { set; }

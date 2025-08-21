@@ -1,5 +1,3 @@
-using System.Text.Json;
-
 namespace MyNihongo.Mock;
 
 public readonly ref struct It<T>
@@ -21,12 +19,12 @@ public readonly ref struct It<T>
 
 	public static It<T> Value(T value)
 	{
-		return new It<T>(x => EqualityComparer<T>.Default.Equals(value, x), SetupType.Value, () => JsonSerializer.Serialize(value));
+		return new It<T>(x => EqualityComparer<T>.Default.Equals(value, x), SetupType.Value, () => value.ToJsonString());
 	}
 
 	public static It<T> Equivalent(T value)
 	{
-		return new It<T>(x => EquivalencyComparer<T>.Default.Equivalent(value, x), SetupType.Equivalent, () => JsonSerializer.Serialize(value));
+		return new It<T>(x => EquivalencyComparer<T>.Default.Equivalent(value, x), SetupType.Equivalent, () => value.ToJsonString());
 	}
 
 	public static It<T> Where(in Func<T, bool> predicate)
