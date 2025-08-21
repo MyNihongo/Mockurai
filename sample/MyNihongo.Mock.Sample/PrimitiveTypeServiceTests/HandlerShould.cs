@@ -11,11 +11,12 @@ public sealed class HandlerShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.RaiseHandler(inputValue1);
 		DependencyServiceMock.RaiseHandler(inputValue2);
 		fixture.Dispose();
+		fixture.Dispose();
 
 		Assert.Equal(inputValue1 + inputValue2, fixture.Sum);
 
 		DependencyServiceMock.VerifyAddHandler(((PrimitiveTypeService)fixture).PrimitiveDependencyServiceOnHandler, Times.Once);
-		DependencyServiceMock.VerifyRemoveHandler(((PrimitiveTypeService)fixture).PrimitiveDependencyServiceOnHandler, Times.Once);
+		DependencyServiceMock.VerifyRemoveHandler(((PrimitiveTypeService)fixture).PrimitiveDependencyServiceOnHandler, Times.Exactly(2));
 		VerifyNoOtherCalls();
 	}
 

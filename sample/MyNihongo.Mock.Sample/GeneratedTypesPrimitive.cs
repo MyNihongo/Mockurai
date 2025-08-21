@@ -49,6 +49,30 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	{
 		_handlerEvent?.Invoke(Object, value);
 	}
+	
+	public void VerifyAddHandlerEvent(in EventHandler<string> handler, in Times times)
+	{
+		_handlerEventAddInvocation ??= new Invocation<EventHandler<string>?>("IPrimitiveDependencyService#HandlerEvent#add");
+		_handlerEventAddInvocation.Verify(handler, times);
+	}
+
+	public long VerifyAddHandlerEvent(in EventHandler<string> handler, in long index)
+	{
+		_handlerEventAddInvocation ??= new Invocation<EventHandler<string>?>("IPrimitiveDependencyService#HandlerEvent#add");
+		return _handlerEventAddInvocation.Verify(handler, index);
+	}
+
+	public void VerifyRemoveHandlerEvent(in EventHandler<string> handler, in Times times)
+	{
+		_handlerEventRemoveInvocation ??= new Invocation<EventHandler<string>?>("IPrimitiveDependencyService#HandlerEvent#remove");
+		_handlerEventRemoveInvocation.Verify(handler, times);
+	}
+
+	public long VerifyRemoveHandlerEvent(in EventHandler<string> handler, in long index)
+	{
+		_handlerEventRemoveInvocation ??= new Invocation<EventHandler<string>?>("IPrimitiveDependencyService#HandlerEvent#remove");
+		return _handlerEventRemoveInvocation.Verify(handler, index);
+	}
 
 	// GetOnly
 	private Setup<int>? _getOnlyGet;
@@ -460,6 +484,18 @@ public static class PrimitiveDependencyServiceMockEx
 
 	public static void RaiseHandlerEvent(this IMock<IPrimitiveDependencyService> @this, in string value) =>
 		((PrimitiveDependencyServiceMock)@this).RaiseHandlerEvent(value);
+	
+	public static void VerifyAddHandlerEvent(this IMock<IPrimitiveDependencyService> @this, in EventHandler<string> handler, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyAddHandlerEvent(handler, times);
+
+	public static void VerifyAddHandlerEvent(this IMock<IPrimitiveDependencyService> @this, in EventHandler<string> handler, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyAddHandlerEvent(handler, times());
+
+	public static void VerifyRemoveHandlerEvent(this IMock<IPrimitiveDependencyService> @this, in EventHandler<string> handler, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyRemoveHandlerEvent(handler, times);
+
+	public static void VerifyRemoveHandlerEvent(this IMock<IPrimitiveDependencyService> @this, in EventHandler<string> handler, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyRemoveHandlerEvent(handler, times());
 
 	public static ISetup<int> SetupGetGetOnly(this IMock<IPrimitiveDependencyService> @this) =>
 		((PrimitiveDependencyServiceMock)@this).SetupGetGetOnly();
@@ -576,6 +612,18 @@ public static class PrimitiveDependencyServiceMockSequenceEx
 	public static void RemoveHandler(this IMockSequence<IPrimitiveDependencyService> @this, PrimitiveHandler value)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyRemoveHandler(value, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+	
+	public static void AddHandlerEvent(this IMockSequence<IPrimitiveDependencyService> @this, EventHandler<string> value)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyAddHandlerEvent(value, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	public static void RemoveHandlerEvent(this IMockSequence<IPrimitiveDependencyService> @this, EventHandler<string> value)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyRemoveHandlerEvent(value, @this.VerifyIndex);
 		@this.VerifyIndex.Set(nextIndex);
 	}
 
