@@ -4,10 +4,11 @@ public abstract partial class PrimitiveTypeServiceTestsBase
 {
 	protected partial IMock<IPrimitiveDependencyService> DependencyServiceMock { get; }
 
-	protected IPrimitiveTypeService CreateFixture()
+	protected IPrimitiveTypeService CreateFixture(bool subscribeToHandler = false)
 	{
 		return new PrimitiveTypeService(
-			primitiveDependencyService: DependencyServiceMock.Object
+			primitiveDependencyService: DependencyServiceMock.Object,
+			subscribeToHandler
 		);
 	}
 }

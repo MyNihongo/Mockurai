@@ -7,7 +7,7 @@ public sealed class HandlerShould : PrimitiveTypeServiceTestsBase
 	{
 		const int inputValue1 = 123, inputValue2 = 234;
 
-		var fixture = CreateFixture();
+		var fixture = CreateFixture(subscribeToHandler: true);
 		DependencyServiceMock.RaiseHandler(inputValue1);
 		DependencyServiceMock.RaiseHandler(inputValue2);
 		fixture.Dispose();
@@ -24,7 +24,7 @@ public sealed class HandlerShould : PrimitiveTypeServiceTestsBase
 	{
 		const int inputValue1 = 123, inputValue2 = 234;
 
-		var fixture = CreateFixture();
+		var fixture = CreateFixture(subscribeToHandler: true);
 		DependencyServiceMock.RaiseHandler(inputValue1);
 		DependencyServiceMock.RaiseHandler(inputValue2);
 		fixture.Dispose();
@@ -46,7 +46,7 @@ public sealed class HandlerShould : PrimitiveTypeServiceTestsBase
 	{
 		const int inputValue1 = 123, inputValue2 = 234;
 
-		var fixture = CreateFixture();
+		var fixture = CreateFixture(subscribeToHandler: true);
 		DependencyServiceMock.RaiseHandler(inputValue1);
 		DependencyServiceMock.RaiseHandler(inputValue2);
 		fixture.Dispose();
@@ -69,7 +69,7 @@ public sealed class HandlerShould : PrimitiveTypeServiceTestsBase
 	{
 		const int inputValue1 = 123, inputValue2 = 234;
 
-		var fixture = CreateFixture();
+		var fixture = CreateFixture(subscribeToHandler: true);
 		DependencyServiceMock.RaiseHandler(inputValue1);
 		DependencyServiceMock.RaiseHandler(inputValue2);
 		fixture.Dispose();
@@ -92,7 +92,7 @@ public sealed class HandlerShould : PrimitiveTypeServiceTestsBase
 	{
 		const int inputValue1 = 123, inputValue2 = 234;
 
-		var fixture = CreateFixture();
+		var fixture = CreateFixture(subscribeToHandler: true);
 		DependencyServiceMock.RaiseHandler(inputValue1);
 		DependencyServiceMock.RaiseHandler(inputValue2);
 		fixture.Dispose();
@@ -110,7 +110,7 @@ public sealed class HandlerShould : PrimitiveTypeServiceTestsBase
 	{
 		const int inputValue1 = 123, inputValue2 = 234;
 
-		var fixture = CreateFixture();
+		var fixture = CreateFixture(subscribeToHandler: true);
 		DependencyServiceMock.RaiseHandler(inputValue1);
 		DependencyServiceMock.RaiseHandler(inputValue2);
 		fixture.Dispose();

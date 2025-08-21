@@ -4,11 +4,12 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 {
 	private readonly IPrimitiveDependencyService _primitiveDependencyService;
 
-	public PrimitiveTypeService(IPrimitiveDependencyService primitiveDependencyService)
+	public PrimitiveTypeService(IPrimitiveDependencyService primitiveDependencyService, bool subscribeToHandler)
 	{
 		_primitiveDependencyService = primitiveDependencyService;
 
-		primitiveDependencyService.Handler += PrimitiveDependencyServiceOnHandler;
+		if (subscribeToHandler)
+			primitiveDependencyService.Handler += PrimitiveDependencyServiceOnHandler;
 	}
 
 	public event EventHandler<string>? HandlerEvent
