@@ -11,10 +11,20 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	private Invocation<PrimitiveHandler?>? _handlerAddInvocation;
 	private Invocation<PrimitiveHandler?>? _handlerRemoveInvocation;
 
+	public void RaiseHandler(in int value)
+	{
+		_handler?.Invoke(Object, value);
+	}
+
 	// HandlerEvent
 	private EventHandler<string>? _handlerEvent;
 	private Invocation<EventHandler<string>?>? _handlerEventAddInvocation;
 	private Invocation<EventHandler<string>?>? _handlerEventRemoveInvocation;
+
+	public void RaiseHandlerEvent(in string value)
+	{
+		_handlerEvent?.Invoke(Object, value);
+	}
 
 	// GetOnly
 	private Setup<int>? _getOnlyGet;
@@ -405,6 +415,12 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 [Obsolete("Will be generated")]
 public static class PrimitiveDependencyServiceMockEx
 {
+	public static void RaiseHandler(this IMock<IPrimitiveDependencyService> @this, in int value) =>
+		((PrimitiveDependencyServiceMock)@this).RaiseHandler(value);
+
+	public static void RaiseHandlerEvent(this IMock<IPrimitiveDependencyService> @this, in string value) =>
+		((PrimitiveDependencyServiceMock)@this).RaiseHandlerEvent(value);
+
 	public static ISetup<int> SetupGetGetOnly(this IMock<IPrimitiveDependencyService> @this) =>
 		((PrimitiveDependencyServiceMock)@this).SetupGetGetOnly();
 
