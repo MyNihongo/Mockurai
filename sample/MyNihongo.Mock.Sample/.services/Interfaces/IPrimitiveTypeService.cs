@@ -3,7 +3,7 @@ namespace MyNihongo.Mock.Sample;
 public interface IPrimitiveTypeService : IDisposable
 {
 	event EventHandler<string>? HandlerEvent;
-	
+
 	int Sum { get; }
 
 	int GetOnly { get; }
@@ -18,11 +18,15 @@ public interface IPrimitiveTypeService : IDisposable
 
 	void InvokeWithParameter(in int parameter);
 
+	void InvokeWithParameter(ref decimal parameter);
+
 	void InvokeWithSeveralParameters(in int parameter1, in int parameter2);
 
 	decimal Return();
 
 	string ReturnWithParameter(in string parameter);
+
+	int ReturnWithParameter(ref double parameter);
 
 	double ReturnWithSeveralParameters(in int parameter1, in int parameter2);
 }
