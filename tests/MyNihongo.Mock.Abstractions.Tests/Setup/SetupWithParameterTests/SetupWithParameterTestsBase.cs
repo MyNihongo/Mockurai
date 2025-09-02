@@ -1,6 +1,6 @@
-namespace MyNihongo.Mock.Abstractions.Tests.Setup.SetupWithOneParameterTests;
+namespace MyNihongo.Mock.Abstractions.Tests.Setup.SetupWithParameterTests;
 
-public abstract class SetupWithOneParameterTestsBase : SetupTestsBase
+public abstract class SetupWithParameterTestsBase : SetupTestsBase
 {
 	protected static SetupWithParameter<T> CreateFixture<T>()
 	{

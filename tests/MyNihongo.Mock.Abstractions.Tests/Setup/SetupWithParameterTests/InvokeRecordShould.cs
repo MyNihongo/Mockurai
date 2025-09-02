@@ -1,21 +1,20 @@
-namespace MyNihongo.Mock.Abstractions.Tests.Setup.SetupWithOneParameterTests;
+namespace MyNihongo.Mock.Abstractions.Tests.Setup.SetupWithParameterTests;
 
-public sealed class InvokeClassShould : SetupWithOneParameterTestsBase
+public sealed class InvokeRecordShould : SetupWithParameterTestsBase
 {
 	[Fact]
 	public void ThrowForAnySetup()
 	{
 		const string errorMessage = nameof(errorMessage);
-		var setup = It<ClassParameter1>.Any();
+		var setup = It<RecordParameter1>.Any();
 
 		var fixture = CreateFixture(setup);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		var input = new ClassParameter1
-		{
-			Text = "any text",
-			Number = 12345678,
-		};
+		var input = new RecordParameter1(
+			Text: "any text",
+			Number: 12345678
+		);
 
 		var actual = () => fixture.Invoke(input);
 

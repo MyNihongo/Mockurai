@@ -1,6 +1,6 @@
-namespace MyNihongo.Mock.Abstractions.Tests.Setup.SetupReturnsWithOneParameterTests;
+namespace MyNihongo.Mock.Abstractions.Tests.Setup.SetupReturnsWithParameterTests;
 
-public sealed class ExecutePrimitiveShould : SetupReturnsWithOneParameterTestsBase
+public sealed class ExecutePrimitiveShould : SetupReturnsWithParameterTestsBase
 {
 	[Fact]
 	public void ReturnForAnySetup()
