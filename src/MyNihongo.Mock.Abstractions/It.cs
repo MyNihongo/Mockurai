@@ -5,6 +5,11 @@ public readonly ref struct It<T>
 	public readonly Setup? ValueSetup;
 	private readonly Func<string>? _toString;
 
+	internal It(Func<string> toString)
+	{
+		_toString = toString;
+	}
+
 	private It(Func<T, bool> predicate, SetupType type, Func<string> toString)
 	{
 		_toString = toString;
