@@ -2295,7 +2295,6 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 	[InlineData(100)]
 	public void ReturnDefaultForWhereSetupFunc1(int inputValue1)
 	{
-		const int returnValue = 12345;
 		const int setupValue2 = 987654321;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 

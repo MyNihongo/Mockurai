@@ -1,11 +1,7 @@
 namespace MyNihongo.Mock;
 
-public sealed class SetupWithParameter<TParameter> : ISetup
+public sealed class SetupWithParameter<TParameter> : SetupWithParameterBase<TParameter, Action<TParameter>>
 {
-	private static readonly Comparer SortComparer = new();
-	private SetupContainer<Item>? _setups;
-	private Item? _currentSetup;
-
 	public void Invoke(in TParameter parameter)
 	{
 		if (_setups is null)
@@ -22,6 +18,35 @@ public sealed class SetupWithParameter<TParameter> : ISetup
 				throw setup.Exception;
 		}
 	}
+}
+
+public sealed class SetupWithRefParameter<TParameter> : SetupWithParameterBase<TParameter, ActionRef<TParameter>>
+{
+	public void Invoke(ref TParameter parameter)
+	{
+		if (_setups is null)
+			return;
+
+		foreach (var setup in _setups)
+		{
+			if (setup.Parameter.HasValue && !setup.Parameter.Value.Check(parameter))
+				continue;
+
+			setup.Callback?.Invoke(ref parameter);
+
+			if (setup.Exception is not null)
+				throw setup.Exception;
+		}
+	}
+}
+
+public abstract class SetupWithParameterBase<TParameter, TDelegate> : ISetup
+{
+	private static readonly Comparer SortComparer = new();
+
+	// ReSharper disable once InconsistentNaming
+	protected SetupContainer<Item>? _setups;
+	private Item? _currentSetup;
 
 	public void SetupParameter(in It<TParameter> parameter)
 	{
@@ -31,7 +56,7 @@ public sealed class SetupWithParameter<TParameter> : ISetup
 		_setups.Add(_currentSetup);
 	}
 
-	public void Callback(in Action<TParameter> callback)
+	public void Callback(in TDelegate callback)
 	{
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
@@ -47,10 +72,10 @@ public sealed class SetupWithParameter<TParameter> : ISetup
 		_currentSetup.Exception = exception;
 	}
 
-	private sealed class Item(in It<TParameter>.Setup? parameter)
+	protected sealed class Item(in It<TParameter>.Setup? parameter)
 	{
 		public readonly It<TParameter>.Setup? Parameter = parameter;
-		public Action<TParameter>? Callback;
+		public TDelegate? Callback;
 		public Exception? Exception;
 	}
 
