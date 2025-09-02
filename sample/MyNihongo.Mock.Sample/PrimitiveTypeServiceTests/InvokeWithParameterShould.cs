@@ -93,6 +93,57 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
+	public void ThrowWithSetupAny()
+	{
+		const string parameter = "ZFJ2XHcBRAuyJZJX",
+			errorMessage = nameof(errorMessage);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(It<string>.Any())
+			.Throws(new InvalidOperationException(errorMessage));
+
+		var actual = () => CreateFixture()
+			.InvokeWithParameter(parameter);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowWithSetupAnyOverload()
+	{
+		const int parameter = 123;
+		const string errorMessage = nameof(errorMessage);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(It<int>.Any())
+			.Throws(new InvalidOperationException(errorMessage));
+
+		var actual = () => CreateFixture()
+			.InvokeWithParameter(parameter);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowWithSetupAnyRef()
+	{
+		const string errorMessage = nameof(errorMessage);
+		var inputValue = 123m;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItRef<decimal>.Any())
+			.Throws(new InvalidOperationException(errorMessage));
+
+		var actual = () => CreateFixture()
+			.InvokeWithParameter(ref inputValue);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
 	public void ExecuteWithAnotherSetup()
 	{
 		const string errorMessage = nameof(errorMessage);
