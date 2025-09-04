@@ -6,17 +6,19 @@ namespace MyNihongo.Mock;
 public sealed class Invocation<TParameter>
 {
 	private readonly string _name;
+	private readonly string? _prefix;
 	private readonly InvocationContainer<Item> _invocations = [];
 
-	public Invocation(in string name)
+	public Invocation(in string name, in string? prefix = null)
 	{
 		_name = name;
+		_prefix = prefix;
 	}
 
 	public void Register(in InvocationIndex.Counter index, in TParameter parameter)
 	{
 		var invokedIndex = index.Increment();
-		_invocations.Add(invokedIndex, new Item(parameter));
+		_invocations.Add(invokedIndex, new Item(parameter, _prefix));
 	}
 
 	public void Verify(in It<TParameter> parameter, in Times times)
@@ -98,11 +100,13 @@ public sealed class Invocation<TParameter>
 	{
 		public bool IsVerified;
 		private readonly TParameter _parameter;
+		private readonly string? _prefix;
 		private readonly string? _jsonSnapshot;
 
-		public Item(in TParameter parameter)
+		public Item(in TParameter parameter, in string? prefix)
 		{
 			_parameter = parameter;
+			_prefix = prefix;
 
 			try
 			{
@@ -123,9 +127,13 @@ public sealed class Invocation<TParameter>
 
 		public override string ToString()
 		{
-			return string.IsNullOrEmpty(_jsonSnapshot)
+			var stringValue = string.IsNullOrEmpty(_jsonSnapshot)
 				? _parameter?.ToString() ?? string.Empty
 				: _jsonSnapshot;
+
+			return !string.IsNullOrEmpty(_prefix)
+				? $"{_prefix} {stringValue}"
+				: stringValue;
 		}
 	}
 }

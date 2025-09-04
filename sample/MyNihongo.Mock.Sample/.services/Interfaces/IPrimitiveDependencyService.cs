@@ -17,11 +17,15 @@ public interface IPrimitiveDependencyService
 
 	void InvokeWithParameter(in int parameter);
 
+	void InvokeWithParameter(ref decimal parameter);
+
 	void InvokeWithSeveralParameters(in int parameter1, in int parameter2);
 
 	int Return();
 
 	string ReturnWithParameter(in string parameter);
+
+	int ReturnWithParameter(ref double parameter);
 
 	decimal ReturnWithSeveralParameters(int parameter1, int parameter2);
 }

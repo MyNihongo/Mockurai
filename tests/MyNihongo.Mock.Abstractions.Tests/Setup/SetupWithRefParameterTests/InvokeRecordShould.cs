@@ -1,6 +1,6 @@
-namespace MyNihongo.Mock.Abstractions.Tests.Setup.SetupWithOneParameterTests;
+namespace MyNihongo.Mock.Abstractions.Tests.Setup.SetupWithRefParameterTests;
 
-public sealed class InvokeRecordShould : SetupWithOneParameterTestsBase
+public sealed class InvokeRecordShould : SetupWithRefParameterTestsBase
 {
 	[Fact]
 	public void ThrowForAnySetup()
@@ -16,7 +16,7 @@ public sealed class InvokeRecordShould : SetupWithOneParameterTestsBase
 			Number: 12345678
 		);
 
-		var actual = () => fixture.Invoke(input);
+		var actual = () => fixture.Invoke(ref input);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);

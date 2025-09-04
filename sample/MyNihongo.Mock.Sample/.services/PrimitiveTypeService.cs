@@ -48,6 +48,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		_primitiveDependencyService.InvokeWithParameter(parameter);
 	}
 
+	public void InvokeWithParameter(ref decimal parameter)
+	{
+		_primitiveDependencyService.InvokeWithParameter(ref parameter);
+	}
+
 	public void InvokeWithSeveralParameters(in int parameter1, in int parameter2)
 	{
 		_primitiveDependencyService.InvokeWithSeveralParameters(parameter1, parameter2);
@@ -63,6 +68,12 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 	{
 		var name = _primitiveDependencyService.ReturnWithParameter(parameter);
 		return $"name:{name},age:32";
+	}
+
+	public int ReturnWithParameter(ref double parameter)
+	{
+		var result = _primitiveDependencyService.ReturnWithParameter(ref parameter);
+		return result + 1;
 	}
 
 	public double ReturnWithSeveralParameters(in int parameter1, in int parameter2)
