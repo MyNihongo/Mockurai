@@ -250,6 +250,21 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	}
 
 	[Fact]
+	public void UpdateValueInCallbackForAny()
+	{
+		var setup = It<int>.Any();
+
+		var fixture = CreateFixture(setup);
+		fixture.Callback((ref int x) => x += 2);
+
+		var inputValue = 12345678;
+		fixture.Invoke(ref inputValue);
+
+		const int expected = 12345680;
+		Assert.Equal(expected, inputValue);
+	}
+
+	[Fact]
 	public void InvokeCallbackForValue()
 	{
 		var setupValue = 12345678;
@@ -284,6 +299,20 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	}
 
 	[Fact]
+	public void UpdateValueInCallbackForValue()
+	{
+		var setupValue = 12345678;
+		var setup = It<int>.Value(setupValue);
+
+		var fixture = CreateFixture(setup);
+		fixture.Callback((ref int x) => x += 2);
+		fixture.Invoke(ref setupValue);
+
+		const int expected = 12345680;
+		Assert.Equal(expected, setupValue);
+	}
+
+	[Fact]
 	public void NotInvokeCallbackForValue()
 	{
 		const int setupValue = 12345678;
@@ -301,6 +330,22 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	}
 
 	[Fact]
+	public void NotUpdateValueInCallbackForValue()
+	{
+		const int setupValue = 12345678;
+		var setup = It<int>.Value(setupValue);
+
+		var fixture = CreateFixture(setup);
+		fixture.Callback((ref int x) => x += 2);
+
+		var inputValue = -64713;
+		fixture.Invoke(ref inputValue);
+
+		const int expected = -64713;
+		Assert.Equal(expected, inputValue);
+	}
+
+	[Fact]
 	public void InvokeCallbackForWhere()
 	{
 		var setup = It<int>.Where(x => x > 10);
@@ -313,6 +358,21 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 		fixture.Invoke(ref inputValue);
 
 		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void UpdateValueInCallbackForWhere()
+	{
+		var setup = It<int>.Where(x => x > 10);
+
+		var fixture = CreateFixture(setup);
+		fixture.Callback((ref int x) => x += 2);
+
+		var inputValue = 12345678;
+		fixture.Invoke(ref inputValue);
+
+		const int expected = 12345680;
+		Assert.Equal(expected, inputValue);
 	}
 
 	[Fact]
@@ -348,6 +408,21 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 
 		const int expected = 0;
 		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotUpdateValueInCallbackForWhere()
+	{
+		var setup = It<int>.Where(x => x > 10);
+
+		var fixture = CreateFixture(setup);
+		fixture.Callback((ref int x) => x += 2);
+
+		var inputValue = -64713;
+		fixture.Invoke(ref inputValue);
+
+		const int expected = -64713;
+		Assert.Equal(expected, inputValue);
 	}
 
 	[Fact]
