@@ -2554,7 +2554,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 		Assert.False(hasValue);
 		Assert.Equal(expected, callbackValue);
 	}
-	
+
 	[Fact]
 	public void SetValueInCallbackForAny()
 	{
@@ -2635,7 +2635,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 		Assert.False(hasValue);
 		Assert.Equal(expected, callbackValue);
 	}
-	
+
 	[Fact]
 	public void SetValueInCallbackForValue()
 	{
@@ -2653,7 +2653,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 		Assert.False(hasValue);
 		Assert.Equal(expected, setupValue1);
 	}
-	
+
 	[Fact]
 	public void NotSetValueInCallbackForValue()
 	{
@@ -2734,7 +2734,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 		Assert.False(hasValue);
 		Assert.Equal(expected, callbackValue);
 	}
-	
+
 	[Fact]
 	public void SetValueInCallbackForWhere()
 	{
@@ -2742,13 +2742,31 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 
 		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Callback((ref x, y) => x += 2);
+		fixture.Callback((ref x, _) => x += 2);
 
 		var inputValue1 = 99;
 		const int inputValue2 = 11;
 		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		const int expected = 101;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
+	}
+
+	[Fact]
+	public void NotSetValueInCallbackForWhere()
+	{
+		It<int> setup1 = It<int>.Where(x => x > 20), setup2 = It<int>.Where(x => x < 15);
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, _) => x += 2);
+
+		var inputValue1 = 19;
+		const int inputValue2 = 11;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = 19;
 		Assert.False(hasValue);
 		Assert.Equal(expected, inputValue1);
 	}
@@ -2817,6 +2835,24 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 	}
 
 	[Fact]
+	public void NotSetValueInCallbackForValue1()
+	{
+		const int setupValue1 = 12345678, setupValue2 = 23456789;
+		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x = +y);
+
+		var inputValue1 = -64713;
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out _);
+
+		const int expected = -64713;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
+	}
+
+	[Fact]
 	public void NotInvokeCallbackForValue2()
 	{
 		var setupValue1 = 12345678;
@@ -2834,6 +2870,25 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 		const int expected = 0;
 		Assert.False(hasValue);
 		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotSetValueInCallbackForValue2()
+	{
+		var setupValue1 = 12345678;
+		const int setupValue2 = 23456789;
+		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		const int inputValue2 = -64713;
+		var hasValue = fixture.Execute(ref setupValue1, inputValue2, out _);
+
+		const int expected = -64713;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue2);
 	}
 
 	[Fact]
@@ -2857,6 +2912,25 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 	}
 
 	[Fact]
+	public void NotSetValueInCallbackForValue3()
+	{
+		const int setupValue1 = 12345678, setupValue2 = 23456789;
+		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		var inputValue1 = -64713;
+		const int inputValue2 = -28257;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = -64713;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
+	}
+
+	[Fact]
 	public void NotInvokeCallbackForValue4()
 	{
 		var setupValue2 = 23456789;
@@ -2873,6 +2947,24 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 		const int expected = 0;
 		Assert.False(hasValue);
 		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotSetValueInCallbackForValue4()
+	{
+		var setupValue2 = 23456789;
+		const int setupValue1 = 12345678;
+		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		var hasValue = fixture.Execute(ref setupValue2, setupValue1, out _);
+
+		const int expected = 23456789;
+		Assert.False(hasValue);
+		Assert.Equal(expected, setupValue2);
 	}
 
 	[Fact]
@@ -2896,6 +2988,25 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 	}
 
 	[Fact]
+	public void NotSetValueInCallbackForValueAny1()
+	{
+		const int setupValue1 = 12345678;
+		It<int> setup1 = It<int>.Value(setupValue1), setup2 = It<int>.Any();
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		var inputValue1 = -2341414;
+		const int inputValue2 = 1234;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = -2341414;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
+	}
+
+	[Fact]
 	public void NotInvokeCallbackForValueAny2()
 	{
 		const int setupValue2 = 12345678;
@@ -2913,6 +3024,25 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 		const int expected = 0;
 		Assert.False(hasValue);
 		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotSetValueInCallbackForValueAny2()
+	{
+		const int setupValue2 = 12345678;
+		It<int> setup1 = It<int>.Any(), setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		var inputValue1 = -2341414;
+		const int inputValue2 = 1234;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = -2341414;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
 	}
 
 	[Fact]
@@ -2935,6 +3065,24 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 	}
 
 	[Fact]
+	public void NotSetValueInCallbackForWhere1()
+	{
+		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Where(x => x < 20);
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		var inputValue1 = 10;
+		const int inputValue2 = 9;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = 10;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
+	}
+
+	[Fact]
 	public void NotInvokeCallbackForWhere2()
 	{
 		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Where(x => x < 20);
@@ -2951,6 +3099,24 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 		const int expected = 0;
 		Assert.False(hasValue);
 		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotSetValueInCallbackForWhere2()
+	{
+		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Where(x => x < 20);
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		var inputValue1 = 11;
+		const int inputValue2 = 20;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = 11;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
 	}
 
 	[Fact]
@@ -2973,6 +3139,24 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 	}
 
 	[Fact]
+	public void NotSetValueInCallbackForWhere3()
+	{
+		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Where(x => x < 20);
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		var inputValue1 = 10;
+		const int inputValue2 = 20;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = 10;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
+	}
+
+	[Fact]
 	public void NotInvokeCallbackForWhereAny1()
 	{
 		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Any();
@@ -2992,6 +3176,24 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 	}
 
 	[Fact]
+	public void NotSetValueInCallbackForWhereAny1()
+	{
+		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Any();
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		var inputValue1 = 10;
+		const int inputValue2 = 20;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = 10;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
+	}
+
+	[Fact]
 	public void NotInvokeCallbackForWhereAny2()
 	{
 		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Where(x => x < 20);
@@ -3008,6 +3210,24 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTe
 		const int expected = 0;
 		Assert.False(hasValue);
 		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotSetValueInCallbackForWhereAny2()
+	{
+		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Where(x => x < 20);
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		var inputValue1 = 10;
+		const int inputValue2 = 20;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = 10;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
 	}
 
 	[Fact]
