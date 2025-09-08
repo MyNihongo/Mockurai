@@ -19,7 +19,13 @@ public interface IPrimitiveDependencyService
 
 	void InvokeWithParameter(ref decimal parameter);
 
-	void InvokeWithSeveralParameters(in int parameter1, in int parameter2);
+	void InvokeWithSeveralParameters(int parameter1, int parameter2);
+
+	void InvokeWithSeveralParameters(ref int parameter1, int parameter2);
+
+	void InvokeWithSeveralParameters(int parameter1, ref int parameter2);
+
+	void InvokeWithSeveralParameters(ref int parameter1, ref int parameter2);
 
 	int Return();
 
@@ -28,4 +34,10 @@ public interface IPrimitiveDependencyService
 	int ReturnWithParameter(ref double parameter);
 
 	decimal ReturnWithSeveralParameters(int parameter1, int parameter2);
+
+	decimal ReturnWithSeveralParameters(ref int parameter1, int parameter2);
+
+	decimal ReturnWithSeveralParameters(int parameter1, ref int parameter2);
+
+	decimal ReturnWithSeveralParameters(ref int parameter1, ref int parameter2);
 }
