@@ -1,6 +1,6 @@
-namespace MyNihongo.Mock.Sample._Generated.SetupReturnsWithSeveralParametersTests;
+namespace MyNihongo.Mock.Sample._Generated;
 
-public abstract class SetupReturnsWithSeveralParametersTestsBase : SetupTestsBase
+public abstract class SetupReturnsTestsBase : SetupTestsBase
 {
 	protected static T CreateFixture<T>()
 		where T : ISetup<string>, new()

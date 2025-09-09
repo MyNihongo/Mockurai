@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock.Sample._Generated.SetupReturnsWithSeveralParametersTests;
 
-public sealed class ExecutePrimitiveShould : SetupReturnsWithSeveralParametersTestsBase
+public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 {
 	[Fact]
 	public void ReturnForAnySetup()
