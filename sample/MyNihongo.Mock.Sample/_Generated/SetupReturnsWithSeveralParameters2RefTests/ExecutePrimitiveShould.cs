@@ -658,43 +658,6 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void PrioritiseValueOverAnyReturn3()
 	{
-		const int setupValue1 = 1, setupValue2 = 2;
-
-		const string returnValue1 = nameof(returnValue1);
-		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
-
-		const string returnValue2 = nameof(returnValue2);
-		It<int> setup21 = setupValue1, setup22 = default;
-
-		const string returnValue3 = nameof(returnValue3);
-		It<int> setup31 = default, setup32 = setupValue2;
-
-		const string returnValue4 = nameof(returnValue4);
-		It<int> setup41 = setupValue1, setup42 = setupValue2;
-
-		var fixture = CreateFixture<SetupIntRefInt<string>>();
-		fixture.SetupParameters(setup11, setup12);
-		fixture.Returns(returnValue1);
-
-		fixture.SetupParameters(setup21, setup22);
-		fixture.Returns(returnValue2);
-
-		fixture.SetupParameters(setup31, setup32);
-		fixture.Returns(returnValue3);
-
-		fixture.SetupParameters(setup41, setup42);
-		fixture.Returns(returnValue4);
-
-		var inputValue2 = 324343242;
-		var hasValue = fixture.Execute(setupValue1, ref inputValue2, out var actual);
-
-		Assert.True(hasValue);
-		Assert.Equal(returnValue3, actual);
-	}
-
-	[Fact]
-	public void PrioritiseValueOverAnyReturn2()
-	{
 		const int setupValue1 = 1;
 		var setupValue2 = 2;
 
@@ -725,6 +688,43 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 
 		const int inputValue1 = 324343242;
 		var hasValue = fixture.Execute(inputValue1, ref setupValue2, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue3, actual);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverAnyReturn2()
+	{
+		const int setupValue1 = 1, setupValue2 = 2;
+
+		const string returnValue1 = nameof(returnValue1);
+		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
+
+		const string returnValue2 = nameof(returnValue2);
+		It<int> setup21 = setupValue1, setup22 = default;
+
+		const string returnValue3 = nameof(returnValue3);
+		It<int> setup31 = default, setup32 = setupValue2;
+
+		const string returnValue4 = nameof(returnValue4);
+		It<int> setup41 = setupValue1, setup42 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntRefInt<string>>();
+		fixture.SetupParameters(setup11, setup12);
+		fixture.Returns(returnValue1);
+
+		fixture.SetupParameters(setup21, setup22);
+		fixture.Returns(returnValue2);
+
+		fixture.SetupParameters(setup31, setup32);
+		fixture.Returns(returnValue3);
+
+		fixture.SetupParameters(setup41, setup42);
+		fixture.Returns(returnValue4);
+
+		var inputValue2 = 324343242;
+		var hasValue = fixture.Execute(setupValue1, ref inputValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue2, actual);
@@ -808,43 +808,6 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void PrioritiseValueOverAnyThrow3()
 	{
-		const int setupValue1 = 1, setupValue2 = 2;
-
-		const string errorMessage1 = nameof(errorMessage1);
-		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
-
-		const string errorMessage2 = nameof(errorMessage2);
-		It<int> setup21 = setupValue1, setup22 = default;
-
-		const string errorMessage3 = nameof(errorMessage3);
-		It<int> setup31 = default, setup32 = setupValue2;
-
-		const string errorMessage4 = nameof(errorMessage4);
-		It<int> setup41 = setupValue1, setup42 = setupValue2;
-
-		var fixture = CreateFixture<SetupIntRefInt<string>>();
-		fixture.SetupParameters(setup11, setup12);
-		fixture.Throws(new InvalidOperationException(errorMessage1));
-
-		fixture.SetupParameters(setup21, setup22);
-		fixture.Throws(new ArgumentException(errorMessage2));
-
-		fixture.SetupParameters(setup31, setup32);
-		fixture.Throws(new InvalidCastException(errorMessage3));
-
-		fixture.SetupParameters(setup41, setup42);
-		fixture.Throws(new OverflowException(errorMessage4));
-
-		var inputValue2 = 324343242;
-		Action actual = () => fixture.Execute(setupValue1, ref inputValue2, out _);
-
-		var exception = Assert.Throws<InvalidCastException>(actual);
-		Assert.Equal(errorMessage3, exception.Message);
-	}
-
-	[Fact]
-	public void PrioritiseValueOverAnyThrow2()
-	{
 		const int setupValue1 = 1;
 		var setupValue2 = 2;
 
@@ -875,6 +838,43 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 
 		const int inputValue1 = 324343242;
 		Action actual = () => fixture.Execute(inputValue1, ref setupValue2, out _);
+
+		var exception = Assert.Throws<InvalidCastException>(actual);
+		Assert.Equal(errorMessage3, exception.Message);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverAnyThrow2()
+	{
+		const int setupValue1 = 1, setupValue2 = 2;
+
+		const string errorMessage1 = nameof(errorMessage1);
+		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
+
+		const string errorMessage2 = nameof(errorMessage2);
+		It<int> setup21 = setupValue1, setup22 = default;
+
+		const string errorMessage3 = nameof(errorMessage3);
+		It<int> setup31 = default, setup32 = setupValue2;
+
+		const string errorMessage4 = nameof(errorMessage4);
+		It<int> setup41 = setupValue1, setup42 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntRefInt<string>>();
+		fixture.SetupParameters(setup11, setup12);
+		fixture.Throws(new InvalidOperationException(errorMessage1));
+
+		fixture.SetupParameters(setup21, setup22);
+		fixture.Throws(new ArgumentException(errorMessage2));
+
+		fixture.SetupParameters(setup31, setup32);
+		fixture.Throws(new InvalidCastException(errorMessage3));
+
+		fixture.SetupParameters(setup41, setup42);
+		fixture.Throws(new OverflowException(errorMessage4));
+
+		var inputValue2 = 324343242;
+		Action actual = () => fixture.Execute(setupValue1, ref inputValue2, out _);
 
 		var exception = Assert.Throws<ArgumentException>(actual);
 		Assert.Equal(errorMessage2, exception.Message);
@@ -989,142 +989,6 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void PrioritiseValueOverWhereReturns8()
 	{
-		const int setupValue1 = 1, setupValue2 = 2;
-		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
-
-		const string returnValue1 = nameof(returnValue1);
-		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
-
-		const string returnValue2 = nameof(returnValue2);
-		It<int> setup21 = setupWhere1, setup22 = default;
-
-		const string returnValue3 = nameof(returnValue3);
-		It<int> setup31 = default, setup32 = setupWhere2;
-
-		const string returnValue4 = nameof(returnValue4);
-		It<int> setup41 = setupWhere1, setup42 = setupWhere2;
-
-		const string returnValue5 = nameof(returnValue5);
-		It<int> setup51 = setupValue1, setup52 = default;
-
-		const string returnValue6 = nameof(returnValue6);
-		It<int> setup61 = setupValue1, setup62 = setupWhere2;
-
-		const string returnValue7 = nameof(returnValue7);
-		It<int> setup71 = default, setup72 = setupValue2;
-
-		const string returnValue8 = nameof(returnValue8);
-		It<int> setup81 = setupWhere1, setup82 = setupValue2;
-
-		const string returnValue9 = nameof(returnValue9);
-		It<int> setup91 = setupValue1, setup92 = setupValue2;
-
-		var fixture = CreateFixture<SetupIntRefInt<string>>();
-		fixture.SetupParameters(setup11, setup12);
-		fixture.Returns(returnValue1);
-
-		fixture.SetupParameters(setup21, setup22);
-		fixture.Returns(returnValue2);
-
-		fixture.SetupParameters(setup31, setup32);
-		fixture.Returns(returnValue3);
-
-		fixture.SetupParameters(setup41, setup42);
-		fixture.Returns(returnValue4);
-
-		fixture.SetupParameters(setup51, setup52);
-		fixture.Returns(returnValue5);
-
-		fixture.SetupParameters(setup61, setup62);
-		fixture.Returns(returnValue6);
-
-		fixture.SetupParameters(setup71, setup72);
-		fixture.Returns(returnValue7);
-
-		fixture.SetupParameters(setup81, setup82);
-		fixture.Returns(returnValue8);
-
-		fixture.SetupParameters(setup91, setup92);
-		fixture.Returns(returnValue9);
-
-		var inputValue2 = 25;
-		var hasValue = fixture.Execute(setupValue1, ref inputValue2, out var actual);
-
-		Assert.True(hasValue);
-		Assert.Equal(returnValue8, actual);
-	}
-
-	[Fact]
-	public void PrioritiseValueOverWhereReturns7()
-	{
-		const int setupValue1 = 1, setupValue2 = 2;
-		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
-
-		const string returnValue1 = nameof(returnValue1);
-		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
-
-		const string returnValue2 = nameof(returnValue2);
-		It<int> setup21 = setupWhere1, setup22 = default;
-
-		const string returnValue3 = nameof(returnValue3);
-		It<int> setup31 = default, setup32 = setupWhere2;
-
-		const string returnValue4 = nameof(returnValue4);
-		It<int> setup41 = setupWhere1, setup42 = setupWhere2;
-
-		const string returnValue5 = nameof(returnValue5);
-		It<int> setup51 = setupValue1, setup52 = default;
-
-		const string returnValue6 = nameof(returnValue6);
-		It<int> setup61 = setupValue1, setup62 = setupWhere2;
-
-		const string returnValue7 = nameof(returnValue7);
-		It<int> setup71 = default, setup72 = setupValue2;
-
-		const string returnValue8 = nameof(returnValue8);
-		It<int> setup81 = setupWhere1, setup82 = setupValue2;
-
-		const string returnValue9 = nameof(returnValue9);
-		It<int> setup91 = setupValue1, setup92 = setupValue2;
-
-		var fixture = CreateFixture<SetupIntRefInt<string>>();
-		fixture.SetupParameters(setup11, setup12);
-		fixture.Returns(returnValue1);
-
-		fixture.SetupParameters(setup21, setup22);
-		fixture.Returns(returnValue2);
-
-		fixture.SetupParameters(setup31, setup32);
-		fixture.Returns(returnValue3);
-
-		fixture.SetupParameters(setup41, setup42);
-		fixture.Returns(returnValue4);
-
-		fixture.SetupParameters(setup51, setup52);
-		fixture.Returns(returnValue5);
-
-		fixture.SetupParameters(setup61, setup62);
-		fixture.Returns(returnValue6);
-
-		fixture.SetupParameters(setup71, setup72);
-		fixture.Returns(returnValue7);
-
-		fixture.SetupParameters(setup81, setup82);
-		fixture.Returns(returnValue8);
-
-		fixture.SetupParameters(setup91, setup92);
-		fixture.Returns(returnValue9);
-
-		var inputValue2 = -345332543;
-		var hasValue = fixture.Execute(setupValue1, ref inputValue2, out var actual);
-
-		Assert.True(hasValue);
-		Assert.Equal(returnValue7, actual);
-	}
-
-	[Fact]
-	public void PrioritiseValueOverWhereReturns6()
-	{
 		const int setupValue1 = 1;
 		var setupValue2 = 2;
 		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
@@ -1188,11 +1052,11 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var hasValue = fixture.Execute(setupValue1, ref inputValue2, out var actual);
 
 		Assert.True(hasValue);
-		Assert.Equal(returnValue6, actual);
+		Assert.Equal(returnValue8, actual);
 	}
 
 	[Fact]
-	public void PrioritiseValueOverWhereReturns5()
+	public void PrioritiseValueOverWhereReturns7()
 	{
 		const int setupValue1 = 1;
 		var setupValue2 = 2;
@@ -1254,6 +1118,142 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Returns(returnValue9);
 
 		var inputValue2 = -21;
+		var hasValue = fixture.Execute(setupValue1, ref inputValue2, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue7, actual);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverWhereReturns6()
+	{
+		const int setupValue1 = 1, setupValue2 = 2;
+		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
+
+		const string returnValue1 = nameof(returnValue1);
+		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
+
+		const string returnValue2 = nameof(returnValue2);
+		It<int> setup21 = setupWhere1, setup22 = default;
+
+		const string returnValue3 = nameof(returnValue3);
+		It<int> setup31 = default, setup32 = setupWhere2;
+
+		const string returnValue4 = nameof(returnValue4);
+		It<int> setup41 = setupWhere1, setup42 = setupWhere2;
+
+		const string returnValue5 = nameof(returnValue5);
+		It<int> setup51 = setupValue1, setup52 = default;
+
+		const string returnValue6 = nameof(returnValue6);
+		It<int> setup61 = setupValue1, setup62 = setupWhere2;
+
+		const string returnValue7 = nameof(returnValue7);
+		It<int> setup71 = default, setup72 = setupValue2;
+
+		const string returnValue8 = nameof(returnValue8);
+		It<int> setup81 = setupWhere1, setup82 = setupValue2;
+
+		const string returnValue9 = nameof(returnValue9);
+		It<int> setup91 = setupValue1, setup92 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntRefInt<string>>();
+		fixture.SetupParameters(setup11, setup12);
+		fixture.Returns(returnValue1);
+
+		fixture.SetupParameters(setup21, setup22);
+		fixture.Returns(returnValue2);
+
+		fixture.SetupParameters(setup31, setup32);
+		fixture.Returns(returnValue3);
+
+		fixture.SetupParameters(setup41, setup42);
+		fixture.Returns(returnValue4);
+
+		fixture.SetupParameters(setup51, setup52);
+		fixture.Returns(returnValue5);
+
+		fixture.SetupParameters(setup61, setup62);
+		fixture.Returns(returnValue6);
+
+		fixture.SetupParameters(setup71, setup72);
+		fixture.Returns(returnValue7);
+
+		fixture.SetupParameters(setup81, setup82);
+		fixture.Returns(returnValue8);
+
+		fixture.SetupParameters(setup91, setup92);
+		fixture.Returns(returnValue9);
+
+		var inputValue2 = 25;
+		var hasValue = fixture.Execute(setupValue1, ref inputValue2, out var actual);
+
+		Assert.True(hasValue);
+		Assert.Equal(returnValue6, actual);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverWhereReturns5()
+	{
+		const int setupValue1 = 1, setupValue2 = 2;
+		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
+
+		const string returnValue1 = nameof(returnValue1);
+		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
+
+		const string returnValue2 = nameof(returnValue2);
+		It<int> setup21 = setupWhere1, setup22 = default;
+
+		const string returnValue3 = nameof(returnValue3);
+		It<int> setup31 = default, setup32 = setupWhere2;
+
+		const string returnValue4 = nameof(returnValue4);
+		It<int> setup41 = setupWhere1, setup42 = setupWhere2;
+
+		const string returnValue5 = nameof(returnValue5);
+		It<int> setup51 = setupValue1, setup52 = default;
+
+		const string returnValue6 = nameof(returnValue6);
+		It<int> setup61 = setupValue1, setup62 = setupWhere2;
+
+		const string returnValue7 = nameof(returnValue7);
+		It<int> setup71 = default, setup72 = setupValue2;
+
+		const string returnValue8 = nameof(returnValue8);
+		It<int> setup81 = setupWhere1, setup82 = setupValue2;
+
+		const string returnValue9 = nameof(returnValue9);
+		It<int> setup91 = setupValue1, setup92 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntRefInt<string>>();
+		fixture.SetupParameters(setup11, setup12);
+		fixture.Returns(returnValue1);
+
+		fixture.SetupParameters(setup21, setup22);
+		fixture.Returns(returnValue2);
+
+		fixture.SetupParameters(setup31, setup32);
+		fixture.Returns(returnValue3);
+
+		fixture.SetupParameters(setup41, setup42);
+		fixture.Returns(returnValue4);
+
+		fixture.SetupParameters(setup51, setup52);
+		fixture.Returns(returnValue5);
+
+		fixture.SetupParameters(setup61, setup62);
+		fixture.Returns(returnValue6);
+
+		fixture.SetupParameters(setup71, setup72);
+		fixture.Returns(returnValue7);
+
+		fixture.SetupParameters(setup81, setup82);
+		fixture.Returns(returnValue8);
+
+		fixture.SetupParameters(setup91, setup92);
+		fixture.Returns(returnValue9);
+
+		var inputValue2 = -345332543;
 		var hasValue = fixture.Execute(setupValue1, ref inputValue2, out var actual);
 
 		Assert.True(hasValue);
@@ -1607,142 +1607,6 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void PrioritiseValueOverWhereThrow8()
 	{
-		const int setupValue1 = 1, setupValue2 = 2;
-		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
-
-		const string errorMessage1 = nameof(errorMessage1);
-		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
-
-		const string errorMessage2 = nameof(errorMessage2);
-		It<int> setup21 = setupWhere1, setup22 = default;
-
-		const string errorMessage3 = nameof(errorMessage3);
-		It<int> setup31 = default, setup32 = setupWhere2;
-
-		const string errorMessage4 = nameof(errorMessage4);
-		It<int> setup41 = setupWhere1, setup42 = setupWhere2;
-
-		const string errorMessage5 = nameof(errorMessage5);
-		It<int> setup51 = setupValue1, setup52 = default;
-
-		const string errorMessage6 = nameof(errorMessage6);
-		It<int> setup61 = setupValue1, setup62 = setupWhere2;
-
-		const string errorMessage7 = nameof(errorMessage7);
-		It<int> setup71 = default, setup72 = setupValue2;
-
-		const string errorMessage8 = nameof(errorMessage8);
-		It<int> setup81 = setupWhere1, setup82 = setupValue2;
-
-		const string errorMessage9 = nameof(errorMessage9);
-		It<int> setup91 = setupValue1, setup92 = setupValue2;
-
-		var fixture = CreateFixture<SetupIntRefInt<string>>();
-		fixture.SetupParameters(setup11, setup12);
-		fixture.Throws(new InvalidOperationException(errorMessage1));
-
-		fixture.SetupParameters(setup21, setup22);
-		fixture.Throws(new ArgumentException(errorMessage2));
-
-		fixture.SetupParameters(setup31, setup32);
-		fixture.Throws(new InvalidCastException(errorMessage3));
-
-		fixture.SetupParameters(setup41, setup42);
-		fixture.Throws(new OverflowException(errorMessage4));
-
-		fixture.SetupParameters(setup51, setup52);
-		fixture.Throws(new MissingSatelliteAssemblyException(errorMessage5));
-
-		fixture.SetupParameters(setup61, setup62);
-		fixture.Throws(new FileLoadException(errorMessage6));
-
-		fixture.SetupParameters(setup71, setup72);
-		fixture.Throws(new AggregateException(errorMessage7));
-
-		fixture.SetupParameters(setup81, setup82);
-		fixture.Throws(new ArithmeticException(errorMessage8));
-
-		fixture.SetupParameters(setup91, setup92);
-		fixture.Throws(new InvalidExpressionException(errorMessage9));
-
-		var inputValue2 = 25;
-		Action actual = () => fixture.Execute(setupValue1, ref inputValue2, out _);
-
-		var exception = Assert.Throws<ArithmeticException>(actual);
-		Assert.Equal(errorMessage8, exception.Message);
-	}
-
-	[Fact]
-	public void PrioritiseValueOverWhereThrow7()
-	{
-		const int setupValue1 = 1, setupValue2 = 2;
-		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
-
-		const string errorMessage1 = nameof(errorMessage1);
-		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
-
-		const string errorMessage2 = nameof(errorMessage2);
-		It<int> setup21 = setupWhere1, setup22 = default;
-
-		const string errorMessage3 = nameof(errorMessage3);
-		It<int> setup31 = default, setup32 = setupWhere2;
-
-		const string errorMessage4 = nameof(errorMessage4);
-		It<int> setup41 = setupWhere1, setup42 = setupWhere2;
-
-		const string errorMessage5 = nameof(errorMessage5);
-		It<int> setup51 = setupValue1, setup52 = default;
-
-		const string errorMessage6 = nameof(errorMessage6);
-		It<int> setup61 = setupValue1, setup62 = setupWhere2;
-
-		const string errorMessage7 = nameof(errorMessage7);
-		It<int> setup71 = default, setup72 = setupValue2;
-
-		const string errorMessage8 = nameof(errorMessage8);
-		It<int> setup81 = setupWhere1, setup82 = setupValue2;
-
-		const string errorMessage9 = nameof(errorMessage9);
-		It<int> setup91 = setupValue1, setup92 = setupValue2;
-
-		var fixture = CreateFixture<SetupIntRefInt<string>>();
-		fixture.SetupParameters(setup11, setup12);
-		fixture.Throws(new InvalidOperationException(errorMessage1));
-
-		fixture.SetupParameters(setup21, setup22);
-		fixture.Throws(new ArgumentException(errorMessage2));
-
-		fixture.SetupParameters(setup31, setup32);
-		fixture.Throws(new InvalidCastException(errorMessage3));
-
-		fixture.SetupParameters(setup41, setup42);
-		fixture.Throws(new OverflowException(errorMessage4));
-
-		fixture.SetupParameters(setup51, setup52);
-		fixture.Throws(new MissingSatelliteAssemblyException(errorMessage5));
-
-		fixture.SetupParameters(setup61, setup62);
-		fixture.Throws(new FileLoadException(errorMessage6));
-
-		fixture.SetupParameters(setup71, setup72);
-		fixture.Throws(new AggregateException(errorMessage7));
-
-		fixture.SetupParameters(setup81, setup82);
-		fixture.Throws(new ArithmeticException(errorMessage8));
-
-		fixture.SetupParameters(setup91, setup92);
-		fixture.Throws(new InvalidExpressionException(errorMessage9));
-
-		var inputValue2 = -345332543;
-		Action actual = () => fixture.Execute(setupValue1, ref inputValue2, out _);
-
-		var exception = Assert.Throws<AggregateException>(actual);
-		Assert.Equal(errorMessage7, exception.Message);
-	}
-
-	[Fact]
-	public void PrioritiseValueOverWhereThrow6()
-	{
 		const int setupValue1 = 1;
 		var setupValue2 = 2;
 		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
@@ -1805,12 +1669,12 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var inputValue2 = 21;
 		Action actual = () => fixture.Execute(setupValue1, ref inputValue2, out _);
 
-		var exception = Assert.Throws<FileLoadException>(actual);
-		Assert.Equal(errorMessage6, exception.Message);
+		var exception = Assert.Throws<ArithmeticException>(actual);
+		Assert.Equal(errorMessage8, exception.Message);
 	}
 
 	[Fact]
-	public void PrioritiseValueOverWhereThrow5()
+	public void PrioritiseValueOverWhereThrow7()
 	{
 		const int setupValue1 = 1;
 		var setupValue2 = 2;
@@ -1872,6 +1736,142 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
 		var inputValue2 = -21;
+		Action actual = () => fixture.Execute(setupValue1, ref inputValue2, out _);
+
+		var exception = Assert.Throws<AggregateException>(actual);
+		Assert.Equal(errorMessage7, exception.Message);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverWhereThrow6()
+	{
+		const int setupValue1 = 1, setupValue2 = 2;
+		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
+
+		const string errorMessage1 = nameof(errorMessage1);
+		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
+
+		const string errorMessage2 = nameof(errorMessage2);
+		It<int> setup21 = setupWhere1, setup22 = default;
+
+		const string errorMessage3 = nameof(errorMessage3);
+		It<int> setup31 = default, setup32 = setupWhere2;
+
+		const string errorMessage4 = nameof(errorMessage4);
+		It<int> setup41 = setupWhere1, setup42 = setupWhere2;
+
+		const string errorMessage5 = nameof(errorMessage5);
+		It<int> setup51 = setupValue1, setup52 = default;
+
+		const string errorMessage6 = nameof(errorMessage6);
+		It<int> setup61 = setupValue1, setup62 = setupWhere2;
+
+		const string errorMessage7 = nameof(errorMessage7);
+		It<int> setup71 = default, setup72 = setupValue2;
+
+		const string errorMessage8 = nameof(errorMessage8);
+		It<int> setup81 = setupWhere1, setup82 = setupValue2;
+
+		const string errorMessage9 = nameof(errorMessage9);
+		It<int> setup91 = setupValue1, setup92 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntRefInt<string>>();
+		fixture.SetupParameters(setup11, setup12);
+		fixture.Throws(new InvalidOperationException(errorMessage1));
+
+		fixture.SetupParameters(setup21, setup22);
+		fixture.Throws(new ArgumentException(errorMessage2));
+
+		fixture.SetupParameters(setup31, setup32);
+		fixture.Throws(new InvalidCastException(errorMessage3));
+
+		fixture.SetupParameters(setup41, setup42);
+		fixture.Throws(new OverflowException(errorMessage4));
+
+		fixture.SetupParameters(setup51, setup52);
+		fixture.Throws(new MissingSatelliteAssemblyException(errorMessage5));
+
+		fixture.SetupParameters(setup61, setup62);
+		fixture.Throws(new FileLoadException(errorMessage6));
+
+		fixture.SetupParameters(setup71, setup72);
+		fixture.Throws(new AggregateException(errorMessage7));
+
+		fixture.SetupParameters(setup81, setup82);
+		fixture.Throws(new ArithmeticException(errorMessage8));
+
+		fixture.SetupParameters(setup91, setup92);
+		fixture.Throws(new InvalidExpressionException(errorMessage9));
+
+		var inputValue2 = 25;
+		Action actual = () => fixture.Execute(setupValue1, ref inputValue2, out _);
+
+		var exception = Assert.Throws<FileLoadException>(actual);
+		Assert.Equal(errorMessage6, exception.Message);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverWhereThrow5()
+	{
+		const int setupValue1 = 1, setupValue2 = 2;
+		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
+
+		const string errorMessage1 = nameof(errorMessage1);
+		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
+
+		const string errorMessage2 = nameof(errorMessage2);
+		It<int> setup21 = setupWhere1, setup22 = default;
+
+		const string errorMessage3 = nameof(errorMessage3);
+		It<int> setup31 = default, setup32 = setupWhere2;
+
+		const string errorMessage4 = nameof(errorMessage4);
+		It<int> setup41 = setupWhere1, setup42 = setupWhere2;
+
+		const string errorMessage5 = nameof(errorMessage5);
+		It<int> setup51 = setupValue1, setup52 = default;
+
+		const string errorMessage6 = nameof(errorMessage6);
+		It<int> setup61 = setupValue1, setup62 = setupWhere2;
+
+		const string errorMessage7 = nameof(errorMessage7);
+		It<int> setup71 = default, setup72 = setupValue2;
+
+		const string errorMessage8 = nameof(errorMessage8);
+		It<int> setup81 = setupWhere1, setup82 = setupValue2;
+
+		const string errorMessage9 = nameof(errorMessage9);
+		It<int> setup91 = setupValue1, setup92 = setupValue2;
+
+		var fixture = CreateFixture<SetupIntRefInt<string>>();
+		fixture.SetupParameters(setup11, setup12);
+		fixture.Throws(new InvalidOperationException(errorMessage1));
+
+		fixture.SetupParameters(setup21, setup22);
+		fixture.Throws(new ArgumentException(errorMessage2));
+
+		fixture.SetupParameters(setup31, setup32);
+		fixture.Throws(new InvalidCastException(errorMessage3));
+
+		fixture.SetupParameters(setup41, setup42);
+		fixture.Throws(new OverflowException(errorMessage4));
+
+		fixture.SetupParameters(setup51, setup52);
+		fixture.Throws(new MissingSatelliteAssemblyException(errorMessage5));
+
+		fixture.SetupParameters(setup61, setup62);
+		fixture.Throws(new FileLoadException(errorMessage6));
+
+		fixture.SetupParameters(setup71, setup72);
+		fixture.Throws(new AggregateException(errorMessage7));
+
+		fixture.SetupParameters(setup81, setup82);
+		fixture.Throws(new ArithmeticException(errorMessage8));
+
+		fixture.SetupParameters(setup91, setup92);
+		fixture.Throws(new InvalidExpressionException(errorMessage9));
+
+		var inputValue2 = -345332543;
 		Action actual = () => fixture.Execute(setupValue1, ref inputValue2, out _);
 
 		var exception = Assert.Throws<MissingSatelliteAssemblyException>(actual);
@@ -2568,9 +2568,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var inputValue2 = 11;
 		var hasValue = fixture.Execute(inputValue1, ref inputValue2, out _);
 
-		const int expected = 101;
+		const int expected = 13;
 		Assert.False(hasValue);
-		Assert.Equal(expected, inputValue1);
+		Assert.Equal(expected, inputValue2);
 	}
 
 	[Fact]
@@ -2649,9 +2649,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 
 		var hasValue = fixture.Execute(setupValue1, ref setupValue2, out _);
 
-		const int expected = 12345680;
+		const int expected = 23456791;
 		Assert.False(hasValue);
-		Assert.Equal(expected, setupValue1);
+		Assert.Equal(expected, setupValue2);
 	}
 
 	[Fact]
@@ -2748,9 +2748,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var inputValue2 = 11;
 		var hasValue = fixture.Execute(inputValue1, ref inputValue2, out _);
 
-		const int expected = 101;
+		const int expected = 13;
 		Assert.False(hasValue);
-		Assert.Equal(expected, inputValue1);
+		Assert.Equal(expected, inputValue2);
 	}
 
 	[Fact]
@@ -2842,7 +2842,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 
 		var fixture = CreateFixture<SetupIntRefInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Callback((x, ref y) => y =+ x);
+		fixture.Callback((x, ref y) => y = +x);
 
 		var inputValue2 = -64713;
 		var hasValue = fixture.Execute(setupValue1, ref inputValue2, out _);
