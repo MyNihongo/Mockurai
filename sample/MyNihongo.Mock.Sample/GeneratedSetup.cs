@@ -313,7 +313,7 @@ public sealed class SetupRefIntInt<TReturns> : ISetup<TReturns>
 
 			if (setup.Returns is not null)
 			{
-				returnValue = setup.Returns(parameter1, parameter2);
+				returnValue = setup.Returns(ref parameter1, parameter2);
 				return true;
 			}
 
@@ -334,7 +334,7 @@ public sealed class SetupRefIntInt<TReturns> : ISetup<TReturns>
 		_setups.Add(_currentSetup);
 	}
 
-	public void Callback(in Delegate callback)
+	public void Callback(in CallbackDelegate callback)
 	{
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
@@ -344,10 +344,10 @@ public sealed class SetupRefIntInt<TReturns> : ISetup<TReturns>
 
 	public void Returns(TReturns? value)
 	{
-		Returns((_, _) => value);
+		Returns((ref _, _) => value);
 	}
 
-	public void Returns(in Func<int, int, TReturns?> value)
+	public void Returns(in ReturnsCallbackDelegate value)
 	{
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
@@ -363,14 +363,15 @@ public sealed class SetupRefIntInt<TReturns> : ISetup<TReturns>
 		_currentSetup.Exception = exception;
 	}
 
-	public delegate void Delegate(ref int parameter1, int parameter2);
+	public delegate void CallbackDelegate(ref int parameter1, int parameter2);
+	public delegate TReturns? ReturnsCallbackDelegate(ref int parameter1, int parameter2);
 
 	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
 	{
 		public readonly It<int>.Setup? Parameter1 = parameter1;
 		public readonly It<int>.Setup? Parameter2 = parameter2;
-		public Delegate? Callback;
-		public Func<int, int, TReturns?>? Returns;
+		public CallbackDelegate? Callback;
+		public ReturnsCallbackDelegate? Returns;
 		public Exception? Exception;
 	}
 
@@ -516,7 +517,7 @@ public sealed class SetupIntRefInt<TReturns> : ISetup<TReturns>
 
 			if (setup.Returns is not null)
 			{
-				returnValue = setup.Returns(parameter1, parameter2);
+				returnValue = setup.Returns(parameter1, ref parameter2);
 				return true;
 			}
 
@@ -537,7 +538,7 @@ public sealed class SetupIntRefInt<TReturns> : ISetup<TReturns>
 		_setups.Add(_currentSetup);
 	}
 
-	public void Callback(in Delegate callback)
+	public void Callback(in CallbackDelegate callback)
 	{
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
@@ -547,10 +548,10 @@ public sealed class SetupIntRefInt<TReturns> : ISetup<TReturns>
 
 	public void Returns(TReturns? value)
 	{
-		Returns((_, _) => value);
+		Returns((_, ref _) => value);
 	}
 
-	public void Returns(in Func<int, int, TReturns?> value)
+	public void Returns(in ReturnsCallbackDelegate value)
 	{
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
@@ -566,14 +567,15 @@ public sealed class SetupIntRefInt<TReturns> : ISetup<TReturns>
 		_currentSetup.Exception = exception;
 	}
 	
-	public delegate void Delegate(int parameter1, ref int parameter2);
+	public delegate void CallbackDelegate(int parameter1, ref int parameter2);
+	public delegate TReturns? ReturnsCallbackDelegate(int parameter1, ref int parameter2);
 
 	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
 	{
 		public readonly It<int>.Setup? Parameter1 = parameter1;
 		public readonly It<int>.Setup? Parameter2 = parameter2;
-		public Delegate? Callback;
-		public Func<int, int, TReturns?>? Returns;
+		public CallbackDelegate? Callback;
+		public ReturnsCallbackDelegate? Returns;
 		public Exception? Exception;
 	}
 
@@ -719,7 +721,7 @@ public sealed class SetupRefIntRefInt<TReturns> : ISetup<TReturns>
 
 			if (setup.Returns is not null)
 			{
-				returnValue = setup.Returns(parameter1, parameter2);
+				returnValue = setup.Returns(ref parameter1, ref parameter2);
 				return true;
 			}
 
@@ -740,7 +742,7 @@ public sealed class SetupRefIntRefInt<TReturns> : ISetup<TReturns>
 		_setups.Add(_currentSetup);
 	}
 
-	public void Callback(in Delegate callback)
+	public void Callback(in CallbackDelegate callback)
 	{
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
@@ -750,10 +752,10 @@ public sealed class SetupRefIntRefInt<TReturns> : ISetup<TReturns>
 
 	public void Returns(TReturns? value)
 	{
-		Returns((_, _) => value);
+		Returns((ref _, ref _) => value);
 	}
 
-	public void Returns(in Func<int, int, TReturns?> value)
+	public void Returns(in ReturnsCallbackDelegate value)
 	{
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
@@ -769,14 +771,15 @@ public sealed class SetupRefIntRefInt<TReturns> : ISetup<TReturns>
 		_currentSetup.Exception = exception;
 	}
 	
-	public delegate void Delegate(ref int parameter1, ref int parameter2);
+	public delegate void CallbackDelegate(ref int parameter1, ref int parameter2);
+	public delegate TReturns? ReturnsCallbackDelegate(ref int parameter1, ref int parameter2);
 
 	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
 	{
 		public readonly It<int>.Setup? Parameter1 = parameter1;
 		public readonly It<int>.Setup? Parameter2 = parameter2;
-		public Delegate? Callback;
-		public Func<int, int, TReturns?>? Returns;
+		public CallbackDelegate? Callback;
+		public ReturnsCallbackDelegate? Returns;
 		public Exception? Exception;
 	}
 
