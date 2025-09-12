@@ -989,7 +989,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void PrioritiseValueOverWhereReturns8()
 	{
-		const int setupValue1 = 1, setupValue2 = 2;
+		const int setupValue1 = 1;
+		var setupValue2 = 2;
 		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
 
 		const string returnValue1 = nameof(returnValue1);
@@ -1047,8 +1048,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Returns(returnValue9);
 
-		var inputValue2 = 25;
-		var hasValue = fixture.Execute(setupValue1, ref inputValue2, out var actual);
+		const int inputValue1 = 11;
+		var hasValue = fixture.Execute(inputValue1, ref setupValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue8, actual);
@@ -1057,7 +1058,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void PrioritiseValueOverWhereReturns7()
 	{
-		const int setupValue1 = 1, setupValue2 = 2;
+		const int setupValue1 = 1;
+		var setupValue2 = 2;
 		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
 
 		const string returnValue1 = nameof(returnValue1);
@@ -1115,8 +1117,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Returns(returnValue9);
 
-		var inputValue2 = -345332543;
-		var hasValue = fixture.Execute(setupValue1, ref inputValue2, out var actual);
+		const int inputValue1 = -345332543;
+		var hasValue = fixture.Execute(inputValue1, ref setupValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue7, actual);
@@ -1607,7 +1609,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void PrioritiseValueOverWhereThrow8()
 	{
-		const int setupValue1 = 1, setupValue2 = 2;
+		const int setupValue1 = 1;
+		var setupValue2 = 2;
 		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
 
 		const string errorMessage1 = nameof(errorMessage1);
@@ -1665,8 +1668,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
-		var inputValue2 = 25;
-		Action actual = () => fixture.Execute(setupValue1, ref inputValue2, out _);
+		const int inputValue1 = 25;
+		Action actual = () => fixture.Execute(inputValue1, ref setupValue2, out _);
 
 		var exception = Assert.Throws<ArithmeticException>(actual);
 		Assert.Equal(errorMessage8, exception.Message);
@@ -1675,7 +1678,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void PrioritiseValueOverWhereThrow7()
 	{
-		const int setupValue1 = 1, setupValue2 = 2;
+		const int setupValue1 = 1;
+		var setupValue2 = 2;
 		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
 
 		const string errorMessage1 = nameof(errorMessage1);
@@ -1733,8 +1737,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
-		var inputValue2 = -345332543;
-		Action actual = () => fixture.Execute(setupValue1, ref inputValue2, out _);
+		const int inputValue1 = -345332543;
+		Action actual = () => fixture.Execute(inputValue1, ref setupValue2, out _);
 
 		var exception = Assert.Throws<AggregateException>(actual);
 		Assert.Equal(errorMessage7, exception.Message);

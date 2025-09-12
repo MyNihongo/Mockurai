@@ -2756,7 +2756,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		Assert.False(hasValue);
 		Assert.Null(actual);
 	}
-	
+
 	[Fact]
 	public void NotSetValueInReturnForWhereSetupsFunc1And2()
 	{
