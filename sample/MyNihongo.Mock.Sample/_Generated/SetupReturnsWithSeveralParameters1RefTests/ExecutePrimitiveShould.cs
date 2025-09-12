@@ -2535,7 +2535,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var returnValue = $"{expected}";
 		Assert.True(hasValue);
 		Assert.Equal(returnValue, actual);
-		Assert.Equal(expected, inputValue2);
+		Assert.Equal(expected, setupValue1);
 	}
 
 	[Theory]

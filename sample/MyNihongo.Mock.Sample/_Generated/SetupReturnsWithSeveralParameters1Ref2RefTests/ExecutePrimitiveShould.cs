@@ -2160,8 +2160,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		int inputValue1 = 12345678, inputValue2 = 987654321;
 		var hasValue = fixture.Execute(ref inputValue1, ref inputValue2, out var actual);
 
-		const int expected1 = 1, expected2 = 2;
-		const string returnValue = "999999998";
+		const int expected1 = -975308643, expected2 = 1962962964;
+		const string returnValue = "1356695689";
 		Assert.True(hasValue);
 		Assert.Equal(returnValue, actual);
 		Assert.Equal(expected1, inputValue1);
@@ -2197,8 +2197,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 
 		var hasValue = fixture.Execute(ref setupValue1, ref setupValue2, out var actual);
 
-		const int expected1 = 1, expected2 = 2;
-		const string returnValue = "999999998";
+		const int expected1 = -975308643, expected2 = 1962962964;
+		const string returnValue = "1356695689";
 		Assert.True(hasValue);
 		Assert.Equal(returnValue, actual);
 		Assert.Equal(expected1, setupValue1);
@@ -2237,7 +2237,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var inputValue1 = 84837621;
 		var hasValue = fixture.Execute(ref inputValue1, ref setupValue2, out var actual);
 
-		const int expected1 = 84837621, expected2 = 84837621;
+		const int expected1 = 84837621, expected2 = 987654321;
 		Assert.False(hasValue);
 		Assert.Null(actual);
 		Assert.Equal(expected1, inputValue1);
@@ -2295,7 +2295,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var inputValue2 = 84837621;
 		var hasValue = fixture.Execute(ref setupValue1, ref inputValue2, out var actual);
 
-		const int expected1 = 12345678, expected2 = 2;
+		const int expected1 = 12345678, expected2 = 84837621;
 		Assert.False(hasValue);
 		Assert.Null(actual);
 		Assert.Equal(expected1, setupValue1);
@@ -2351,7 +2351,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		int inputValue1 = -771245, inputValue2 = 84837621;
 		var hasValue = fixture.Execute(ref inputValue1, ref inputValue2, out var actual);
 
-		const int expected1 = 1, expected2 = 2;
+		const int expected1 = -771245, expected2 = 84837621;
 		Assert.False(hasValue);
 		Assert.Null(actual);
 		Assert.Equal(expected1, inputValue1);
@@ -2403,6 +2403,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	public void SetValueInReturnForWhereSetupFunc1(int inputValue1)
 	{
 		var setupValue2 = 987654321;
+		int expected1 = inputValue1 - setupValue2, expected2 = setupValue2 - expected1;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
@@ -2411,8 +2412,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 
 		var hasValue = fixture.Execute(ref inputValue1, ref setupValue2, out var actual);
 
-		const int expected1 = 1, expected2 = 2;
-		var returnValue = $"{inputValue1 + setupValue2 - 1}";
+		var returnValue = $"{inputValue1 - setupValue2}";
 		Assert.True(hasValue);
 		Assert.Equal(returnValue, actual);
 		Assert.Equal(expected1, inputValue1);
@@ -2504,6 +2504,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	public void SetValueInReturnForWhereSetupFunc2(int inputValue2)
 	{
 		var setupValue1 = 987654321;
+		int expected1 = setupValue1 - inputValue2, expected2 = inputValue2 - expected1;
 		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
 
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
@@ -2511,9 +2512,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Returns((ref x, ref y) => ((x -= y) - (y -= x)).ToString());
 
 		var hasValue = fixture.Execute(ref setupValue1, ref inputValue2, out var actual);
-
-		const int expected1 = 1, expected2 = 2;
-		var returnValue = $"{setupValue1 + inputValue2 - 1}";
+		
+		var returnValue = $"{setupValue1 - inputValue2}";
 		Assert.True(hasValue);
 		Assert.Equal(returnValue, actual);
 		Assert.Equal(expected1, setupValue1);
@@ -2607,8 +2607,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		int inputValue1 = 101, inputValue2 = 9;
 		var hasValue = fixture.Execute(ref inputValue1, ref inputValue2, out var actual);
 
-		const int expected1 = 1, expected2 = 2;
-		const string returnValue = "109";
+		const int expected1 = 92, expected2 = -83;
+		const string returnValue = "175";
 		Assert.True(hasValue);
 		Assert.Equal(returnValue, actual);
 		Assert.Equal(expected1, inputValue1);
@@ -2643,7 +2643,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		int inputValue1 = 99, inputValue2 = 9;
 		var hasValue = fixture.Execute(ref inputValue1, ref inputValue2, out var actual);
 
-		const int expected1 = 1, expected2 = 2;
+		const int expected1 = 99, expected2 = 9;
 		Assert.False(hasValue);
 		Assert.Null(actual);
 		Assert.Equal(expected1, inputValue1);
@@ -2695,7 +2695,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		int inputValue1 = 101, inputValue2 = 11;
 		var hasValue = fixture.Execute(ref inputValue1, ref inputValue2, out var actual);
 
-		const int expected1 = 1, expected2 = 2;
+		const int expected1 = 101, expected2 = 11;
 		Assert.False(hasValue);
 		Assert.Null(actual);
 		Assert.Equal(expected1, inputValue1);
@@ -2747,7 +2747,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		int inputValue1 = 99, inputValue2 = 11;
 		var hasValue = fixture.Execute(ref inputValue1, ref inputValue2, out var actual);
 
-		const int expected1 = 1, expected2 = 2;
+		const int expected1 = 99, expected2 = 11;
 		Assert.False(hasValue);
 		Assert.Null(actual);
 		Assert.Equal(expected1, inputValue1);
