@@ -251,26 +251,95 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	}
 
 	// InvokeWithSeveralParameters
-	private SetupIntInt? _invokeWithSeveralParameters;
-	private InvocationIntInt? _invokeWithSeveralParametersInvocation;
+	private SetupIntInt? _invokeWithSeveralParameters1;
+	private InvocationIntInt? _invokeWithSeveralParametersInvocation1;
 
 	public SetupIntInt SetupInvokeWithSeveralParameters(in It<int> parameter1, in It<int> parameter2)
 	{
-		_invokeWithSeveralParameters ??= new SetupIntInt();
-		_invokeWithSeveralParameters.SetupParameters(parameter1, parameter2);
-		return _invokeWithSeveralParameters;
+		_invokeWithSeveralParameters1 ??= new SetupIntInt();
+		_invokeWithSeveralParameters1.SetupParameters(parameter1, parameter2);
+		return _invokeWithSeveralParameters1;
 	}
 
 	public void VerifyInvokeWithSeveralParameters(in It<int> parameter1, in It<int> parameter2, in Times times)
 	{
-		_invokeWithSeveralParametersInvocation ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters({0}, {1})");
-		_invokeWithSeveralParametersInvocation.Verify(parameter1, parameter2, times);
+		_invokeWithSeveralParametersInvocation1 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters({0}, {1})");
+		_invokeWithSeveralParametersInvocation1.Verify(parameter1, parameter2, times);
 	}
 
 	public long VerifyInvokeWithSeveralParameters(in It<int> parameter1, in It<int> parameter2, in long index)
 	{
-		_invokeWithSeveralParametersInvocation ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters({0}, {1})");
-		return _invokeWithSeveralParametersInvocation.Verify(parameter1, parameter2, index);
+		_invokeWithSeveralParametersInvocation1 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters({0}, {1})");
+		return _invokeWithSeveralParametersInvocation1.Verify(parameter1, parameter2, index);
+	}
+
+	// InvokeWithSeveralParameters
+	private SetupRefIntInt? _invokeWithSeveralParameters2;
+	private InvocationIntInt? _invokeWithSeveralParametersInvocation2;
+
+	public SetupRefIntInt SetupInvokeWithSeveralParameters(in ItRef<int> parameter1, in It<int> parameter2)
+	{
+		_invokeWithSeveralParameters2 ??= new SetupRefIntInt();
+		_invokeWithSeveralParameters2.SetupParameters(parameter1, parameter2);
+		return _invokeWithSeveralParameters2;
+	}
+
+	public void VerifyInvokeWithSeveralParameters(in ItRef<int> parameter1, in It<int> parameter2, in Times times)
+	{
+		_invokeWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters(ref {0}, {1})");
+		_invokeWithSeveralParametersInvocation2.Verify(parameter1, parameter2, times);
+	}
+
+	public long VerifyInvokeWithSeveralParameters(in ItRef<int> parameter1, in It<int> parameter2, in long index)
+	{
+		_invokeWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters(ref {0}, {1})");
+		return _invokeWithSeveralParametersInvocation2.Verify(parameter1, parameter2, index);
+	}
+
+	// InvokeWithSeveralParameters
+	private SetupIntRefInt? _invokeWithSeveralParameters3;
+	private InvocationIntInt? _invokeWithSeveralParametersInvocation3;
+
+	public SetupIntRefInt SetupInvokeWithSeveralParameters(in It<int> parameter1, in ItRef<int> parameter2)
+	{
+		_invokeWithSeveralParameters3 ??= new SetupIntRefInt();
+		_invokeWithSeveralParameters3.SetupParameters(parameter1, parameter2);
+		return _invokeWithSeveralParameters3;
+	}
+
+	public void VerifyInvokeWithSeveralParameters(in It<int> parameter1, in ItRef<int> parameter2, in Times times)
+	{
+		_invokeWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters({0}, ref {1})");
+		_invokeWithSeveralParametersInvocation3.Verify(parameter1, parameter2, times);
+	}
+
+	public long VerifyInvokeWithSeveralParameters(in It<int> parameter1, in ItRef<int> parameter2, in long index)
+	{
+		_invokeWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters({0}, ref {1})");
+		return _invokeWithSeveralParametersInvocation3.Verify(parameter1, parameter2, index);
+	}
+
+	// InvokeWithSeveralParameters
+	private SetupRefIntRefInt? _invokeWithSeveralParameters4;
+	private InvocationIntInt? _invokeWithSeveralParametersInvocation4;
+
+	public SetupRefIntRefInt SetupInvokeWithSeveralParameters(in ItRef<int> parameter1, in ItRef<int> parameter2)
+	{
+		_invokeWithSeveralParameters4 ??= new SetupRefIntRefInt();
+		_invokeWithSeveralParameters4.SetupParameters(parameter1, parameter2);
+		return _invokeWithSeveralParameters4;
+	}
+
+	public void VerifyInvokeWithSeveralParameters(in ItRef<int> parameter1, in ItRef<int> parameter2, in Times times)
+	{
+		_invokeWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters(ref {0}, ref {1})");
+		_invokeWithSeveralParametersInvocation4.Verify(parameter1, parameter2, times);
+	}
+
+	public long VerifyInvokeWithSeveralParameters(in ItRef<int> parameter1, in ItRef<int> parameter2, in long index)
+	{
+		_invokeWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters(ref {0}, ref {1})");
+		return _invokeWithSeveralParametersInvocation4.Verify(parameter1, parameter2, index);
 	}
 
 	// Return
@@ -341,26 +410,95 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	}
 
 	// ReturnWithSeveralParameters
-	private SetupIntInt<decimal>? _returnWithSeveralParameters;
-	private InvocationIntInt? _returnWithSeveralParametersInvocation;
+	private SetupIntInt<decimal>? _returnWithSeveralParameters1;
+	private InvocationIntInt? _returnWithSeveralParametersInvocation1;
 
 	public SetupIntInt<decimal> SetupReturnWithSeveralParameters(in It<int> parameter1, in It<int> parameter2)
 	{
-		_returnWithSeveralParameters ??= new SetupIntInt<decimal>();
-		_returnWithSeveralParameters.SetupParameters(parameter1, parameter2);
-		return _returnWithSeveralParameters;
+		_returnWithSeveralParameters1 ??= new SetupIntInt<decimal>();
+		_returnWithSeveralParameters1.SetupParameters(parameter1, parameter2);
+		return _returnWithSeveralParameters1;
 	}
 
 	public void VerifyReturnWithSeveralParameters(in It<int> parameter1, in It<int> parameter2, in Times times)
 	{
-		_returnWithSeveralParametersInvocation ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters({0}, {1})");
-		_returnWithSeveralParametersInvocation.Verify(parameter1, parameter2, times);
+		_returnWithSeveralParametersInvocation1 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters({0}, {1})");
+		_returnWithSeveralParametersInvocation1.Verify(parameter1, parameter2, times);
 	}
 
 	public long VerifyReturnWithSeveralParameters(in It<int> parameter1, in It<int> parameter2, in long index)
 	{
-		_returnWithSeveralParametersInvocation ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters({0}, {1})");
-		return _returnWithSeveralParametersInvocation.Verify(parameter1, parameter2, index);
+		_returnWithSeveralParametersInvocation1 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters({0}, {1})");
+		return _returnWithSeveralParametersInvocation1.Verify(parameter1, parameter2, index);
+	}
+
+	// ReturnWithSeveralParameters
+	private SetupRefIntInt<decimal>? _returnWithSeveralParameters2;
+	private InvocationIntInt? _returnWithSeveralParametersInvocation2;
+
+	public SetupRefIntInt<decimal> SetupReturnWithSeveralParameters(in ItRef<int> parameter1, in It<int> parameter2)
+	{
+		_returnWithSeveralParameters2 ??= new SetupRefIntInt<decimal>();
+		_returnWithSeveralParameters2.SetupParameters(parameter1, parameter2);
+		return _returnWithSeveralParameters2;
+	}
+
+	public void VerifyReturnWithSeveralParameters(in ItRef<int> parameter1, in It<int> parameter2, in Times times)
+	{
+		_returnWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters(ref {0}, {1})");
+		_returnWithSeveralParametersInvocation2.Verify(parameter1, parameter2, times);
+	}
+
+	public long VerifyReturnWithSeveralParameters(in ItRef<int> parameter1, in It<int> parameter2, in long index)
+	{
+		_returnWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters(ref {0}, {1})");
+		return _returnWithSeveralParametersInvocation2.Verify(parameter1, parameter2, index);
+	}
+
+	// ReturnWithSeveralParameters
+	private SetupIntRefInt<decimal>? _returnWithSeveralParameters3;
+	private InvocationIntInt? _returnWithSeveralParametersInvocation3;
+
+	public SetupIntRefInt<decimal> SetupReturnWithSeveralParameters(in It<int> parameter1, in ItRef<int> parameter2)
+	{
+		_returnWithSeveralParameters3 ??= new SetupIntRefInt<decimal>();
+		_returnWithSeveralParameters3.SetupParameters(parameter1, parameter2);
+		return _returnWithSeveralParameters3;
+	}
+
+	public void VerifyReturnWithSeveralParameters(in It<int> parameter1, in ItRef<int> parameter2, in Times times)
+	{
+		_returnWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters({0}, ref {1})");
+		_returnWithSeveralParametersInvocation3.Verify(parameter1, parameter2, times);
+	}
+
+	public long VerifyReturnWithSeveralParameters(in It<int> parameter1, in ItRef<int> parameter2, in long index)
+	{
+		_returnWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters({0}, ref {1})");
+		return _returnWithSeveralParametersInvocation3.Verify(parameter1, parameter2, index);
+	}
+
+	// ReturnWithSeveralParameters
+	private SetupRefIntRefInt<decimal>? _returnWithSeveralParameters4;
+	private InvocationIntInt? _returnWithSeveralParametersInvocation4;
+
+	public SetupRefIntRefInt<decimal> SetupReturnWithSeveralParameters(in ItRef<int> parameter1, in ItRef<int> parameter2)
+	{
+		_returnWithSeveralParameters4 ??= new SetupRefIntRefInt<decimal>();
+		_returnWithSeveralParameters4.SetupParameters(parameter1, parameter2);
+		return _returnWithSeveralParameters4;
+	}
+
+	public void VerifyReturnWithSeveralParameters(in ItRef<int> parameter1, in ItRef<int> parameter2, in Times times)
+	{
+		_returnWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters(ref {0}, ref {1})");
+		_returnWithSeveralParametersInvocation4.Verify(parameter1, parameter2, times);
+	}
+
+	public long VerifyReturnWithSeveralParameters(in ItRef<int> parameter1, in ItRef<int> parameter2, in long index)
+	{
+		_returnWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters(ref {0}, ref {1})");
+		return _returnWithSeveralParametersInvocation4.Verify(parameter1, parameter2, index);
 	}
 
 	public void VerifyNoOtherCalls()
@@ -377,11 +515,17 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		_invokeWithParameterInvocation1?.VerifyNoOtherCalls();
 		_invokeWithParameterInvocation2?.VerifyNoOtherCalls();
 		_invokeWithParameterInvocation3?.VerifyNoOtherCalls();
-		_invokeWithSeveralParametersInvocation?.VerifyNoOtherCalls();
+		_invokeWithSeveralParametersInvocation1?.VerifyNoOtherCalls();
+		_invokeWithSeveralParametersInvocation2?.VerifyNoOtherCalls();
+		_invokeWithSeveralParametersInvocation3?.VerifyNoOtherCalls();
+		_invokeWithSeveralParametersInvocation4?.VerifyNoOtherCalls();
 		_returnInvocation?.VerifyNoOtherCalls();
 		_returnWithParameterInvocation1?.VerifyNoOtherCalls();
 		_returnWithParameterInvocation2?.VerifyNoOtherCalls();
-		_returnWithSeveralParametersInvocation?.VerifyNoOtherCalls();
+		_returnWithSeveralParametersInvocation1?.VerifyNoOtherCalls();
+		_returnWithSeveralParametersInvocation2?.VerifyNoOtherCalls();
+		_returnWithSeveralParametersInvocation3?.VerifyNoOtherCalls();
+		_returnWithSeveralParametersInvocation4?.VerifyNoOtherCalls();
 	}
 
 	private sealed class Proxy : IPrimitiveDependencyService
@@ -489,11 +633,32 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 			_mock._invokeWithParameter3?.Invoke(ref parameter);
 		}
 
-		public void InvokeWithSeveralParameters(in int parameter1, in int parameter2)
+		public void InvokeWithSeveralParameters(int parameter1, int parameter2)
 		{
-			_mock._invokeWithSeveralParametersInvocation ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters({0}, {1})");
-			_mock._invokeWithSeveralParametersInvocation.Register(InvocationIndex.CounterValue, parameter1, parameter2);
-			_mock._invokeWithSeveralParameters?.Invoke(parameter1, parameter2);
+			_mock._invokeWithSeveralParametersInvocation1 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters({0}, {1})");
+			_mock._invokeWithSeveralParametersInvocation1.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			_mock._invokeWithSeveralParameters1?.Invoke(parameter1, parameter2);
+		}
+
+		public void InvokeWithSeveralParameters(ref int parameter1, int parameter2)
+		{
+			_mock._invokeWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters(ref {0}, {1})");
+			_mock._invokeWithSeveralParametersInvocation2.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			_mock._invokeWithSeveralParameters2?.Invoke(ref parameter1, parameter2);
+		}
+
+		public void InvokeWithSeveralParameters(int parameter1, ref int parameter2)
+		{
+			_mock._invokeWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters({0}, ref {1})");
+			_mock._invokeWithSeveralParametersInvocation3.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			_mock._invokeWithSeveralParameters3?.Invoke(parameter1, ref parameter2);
+		}
+
+		public void InvokeWithSeveralParameters(ref int parameter1, ref int parameter2)
+		{
+			_mock._invokeWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters(ref {0}, ref {1})");
+			_mock._invokeWithSeveralParametersInvocation4.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			_mock._invokeWithSeveralParameters4?.Invoke(ref parameter1, ref parameter2);
 		}
 
 		public int Return()
@@ -519,9 +684,30 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 		public decimal ReturnWithSeveralParameters(int parameter1, int parameter2)
 		{
-			_mock._returnWithSeveralParametersInvocation ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters({0}, {1})");
-			_mock._returnWithSeveralParametersInvocation.Register(InvocationIndex.CounterValue, parameter1, parameter2);
-			return _mock._returnWithSeveralParameters?.Execute(parameter1, parameter2, out var returnValue) == true ? returnValue : 0m;
+			_mock._returnWithSeveralParametersInvocation1 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters({0}, {1})");
+			_mock._returnWithSeveralParametersInvocation1.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			return _mock._returnWithSeveralParameters1?.Execute(parameter1, parameter2, out var returnValue) == true ? returnValue : 0m;
+		}
+
+		public decimal ReturnWithSeveralParameters(ref int parameter1, int parameter2)
+		{
+			_mock._returnWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters(ref {0}, {1})");
+			_mock._returnWithSeveralParametersInvocation2.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			return _mock._returnWithSeveralParameters2?.Execute(ref parameter1, parameter2, out var returnValue) == true ? returnValue : 0m;
+		}
+
+		public decimal ReturnWithSeveralParameters(int parameter1, ref int parameter2)
+		{
+			_mock._returnWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters({0}, ref {1})");
+			_mock._returnWithSeveralParametersInvocation3.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			return _mock._returnWithSeveralParameters3?.Execute(parameter1, ref parameter2, out var returnValue) == true ? returnValue : 0m;
+		}
+
+		public decimal ReturnWithSeveralParameters(ref int parameter1, ref int parameter2)
+		{
+			_mock._returnWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters(ref {0}, ref {1})");
+			_mock._returnWithSeveralParametersInvocation4.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			return _mock._returnWithSeveralParameters4?.Execute(ref parameter1, ref parameter2, out var returnValue) == true ? returnValue : 0m;
 		}
 	}
 }
@@ -529,6 +715,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 [Obsolete("Will be generated")]
 public static class PrimitiveDependencyServiceMockEx
 {
+	// Handler
 	public static void RaiseHandler(this IMock<IPrimitiveDependencyService> @this, in int value) =>
 		((PrimitiveDependencyServiceMock)@this).RaiseHandler(value);
 
@@ -544,6 +731,7 @@ public static class PrimitiveDependencyServiceMockEx
 	public static void VerifyRemoveHandler(this IMock<IPrimitiveDependencyService> @this, in PrimitiveHandler handler, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifyRemoveHandler(handler, times());
 
+	// HandlerEvent
 	public static void RaiseHandlerEvent(this IMock<IPrimitiveDependencyService> @this, in string value) =>
 		((PrimitiveDependencyServiceMock)@this).RaiseHandlerEvent(value);
 
@@ -559,6 +747,7 @@ public static class PrimitiveDependencyServiceMockEx
 	public static void VerifyRemoveHandlerEvent(this IMock<IPrimitiveDependencyService> @this, in EventHandler<string> handler, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifyRemoveHandlerEvent(handler, times());
 
+	// GetOnly
 	public static ISetup<int> SetupGetGetOnly(this IMock<IPrimitiveDependencyService> @this) =>
 		((PrimitiveDependencyServiceMock)@this).SetupGetGetOnly();
 
@@ -568,6 +757,7 @@ public static class PrimitiveDependencyServiceMockEx
 	public static void VerifyGetGetOnly(this IMock<IPrimitiveDependencyService> @this, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifyGetGetOnly(times());
 
+	// SetOnly
 	public static ISetup SetupSetSetOnly(this IMock<IPrimitiveDependencyService> @this, in It<decimal> value) =>
 		((PrimitiveDependencyServiceMock)@this).SetupSetSetOnly(value);
 
@@ -577,6 +767,7 @@ public static class PrimitiveDependencyServiceMockEx
 	public static void VerifySetSetOnly(this IMock<IPrimitiveDependencyService> @this, in It<decimal> value, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifySetSetOnly(value, times());
 
+	// GetInit
 	public static ISetup<string> SetupGetGetInit(this IMock<IPrimitiveDependencyService> @this) =>
 		((PrimitiveDependencyServiceMock)@this).SetupGetGetInit();
 
@@ -595,6 +786,7 @@ public static class PrimitiveDependencyServiceMockEx
 	public static void VerifySetGetInit(this IMock<IPrimitiveDependencyService> @this, in It<string> value, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifySetGetInit(value, times());
 
+	// Invoke
 	public static ISetup SetupInvoke(this IMock<IPrimitiveDependencyService> @this) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvoke();
 
@@ -604,6 +796,7 @@ public static class PrimitiveDependencyServiceMockEx
 	public static void VerifyInvoke(this IMock<IPrimitiveDependencyService> @this, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifyInvoke(times());
 
+	// InvokeWithParameter
 	public static ISetup SetupInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<string> parameter = default) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithParameter(parameter);
 
@@ -613,6 +806,7 @@ public static class PrimitiveDependencyServiceMockEx
 	public static void VerifyInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<string> parameter, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithParameter(parameter, times());
 
+	// InvokeWithParameter
 	public static ISetup SetupInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter = default) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithParameter(parameter);
 
@@ -622,6 +816,7 @@ public static class PrimitiveDependencyServiceMockEx
 	public static void VerifyInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithParameter(parameter, times());
 
+	// InvokeWithParameter
 	public static ISetup SetupInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in ItRef<decimal> parameter = default) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithParameter(parameter);
 
@@ -640,6 +835,7 @@ public static class PrimitiveDependencyServiceMockEx
 	public static void VerifyInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, ref decimal parameter, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithParameter(ItRef<decimal>.Value(parameter), times());
 
+	// SetupInvokeWithSeveralParameters
 	public static ISetup SetupInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1 = default, in It<int> parameter2 = default) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithSeveralParameters(parameter1, parameter2);
 
@@ -649,6 +845,45 @@ public static class PrimitiveDependencyServiceMockEx
 	public static void VerifyInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1, in It<int> parameter2, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithSeveralParameters(parameter1, parameter2, times());
 
+	// SetupInvokeWithSeveralParameters
+	public static ISetup SetupInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in ItRef<int> parameter1 = default, in It<int> parameter2 = default) =>
+		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithSeveralParameters(parameter1, parameter2);
+
+	public static ISetup SetupInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, ref int parameter1, in It<int> parameter2 = default) =>
+		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithSeveralParameters(ItRef<int>.Value(parameter1), parameter2);
+
+	public static void VerifyInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in ItRef<int> parameter1, in It<int> parameter2, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithSeveralParameters(parameter1, parameter2, times);
+
+	public static void VerifyInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in ItRef<int> parameter1, in It<int> parameter2, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithSeveralParameters(parameter1, parameter2, times());
+
+	public static void VerifyInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, ref int parameter1, in It<int> parameter2, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithSeveralParameters(ItRef<int>.Value(parameter1), parameter2, times);
+
+	public static void VerifyInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, ref int parameter1, in It<int> parameter2, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithSeveralParameters(ItRef<int>.Value(parameter1), parameter2, times());
+
+	// SetupInvokeWithSeveralParameters
+	public static ISetup SetupInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1 = default, in ItRef<int> parameter2 = default) =>
+		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithSeveralParameters(parameter1, parameter2);
+
+	public static ISetup SetupInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, It<int> parameter1, ref int parameter2) =>
+		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithSeveralParameters(parameter1, ItRef<int>.Value(parameter2));
+
+	public static void VerifyInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1, in ItRef<int> parameter2, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithSeveralParameters(parameter1, parameter2, times);
+
+	public static void VerifyInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1, in ItRef<int> parameter2, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithSeveralParameters(parameter1, parameter2, times());
+
+	public static void VerifyInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1, ref int parameter2, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithSeveralParameters(parameter1, ItRef<int>.Value(parameter2), times);
+
+	public static void VerifyInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1, ref int parameter2, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithSeveralParameters(parameter1, ItRef<int>.Value(parameter2), times());
+
+	// Return
 	public static ISetup<int> SetupReturn(this IMock<IPrimitiveDependencyService> @this) =>
 		((PrimitiveDependencyServiceMock)@this).SetupReturn();
 
@@ -658,6 +893,7 @@ public static class PrimitiveDependencyServiceMockEx
 	public static void VerifyReturn(this IMock<IPrimitiveDependencyService> @this, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifyReturn(times());
 
+	// ReturnWithParameter
 	public static ISetup<string> SetupReturnWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<string> parameter) =>
 		((PrimitiveDependencyServiceMock)@this).SetupReturnWithParameter(parameter);
 
@@ -667,6 +903,7 @@ public static class PrimitiveDependencyServiceMockEx
 	public static void VerifyReturnWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<string> parameter, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifyReturnWithParameter(parameter, times());
 
+	// ReturnWithParameter
 	public static ISetup<int> SetupReturnWithParameter(this IMock<IPrimitiveDependencyService> @this, in ItRef<double> parameter) =>
 		((PrimitiveDependencyServiceMock)@this).SetupReturnWithParameter(parameter);
 
@@ -685,6 +922,7 @@ public static class PrimitiveDependencyServiceMockEx
 	public static void VerifyReturnWithParameter(this IMock<IPrimitiveDependencyService> @this, ref double parameter, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifyReturnWithParameter(ItRef<double>.Value(parameter), times());
 
+	// ReturnWithSeveralParameters
 	public static ISetup<decimal> SetupReturnWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1, in It<int> parameter2) =>
 		((PrimitiveDependencyServiceMock)@this).SetupReturnWithSeveralParameters(parameter1, parameter2);
 
@@ -694,6 +932,54 @@ public static class PrimitiveDependencyServiceMockEx
 	public static void VerifyReturnWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1, in It<int> parameter2, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifyReturnWithSeveralParameters(parameter1, parameter2, times());
 
+	// ReturnWithSeveralParameters
+	public static ISetup<decimal> SetupReturnWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in ItRef<int> parameter1, in It<int> parameter2) =>
+		((PrimitiveDependencyServiceMock)@this).SetupReturnWithSeveralParameters(parameter1, parameter2);
+
+	public static void VerifyReturnWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in ItRef<int> parameter1, in It<int> parameter2, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyReturnWithSeveralParameters(parameter1, parameter2, times);
+
+	public static void VerifyReturnWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in ItRef<int> parameter1, in It<int> parameter2, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyReturnWithSeveralParameters(parameter1, parameter2, times());
+
+	public static void VerifyReturnWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, ref int parameter1, in It<int> parameter2, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyReturnWithSeveralParameters(ItRef<int>.Value(parameter1), parameter2, times);
+
+	public static void VerifyReturnWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, ref int parameter1, in It<int> parameter2, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyReturnWithSeveralParameters(ItRef<int>.Value(parameter1), parameter2, times());
+
+	// ReturnWithSeveralParameters
+	public static ISetup<decimal> SetupReturnWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1, in ItRef<int> parameter2) =>
+		((PrimitiveDependencyServiceMock)@this).SetupReturnWithSeveralParameters(parameter1, parameter2);
+
+	public static void VerifyReturnWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1, in ItRef<int> parameter2, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyReturnWithSeveralParameters(parameter1, parameter2, times);
+
+	public static void VerifyReturnWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1, in ItRef<int> parameter2, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyReturnWithSeveralParameters(parameter1, parameter2, times());
+
+	public static void VerifyReturnWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1, ref int parameter2, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyReturnWithSeveralParameters(parameter1, ItRef<int>.Value(parameter2), times);
+
+	public static void VerifyReturnWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in It<int> parameter1, ref int parameter2, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyReturnWithSeveralParameters(parameter1, ItRef<int>.Value(parameter2), times());
+
+	// ReturnWithSeveralParameters
+	public static ISetup<decimal> SetupReturnWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in ItRef<int> parameter1, in ItRef<int> parameter2) =>
+		((PrimitiveDependencyServiceMock)@this).SetupReturnWithSeveralParameters(parameter1, parameter2);
+
+	public static void VerifyReturnWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in ItRef<int> parameter1, in ItRef<int> parameter2, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyReturnWithSeveralParameters(parameter1, parameter2, times);
+
+	public static void VerifyReturnWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in ItRef<int> parameter1, in ItRef<int> parameter2, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyReturnWithSeveralParameters(parameter1, parameter2, times());
+
+	public static void VerifyReturnWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, ref int parameter1, ref int parameter2, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyReturnWithSeveralParameters(ItRef<int>.Value(parameter1), ItRef<int>.Value(parameter2), times);
+
+	public static void VerifyReturnWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, ref int parameter1, ref int parameter2, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyReturnWithSeveralParameters(ItRef<int>.Value(parameter1), ItRef<int>.Value(parameter2), times());
+
 	public static void VerifyNoOtherCalls(this IMock<IPrimitiveDependencyService> @this) =>
 		((PrimitiveDependencyServiceMock)@this).VerifyNoOtherCalls();
 }
@@ -701,6 +987,7 @@ public static class PrimitiveDependencyServiceMockEx
 [Obsolete("Will be generated")]
 public static class PrimitiveDependencyServiceMockSequenceEx
 {
+	// Handler
 	public static void AddHandler(this IMockSequence<IPrimitiveDependencyService> @this, PrimitiveHandler value)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyAddHandler(value, @this.VerifyIndex);
@@ -713,6 +1000,7 @@ public static class PrimitiveDependencyServiceMockSequenceEx
 		@this.VerifyIndex.Set(nextIndex);
 	}
 
+	// HandlerEvent
 	public static void AddHandlerEvent(this IMockSequence<IPrimitiveDependencyService> @this, EventHandler<string> value)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyAddHandlerEvent(value, @this.VerifyIndex);
@@ -725,18 +1013,21 @@ public static class PrimitiveDependencyServiceMockSequenceEx
 		@this.VerifyIndex.Set(nextIndex);
 	}
 
+	// GetOnly
 	public static void GetGetOnly(this IMockSequence<IPrimitiveDependencyService> @this)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyGetGetOnly(@this.VerifyIndex);
 		@this.VerifyIndex.Set(nextIndex);
 	}
 
+	// SetOnly
 	public static void SetSetOnly(this IMockSequence<IPrimitiveDependencyService> @this, in It<decimal> value)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifySetSetOnly(value, @this.VerifyIndex);
 		@this.VerifyIndex.Set(nextIndex);
 	}
 
+	// GetInit
 	public static void GetGetInit(this IMockSequence<IPrimitiveDependencyService> @this)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyGetGetInit(@this.VerifyIndex);
@@ -749,24 +1040,28 @@ public static class PrimitiveDependencyServiceMockSequenceEx
 		@this.VerifyIndex.Set(nextIndex);
 	}
 
+	// Invoke
 	public static void Invoke(this IMockSequence<IPrimitiveDependencyService> @this)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvoke(@this.VerifyIndex);
 		@this.VerifyIndex.Set(nextIndex);
 	}
 
+	// InvokeWithParameter
 	public static void InvokeWithParameter(this IMockSequence<IPrimitiveDependencyService> @this, in It<string> parameter)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvokeWithParameter(parameter, @this.VerifyIndex);
 		@this.VerifyIndex.Set(nextIndex);
 	}
 
+	// InvokeWithParameter
 	public static void InvokeWithParameter(this IMockSequence<IPrimitiveDependencyService> @this, in It<int> parameter)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvokeWithParameter(parameter, @this.VerifyIndex);
 		@this.VerifyIndex.Set(nextIndex);
 	}
 
+	// InvokeWithParameter
 	public static void InvokeWithParameter(this IMockSequence<IPrimitiveDependencyService> @this, in ItRef<decimal> parameter)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvokeWithParameter(parameter, @this.VerifyIndex);
@@ -779,24 +1074,67 @@ public static class PrimitiveDependencyServiceMockSequenceEx
 		@this.VerifyIndex.Set(nextIndex);
 	}
 
+	// InvokeWithSeveralParameters
 	public static void InvokeWithSeveralParameters(this IMockSequence<IPrimitiveDependencyService> @this, in It<int> parameter1, in It<int> parameter2)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvokeWithSeveralParameters(parameter1, parameter2, @this.VerifyIndex);
 		@this.VerifyIndex.Set(nextIndex);
 	}
 
+	// InvokeWithSeveralParameters
+	public static void InvokeWithSeveralParameters(this IMockSequence<IPrimitiveDependencyService> @this, in ItRef<int> parameter1, in It<int> parameter2)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvokeWithSeveralParameters(parameter1, parameter2, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	public static void InvokeWithSeveralParameters(this IMockSequence<IPrimitiveDependencyService> @this, ref int parameter1, in It<int> parameter2)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvokeWithSeveralParameters(ItRef<int>.Value(parameter1), parameter2, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	// InvokeWithSeveralParameters
+	public static void InvokeWithSeveralParameters(this IMockSequence<IPrimitiveDependencyService> @this, in It<int> parameter1, in ItRef<int> parameter2)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvokeWithSeveralParameters(parameter1, parameter2, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	public static void InvokeWithSeveralParameters(this IMockSequence<IPrimitiveDependencyService> @this, in It<int> parameter1, ref int parameter2)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvokeWithSeveralParameters(parameter1, ItRef<int>.Value(parameter2), @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	// InvokeWithSeveralParameters
+	public static void InvokeWithSeveralParameters(this IMockSequence<IPrimitiveDependencyService> @this, in ItRef<int> parameter1, in ItRef<int> parameter2)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvokeWithSeveralParameters(parameter1, parameter2, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	public static void InvokeWithSeveralParameters(this IMockSequence<IPrimitiveDependencyService> @this, ref int parameter1, ref int parameter2)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvokeWithSeveralParameters(ItRef<int>.Value(parameter1), ItRef<int>.Value(parameter2), @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	// Return
 	public static void Return(this IMockSequence<IPrimitiveDependencyService> @this)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyReturn(@this.VerifyIndex);
 		@this.VerifyIndex.Set(nextIndex);
 	}
 
+	// ReturnWithParameter
 	public static void ReturnWithParameter(this IMockSequence<IPrimitiveDependencyService> @this, in It<string> parameter)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyReturnWithParameter(parameter, @this.VerifyIndex);
 		@this.VerifyIndex.Set(nextIndex);
 	}
 
+	// ReturnWithParameter
 	public static void ReturnWithParameter(this IMockSequence<IPrimitiveDependencyService> @this, in ItRef<double> parameter)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyReturnWithParameter(parameter, @this.VerifyIndex);
@@ -809,6 +1147,7 @@ public static class PrimitiveDependencyServiceMockSequenceEx
 		@this.VerifyIndex.Set(nextIndex);
 	}
 
+	// ReturnWithSeveralParameters
 	public static void ReturnWithSeveralParameters(this IMockSequence<IPrimitiveDependencyService> @this, in It<int> parameter1, in It<int> parameter2)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyReturnWithSeveralParameters(parameter1, parameter2, @this.VerifyIndex);

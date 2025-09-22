@@ -1,4 +1,4 @@
-namespace MyNihongo.Mock.Sample._Generated.SetupReturnsWithSeveralParametersTests;
+namespace MyNihongo.Mock.Sample._Generated.SetupReturnsWithSeveralParameters1RefTests;
 
 public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 {
@@ -8,12 +8,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue = nameof(returnValue);
 		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
-		const int inputValue1 = 12345678, inputValue2 = 987654321;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 12345678;
+		const int inputValue2 = 987654321;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue, actual);
@@ -23,14 +24,15 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	public void ReturnForValueSetup()
 	{
 		const string returnValue = nameof(returnValue);
-		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		var setupValue1 = 12345678;
+		const int setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
-		var hasValue = fixture.Execute(setupValue1, setupValue2, out var actual);
+		var hasValue = fixture.Execute(ref setupValue1, setupValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue, actual);
@@ -43,12 +45,12 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
-		const int inputValue1 = 84837621;
-		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+		var inputValue1 = 84837621;
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out var actual);
 
 		Assert.False(hasValue);
 		Assert.Null(actual);
@@ -61,12 +63,12 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefIntInt<int>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
-		const int inputValue1 = 84837621;
-		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+		var inputValue1 = 84837621;
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out var actual);
 
 		const int expected = 0;
 		Assert.False(hasValue);
@@ -77,15 +79,16 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	public void ReturnNullForValueSetup2()
 	{
 		const string returnValue = nameof(returnValue);
-		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		var setupValue1 = 12345678;
+		const int setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
 		const int inputValue2 = 84837621;
-		var hasValue = fixture.Execute(setupValue1, inputValue2, out var actual);
+		var hasValue = fixture.Execute(ref setupValue1, inputValue2, out var actual);
 
 		Assert.False(hasValue);
 		Assert.Null(actual);
@@ -95,15 +98,16 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	public void ReturnDefaultForValueSetup2()
 	{
 		const int returnValue = -731473432;
-		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		var setupValue1 = 12345678;
+		const int setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefIntInt<int>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
 		const int inputValue2 = 84837621;
-		var hasValue = fixture.Execute(setupValue1, inputValue2, out var actual);
+		var hasValue = fixture.Execute(ref setupValue1, inputValue2, out var actual);
 
 		const int expected = 0;
 		Assert.False(hasValue);
@@ -117,12 +121,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
-		const int inputValue1 = -771245, inputValue2 = 84837621;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = -771245;
+		const int inputValue2 = 84837621;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		Assert.False(hasValue);
 		Assert.Null(actual);
@@ -135,12 +140,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefIntInt<int>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
-		const int inputValue1 = -771245, inputValue2 = 84837621;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = -771245;
+		const int inputValue2 = 84837621;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		const int expected = 0;
 		Assert.False(hasValue);
@@ -157,11 +163,11 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue2 = 987654321;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
-		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue, actual);
@@ -176,11 +182,11 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue2 = 987654321;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
-		var hasValue = fixture.Execute(inputValue2, setupValue2, out var actual);
+		var hasValue = fixture.Execute(ref inputValue2, setupValue2, out var actual);
 
 		Assert.False(hasValue);
 		Assert.Null(actual);
@@ -195,11 +201,11 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue2 = 987654321;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 
-		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefIntInt<int>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
-		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out var actual);
 
 		const int expected = 0;
 		Assert.False(hasValue);
@@ -213,14 +219,14 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	public void ReturnForWhereSetup2(int inputValue2)
 	{
 		const string returnValue = nameof(returnValue);
-		const int setupValue1 = 987654321;
+		var setupValue1 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
-		var hasValue = fixture.Execute(setupValue1, inputValue2, out var actual);
+		var hasValue = fixture.Execute(ref setupValue1, inputValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue, actual);
@@ -232,14 +238,14 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	public void ReturnNullForWhereSetup2(int inputValue2)
 	{
 		const string returnValue = nameof(returnValue);
-		const int setupValue1 = 987654321;
+		var setupValue1 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
-		var hasValue = fixture.Execute(setupValue1, inputValue2, out var actual);
+		var hasValue = fixture.Execute(ref setupValue1, inputValue2, out var actual);
 
 		Assert.False(hasValue);
 		Assert.Null(actual);
@@ -251,14 +257,14 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	public void ReturnDefaultForWhereSetup2(int inputValue2)
 	{
 		const int returnValue = 12345;
-		const int setupValue1 = 987654321;
+		var setupValue1 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefIntInt<int>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
-		var hasValue = fixture.Execute(setupValue1, inputValue2, out var actual);
+		var hasValue = fixture.Execute(ref setupValue1, inputValue2, out var actual);
 
 		const int expected = 0;
 		Assert.False(hasValue);
@@ -271,12 +277,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue = nameof(returnValue);
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
-		const int inputValue1 = 101, inputValue2 = 9;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 101;
+		const int inputValue2 = 9;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue, actual);
@@ -288,12 +295,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue = nameof(returnValue);
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
-		const int inputValue1 = 99, inputValue2 = 9;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 99;
+		const int inputValue2 = 9;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		Assert.False(hasValue);
 		Assert.Null(actual);
@@ -305,12 +313,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int returnValue = 374452;
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefIntInt<int>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
-		const int inputValue1 = 99, inputValue2 = 9;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 99;
+		const int inputValue2 = 9;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		const int expected = 0;
 		Assert.False(hasValue);
@@ -323,12 +332,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue = nameof(returnValue);
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
-		const int inputValue1 = 101, inputValue2 = 11;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 101;
+		const int inputValue2 = 11;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		Assert.False(hasValue);
 		Assert.Null(actual);
@@ -340,12 +350,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int returnValue = 374452;
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefIntInt<int>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
-		const int inputValue1 = 101, inputValue2 = 11;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 101;
+		const int inputValue2 = 11;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		const int expected = 0;
 		Assert.False(hasValue);
@@ -358,12 +369,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue = nameof(returnValue);
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
-		const int inputValue1 = 99, inputValue2 = 11;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 99;
+		const int inputValue2 = 11;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		Assert.False(hasValue);
 		Assert.Null(actual);
@@ -375,12 +387,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int returnValue = 374452;
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefIntInt<int>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
 
-		const int inputValue1 = 99, inputValue2 = 11;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 99;
+		const int inputValue2 = 11;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		const int expected = 0;
 		Assert.False(hasValue);
@@ -393,12 +406,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage = nameof(errorMessage);
 		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		const int inputValue1 = 12345678, inputValue2 = 987654321;
-		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 12345678;
+		const int inputValue2 = 987654321;
+		Action actual = () => fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
@@ -408,14 +422,15 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	public void ThrowForValueSetup()
 	{
 		const string errorMessage = nameof(errorMessage);
-		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		var setupValue1 = 12345678;
+		const int setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		Action actual = () => fixture.Execute(setupValue1, setupValue2, out _);
+		Action actual = () => fixture.Execute(ref setupValue1, setupValue2, out _);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
@@ -428,27 +443,28 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		const int inputValue1 = 84837621;
-		fixture.Execute(inputValue1, setupValue2, out _);
+		var inputValue1 = 84837621;
+		fixture.Execute(ref inputValue1, setupValue2, out _);
 	}
 
 	[Fact]
 	public void NotThrowForValueSetup2()
 	{
 		const string errorMessage = nameof(errorMessage);
-		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		var setupValue1 = 12345678;
+		const int setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
 		const int inputValue2 = 84837621;
-		fixture.Execute(setupValue1, inputValue2, out _);
+		fixture.Execute(ref setupValue1, inputValue2, out _);
 	}
 
 	[Fact]
@@ -458,12 +474,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		const int inputValue1 = -771245, inputValue2 = 84837621;
-		fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = -771245;
+		const int inputValue2 = 84837621;
+		fixture.Execute(ref inputValue1, inputValue2, out _);
 	}
 
 	[Theory]
@@ -476,11 +493,11 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue2 = 987654321;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		Action actual = () => fixture.Execute(inputValue1, setupValue2, out _);
+		Action actual = () => fixture.Execute(ref inputValue1, setupValue2, out _);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
@@ -495,11 +512,11 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue2 = 987654321;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		fixture.Execute(inputValue1, setupValue2, out _);
+		fixture.Execute(ref inputValue1, setupValue2, out _);
 	}
 
 	[Theory]
@@ -509,14 +526,14 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	public void ThrowForWhereSetup2(int inputValue2)
 	{
 		const string errorMessage = nameof(errorMessage);
-		const int setupValue1 = 987654321;
+		var setupValue1 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		Action actual = () => fixture.Execute(setupValue1, inputValue2, out _);
+		Action actual = () => fixture.Execute(ref setupValue1, inputValue2, out _);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
@@ -528,14 +545,14 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	public void NotThrowForWhereSetup2(int inputValue2)
 	{
 		const string errorMessage = nameof(errorMessage);
-		const int setupValue1 = 987654321;
+		var setupValue1 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		fixture.Execute(setupValue1, inputValue2, out _);
+		fixture.Execute(ref setupValue1, inputValue2, out _);
 	}
 
 	[Fact]
@@ -544,12 +561,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage = nameof(errorMessage);
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		const int inputValue1 = 101, inputValue2 = 9;
-		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 101;
+		const int inputValue2 = 9;
+		Action actual = () => fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
@@ -561,12 +579,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage = nameof(errorMessage);
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		const int inputValue1 = 99, inputValue2 = 9;
-		fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 99;
+		const int inputValue2 = 9;
+		fixture.Execute(ref inputValue1, inputValue2, out _);
 	}
 
 	[Fact]
@@ -575,12 +594,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage = nameof(errorMessage);
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		const int inputValue1 = 101, inputValue2 = 11;
-		fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 101;
+		const int inputValue2 = 11;
+		fixture.Execute(ref inputValue1, inputValue2, out _);
 	}
 
 	[Fact]
@@ -589,18 +609,20 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage = nameof(errorMessage);
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
-		const int inputValue1 = 99, inputValue2 = 11;
-		fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 99;
+		const int inputValue2 = 11;
+		fixture.Execute(ref inputValue1, inputValue2, out _);
 	}
 
 	[Fact]
 	public void PrioritiseValueOverAnyReturn4()
 	{
-		const int setupValue1 = 1, setupValue2 = 2;
+		var setupValue1 = 1;
+		const int setupValue2 = 2;
 
 		const string returnValue1 = nameof(returnValue1);
 		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
@@ -614,7 +636,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue4 = nameof(returnValue4);
 		It<int> setup41 = setupValue1, setup42 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Returns(returnValue1);
 
@@ -627,7 +649,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup41, setup42);
 		fixture.Returns(returnValue4);
 
-		var hasValue = fixture.Execute(setupValue1, setupValue2, out var actual);
+		var hasValue = fixture.Execute(ref setupValue1, setupValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue4, actual);
@@ -650,7 +672,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue4 = nameof(returnValue4);
 		It<int> setup41 = setupValue1, setup42 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Returns(returnValue1);
 
@@ -663,8 +685,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup41, setup42);
 		fixture.Returns(returnValue4);
 
-		const int inputValue1 = 324343242;
-		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+		var inputValue1 = 324343242;
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue3, actual);
@@ -673,7 +695,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void PrioritiseValueOverAnyReturn2()
 	{
-		const int setupValue1 = 1, setupValue2 = 2;
+		var setupValue1 = 1;
+		const int setupValue2 = 2;
 
 		const string returnValue1 = nameof(returnValue1);
 		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
@@ -687,7 +710,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue4 = nameof(returnValue4);
 		It<int> setup41 = setupValue1, setup42 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Returns(returnValue1);
 
@@ -701,7 +724,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Returns(returnValue4);
 
 		const int inputValue2 = 324343242;
-		var hasValue = fixture.Execute(setupValue1, inputValue2, out var actual);
+		var hasValue = fixture.Execute(ref setupValue1, inputValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue2, actual);
@@ -724,7 +747,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue4 = nameof(returnValue4);
 		It<int> setup41 = setupValue1, setup42 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Returns(returnValue1);
 
@@ -737,8 +760,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup41, setup42);
 		fixture.Returns(returnValue4);
 
-		const int inputValue1 = 324343242, inputValue2 = 837483252;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 324343242;
+		const int inputValue2 = 837483252;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue1, actual);
@@ -747,7 +771,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void PrioritiseValueOverAnyThrow4()
 	{
-		const int setupValue1 = 1, setupValue2 = 2;
+		var setupValue1 = 1;
+		const int setupValue2 = 2;
 
 		const string errorMessage1 = nameof(errorMessage1);
 		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
@@ -761,7 +786,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage4 = nameof(errorMessage4);
 		It<int> setup41 = setupValue1, setup42 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -774,7 +799,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup41, setup42);
 		fixture.Throws(new OverflowException(errorMessage4));
 
-		Action actual = () => fixture.Execute(setupValue1, setupValue2, out _);
+		Action actual = () => fixture.Execute(ref setupValue1, setupValue2, out _);
 
 		var exception = Assert.Throws<OverflowException>(actual);
 		Assert.Equal(errorMessage4, exception.Message);
@@ -797,7 +822,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage4 = nameof(errorMessage4);
 		It<int> setup41 = setupValue1, setup42 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -810,8 +835,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup41, setup42);
 		fixture.Throws(new OverflowException(errorMessage4));
 
-		const int inputValue1 = 324343242;
-		Action actual = () => fixture.Execute(inputValue1, setupValue2, out _);
+		var inputValue1 = 324343242;
+		Action actual = () => fixture.Execute(ref inputValue1, setupValue2, out _);
 
 		var exception = Assert.Throws<InvalidCastException>(actual);
 		Assert.Equal(errorMessage3, exception.Message);
@@ -820,7 +845,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void PrioritiseValueOverAnyThrow2()
 	{
-		const int setupValue1 = 1, setupValue2 = 2;
+		var setupValue1 = 1;
+		const int setupValue2 = 2;
 
 		const string errorMessage1 = nameof(errorMessage1);
 		It<int> setup11 = It<int>.Any(), setup12 = It<int>.Any();
@@ -834,7 +860,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage4 = nameof(errorMessage4);
 		It<int> setup41 = setupValue1, setup42 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -848,7 +874,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Throws(new OverflowException(errorMessage4));
 
 		const int inputValue2 = 324343242;
-		Action actual = () => fixture.Execute(setupValue1, inputValue2, out _);
+		Action actual = () => fixture.Execute(ref setupValue1, inputValue2, out _);
 
 		var exception = Assert.Throws<ArgumentException>(actual);
 		Assert.Equal(errorMessage2, exception.Message);
@@ -871,7 +897,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage4 = nameof(errorMessage4);
 		It<int> setup41 = setupValue1, setup42 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -884,8 +910,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup41, setup42);
 		fixture.Throws(new OverflowException(errorMessage4));
 
-		const int inputValue1 = 324343242, inputValue2 = 837483252;
-		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 324343242;
+		const int inputValue2 = 837483252;
+		Action actual = () => fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage1, exception.Message);
@@ -894,7 +921,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void PrioritiseValueOverWhereReturns9()
 	{
-		const int setupValue1 = 1, setupValue2 = 2;
+		var setupValue1 = 1;
+		const int setupValue2 = 2;
 		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
 
 		const string returnValue1 = nameof(returnValue1);
@@ -924,7 +952,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue9 = nameof(returnValue9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Returns(returnValue1);
 
@@ -952,7 +980,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Returns(returnValue9);
 
-		var hasValue = fixture.Execute(setupValue1, setupValue2, out var actual);
+		var hasValue = fixture.Execute(ref setupValue1, setupValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue9, actual);
@@ -991,7 +1019,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue9 = nameof(returnValue9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Returns(returnValue1);
 
@@ -1019,8 +1047,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Returns(returnValue9);
 
-		const int inputValue1 = 25;
-		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+		var inputValue1 = 25;
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue8, actual);
@@ -1059,7 +1087,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue9 = nameof(returnValue9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Returns(returnValue1);
 
@@ -1087,8 +1115,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Returns(returnValue9);
 
-		const int inputValue1 = -345332543;
-		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+		var inputValue1 = -345332543;
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue7, actual);
@@ -1097,7 +1125,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void PrioritiseValueOverWhereReturns6()
 	{
-		const int setupValue1 = 1, setupValue2 = 2;
+		var setupValue1 = 1;
+		const int setupValue2 = 2;
 		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
 
 		const string returnValue1 = nameof(returnValue1);
@@ -1127,7 +1156,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue9 = nameof(returnValue9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Returns(returnValue1);
 
@@ -1156,7 +1185,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Returns(returnValue9);
 
 		const int inputValue2 = 21;
-		var hasValue = fixture.Execute(setupValue1, inputValue2, out var actual);
+		var hasValue = fixture.Execute(ref setupValue1, inputValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue6, actual);
@@ -1165,7 +1194,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void PrioritiseValueOverWhereReturns5()
 	{
-		const int setupValue1 = 1, setupValue2 = 2;
+		var setupValue1 = 1;
+		const int setupValue2 = 2;
 		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
 
 		const string returnValue1 = nameof(returnValue1);
@@ -1195,7 +1225,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue9 = nameof(returnValue9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Returns(returnValue1);
 
@@ -1224,7 +1254,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Returns(returnValue9);
 
 		const int inputValue2 = -21;
-		var hasValue = fixture.Execute(setupValue1, inputValue2, out var actual);
+		var hasValue = fixture.Execute(ref setupValue1, inputValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue5, actual);
@@ -1263,7 +1293,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue9 = nameof(returnValue9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Returns(returnValue1);
 
@@ -1291,8 +1321,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Returns(returnValue9);
 
-		const int inputValue1 = 14, inputValue2 = 21;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 14;
+		const int inputValue2 = 21;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue4, actual);
@@ -1331,7 +1362,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue9 = nameof(returnValue9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Returns(returnValue1);
 
@@ -1359,8 +1390,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Returns(returnValue9);
 
-		const int inputValue1 = -14, inputValue2 = 21;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = -14;
+		const int inputValue2 = 21;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue3, actual);
@@ -1399,7 +1431,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue9 = nameof(returnValue9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Returns(returnValue1);
 
@@ -1427,8 +1459,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Returns(returnValue9);
 
-		const int inputValue1 = 14, inputValue2 = -21;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 14;
+		const int inputValue2 = -21;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue2, actual);
@@ -1467,7 +1500,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue9 = nameof(returnValue9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Returns(returnValue1);
 
@@ -1495,8 +1528,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Returns(returnValue9);
 
-		const int inputValue1 = -14, inputValue2 = -21;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = -14;
+		const int inputValue2 = -21;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue1, actual);
@@ -1505,7 +1539,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void PrioritiseValueOverWhereThrow9()
 	{
-		const int setupValue1 = 1, setupValue2 = 2;
+		var setupValue1 = 1;
+		const int setupValue2 = 2;
 		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
 
 		const string errorMessage1 = nameof(errorMessage1);
@@ -1535,7 +1570,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage9 = nameof(errorMessage9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -1563,7 +1598,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
-		Action actual = () => fixture.Execute(setupValue1, setupValue2, out _);
+		Action actual = () => fixture.Execute(ref setupValue1, setupValue2, out _);
 
 		var exception = Assert.Throws<InvalidExpressionException>(actual);
 		Assert.Equal(errorMessage9, exception.Message);
@@ -1602,7 +1637,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage9 = nameof(errorMessage9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -1630,8 +1665,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
-		const int inputValue1 = 25;
-		Action actual = () => fixture.Execute(inputValue1, setupValue2, out _);
+		var inputValue1 = 25;
+		Action actual = () => fixture.Execute(ref inputValue1, setupValue2, out _);
 
 		var exception = Assert.Throws<ArithmeticException>(actual);
 		Assert.Equal(errorMessage8, exception.Message);
@@ -1670,7 +1705,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage9 = nameof(errorMessage9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -1698,8 +1733,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
-		const int inputValue1 = -345332543;
-		Action actual = () => fixture.Execute(inputValue1, setupValue2, out _);
+		var inputValue1 = -345332543;
+		Action actual = () => fixture.Execute(ref inputValue1, setupValue2, out _);
 
 		var exception = Assert.Throws<AggregateException>(actual);
 		Assert.Equal(errorMessage7, exception.Message);
@@ -1708,7 +1743,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void PrioritiseValueOverWhereThrow6()
 	{
-		const int setupValue1 = 1, setupValue2 = 2;
+		var setupValue1 = 1;
+		const int setupValue2 = 2;
 		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
 
 		const string errorMessage1 = nameof(errorMessage1);
@@ -1738,7 +1774,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage9 = nameof(errorMessage9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -1767,7 +1803,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
 		const int inputValue2 = 21;
-		Action actual = () => fixture.Execute(setupValue1, inputValue2, out _);
+		Action actual = () => fixture.Execute(ref setupValue1, inputValue2, out _);
 
 		var exception = Assert.Throws<FileLoadException>(actual);
 		Assert.Equal(errorMessage6, exception.Message);
@@ -1776,7 +1812,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void PrioritiseValueOverWhereThrow5()
 	{
-		const int setupValue1 = 1, setupValue2 = 2;
+		var setupValue1 = 1;
+		const int setupValue2 = 2;
 		It<int> setupWhere1 = It<int>.Where(x => x > 10), setupWhere2 = It<int>.Where(x => x > 20);
 
 		const string errorMessage1 = nameof(errorMessage1);
@@ -1806,7 +1843,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage9 = nameof(errorMessage9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -1835,7 +1872,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
 		const int inputValue2 = -21;
-		Action actual = () => fixture.Execute(setupValue1, inputValue2, out _);
+		Action actual = () => fixture.Execute(ref setupValue1, inputValue2, out _);
 
 		var exception = Assert.Throws<MissingSatelliteAssemblyException>(actual);
 		Assert.Equal(errorMessage5, exception.Message);
@@ -1874,7 +1911,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage9 = nameof(errorMessage9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -1902,8 +1939,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
-		const int inputValue1 = 14, inputValue2 = 21;
-		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 14;
+		const int inputValue2 = 21;
+		Action actual = () => fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		var exception = Assert.Throws<OverflowException>(actual);
 		Assert.Equal(errorMessage4, exception.Message);
@@ -1942,7 +1980,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage9 = nameof(errorMessage9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -1970,8 +2008,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
-		const int inputValue1 = -14, inputValue2 = 21;
-		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = -14;
+		const int inputValue2 = 21;
+		Action actual = () => fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		var exception = Assert.Throws<InvalidCastException>(actual);
 		Assert.Equal(errorMessage3, exception.Message);
@@ -2010,7 +2049,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage9 = nameof(errorMessage9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -2038,8 +2077,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
-		const int inputValue1 = 14, inputValue2 = -21;
-		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 14;
+		const int inputValue2 = -21;
+		Action actual = () => fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		var exception = Assert.Throws<ArgumentException>(actual);
 		Assert.Equal(errorMessage2, exception.Message);
@@ -2078,7 +2118,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage9 = nameof(errorMessage9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup11, setup12);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -2106,8 +2146,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setup91, setup92);
 		fixture.Throws(new InvalidExpressionException(errorMessage9));
 
-		const int inputValue1 = -14, inputValue2 = -21;
-		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = -14;
+		const int inputValue2 = -21;
+		Action actual = () => fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage1, exception.Message);
@@ -2118,29 +2159,51 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => (x + y - 1).ToString());
+		fixture.Returns((ref x, y) => (x + y - 1).ToString());
 
-		const int inputValue1 = 12345678, inputValue2 = 987654321;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 12345678;
+		const int inputValue2 = 987654321;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		const string returnValue = "999999998";
 		Assert.True(hasValue);
 		Assert.Equal(returnValue, actual);
+	}
+
+	[Fact]
+	public void SetValueInReturnForAnySetupFunc()
+	{
+		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((ref x, y) => (x += y - 1).ToString());
+
+		var inputValue1 = 12345678;
+		const int inputValue2 = 987654321;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
+
+		const int expected = 999999998;
+		const string returnValue = "999999998";
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+		Assert.Equal(expected, inputValue1);
 	}
 
 	[Fact]
 	public void ReturnForValueSetupFunc()
 	{
-		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		var setupValue1 = 12345678;
+		const int setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => (x + y - 1).ToString());
+		fixture.Returns((ref x, y) => (x + y - 1).ToString());
 
-		var hasValue = fixture.Execute(setupValue1, setupValue2, out var actual);
+		var hasValue = fixture.Execute(ref setupValue1, setupValue2, out var actual);
 
 		const string returnValue = "999999998";
 		Assert.True(hasValue);
@@ -2148,20 +2211,59 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	}
 
 	[Fact]
-	public void ReturnNullForValueSetupFunc()
+	public void SetValueInReturnForValueSetupFunc()
+	{
+		var setupValue1 = 12345678;
+		const int setupValue2 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((ref x, y) => (x += y - 1).ToString());
+
+		var hasValue = fixture.Execute(ref setupValue1, setupValue2, out var actual);
+
+		const int expected = 999999998;
+		const string returnValue = "999999998";
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+		Assert.Equal(expected, setupValue1);
+	}
+
+	[Fact]
+	public void ReturnNullForValueSetupFunc1()
 	{
 		const int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => (x + y - 1).ToString());
+		fixture.Returns((ref x, y) => (x + y - 1).ToString());
 
-		const int inputValue1 = 84837621;
-		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+		var inputValue1 = 84837621;
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out var actual);
 
 		Assert.False(hasValue);
 		Assert.Null(actual);
+	}
+
+	[Fact]
+	public void NotSetValueReturnForValueSetupFunc1()
+	{
+		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((ref x, y) => (x += y - 1).ToString());
+
+		var inputValue1 = 84837621;
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out var actual);
+
+		const int expected = 84837621;
+		Assert.False(hasValue);
+		Assert.Null(actual);
+		Assert.Equal(expected, inputValue1);
 	}
 
 	[Fact]
@@ -2170,12 +2272,12 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefIntInt<int>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => x + y - 1);
+		fixture.Returns((ref x, y) => x + y - 1);
 
-		const int inputValue1 = 84837621;
-		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+		var inputValue1 = 84837621;
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out var actual);
 
 		const int expected = 0;
 		Assert.False(hasValue);
@@ -2185,32 +2287,54 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void ReturnNullForValueSetupFunc2()
 	{
-		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		var setupValue1 = 12345678;
+		const int setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => (x + y - 1).ToString());
+		fixture.Returns((ref x, y) => (x + y - 1).ToString());
 
 		const int inputValue2 = 84837621;
-		var hasValue = fixture.Execute(setupValue1, inputValue2, out var actual);
+		var hasValue = fixture.Execute(ref setupValue1, inputValue2, out var actual);
 
 		Assert.False(hasValue);
 		Assert.Null(actual);
 	}
 
 	[Fact]
-	public void ReturnDefaultForValueSetupFunc2()
+	public void NotSetValueInReturnForValueSetupFunc2()
 	{
-		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		var setupValue1 = 12345678;
+		const int setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => x + y - 1);
+		fixture.Returns((ref x, y) => (x += y - 1).ToString());
 
 		const int inputValue2 = 84837621;
-		var hasValue = fixture.Execute(setupValue1, inputValue2, out var actual);
+		var hasValue = fixture.Execute(ref setupValue1, inputValue2, out var actual);
+
+		const int expected = 84837621;
+		Assert.False(hasValue);
+		Assert.Null(actual);
+		Assert.Equal(expected, inputValue2);
+	}
+
+	[Fact]
+	public void ReturnDefaultForValueSetupFunc2()
+	{
+		var setupValue1 = 12345678;
+		const int setupValue2 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = setupValue2;
+
+		var fixture = CreateFixtureInt<SetupRefIntInt<int>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((ref x, y) => x + y - 1);
+
+		const int inputValue2 = 84837621;
+		var hasValue = fixture.Execute(ref setupValue1, inputValue2, out var actual);
 
 		const int expected = 0;
 		Assert.False(hasValue);
@@ -2223,15 +2347,36 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => (x + y - 1).ToString());
+		fixture.Returns((ref x, y) => (x + y - 1).ToString());
 
-		const int inputValue1 = -771245, inputValue2 = 84837621;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = -771245;
+		const int inputValue2 = 84837621;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		Assert.False(hasValue);
 		Assert.Null(actual);
+	}
+
+	[Fact]
+	public void NotSetValueInReturnForValueSetupFunc1And2()
+	{
+		const int setupValue1 = 12345678, setupValue2 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((ref x, y) => (x += y - 1).ToString());
+
+		var inputValue1 = -771245;
+		const int inputValue2 = 84837621;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
+
+		const int expected = -771245;
+		Assert.False(hasValue);
+		Assert.Null(actual);
+		Assert.Equal(expected, inputValue1);
 	}
 
 	[Fact]
@@ -2240,12 +2385,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefIntInt<int>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => x + y - 1);
+		fixture.Returns((ref x, y) => x + y - 1);
 
-		const int inputValue1 = -771245, inputValue2 = 84837621;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = -771245;
+		const int inputValue2 = 84837621;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		const int expected = 0;
 		Assert.False(hasValue);
@@ -2261,11 +2407,11 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue2 = 987654321;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => (x + y - 1).ToString());
+		fixture.Returns((ref x, y) => (x + y - 1).ToString());
 
-		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out var actual);
 
 		var returnValue = $"{inputValue1 + setupValue2 - 1}";
 		Assert.True(hasValue);
@@ -2273,21 +2419,63 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	}
 
 	[Theory]
+	[InlineData(-1)]
+	[InlineData(0)]
+	[InlineData(10)]
+	public void SetValueInReturnForWhereSetupFunc1(int inputValue1)
+	{
+		const int setupValue2 = 987654321;
+		var expected = inputValue1 + setupValue2 - 1;
+		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((ref x, y) => (x += y - 1).ToString());
+
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out var actual);
+
+		var returnValue = $"{expected}";
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+		Assert.Equal(expected, inputValue1);
+	}
+
+	[Theory]
 	[InlineData(11)]
 	[InlineData(100)]
-	public void ReturnNullForWhereSetupFunc1(int inputValue2)
+	public void ReturnNullForWhereSetupFunc1(int inputValue1)
 	{
 		const int setupValue2 = 987654321;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => (x + y - 1).ToString());
+		fixture.Returns((ref x, y) => (x + y - 1).ToString());
 
-		var hasValue = fixture.Execute(inputValue2, setupValue2, out var actual);
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out var actual);
 
 		Assert.False(hasValue);
 		Assert.Null(actual);
+	}
+
+	[Theory]
+	[InlineData(11)]
+	[InlineData(100)]
+	public void NotSetValueInReturnForWhereSetupFunc1(int inputValue1)
+	{
+		var expected = inputValue1;
+		const int setupValue2 = 987654321;
+		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((ref x, y) => (x += y - 1).ToString());
+
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out var actual);
+
+		Assert.False(hasValue);
+		Assert.Null(actual);
+		Assert.Equal(expected, inputValue1);
 	}
 
 	[Theory]
@@ -2298,11 +2486,11 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue2 = 987654321;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 
-		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefIntInt<int>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => x + y - 1);
+		fixture.Returns((ref x, y) => x + y - 1);
 
-		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out var actual);
 
 		const int expected = 0;
 		Assert.False(hasValue);
@@ -2315,14 +2503,14 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[InlineData(10)]
 	public void ReturnForWhereSetupFunc2(int inputValue2)
 	{
-		const int setupValue1 = 987654321;
+		var setupValue1 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => (x + y - 1).ToString());
+		fixture.Returns((ref x, y) => (x + y - 1).ToString());
 
-		var hasValue = fixture.Execute(setupValue1, inputValue2, out var actual);
+		var hasValue = fixture.Execute(ref setupValue1, inputValue2, out var actual);
 
 		var returnValue = $"{setupValue1 + inputValue2 - 1}";
 		Assert.True(hasValue);
@@ -2330,18 +2518,39 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	}
 
 	[Theory]
+	[InlineData(-1)]
+	[InlineData(0)]
+	[InlineData(10)]
+	public void SetValueInReturnForWhereSetupFunc2(int inputValue2)
+	{
+		int setupValue1 = 987654321, expected = setupValue1 + inputValue2 - 1;
+		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((ref x, y) => (x += y - 1).ToString());
+
+		var hasValue = fixture.Execute(ref setupValue1, inputValue2, out var actual);
+
+		var returnValue = $"{expected}";
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+		Assert.Equal(expected, setupValue1);
+	}
+
+	[Theory]
 	[InlineData(11)]
 	[InlineData(100)]
 	public void ReturnNullForWhereSetupFunc2(int inputValue2)
 	{
-		const int setupValue1 = 987654321;
+		var setupValue1 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => (x + y - 1).ToString());
+		fixture.Returns((ref x, y) => (x + y - 1).ToString());
 
-		var hasValue = fixture.Execute(setupValue1, inputValue2, out var actual);
+		var hasValue = fixture.Execute(ref setupValue1, inputValue2, out var actual);
 
 		Assert.False(hasValue);
 		Assert.Null(actual);
@@ -2350,16 +2559,35 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Theory]
 	[InlineData(11)]
 	[InlineData(100)]
-	public void ReturnDefaultForWhereSetupFunc2(int inputValue2)
+	public void NotSetValueInReturnForWhereSetupFunc2(int inputValue2)
 	{
-		const int setupValue1 = 987654321;
+		int setupValue1 = 987654321, expected = setupValue1;
 		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => x + y - 1);
+		fixture.Returns((ref x, y) => (x += y - 1).ToString());
 
-		var hasValue = fixture.Execute(setupValue1, inputValue2, out var actual);
+		var hasValue = fixture.Execute(ref setupValue1, inputValue2, out var actual);
+
+		Assert.False(hasValue);
+		Assert.Null(actual);
+		Assert.Equal(expected, setupValue1);
+	}
+
+	[Theory]
+	[InlineData(11)]
+	[InlineData(100)]
+	public void ReturnDefaultForWhereSetupFunc2(int inputValue2)
+	{
+		var setupValue1 = 987654321;
+		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixtureInt<SetupRefIntInt<int>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((ref x, y) => x + y - 1);
+
+		var hasValue = fixture.Execute(ref setupValue1, inputValue2, out var actual);
 
 		const int expected = 0;
 		Assert.False(hasValue);
@@ -2371,12 +2599,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => (x + y - 1).ToString());
+		fixture.Returns((ref x, y) => (x + y - 1).ToString());
 
-		const int inputValue1 = 101, inputValue2 = 9;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 101;
+		const int inputValue2 = 9;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		const string returnValue = "109";
 		Assert.True(hasValue);
@@ -2384,19 +2613,59 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	}
 
 	[Fact]
+	public void SetValueInReturnForWhereSetupsFunc()
+	{
+		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((ref x, y) => (x += y - 1).ToString());
+
+		var inputValue1 = 101;
+		const int inputValue2 = 9;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
+
+		const int expected = 109;
+		const string returnValue = "109";
+		Assert.True(hasValue);
+		Assert.Equal(returnValue, actual);
+		Assert.Equal(expected, inputValue1);
+	}
+
+	[Fact]
 	public void ReturnNullForWhereSetupsFunc1()
 	{
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => (x + y - 1).ToString());
+		fixture.Returns((ref x, y) => (x += y - 1).ToString());
 
-		const int inputValue1 = 99, inputValue2 = 9;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 99;
+		const int inputValue2 = 9;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		Assert.False(hasValue);
 		Assert.Null(actual);
+	}
+
+	[Fact]
+	public void NotSetValueInReturnForWhereSetupsFunc1()
+	{
+		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((ref x, y) => (x += y - 1).ToString());
+
+		var inputValue1 = 99;
+		const int inputValue2 = 9;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
+
+		const int expected = 99;
+		Assert.False(hasValue);
+		Assert.Null(actual);
+		Assert.Equal(expected, inputValue1);
 	}
 
 	[Fact]
@@ -2404,12 +2673,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefIntInt<int>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => x + y - 1);
+		fixture.Returns((ref x, y) => x + y - 1);
 
-		const int inputValue1 = 99, inputValue2 = 9;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 99;
+		const int inputValue2 = 9;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		const int expected = 0;
 		Assert.False(hasValue);
@@ -2421,15 +2691,35 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => (x + y - 1).ToString());
+		fixture.Returns((ref x, y) => (x + y - 1).ToString());
 
-		const int inputValue1 = 101, inputValue2 = 11;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 101;
+		const int inputValue2 = 11;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		Assert.False(hasValue);
 		Assert.Null(actual);
+	}
+
+	[Fact]
+	public void NotSetValueInReturnForWhereSetupsFunc2()
+	{
+		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((ref x, y) => (x += y - 1).ToString());
+
+		var inputValue1 = 101;
+		const int inputValue2 = 11;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
+
+		const int expected = 101;
+		Assert.False(hasValue);
+		Assert.Null(actual);
+		Assert.Equal(expected, inputValue1);
 	}
 
 	[Fact]
@@ -2437,12 +2727,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefIntInt<int>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => x + y - 1);
+		fixture.Returns((ref x, y) => x + y - 1);
 
-		const int inputValue1 = 101, inputValue2 = 11;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 101;
+		const int inputValue2 = 11;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		const int expected = 0;
 		Assert.False(hasValue);
@@ -2454,15 +2745,35 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => (x + y - 1).ToString());
+		fixture.Returns((ref x, y) => (x + y - 1).ToString());
 
-		const int inputValue1 = 99, inputValue2 = 11;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 99;
+		const int inputValue2 = 11;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		Assert.False(hasValue);
 		Assert.Null(actual);
+	}
+
+	[Fact]
+	public void NotSetValueInReturnForWhereSetupsFunc1And2()
+	{
+		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Returns((ref x, y) => (x += y - 1).ToString());
+
+		var inputValue1 = 99;
+		const int inputValue2 = 11;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
+
+		const int expected = 99;
+		Assert.False(hasValue);
+		Assert.Null(actual);
+		Assert.Equal(expected, inputValue1);
 	}
 
 	[Fact]
@@ -2470,12 +2781,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixtureInt<SetupIntInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefIntInt<int>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns((x, y) => x + y - 1);
+		fixture.Returns((ref x, y) => x + y - 1);
 
-		const int inputValue1 = 99, inputValue2 = 11;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 99;
+		const int inputValue2 = 11;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		const int expected = 0;
 		Assert.False(hasValue);
@@ -2488,16 +2800,35 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
-		const int inputValue1 = 99, inputValue2 = 11;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 99;
+		const int inputValue2 = 11;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		const int expected = 89;
 		Assert.False(hasValue);
 		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void SetValueInCallbackForAny()
+	{
+		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, _) => x += 2);
+
+		var inputValue1 = 99;
+		const int inputValue2 = 11;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = 101;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
 	}
 
 	[Fact]
@@ -2507,13 +2838,14 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
-		const int inputValue1 = 99, inputValue2 = 11;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 99;
+		const int inputValue2 = 11;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		const int expected = 89;
 		Assert.True(hasValue);
@@ -2528,13 +2860,14 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new Exception(expectedMessage));
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
-		const int inputValue1 = 99, inputValue2 = 11;
-		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 99;
+		const int inputValue2 = 11;
+		Action actual = () => fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		const int expected = 89;
 		var exception = Assert.Throws<Exception>(actual);
@@ -2545,15 +2878,16 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void InvokeCallbackForValue()
 	{
-		const int setupValue1 = 12345678, setupValue2 = 23456789;
+		var setupValue1 = 12345678;
+		const int setupValue2 = 23456789;
 		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
-		var hasValue = fixture.Execute(setupValue1, setupValue2, out _);
+		var hasValue = fixture.Execute(ref setupValue1, setupValue2, out _);
 
 		const int expected = -11111110;
 		Assert.False(hasValue);
@@ -2561,19 +2895,56 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	}
 
 	[Fact]
+	public void SetValueInCallbackForValue()
+	{
+		var setupValue1 = 12345678;
+		const int setupValue2 = 23456789;
+		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, _) => x += 2);
+
+		var hasValue = fixture.Execute(ref setupValue1, setupValue2, out _);
+
+		const int expected = 12345680;
+		Assert.False(hasValue);
+		Assert.Equal(expected, setupValue1);
+	}
+
+	[Fact]
+	public void NotSetValueInCallbackForValue()
+	{
+		var setupValue1 = 12345678;
+		const int setupValue2 = 23456789;
+		It<int> setup1 = It<int>.Value(setupValue2), setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, _) => x += 2);
+
+		var hasValue = fixture.Execute(ref setupValue1, setupValue2, out _);
+
+		const int expected = 12345678;
+		Assert.False(hasValue);
+		Assert.Equal(expected, setupValue1);
+	}
+
+	[Fact]
 	public void InvokeCallbackForValueBeforeReturns()
 	{
 		const string returnValue = nameof(returnValue);
-		const int setupValue1 = 12345678, setupValue2 = 23456789;
+		var setupValue1 = 12345678;
+		const int setupValue2 = 23456789;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
-		var hasValue = fixture.Execute(setupValue1, setupValue2, out var actual);
+		var hasValue = fixture.Execute(ref setupValue1, setupValue2, out var actual);
 
 		const int expected = -11111110;
 		Assert.True(hasValue);
@@ -2585,16 +2956,17 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	public void InvokeCallbackForValueBeforeThrows()
 	{
 		const string expectedMessage = nameof(expectedMessage);
-		const int setupValue1 = 12345678, setupValue2 = 23456789;
+		var setupValue1 = 12345678;
+		const int setupValue2 = 23456789;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new Exception(expectedMessage));
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
-		Action actual = () => fixture.Execute(setupValue1, setupValue2, out _);
+		Action actual = () => fixture.Execute(ref setupValue1, setupValue2, out _);
 
 		const int expected = -11111110;
 		var exception = Assert.Throws<Exception>(actual);
@@ -2608,16 +2980,53 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Where(x => x > 20), setup2 = It<int>.Where(x => x < 15);
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
-		const int inputValue1 = 99, inputValue2 = 11;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 99;
+		const int inputValue2 = 11;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		const int expected = 89;
 		Assert.False(hasValue);
 		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void SetValueInCallbackForWhere()
+	{
+		It<int> setup1 = It<int>.Where(x => x > 20), setup2 = It<int>.Where(x => x < 15);
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, _) => x += 2);
+
+		var inputValue1 = 99;
+		const int inputValue2 = 11;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = 101;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
+	}
+
+	[Fact]
+	public void NotSetValueInCallbackForWhere()
+	{
+		It<int> setup1 = It<int>.Where(x => x > 20), setup2 = It<int>.Where(x => x < 15);
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, _) => x += 2);
+
+		var inputValue1 = 19;
+		const int inputValue2 = 11;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = 19;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
 	}
 
 	[Fact]
@@ -2627,13 +3036,14 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Where(x => x > 20), setup2 = It<int>.Where(x => x < 15);
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Returns(returnValue);
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
-		const int inputValue1 = 99, inputValue2 = 11;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 99;
+		const int inputValue2 = 11;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		const int expected = 89;
 		Assert.True(hasValue);
@@ -2648,13 +3058,14 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Where(x => x > 20), setup2 = It<int>.Where(x => x < 15);
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Throws(new Exception(expectedMessage));
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
-		const int inputValue1 = 99, inputValue2 = 11;
-		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 99;
+		const int inputValue2 = 11;
+		Action actual = () => fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		const int expected = 89;
 		var exception = Assert.Throws<Exception>(actual);
@@ -2669,12 +3080,12 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
-		const int inputValue1 = -64713;
-		var hasValue = fixture.Execute(inputValue1, setupValue2, out _);
+		var inputValue1 = -64713;
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out _);
 
 		const int expected = 0;
 		Assert.False(hasValue);
@@ -2682,22 +3093,60 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	}
 
 	[Fact]
-	public void NotInvokeCallbackForValue2()
+	public void NotSetValueInCallbackForValue1()
 	{
 		const int setupValue1 = 12345678, setupValue2 = 23456789;
 		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x = +y);
+
+		var inputValue1 = -64713;
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out _);
+
+		const int expected = -64713;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForValue2()
+	{
+		var setupValue1 = 12345678;
+		const int setupValue2 = 23456789;
+		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
 		const int inputValue2 = -64713;
-		var hasValue = fixture.Execute(setupValue1, inputValue2, out _);
+		var hasValue = fixture.Execute(ref setupValue1, inputValue2, out _);
 
 		const int expected = 0;
 		Assert.False(hasValue);
 		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotSetValueInCallbackForValue2()
+	{
+		var setupValue1 = 12345678;
+		const int setupValue2 = 23456789;
+		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		const int inputValue2 = -64713;
+		var hasValue = fixture.Execute(ref setupValue1, inputValue2, out _);
+
+		const int expected = -64713;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue2);
 	}
 
 	[Fact]
@@ -2707,12 +3156,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
-		const int inputValue1 = -64713, inputValue2 = -28257;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = -64713;
+		const int inputValue2 = -28257;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		const int expected = 0;
 		Assert.False(hasValue);
@@ -2720,21 +3170,59 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	}
 
 	[Fact]
-	public void NotInvokeCallbackForValue4()
+	public void NotSetValueInCallbackForValue3()
 	{
 		const int setupValue1 = 12345678, setupValue2 = 23456789;
 		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		var inputValue1 = -64713;
+		const int inputValue2 = -28257;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = -64713;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForValue4()
+	{
+		var setupValue2 = 23456789;
+		const int setupValue1 = 12345678;
+		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
-		var hasValue = fixture.Execute(setupValue2, setupValue1, out _);
+		var hasValue = fixture.Execute(ref setupValue2, setupValue1, out _);
 
 		const int expected = 0;
 		Assert.False(hasValue);
 		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotSetValueInCallbackForValue4()
+	{
+		var setupValue2 = 23456789;
+		const int setupValue1 = 12345678;
+		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		var hasValue = fixture.Execute(ref setupValue2, setupValue1, out _);
+
+		const int expected = 23456789;
+		Assert.False(hasValue);
+		Assert.Equal(expected, setupValue2);
 	}
 
 	[Fact]
@@ -2744,16 +3232,36 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Value(setupValue1), setup2 = It<int>.Any();
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
-		const int inputValue1 = -2341414, inputValue2 = 1234;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = -2341414;
+		const int inputValue2 = 1234;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		const int expected = 0;
 		Assert.False(hasValue);
 		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotSetValueInCallbackForValueAny1()
+	{
+		const int setupValue1 = 12345678;
+		It<int> setup1 = It<int>.Value(setupValue1), setup2 = It<int>.Any();
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		var inputValue1 = -2341414;
+		const int inputValue2 = 1234;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = -2341414;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
 	}
 
 	[Fact]
@@ -2763,16 +3271,36 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Any(), setup2 = setupValue2;
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
-		const int inputValue1 = -2341414, inputValue2 = 1234;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = -2341414;
+		const int inputValue2 = 1234;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		const int expected = 0;
 		Assert.False(hasValue);
 		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotSetValueInCallbackForValueAny2()
+	{
+		const int setupValue2 = 12345678;
+		It<int> setup1 = It<int>.Any(), setup2 = setupValue2;
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		var inputValue1 = -2341414;
+		const int inputValue2 = 1234;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = -2341414;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
 	}
 
 	[Fact]
@@ -2781,16 +3309,35 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Where(x => x < 20);
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
-		const int inputValue1 = 10, inputValue2 = 9;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 10;
+		const int inputValue2 = 9;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		const int expected = 0;
 		Assert.False(hasValue);
 		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotSetValueInCallbackForWhere1()
+	{
+		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Where(x => x < 20);
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		var inputValue1 = 10;
+		const int inputValue2 = 9;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = 10;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
 	}
 
 	[Fact]
@@ -2799,16 +3346,35 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Where(x => x < 20);
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
-		const int inputValue1 = 11, inputValue2 = 20;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 11;
+		const int inputValue2 = 20;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		const int expected = 0;
 		Assert.False(hasValue);
 		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotSetValueInCallbackForWhere2()
+	{
+		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Where(x => x < 20);
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		var inputValue1 = 11;
+		const int inputValue2 = 20;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = 11;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
 	}
 
 	[Fact]
@@ -2817,16 +3383,35 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Where(x => x < 20);
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
-		const int inputValue1 = 10, inputValue2 = 20;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 10;
+		const int inputValue2 = 20;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		const int expected = 0;
 		Assert.False(hasValue);
 		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotSetValueInCallbackForWhere3()
+	{
+		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Where(x => x < 20);
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		var inputValue1 = 10;
+		const int inputValue2 = 20;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = 10;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
 	}
 
 	[Fact]
@@ -2835,16 +3420,35 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Any();
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
-		const int inputValue1 = 10, inputValue2 = 20;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 10;
+		const int inputValue2 = 20;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		const int expected = 0;
 		Assert.False(hasValue);
 		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotSetValueInCallbackForWhereAny1()
+	{
+		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Any();
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		var inputValue1 = 10;
+		const int inputValue2 = 20;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = 10;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
 	}
 
 	[Fact]
@@ -2853,12 +3457,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Where(x => x < 20);
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Callback((x, y) => callbackValue = x - y + 1);
+		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
 
-		const int inputValue1 = 10, inputValue2 = 20;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 10;
+		const int inputValue2 = 20;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		const int expected = 0;
 		Assert.False(hasValue);
@@ -2866,13 +3471,31 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	}
 
 	[Fact]
+	public void NotSetValueInCallbackForWhereAny2()
+	{
+		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Where(x => x < 20);
+
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
+		fixture.SetupParameters(setup1, setup2);
+		fixture.Callback((ref x, y) => x += y);
+
+		var inputValue1 = 10;
+		const int inputValue2 = 20;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out _);
+
+		const int expected = 10;
+		Assert.False(hasValue);
+		Assert.Equal(expected, inputValue1);
+	}
+
+	[Fact]
 	public void NotDuplicateSameSetup()
 	{
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
-		fixture.Callback((_, _) => { });
+		fixture.Callback((ref _, _) => { });
 		fixture.Throws(new Exception());
-		fixture.Callback((_, _) => { Debug.WriteLine("output"); });
+		fixture.Callback((ref _, _) => { Debug.WriteLine("output"); });
 		fixture.Throws(new Exception());
 
 		const int expected = 1;
@@ -2883,15 +3506,15 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void InsertAllSetups()
 	{
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
-		fixture.Callback((_, _) => { });
+		fixture.Callback((ref _, _) => { });
 
 		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Throws(new Exception());
 
 		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
-		fixture.Callback((_, _) => { Debug.WriteLine("output"); });
+		fixture.Callback((ref _, _) => { Debug.WriteLine("output"); });
 
 		const int expected = 3;
 		var actual = GetSetupCount(fixture);
@@ -2901,7 +3524,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void ReturnLastResultAny()
 	{
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Returns("random text");
 
@@ -2909,8 +3532,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Returns(returnValue);
 
-		const int inputValue1 = 12345678, inputValue2 = 23456;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 12345678;
+		const int inputValue2 = 23456;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue, actual);
@@ -2919,7 +3543,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void ThrowLastExceptionAny()
 	{
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Throws(new Exception("random text"));
 
@@ -2927,8 +3551,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Throws(new NullReferenceException(expectedMessage));
 
-		const int inputValue1 = 12345678, inputValue2 = 23456;
-		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 12345678;
+		const int inputValue2 = 23456;
+		Action actual = () => fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -2937,7 +3562,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void ReturnLastResultAnyWhere()
 	{
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(It<int>.Any(), It<int>.Where(x => x > 10));
 		fixture.Returns("random text");
 
@@ -2945,8 +3570,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(It<int>.Any(), It<int>.Where(x => x > 10));
 		fixture.Returns(returnValue);
 
-		const int inputValue1 = 12345678, inputValue2 = 23456;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 12345678;
+		const int inputValue2 = 23456;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue, actual);
@@ -2955,7 +3581,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void ThrowLastExceptionAnyWhere()
 	{
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(It<int>.Any(), It<int>.Where(x => x > 10));
 		fixture.Throws(new Exception("random text"));
 
@@ -2963,8 +3589,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(It<int>.Any(), It<int>.Where(x => x > 10));
 		fixture.Throws(new NullReferenceException(expectedMessage));
 
-		const int inputValue1 = 12345678, inputValue2 = 23456;
-		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 12345678;
+		const int inputValue2 = 23456;
+		Action actual = () => fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -2975,7 +3602,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		const int setupValue2 = 123;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(It<int>.Any(), It<int>.Value(setupValue2));
 		fixture.Returns("random text");
 
@@ -2983,8 +3610,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(It<int>.Any(), It<int>.Value(setupValue2));
 		fixture.Returns(returnValue);
 
-		const int inputValue1 = 12345678;
-		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+		var inputValue1 = 12345678;
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue, actual);
@@ -2995,7 +3622,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		const int setupValue2 = 123;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(It<int>.Any(), It<int>.Value(setupValue2));
 		fixture.Throws(new Exception("random text"));
 
@@ -3003,8 +3630,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(It<int>.Any(), It<int>.Value(setupValue2));
 		fixture.Throws(new NullReferenceException(expectedMessage));
 
-		const int inputValue1 = 12345678;
-		Action actual = () => fixture.Execute(inputValue1, setupValue2, out _);
+		var inputValue1 = 12345678;
+		Action actual = () => fixture.Execute(ref inputValue1, setupValue2, out _);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -3013,7 +3640,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void ReturnLastResultWhere()
 	{
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(It<int>.Where(x => x > 100), It<int>.Where(x => x < 20));
 		fixture.Returns("random text");
 
@@ -3021,8 +3648,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(It<int>.Where(x => x > 100), It<int>.Where(x => x < 20));
 		fixture.Returns(returnValue);
 
-		const int inputValue1 = 123, inputValue2 = 15;
-		var hasValue = fixture.Execute(inputValue1, inputValue2, out var actual);
+		var inputValue1 = 123;
+		const int inputValue2 = 15;
+		var hasValue = fixture.Execute(ref inputValue1, inputValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue, actual);
@@ -3031,7 +3659,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void ThrowLastExceptionWhere()
 	{
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(It<int>.Where(x => x > 100), It<int>.Where(x => x < 20));
 		fixture.Throws(new Exception("random text"));
 
@@ -3039,8 +3667,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(It<int>.Where(x => x > 100), It<int>.Where(x => x < 20));
 		fixture.Throws(new NullReferenceException(expectedMessage));
 
-		const int inputValue1 = 123, inputValue2 = 15;
-		Action actual = () => fixture.Execute(inputValue1, inputValue2, out _);
+		var inputValue1 = 123;
+		const int inputValue2 = 15;
+		Action actual = () => fixture.Execute(ref inputValue1, inputValue2, out _);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -3051,7 +3680,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		const int setupValue2 = 123;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(It<int>.Where(x => x > 100), setupValue2);
 		fixture.Returns("random text");
 
@@ -3059,8 +3688,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(It<int>.Where(x => x > 100), setupValue2);
 		fixture.Returns(returnValue);
 
-		const int inputValue1 = 123;
-		var hasValue = fixture.Execute(inputValue1, setupValue2, out var actual);
+		var inputValue1 = 123;
+		var hasValue = fixture.Execute(ref inputValue1, setupValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue, actual);
@@ -3071,7 +3700,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		const int setupValue2 = 123;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(It<int>.Where(x => x > 100), setupValue2);
 		fixture.Throws(new Exception("random text"));
 
@@ -3079,8 +3708,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(It<int>.Where(x => x > 100), setupValue2);
 		fixture.Throws(new NullReferenceException(expectedMessage));
 
-		const int inputValue1 = 123;
-		Action actual = () => fixture.Execute(inputValue1, setupValue2, out _);
+		var inputValue1 = 123;
+		Action actual = () => fixture.Execute(ref inputValue1, setupValue2, out _);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -3089,9 +3718,10 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void ReturnLastResultValue()
 	{
-		const int setupValue1 = 11, setupValue2 = 123;
+		var setupValue1 = 11;
+		const int setupValue2 = 123;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setupValue1, setupValue2);
 		fixture.Returns("random text");
 
@@ -3099,7 +3729,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setupValue1, setupValue2);
 		fixture.Returns(returnValue);
 
-		var hasValue = fixture.Execute(setupValue1, setupValue2, out var actual);
+		var hasValue = fixture.Execute(ref setupValue1, setupValue2, out var actual);
 
 		Assert.True(hasValue);
 		Assert.Equal(returnValue, actual);
@@ -3108,9 +3738,10 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void ThrowLastExceptionValue()
 	{
-		const int setupValue1 = 11, setupValue2 = 123;
+		var setupValue1 = 11;
+		const int setupValue2 = 123;
 
-		var fixture = CreateFixture<SetupIntInt<string>>();
+		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setupValue1, setupValue2);
 		fixture.Throws(new Exception("random text"));
 
@@ -3118,7 +3749,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(setupValue1, setupValue2);
 		fixture.Throws(new NullReferenceException(expectedMessage));
 
-		Action actual = () => fixture.Execute(setupValue1, setupValue2, out _);
+		Action actual = () => fixture.Execute(ref setupValue1, setupValue2, out _);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);

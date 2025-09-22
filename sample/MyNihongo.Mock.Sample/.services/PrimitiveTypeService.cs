@@ -53,9 +53,24 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		_primitiveDependencyService.InvokeWithParameter(ref parameter);
 	}
 
-	public void InvokeWithSeveralParameters(in int parameter1, in int parameter2)
+	public void InvokeWithSeveralParameters(int parameter1, int parameter2)
 	{
 		_primitiveDependencyService.InvokeWithSeveralParameters(parameter1, parameter2);
+	}
+
+	public void InvokeWithSeveralParameters(ref int parameter1, int parameter2)
+	{
+		_primitiveDependencyService.InvokeWithSeveralParameters(ref parameter1, parameter2);
+	}
+
+	public void InvokeWithSeveralParameters(int parameter1, ref int parameter2)
+	{
+		_primitiveDependencyService.InvokeWithSeveralParameters(parameter1, ref parameter2);
+	}
+
+	public void InvokeWithSeveralParameters(ref int parameter1, ref int parameter2)
+	{
+		_primitiveDependencyService.InvokeWithSeveralParameters(ref parameter1, ref parameter2);
 	}
 
 	public decimal Return()
@@ -76,9 +91,33 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		return result + 1;
 	}
 
-	public double ReturnWithSeveralParameters(in int parameter1, in int parameter2)
+	public double ReturnWithSeveralParameters(int parameter1, int parameter2)
 	{
 		var spending = _primitiveDependencyService.ReturnWithSeveralParameters(parameter1, parameter2);
+		var spendingDouble = Convert.ToDouble(spending);
+
+		return Math.Pow(spendingDouble, 2d);
+	}
+
+	public double ReturnWithSeveralParameters(ref int parameter1, int parameter2)
+	{
+		var spending = _primitiveDependencyService.ReturnWithSeveralParameters(ref parameter1, parameter2);
+		var spendingDouble = Convert.ToDouble(spending);
+
+		return Math.Pow(spendingDouble, 2d);
+	}
+
+	public double ReturnWithSeveralParameters(int parameter1, ref int parameter2)
+	{
+		var spending = _primitiveDependencyService.ReturnWithSeveralParameters(parameter1, ref parameter2);
+		var spendingDouble = Convert.ToDouble(spending);
+
+		return Math.Pow(spendingDouble, 2d);
+	}
+
+	public double ReturnWithSeveralParameters(ref int parameter1, ref int parameter2)
+	{
+		var spending = _primitiveDependencyService.ReturnWithSeveralParameters(ref parameter1, ref parameter2);
 		var spendingDouble = Convert.ToDouble(spending);
 
 		return Math.Pow(spendingDouble, 2d);

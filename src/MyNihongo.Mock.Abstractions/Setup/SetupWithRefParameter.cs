@@ -1,8 +1,8 @@
 namespace MyNihongo.Mock;
 
-public sealed class SetupWithParameter<TParameter> : SetupWithParameterBase<TParameter, Action<TParameter>>
+public class SetupWithRefParameter<TParameter> : SetupWithParameterBase<TParameter, ActionRef<TParameter>>
 {
-	public void Invoke(in TParameter parameter)
+	public void Invoke(ref TParameter parameter)
 	{
 		if (Setups is null)
 			return;
@@ -12,7 +12,7 @@ public sealed class SetupWithParameter<TParameter> : SetupWithParameterBase<TPar
 			if (setup.Parameter.HasValue && !setup.Parameter.Value.Check(parameter))
 				continue;
 
-			setup.Callback?.Invoke(parameter);
+			setup.Callback?.Invoke(ref parameter);
 
 			if (setup.Exception is not null)
 				throw setup.Exception;

@@ -14,13 +14,13 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 	[Fact]
 	public void VerifyIfNotCalled()
 	{
-		DependencyServiceMock.VerifyInvokeWithSeveralParameters(default, default, Times.Never);
+		DependencyServiceMock.VerifyInvokeWithSeveralParameters(It<int>.Any(), default, Times.Never);
 	}
 
 	[Fact]
 	public void ThrowIfNotCalled()
 	{
-		var actual = () => DependencyServiceMock.VerifyInvokeWithSeveralParameters(default, default, Times.Once);
+		var actual = () => DependencyServiceMock.VerifyInvokeWithSeveralParameters(It<int>.Any(), It<int>.Any(), Times.Once);
 
 		const string errorMessage = "Expected IPrimitiveDependencyService#InvokeWithSeveralParameters(any, any) to be called 1 time, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
@@ -113,15 +113,15 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 		const int input1 = 123, input2 = 234;
 
 		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters()
+			.SetupInvokeWithSeveralParameters(It<int>.Any(), It<int>.Any())
 			.Throws(new InvalidOperationException(errorMessage1));
 
 		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(input1)
+			.SetupInvokeWithSeveralParameters(input1, It<int>.Any())
 			.Throws(new ArgumentException(errorMessage2));
 
 		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(parameter2: input2)
+			.SetupInvokeWithSeveralParameters(It<int>.Any(), parameter2: input2)
 			.Throws(new OutOfMemoryException(errorMessage3));
 
 		DependencyServiceMock
@@ -142,15 +142,15 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 		const int input1 = 123, input2 = 234, anotherParameter = 987654;
 
 		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters()
+			.SetupInvokeWithSeveralParameters(It<int>.Any(), It<int>.Any())
 			.Throws(new InvalidOperationException(errorMessage1));
 
 		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(input1)
+			.SetupInvokeWithSeveralParameters(input1, It<int>.Any())
 			.Throws(new ArgumentException(errorMessage2));
 
 		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(parameter2: input2)
+			.SetupInvokeWithSeveralParameters(It<int>.Any(), parameter2: input2)
 			.Throws(new OutOfMemoryException(errorMessage3));
 
 		DependencyServiceMock
@@ -171,15 +171,15 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 		const int input1 = 123, input2 = 234, anotherParameter = 987654;
 
 		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters()
+			.SetupInvokeWithSeveralParameters(It<int>.Any(), It<int>.Any())
 			.Throws(new InvalidOperationException(errorMessage1));
 
 		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(input1)
+			.SetupInvokeWithSeveralParameters(input1, It<int>.Any())
 			.Throws(new ArgumentException(errorMessage2));
 
 		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(parameter2: input2)
+			.SetupInvokeWithSeveralParameters(It<int>.Any(), parameter2: input2)
 			.Throws(new OutOfMemoryException(errorMessage3));
 
 		DependencyServiceMock
@@ -200,15 +200,15 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 		const int input1 = 123, input2 = 234, anotherParameter = 987654;
 
 		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters()
+			.SetupInvokeWithSeveralParameters(It<int>.Any(), It<int>.Any())
 			.Throws(new InvalidOperationException(errorMessage1));
 
 		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(input1)
+			.SetupInvokeWithSeveralParameters(input1, It<int>.Any())
 			.Throws(new ArgumentException(errorMessage2));
 
 		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(parameter2: input2)
+			.SetupInvokeWithSeveralParameters(It<int>.Any(), parameter2: input2)
 			.Throws(new OutOfMemoryException(errorMessage3));
 
 		DependencyServiceMock

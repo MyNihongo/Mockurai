@@ -20,7 +20,13 @@ public interface IPrimitiveTypeService : IDisposable
 
 	void InvokeWithParameter(ref decimal parameter);
 
-	void InvokeWithSeveralParameters(in int parameter1, in int parameter2);
+	void InvokeWithSeveralParameters(int parameter1, int parameter2);
+
+	void InvokeWithSeveralParameters(ref int parameter1, int parameter2);
+
+	void InvokeWithSeveralParameters(int parameter1, ref int parameter2);
+
+	void InvokeWithSeveralParameters(ref int parameter1, ref int parameter2);
 
 	decimal Return();
 
@@ -28,5 +34,11 @@ public interface IPrimitiveTypeService : IDisposable
 
 	int ReturnWithParameter(ref double parameter);
 
-	double ReturnWithSeveralParameters(in int parameter1, in int parameter2);
+	double ReturnWithSeveralParameters(int parameter1, int parameter2);
+
+	double ReturnWithSeveralParameters(ref int parameter1, int parameter2);
+
+	double ReturnWithSeveralParameters(int parameter1, ref int parameter2);
+
+	double ReturnWithSeveralParameters(ref int parameter1, ref int parameter2);
 }
