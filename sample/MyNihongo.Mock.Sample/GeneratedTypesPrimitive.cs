@@ -181,6 +181,27 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		return _invokeInvocation1.Verify(index);
 	}
 
+	// Invoke
+	private SetupWithOutParameter<int>? _invoke2;
+	private Invocation<int>? _invokeInvocation2;
+
+	public SetupWithOutParameter<int> SetupInvoke(in ItOut<int> result)
+	{
+		return _invoke2 ??= new SetupWithOutParameter<int>();
+	}
+
+	public void VerifyInvoke(in ItOut<int> result, in Times times)
+	{
+		_invokeInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService#Invoke(out {0})", prefix: "out");
+		_invokeInvocation2.Verify(result, times);
+	}
+
+	public long VerifyInvoke(in ItOut<int> result, in long index)
+	{
+		_invokeInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService#Invoke(out {0})", prefix: "out");
+		return _invokeInvocation2.Verify(result, index);
+	}
+
 	// InvokeWithParameter
 	private SetupWithParameter<string>? _invokeWithParameter1;
 	private Invocation<string>? _invokeWithParameterInvocation1;
@@ -361,6 +382,27 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	{
 		_returnInvocation1 ??= new Invocation("IPrimitiveDependencyService#Return()");
 		return _returnInvocation1.Verify(index);
+	}
+
+	// Return
+	private SetupWithOutParameter<int, bool>? _return2;
+	private Invocation<int>? _returnInvocation2;
+
+	public SetupWithOutParameter<int, bool> SetupReturn(in ItOut<int> result)
+	{
+		return _return2 ??= new SetupWithOutParameter<int, bool>();
+	}
+
+	public void VerifyReturn(in ItOut<int> result, in Times times)
+	{
+		_returnInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService#Return(out {0})", prefix: "out");
+		_returnInvocation2.Verify(result, times);
+	}
+
+	public long VerifyReturn(in ItOut<int> result, in long index)
+	{
+		_returnInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService#Return(out {0})", prefix: "out");
+		return _returnInvocation2.Verify(result, index);
 	}
 
 	// ReturnWithParameter

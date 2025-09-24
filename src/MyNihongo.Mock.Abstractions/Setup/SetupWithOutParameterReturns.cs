@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock;
 
-public sealed class SetupWithOutParameterReturns<TParameter, TReturns> : SetupBaseReturns<TReturns, ActionOut<TParameter>, FuncOut<TParameter, TReturns?>>
+public sealed class SetupWithOutParameter<TParameter, TReturns> : SetupBaseReturns<TReturns, ActionOut<TParameter>, FuncOut<TParameter, TReturns?>>
 {
 	public bool Execute(out TParameter? parameter, out TReturns? returnValue)
 	{
