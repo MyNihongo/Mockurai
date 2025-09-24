@@ -554,6 +554,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		_getInitGetInvocation?.VerifyNoOtherCalls();
 		_getInitSetInvocation?.VerifyNoOtherCalls();
 		_invokeInvocation1?.VerifyNoOtherCalls();
+		_invokeInvocation2?.VerifyNoOtherCalls();
 		_invokeWithParameterInvocation1?.VerifyNoOtherCalls();
 		_invokeWithParameterInvocation2?.VerifyNoOtherCalls();
 		_invokeWithParameterInvocation3?.VerifyNoOtherCalls();
@@ -562,6 +563,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		_invokeWithSeveralParametersInvocation3?.VerifyNoOtherCalls();
 		_invokeWithSeveralParametersInvocation4?.VerifyNoOtherCalls();
 		_returnInvocation1?.VerifyNoOtherCalls();
+		_returnInvocation2?.VerifyNoOtherCalls();
 		_returnWithParameterInvocation1?.VerifyNoOtherCalls();
 		_returnWithParameterInvocation2?.VerifyNoOtherCalls();
 		_returnWithSeveralParametersInvocation1?.VerifyNoOtherCalls();
@@ -1130,6 +1132,13 @@ public static class PrimitiveDependencyServiceMockSequenceEx
 		@this.VerifyIndex.Set(nextIndex);
 	}
 
+	// Invoke
+	public static void Invoke(this IMockSequence<IPrimitiveDependencyService> @this, in ItOut<int> result)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvoke(result, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
 	// InvokeWithParameter
 	public static void InvokeWithParameter(this IMockSequence<IPrimitiveDependencyService> @this, in It<string> parameter)
 	{
@@ -1207,6 +1216,13 @@ public static class PrimitiveDependencyServiceMockSequenceEx
 	public static void Return(this IMockSequence<IPrimitiveDependencyService> @this)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyReturn(@this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	// Return
+	public static void Return(this IMockSequence<IPrimitiveDependencyService> @this, in ItOut<string> result)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyReturn(result, @this.VerifyIndex);
 		@this.VerifyIndex.Set(nextIndex);
 	}
 

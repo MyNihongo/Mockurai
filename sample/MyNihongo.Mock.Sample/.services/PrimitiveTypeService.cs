@@ -38,6 +38,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		_primitiveDependencyService.Invoke();
 	}
 
+	public void Invoke(out int result)
+	{
+		_primitiveDependencyService.Invoke(out result);
+	}
+
 	public void InvokeWithParameter(in string parameter)
 	{
 		_primitiveDependencyService.InvokeWithParameter(parameter);
@@ -77,6 +82,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 	{
 		var shopCount = _primitiveDependencyService.Return();
 		return shopCount * 1000m;
+	}
+
+	public bool Return(out string result)
+	{
+		return _primitiveDependencyService.Return(out result);
 	}
 
 	public string ReturnWithParameter(in string parameter)
