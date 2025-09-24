@@ -385,23 +385,23 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	}
 
 	// Return
-	private SetupWithOutParameter<int, bool>? _return2;
-	private Invocation<int>? _returnInvocation2;
+	private SetupWithOutParameter<string, bool>? _return2;
+	private Invocation<string>? _returnInvocation2;
 
-	public SetupWithOutParameter<int, bool> SetupReturn(in ItOut<int> result)
+	public SetupWithOutParameter<string, bool> SetupReturn(in ItOut<string> result)
 	{
-		return _return2 ??= new SetupWithOutParameter<int, bool>();
+		return _return2 ??= new SetupWithOutParameter<string, bool>();
 	}
 
-	public void VerifyReturn(in ItOut<int> result, in Times times)
+	public void VerifyReturn(in ItOut<string> result, in Times times)
 	{
-		_returnInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService#Return(out {0})", prefix: "out");
+		_returnInvocation2 ??= new Invocation<string>("IPrimitiveDependencyService#Return(out {0})", prefix: "out");
 		_returnInvocation2.Verify(result, times);
 	}
 
-	public long VerifyReturn(in ItOut<int> result, in long index)
+	public long VerifyReturn(in ItOut<string> result, in long index)
 	{
-		_returnInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService#Return(out {0})", prefix: "out");
+		_returnInvocation2 ??= new Invocation<string>("IPrimitiveDependencyService#Return(out {0})", prefix: "out");
 		return _returnInvocation2.Verify(result, index);
 	}
 
@@ -656,7 +656,12 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 		public void Invoke(out int result)
 		{
-			throw new NotImplementedException();
+			_mock._invokeInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService#Invoke(out {0})", prefix: "out");
+			_mock._invokeInvocation2.Register(InvocationIndex.CounterValue, 0);
+			if (_mock._invoke2 is not null)
+				_mock._invoke2.Invoke(out result);
+			else
+				result = 0;
 		}
 
 		public void InvokeWithParameter(in string parameter)
@@ -717,7 +722,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 		public bool Return(out string result)
 		{
-			throw new NotImplementedException();
+			_mock._returnInvocation2 ??= new Invocation<string>("IPrimitiveDependencyService#Return(out {0})", prefix: "out");
+			_mock._returnInvocation2.Register(InvocationIndex.CounterValue, null!);
+			if (_mock._return2 is not null)
+				return _mock._return2.Execute(out result!, out var returnValue) ? returnValue : false;
+
+			result = null!;
+			return false;
 		}
 
 		public string ReturnWithParameter(in string parameter)
@@ -848,6 +859,16 @@ public static class PrimitiveDependencyServiceMockEx
 	public static void VerifyInvoke(this IMock<IPrimitiveDependencyService> @this, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifyInvoke(times());
 
+	// Invoke
+	public static ISetup SetupInvoke(this IMock<IPrimitiveDependencyService> @this, in ItOut<int> result) =>
+		((PrimitiveDependencyServiceMock)@this).SetupInvoke(result);
+
+	public static void VerifyInvoke(this IMock<IPrimitiveDependencyService> @this, in ItOut<int> result, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvoke(result, times);
+
+	public static void VerifyInvoke(this IMock<IPrimitiveDependencyService> @this, in ItOut<int> result, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvoke(result, times());
+
 	// InvokeWithParameter
 	public static ISetup SetupInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<string> parameter = default) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithParameter(parameter);
@@ -944,6 +965,16 @@ public static class PrimitiveDependencyServiceMockEx
 
 	public static void VerifyReturn(this IMock<IPrimitiveDependencyService> @this, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifyReturn(times());
+
+	// Return
+	public static ISetup<bool> SetupReturn(this IMock<IPrimitiveDependencyService> @this, in ItOut<string> result) =>
+		((PrimitiveDependencyServiceMock)@this).SetupReturn(result);
+
+	public static void VerifyReturn(this IMock<IPrimitiveDependencyService> @this, in ItOut<string> result, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyReturn(result, times);
+
+	public static void VerifyReturn(this IMock<IPrimitiveDependencyService> @this, in ItOut<string> result, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyReturn(result, times());
 
 	// ReturnWithParameter
 	public static ISetup<string> SetupReturnWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<string> parameter) =>
