@@ -1,25 +1,12 @@
 namespace MyNihongo.Mock;
 
-public sealed class Setup : ISetup
+public sealed class Setup : SetupBase<Action>
 {
-	private Exception? _exception;
-	private Action? _callback;
-
 	public void Invoke()
 	{
-		_callback?.Invoke();
+		CallbackDelegate?.Invoke();
 
-		if (_exception is not null)
-			throw _exception;
-	}
-
-	public void Callback(in Action callback)
-	{
-		_callback = callback;
-	}
-
-	public void Throws(in Exception exception)
-	{
-		_exception = exception;
+		if (Exception is not null)
+			throw Exception;
 	}
 }

@@ -1,21 +1,17 @@
 namespace MyNihongo.Mock;
 
-public sealed class Setup<TReturns> : ISetup<TReturns>
+public sealed class Setup<TReturns> : SetupBaseReturns<TReturns, Action, Func<TReturns?>>
 {
-	private Exception? _exception;
-	private Func<TReturns?>? _returns;
-	private Action? _callback;
-
 	public bool Execute(out TReturns? returnValue)
 	{
-		_callback?.Invoke();
+		CallbackDelegate?.Invoke();
 
-		if (_exception is not null)
-			throw _exception;
+		if (Exception is not null)
+			throw Exception;
 
-		if (_returns is not null)
+		if (ReturnsDelegate is not null)
 		{
-			returnValue = _returns();
+			returnValue = ReturnsDelegate();
 			return true;
 		}
 
@@ -23,23 +19,8 @@ public sealed class Setup<TReturns> : ISetup<TReturns>
 		return false;
 	}
 
-	public void Callback(in Action callback)
-	{
-		_callback = callback;
-	}
-
-	public void Returns(TReturns? value)
+	public override void Returns(TReturns? value)
 	{
 		Returns(() => value);
-	}
-
-	public void Returns(in Func<TReturns?> value)
-	{
-		_returns = value;
-	}
-
-	public void Throws(in Exception exception)
-	{
-		_exception = exception;
 	}
 }

@@ -13,6 +13,8 @@ public interface IPrimitiveDependencyService
 
 	void Invoke();
 
+	void Invoke(out int result);
+
 	void InvokeWithParameter(in string parameter);
 
 	void InvokeWithParameter(in int parameter);
@@ -28,6 +30,8 @@ public interface IPrimitiveDependencyService
 	void InvokeWithSeveralParameters(ref int parameter1, ref int parameter2);
 
 	int Return();
+
+	bool Return(out string result);
 
 	string ReturnWithParameter(in string parameter);
 
