@@ -161,24 +161,24 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	}
 
 	// Invoke
-	private Setup? _invoke;
-	private Invocation? _invokeInvocation;
+	private Setup? _invoke1;
+	private Invocation? _invokeInvocation1;
 
 	public Setup SetupInvoke()
 	{
-		return _invoke ??= new Setup();
+		return _invoke1 ??= new Setup();
 	}
 
 	public void VerifyInvoke(in Times times)
 	{
-		_invokeInvocation ??= new Invocation("IPrimitiveDependencyService#Invoke()");
-		_invokeInvocation.Verify(times);
+		_invokeInvocation1 ??= new Invocation("IPrimitiveDependencyService#Invoke()");
+		_invokeInvocation1.Verify(times);
 	}
 
 	public long VerifyInvoke(in long index)
 	{
-		_invokeInvocation ??= new Invocation("IPrimitiveDependencyService#Invoke()");
-		return _invokeInvocation.Verify(index);
+		_invokeInvocation1 ??= new Invocation("IPrimitiveDependencyService#Invoke()");
+		return _invokeInvocation1.Verify(index);
 	}
 
 	// InvokeWithParameter
@@ -343,24 +343,24 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	}
 
 	// Return
-	private Setup<int>? _return;
-	private Invocation? _returnInvocation;
+	private Setup<int>? _return1;
+	private Invocation? _returnInvocation1;
 
 	public Setup<int> SetupReturn()
 	{
-		return _return ??= new Setup<int>();
+		return _return1 ??= new Setup<int>();
 	}
 
 	public void VerifyReturn(in Times times)
 	{
-		_returnInvocation ??= new Invocation("IPrimitiveDependencyService#Return()");
-		_returnInvocation.Verify(times);
+		_returnInvocation1 ??= new Invocation("IPrimitiveDependencyService#Return()");
+		_returnInvocation1.Verify(times);
 	}
 
 	public long VerifyReturn(in long index)
 	{
-		_returnInvocation ??= new Invocation("IPrimitiveDependencyService#Return()");
-		return _returnInvocation.Verify(index);
+		_returnInvocation1 ??= new Invocation("IPrimitiveDependencyService#Return()");
+		return _returnInvocation1.Verify(index);
 	}
 
 	// ReturnWithParameter
@@ -511,7 +511,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		_setOnlySetInvocation?.VerifyNoOtherCalls();
 		_getInitGetInvocation?.VerifyNoOtherCalls();
 		_getInitSetInvocation?.VerifyNoOtherCalls();
-		_invokeInvocation?.VerifyNoOtherCalls();
+		_invokeInvocation1?.VerifyNoOtherCalls();
 		_invokeWithParameterInvocation1?.VerifyNoOtherCalls();
 		_invokeWithParameterInvocation2?.VerifyNoOtherCalls();
 		_invokeWithParameterInvocation3?.VerifyNoOtherCalls();
@@ -519,7 +519,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		_invokeWithSeveralParametersInvocation2?.VerifyNoOtherCalls();
 		_invokeWithSeveralParametersInvocation3?.VerifyNoOtherCalls();
 		_invokeWithSeveralParametersInvocation4?.VerifyNoOtherCalls();
-		_returnInvocation?.VerifyNoOtherCalls();
+		_returnInvocation1?.VerifyNoOtherCalls();
 		_returnWithParameterInvocation1?.VerifyNoOtherCalls();
 		_returnWithParameterInvocation2?.VerifyNoOtherCalls();
 		_returnWithSeveralParametersInvocation1?.VerifyNoOtherCalls();
@@ -607,9 +607,14 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 		public void Invoke()
 		{
-			_mock._invokeInvocation ??= new Invocation("IPrimitiveDependencyService#Invoke()");
-			_mock._invokeInvocation.Register(InvocationIndex.CounterValue);
-			_mock._invoke?.Invoke();
+			_mock._invokeInvocation1 ??= new Invocation("IPrimitiveDependencyService#Invoke()");
+			_mock._invokeInvocation1.Register(InvocationIndex.CounterValue);
+			_mock._invoke1?.Invoke();
+		}
+
+		public void Invoke(out int result)
+		{
+			throw new NotImplementedException();
 		}
 
 		public void InvokeWithParameter(in string parameter)
@@ -663,9 +668,14 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 		public int Return()
 		{
-			_mock._returnInvocation ??= new Invocation("IPrimitiveDependencyService#Return()");
-			_mock._returnInvocation.Register(InvocationIndex.CounterValue);
-			return _mock._return?.Execute(out var returnValue) == true ? returnValue : 0;
+			_mock._returnInvocation1 ??= new Invocation("IPrimitiveDependencyService#Return()");
+			_mock._returnInvocation1.Register(InvocationIndex.CounterValue);
+			return _mock._return1?.Execute(out var returnValue) == true ? returnValue : 0;
+		}
+
+		public bool Return(out string result)
+		{
+			throw new NotImplementedException();
 		}
 
 		public string ReturnWithParameter(in string parameter)
