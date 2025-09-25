@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock;
 
-public sealed class Invocation
+public sealed class Invocation : IInvocationProvider
 {
 	private readonly string _name;
 	private readonly InvocationContainer<Item> _invocations = [];
@@ -17,23 +17,23 @@ public sealed class Invocation
 		_invocations.Add(invokedIndex, new Item());
 	}
 
-	public void Verify(in Times times)
+	public void Verify(in Times times, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		if (!times.Predicate(_invocations.Count))
 		{
-			var invocations = GetStrings(_invocations);
+			var invocations = GetStrings(invocationProviders, _invocations);
 			throw new MockVerifyCountException(_name, times, _invocations.Count, invocations);
 		}
 
 		_isVerified = true;
 	}
 
-	public long Verify(in long index)
+	public long Verify(in long index, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var item = _invocations.TryGetItemAt(index);
 		if (!item.HasValue)
 		{
-			var invocations = GetStrings(_invocations);
+			var invocations = GetStrings(invocationProviders, _invocations);
 			throw new MockVerifySequenceOutOfRangeException(_name, index, invocations);
 		}
 
@@ -55,8 +55,25 @@ public sealed class Invocation
 			throw new MockUnverifiedException(_name, unverifiedItems);
 	}
 
-	private static IEnumerable<string>? GetStrings(in InvocationContainer<Item> invocations)
+	public IEnumerable<IInvocation> GetInvocations()
 	{
+		return _invocations
+			.Select(static x => new InvocationSnapshot
+			{
+				Index = x.Index,
+				Snapshot = null,
+			});
+	}
+	
+	private static IEnumerable<string>? GetStrings(Func<IEnumerable<IInvocationProvider?>>? invocationProviders, in InvocationContainer<Item> invocations)
+	{
+		if (invocationProviders is not null)
+		{
+			return invocationProviders.Invoke()
+				.SelectMany(static x => x?.GetInvocations() ?? [])
+				.GetStrings();
+		}
+		
 		return invocations.Count > 0
 			? invocations.Select(static x => x.Index.ToString())
 			: null;
