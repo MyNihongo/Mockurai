@@ -39,17 +39,15 @@ public static class TupleEx
 			foreach (var invocation in invocationProviders.GetInvocations())
 			{
 				if (i < @this.Count && @this[i].Item1 == invocation.Index)
+				{
 					Append(stringBuilder, @this[i++]);
+					yield return stringBuilder.ToString();
+					stringBuilder.Clear();
+				}
 				else
-					stringBuilder.AppendLine(invocation.GetString());
-			}
-
-			foreach (var item in @this)
-			{
-				Append(stringBuilder, item);
-
-				yield return stringBuilder.ToString();
-				stringBuilder.Clear();
+				{
+					yield return invocation.GetString();
+				}
 			}
 		}
 
@@ -64,8 +62,7 @@ public static class TupleEx
 			{
 				for (var i = 0; i < item.Item3.Entries.Count; i++)
 				{
-					if (i > 0)
-						stringBuilder.AppendLine();
+					stringBuilder.AppendLine();
 
 					if (item.Item3.Entries[i].Path == ComparisonResult.RootPath)
 					{

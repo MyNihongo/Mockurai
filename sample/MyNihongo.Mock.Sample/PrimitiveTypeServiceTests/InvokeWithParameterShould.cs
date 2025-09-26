@@ -801,6 +801,28 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+	
+	[Fact]
+	public void ThrowInvalidMethodInSequenceEquivalent()
+	{
+		const string parameter1 = nameof(parameter1), parameter2 = nameof(parameter2);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter1);
+		fixture.InvokeWithSeveralParameters(123, 321);
+		fixture.InvokeWithParameter(parameter2);
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.InvokeWithParameter(parameter1);
+			ctx.DependencyServiceMock.InvokeWithParameter(It<string>.Equivalent("another param"));
+			ctx.DependencyServiceMock.InvokeWithParameter(parameter2);
+		});
+
+		const string expectedMessage = "Expected IPrimitiveDependencyService#InvokeWithSeveralParameters(123, 321) to be invoked at index 2, but there are no invocations.";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
 
 	[Fact]
 	public void ThrowInvalidMethodInSequenceOverload()
