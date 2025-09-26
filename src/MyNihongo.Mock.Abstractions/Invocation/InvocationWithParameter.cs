@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace MyNihongo.Mock;
 
-public sealed class Invocation<TParameter>
+public sealed class Invocation<TParameter> : IInvocationProvider
 {
 	private readonly string _name;
 	private readonly string? _prefix;
@@ -21,7 +21,7 @@ public sealed class Invocation<TParameter>
 		_invocations.Add(invokedIndex, new Item(parameter, _prefix));
 	}
 
-	public void Verify(in It<TParameter> parameter, in Times times)
+	public void Verify(in It<TParameter> parameter, in Times times, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var span = _invocations.GetItemsSpan();
 
@@ -46,12 +46,12 @@ public sealed class Invocation<TParameter>
 		if (times.Predicate(count))
 			return;
 
-		var invocations = verifyOutput.GetStrings();
+		var invocations = verifyOutput.GetStrings(invocationProviders);
 		var verifyName = string.Format(_name, parameter.ToString());
 		throw new MockVerifyCountException(verifyName, times, count, invocations);
 	}
 
-	public long Verify(in It<TParameter> parameter, in long index)
+	public long Verify(in It<TParameter> parameter, in long index, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var span = _invocations.GetItemsSpanFrom(index);
 
@@ -77,7 +77,7 @@ public sealed class Invocation<TParameter>
 		for (var i = 0; i < span.Length; i++)
 			verifyOutput.Insert(i, (span[i].Index, span[i].Invocation, null));
 
-		var invocations = verifyOutput.GetStrings();
+		var invocations = verifyOutput.GetStrings(invocationProviders);
 		var verifyName = string.Format(_name, parameter.ToString());
 		throw new MockVerifySequenceOutOfRangeException(verifyName, index, invocations);
 	}
@@ -94,6 +94,16 @@ public sealed class Invocation<TParameter>
 			var verifyName = string.Format(_name, typeof(TParameter).Name);
 			throw new MockUnverifiedException(verifyName, unverifiedItems);
 		}
+	}
+
+	public IEnumerable<IInvocation> GetInvocations()
+	{
+		return _invocations
+			.Select(x => new InvocationSnapshot
+			{
+				Index = x.Index,
+				Snapshot = x.Invocation.ToString(),
+			});
 	}
 
 	private sealed class Item

@@ -9,11 +9,14 @@ public static class TupleEx
 		return $"{@this.Item1}: {@this.Item2}";
 	}
 
-	public static IEnumerable<string>? GetStrings<T>(this List<(long, T, ComparisonResult?)> @this)
+	public static IEnumerable<string>? GetStrings<T>(this List<(long, T, ComparisonResult?)> @this, Func<IEnumerable<IInvocationProvider?>>? invocationProviders)
 	{
-		return @this.Count > 0
-			? EnumerateStrings(@this)
-			: null;
+		if (@this.Count == 0)
+			return invocationProviders?.GetStrings();
+
+		return invocationProviders is not null
+			? EnumerateInvocationStrings(@this, invocationProviders)
+			: EnumerateStrings(@this);
 
 		static IEnumerable<string> EnumerateStrings(List<(long, T, ComparisonResult?)> @this)
 		{
@@ -21,15 +24,44 @@ public static class TupleEx
 
 			foreach (var item in @this)
 			{
-				var message = $"{item.Item1}: {item.Item2}";
-				if (item.Item3 is null || item.Item3.Entries.Count == 0)
-				{
-					yield return message;
-					continue;
-				}
+				Append(stringBuilder, item);
 
-				stringBuilder.AppendLine(message);
+				yield return stringBuilder.ToString();
+				stringBuilder.Clear();
+			}
+		}
 
+		static IEnumerable<string> EnumerateInvocationStrings(List<(long, T, ComparisonResult?)> @this, Func<IEnumerable<IInvocationProvider?>> invocationProviders)
+		{
+			var stringBuilder = new StringBuilder();
+
+			var i = 0;
+			foreach (var invocation in invocationProviders.GetInvocations())
+			{
+				if (i < @this.Count && @this[i].Item1 == invocation.Index)
+					Append(stringBuilder, @this[i++]);
+				else
+					stringBuilder.AppendLine(invocation.GetString());
+			}
+
+			foreach (var item in @this)
+			{
+				Append(stringBuilder, item);
+
+				yield return stringBuilder.ToString();
+				stringBuilder.Clear();
+			}
+		}
+
+		static void Append(in StringBuilder stringBuilder, in (long, T, ComparisonResult?) item)
+		{
+			stringBuilder
+				.Append(item.Item1)
+				.Append(": ")
+				.Append(item.Item2);
+
+			if (item.Item3 is not null && item.Item3.Entries.Count > 0)
+			{
 				for (var i = 0; i < item.Item3.Entries.Count; i++)
 				{
 					if (i > 0)
@@ -49,9 +81,6 @@ public static class TupleEx
 							.Append($"    actual: {item.Item3.Entries[i].ActualValue}");
 					}
 				}
-
-				yield return stringBuilder.ToString();
-				stringBuilder.Clear();
 			}
 		}
 	}
