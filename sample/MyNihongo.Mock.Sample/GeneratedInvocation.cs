@@ -5,7 +5,7 @@ using System.Text.Json;
 namespace MyNihongo.Mock.Sample;
 
 [Obsolete("Will be generated")]
-public sealed class InvocationIntInt
+public sealed class InvocationIntInt : IInvocationProvider
 {
 	private readonly string _name;
 	private readonly InvocationContainer<Item> _invocations = [];
@@ -21,7 +21,7 @@ public sealed class InvocationIntInt
 		_invocations.Add(invokedIndex, new Item(parameter1, parameter2));
 	}
 
-	public void Verify(in It<int> parameter1, in It<int> parameter2, in Times times)
+	public void Verify(in It<int> parameter1, in It<int> parameter2, in Times times, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var span = _invocations.GetItemsSpan();
 
@@ -61,12 +61,12 @@ public sealed class InvocationIntInt
 		if (times.Predicate(count))
 			return;
 
-		var invocations = verifyOutput.GetStrings();
+		var invocations = verifyOutput.GetStrings(invocationProviders);
 		var verifyName = string.Format(_name, parameter1.ToString(), parameter2.ToString());
 		throw new MockVerifyCountException(verifyName, times, count, invocations);
 	}
 
-	public long Verify(in It<int> parameter1, in It<int> parameter2, in long index)
+	public long Verify(in It<int> parameter1, in It<int> parameter2, in long index, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var span = _invocations.GetItemsSpanFrom(index);
 
@@ -106,7 +106,7 @@ public sealed class InvocationIntInt
 		for (var i = 0; i < span.Length; i++)
 			verifyOutput.Insert(i, (span[i].Index, span[i].Invocation, null));
 
-		var invocations = verifyOutput.GetStrings();
+		var invocations = verifyOutput.GetStrings(invocationProviders);
 		var verifyName = string.Format(_name, parameter1.ToString(), parameter2.ToString());
 		throw new MockVerifySequenceOutOfRangeException(verifyName, index, invocations);
 	}
@@ -123,6 +123,16 @@ public sealed class InvocationIntInt
 			var verifyName = string.Format(_name, "Int32", "Int32");
 			throw new MockUnverifiedException(verifyName, unverifiedItems);
 		}
+	}
+
+	public IEnumerable<IInvocation> GetInvocations()
+	{
+		return _invocations
+			.Select(x => new InvocationSnapshot
+			{
+				Index = x.Index,
+				Snapshot = x.Invocation.ToString(),
+			});
 	}
 
 	private sealed class Item

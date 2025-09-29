@@ -285,13 +285,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	public void VerifyInvokeWithSeveralParameters(in It<int> parameter1, in It<int> parameter2, in Times times)
 	{
 		_invokeWithSeveralParametersInvocation1 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters({0}, {1})");
-		_invokeWithSeveralParametersInvocation1.Verify(parameter1, parameter2, times);
+		_invokeWithSeveralParametersInvocation1.Verify(parameter1, parameter2, times, GetInvocations);
 	}
 
 	public long VerifyInvokeWithSeveralParameters(in It<int> parameter1, in It<int> parameter2, in long index)
 	{
 		_invokeWithSeveralParametersInvocation1 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters({0}, {1})");
-		return _invokeWithSeveralParametersInvocation1.Verify(parameter1, parameter2, index);
+		return _invokeWithSeveralParametersInvocation1.Verify(parameter1, parameter2, index, GetInvocations);
 	}
 
 	// InvokeWithSeveralParameters
@@ -308,13 +308,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	public void VerifyInvokeWithSeveralParameters(in ItRef<int> parameter1, in It<int> parameter2, in Times times)
 	{
 		_invokeWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters(ref {0}, {1})");
-		_invokeWithSeveralParametersInvocation2.Verify(parameter1, parameter2, times);
+		_invokeWithSeveralParametersInvocation2.Verify(parameter1, parameter2, times, GetInvocations);
 	}
 
 	public long VerifyInvokeWithSeveralParameters(in ItRef<int> parameter1, in It<int> parameter2, in long index)
 	{
 		_invokeWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters(ref {0}, {1})");
-		return _invokeWithSeveralParametersInvocation2.Verify(parameter1, parameter2, index);
+		return _invokeWithSeveralParametersInvocation2.Verify(parameter1, parameter2, index, GetInvocations);
 	}
 
 	// InvokeWithSeveralParameters
@@ -331,13 +331,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	public void VerifyInvokeWithSeveralParameters(in It<int> parameter1, in ItRef<int> parameter2, in Times times)
 	{
 		_invokeWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters({0}, ref {1})");
-		_invokeWithSeveralParametersInvocation3.Verify(parameter1, parameter2, times);
+		_invokeWithSeveralParametersInvocation3.Verify(parameter1, parameter2, times, GetInvocations);
 	}
 
 	public long VerifyInvokeWithSeveralParameters(in It<int> parameter1, in ItRef<int> parameter2, in long index)
 	{
 		_invokeWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters({0}, ref {1})");
-		return _invokeWithSeveralParametersInvocation3.Verify(parameter1, parameter2, index);
+		return _invokeWithSeveralParametersInvocation3.Verify(parameter1, parameter2, index, GetInvocations);
 	}
 
 	// InvokeWithSeveralParameters
@@ -354,13 +354,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	public void VerifyInvokeWithSeveralParameters(in ItRef<int> parameter1, in ItRef<int> parameter2, in Times times)
 	{
 		_invokeWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters(ref {0}, ref {1})");
-		_invokeWithSeveralParametersInvocation4.Verify(parameter1, parameter2, times);
+		_invokeWithSeveralParametersInvocation4.Verify(parameter1, parameter2, times, GetInvocations);
 	}
 
 	public long VerifyInvokeWithSeveralParameters(in ItRef<int> parameter1, in ItRef<int> parameter2, in long index)
 	{
 		_invokeWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService#InvokeWithSeveralParameters(ref {0}, ref {1})");
-		return _invokeWithSeveralParametersInvocation4.Verify(parameter1, parameter2, index);
+		return _invokeWithSeveralParametersInvocation4.Verify(parameter1, parameter2, index, GetInvocations);
 	}
 
 	// Return
@@ -465,13 +465,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	public void VerifyReturnWithSeveralParameters(in It<int> parameter1, in It<int> parameter2, in Times times)
 	{
 		_returnWithSeveralParametersInvocation1 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters({0}, {1})");
-		_returnWithSeveralParametersInvocation1.Verify(parameter1, parameter2, times);
+		_returnWithSeveralParametersInvocation1.Verify(parameter1, parameter2, times, GetInvocations);
 	}
 
 	public long VerifyReturnWithSeveralParameters(in It<int> parameter1, in It<int> parameter2, in long index)
 	{
 		_returnWithSeveralParametersInvocation1 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters({0}, {1})");
-		return _returnWithSeveralParametersInvocation1.Verify(parameter1, parameter2, index);
+		return _returnWithSeveralParametersInvocation1.Verify(parameter1, parameter2, index, GetInvocations);
 	}
 
 	// ReturnWithSeveralParameters
@@ -488,13 +488,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	public void VerifyReturnWithSeveralParameters(in ItRef<int> parameter1, in It<int> parameter2, in Times times)
 	{
 		_returnWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters(ref {0}, {1})");
-		_returnWithSeveralParametersInvocation2.Verify(parameter1, parameter2, times);
+		_returnWithSeveralParametersInvocation2.Verify(parameter1, parameter2, times, GetInvocations);
 	}
 
 	public long VerifyReturnWithSeveralParameters(in ItRef<int> parameter1, in It<int> parameter2, in long index)
 	{
 		_returnWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters(ref {0}, {1})");
-		return _returnWithSeveralParametersInvocation2.Verify(parameter1, parameter2, index);
+		return _returnWithSeveralParametersInvocation2.Verify(parameter1, parameter2, index, GetInvocations);
 	}
 
 	// ReturnWithSeveralParameters
@@ -511,13 +511,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	public void VerifyReturnWithSeveralParameters(in It<int> parameter1, in ItRef<int> parameter2, in Times times)
 	{
 		_returnWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters({0}, ref {1})");
-		_returnWithSeveralParametersInvocation3.Verify(parameter1, parameter2, times);
+		_returnWithSeveralParametersInvocation3.Verify(parameter1, parameter2, times, GetInvocations);
 	}
 
 	public long VerifyReturnWithSeveralParameters(in It<int> parameter1, in ItRef<int> parameter2, in long index)
 	{
 		_returnWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters({0}, ref {1})");
-		return _returnWithSeveralParametersInvocation3.Verify(parameter1, parameter2, index);
+		return _returnWithSeveralParametersInvocation3.Verify(parameter1, parameter2, index, GetInvocations);
 	}
 
 	// ReturnWithSeveralParameters
@@ -534,13 +534,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	public void VerifyReturnWithSeveralParameters(in ItRef<int> parameter1, in ItRef<int> parameter2, in Times times)
 	{
 		_returnWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters(ref {0}, ref {1})");
-		_returnWithSeveralParametersInvocation4.Verify(parameter1, parameter2, times);
+		_returnWithSeveralParametersInvocation4.Verify(parameter1, parameter2, times, GetInvocations);
 	}
 
 	public long VerifyReturnWithSeveralParameters(in ItRef<int> parameter1, in ItRef<int> parameter2, in long index)
 	{
 		_returnWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService#ReturnWithSeveralParameters(ref {0}, ref {1})");
-		return _returnWithSeveralParametersInvocation4.Verify(parameter1, parameter2, index);
+		return _returnWithSeveralParametersInvocation4.Verify(parameter1, parameter2, index, GetInvocations);
 	}
 
 	public void VerifyNoOtherCalls()
