@@ -127,12 +127,14 @@ public sealed class InvocationIntInt : IInvocationProvider
 
 	public IEnumerable<IInvocation> GetInvocations()
 	{
-		return _invocations
-			.Select(x => new InvocationSnapshot
+		foreach (var x in _invocations)
+		{
+			yield return new InvocationSnapshot
 			{
 				Index = x.Index,
-				Snapshot = x.Invocation.ToString(),
-			});
+				Snapshot = _name.FormatParameters(x.Invocation.ToString()),
+			};
+		}
 	}
 
 	private sealed class Item
