@@ -57,19 +57,21 @@ public sealed class Invocation : IInvocationProvider
 
 	public IEnumerable<IInvocation> GetInvocations()
 	{
-		return _invocations
-			.Select(static x => new InvocationSnapshot
+		foreach (var x in _invocations)
+		{
+			yield return new InvocationSnapshot
 			{
 				Index = x.Index,
-				Snapshot = null,
-			});
+				Snapshot = _name,
+			};
+		}
 	}
-	
+
 	private static IEnumerable<string>? GetStrings(Func<IEnumerable<IInvocationProvider?>>? invocationProviders, in InvocationContainer<Item> invocations)
 	{
 		if (invocationProviders is not null)
 			return invocationProviders.GetStrings();
-		
+
 		return invocations.Count > 0
 			? invocations.Select(static x => x.Index.ToString())
 			: null;

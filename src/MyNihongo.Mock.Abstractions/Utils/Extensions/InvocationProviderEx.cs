@@ -12,7 +12,8 @@ public static class InvocationProviderEx
 	public static IEnumerable<IInvocation> GetInvocations(this Func<IEnumerable<IInvocationProvider?>> @this)
 	{
 		return @this.Invoke()
-			.SelectMany(static x => x?.GetInvocations() ?? []);
+			.SelectMany(static x => x?.GetInvocations() ?? [])
+			.OrderBy(static x => x.Index);
 	}
 
 	public static IEnumerable<string> GetStrings(this IEnumerable<IInvocation> @this)

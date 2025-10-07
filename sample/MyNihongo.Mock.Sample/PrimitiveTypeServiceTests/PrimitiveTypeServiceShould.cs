@@ -42,27 +42,27 @@ public sealed class PrimitiveTypeServiceShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService#InvokeWithParameter(8374646) to be invoked at index 6, but it has not been called.
 			Performed invocations:
-			- 1: System.EventHandler`1[System.String]
-			- 2
-			- 3: 123
-			- 4: "value"
-			- 5
-			- 6: out 0
-			- 8: "another value"
+			- 1: IPrimitiveDependencyService#HandlerEvent#add
+			- 2: IPrimitiveDependencyService#GetOnly#get
+			- 3: IPrimitiveDependencyService#SetOnly#set = 123
+			- 4: IPrimitiveDependencyService#GetInit#set = "value"
+			- 5: IPrimitiveDependencyService#Invoke()
+			- 6: IPrimitiveDependencyService#Invoke(out out 0)
 			- 7: 345
-			- 9: ref 1234
-			- 10: 1, 2
-			- 11: 98, 2
-			- 12: 1, 98
-			- 13: 98, 98
-			- 14
-			- 15: out null
-			- 16: "ret val"
-			- 17: ref 3488
-			- 18: 1, 2
-			- 19: 98, 2
-			- 20: 1, 98
-			- 21: 98, 98
+			- 8: IPrimitiveDependencyService#InvokeWithParameter("another value")
+			- 9: IPrimitiveDependencyService#InvokeWithParameter(ref ref 1234)
+			- 10: IPrimitiveDependencyService#InvokeWithSeveralParameters(1, 2, )
+			- 11: IPrimitiveDependencyService#InvokeWithSeveralParameters(ref 98, 2, )
+			- 12: IPrimitiveDependencyService#InvokeWithSeveralParameters(1, 98, ref )
+			- 13: IPrimitiveDependencyService#InvokeWithSeveralParameters(ref 98, 98, ref )
+			- 14: IPrimitiveDependencyService#Return()
+			- 15: IPrimitiveDependencyService#Return(out out null)
+			- 16: IPrimitiveDependencyService#ReturnWithParameter("ret val")
+			- 17: IPrimitiveDependencyService#ReturnWithParameter(ref ref 3488)
+			- 18: IPrimitiveDependencyService#ReturnWithSeveralParameters(1, 2, )
+			- 19: IPrimitiveDependencyService#ReturnWithSeveralParameters(ref 98, 2, )
+			- 20: IPrimitiveDependencyService#ReturnWithSeveralParameters(1, 98, ref )
+			- 21: IPrimitiveDependencyService#ReturnWithSeveralParameters(ref 98, 98, ref )
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
