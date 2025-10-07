@@ -122,7 +122,7 @@
 //
 // 		public StructReturn Return()
 // 		{
-// 			return _mock._return?.Invoke() ?? throw new NullReferenceException("IStructDependencyService#Return() method has not been set up");
+// 			return _mock._return?.Invoke() ?? throw new NullReferenceException("IStructDependencyService.Return() method has not been set up");
 // 		}
 //
 // 		public StructReturn? ReturnNullable()
@@ -133,7 +133,7 @@
 // 		public StructReturn ReturnWithParameter(in StructParameter1 parameter)
 // 		{
 // 			var hashcode = parameter.GetHashCode();
-// 			return _mock._returnWithOneParameter?.TryInvoke(hashcode, out var returnValue) == true ? returnValue : throw new NullReferenceException("IStructDependencyService#ReturnWithParameter() method has not been set up");
+// 			return _mock._returnWithOneParameter?.TryInvoke(hashcode, out var returnValue) == true ? returnValue : throw new NullReferenceException("IStructDependencyService.ReturnWithParameter() method has not been set up");
 // 		}
 //
 // 		public StructReturn? ReturnWithParameterNullable(in StructParameter1 parameter)
@@ -145,7 +145,7 @@
 // 		public StructReturn ReturnWithMultipleParameters(StructParameter1 parameter1, StructParameter1 parameter2)
 // 		{
 // 			Span<int> hashCodes = stackalloc int[] { parameter1.GetHashCode(), parameter2.GetHashCode() };
-// 			return _mock._returnWithMultipleParameters?.TryInvoke(hashCodes, out var returnValue) == true ? returnValue : throw new NullReferenceException("IStructDependencyService#ReturnWithMultipleParameters() method has not been set up");
+// 			return _mock._returnWithMultipleParameters?.TryInvoke(hashCodes, out var returnValue) == true ? returnValue : throw new NullReferenceException("IStructDependencyService.ReturnWithMultipleParameters() method has not been set up");
 // 		}
 //
 // 		public StructReturn? ReturnWithMultipleParametersNullable(StructParameter1 parameter1, StructParameter1 parameter2)

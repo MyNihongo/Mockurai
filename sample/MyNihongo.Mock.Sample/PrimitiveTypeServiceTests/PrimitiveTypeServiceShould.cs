@@ -16,29 +16,29 @@ public sealed class PrimitiveTypeServiceShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#InvokeWithParameter(8374646) to be invoked at index 6, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameter(8374646) to be invoked at index 6, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService#HandlerEvent#add
-			- 2: IPrimitiveDependencyService#GetOnly#get
-			- 3: IPrimitiveDependencyService#SetOnly#set = 123
-			- 4: IPrimitiveDependencyService#GetInit#set = "value"
-			- 5: IPrimitiveDependencyService#Invoke()
-			- 6: IPrimitiveDependencyService#Invoke(out 0)
+			- 1: IPrimitiveDependencyService.HandlerEvent.add
+			- 2: IPrimitiveDependencyService.GetOnly.get
+			- 3: IPrimitiveDependencyService.SetOnly.set = 123
+			- 4: IPrimitiveDependencyService.GetInit.set = "value"
+			- 5: IPrimitiveDependencyService.Invoke()
+			- 6: IPrimitiveDependencyService.Invoke(out 0)
 			- 7: 345 // TODO fix
-			- 8: IPrimitiveDependencyService#InvokeWithParameter("another value")
-			- 9: IPrimitiveDependencyService#InvokeWithParameter(ref 1234)
-			- 10: IPrimitiveDependencyService#InvokeWithSeveralParameters(1, 2)
-			- 11: IPrimitiveDependencyService#InvokeWithSeveralParameters(98, 2)
-			- 12: IPrimitiveDependencyService#InvokeWithSeveralParameters(1, 98)
-			- 13: IPrimitiveDependencyService#InvokeWithSeveralParameters(98, 98)
-			- 14: IPrimitiveDependencyService#Return()
-			- 15: IPrimitiveDependencyService#Return(out null)
-			- 16: IPrimitiveDependencyService#ReturnWithParameter("ret val")
-			- 17: IPrimitiveDependencyService#ReturnWithParameter(ref 3488)
-			- 18: IPrimitiveDependencyService#ReturnWithSeveralParameters(1, 2)
-			- 19: IPrimitiveDependencyService#ReturnWithSeveralParameters(98, 2)
-			- 20: IPrimitiveDependencyService#ReturnWithSeveralParameters(1, 98)
-			- 21: IPrimitiveDependencyService#ReturnWithSeveralParameters(98, 98)
+			- 8: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 9: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
+			- 10: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
+			- 11: IPrimitiveDependencyService.InvokeWithSeveralParameters(98, 2)
+			- 12: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 98)
+			- 13: IPrimitiveDependencyService.InvokeWithSeveralParameters(98, 98)
+			- 14: IPrimitiveDependencyService.Return()
+			- 15: IPrimitiveDependencyService.Return(out null)
+			- 16: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 17: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
+			- 18: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
+			- 19: IPrimitiveDependencyService.ReturnWithSeveralParameters(98, 2)
+			- 20: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 98)
+			- 21: IPrimitiveDependencyService.ReturnWithSeveralParameters(98, 98)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -58,29 +58,29 @@ public sealed class PrimitiveTypeServiceShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#InvokeWithSeveralParameters(8374646, 2843253) to be invoked at index 6, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(8374646, 2843253) to be invoked at index 6, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService#HandlerEvent#add
-			- 2: IPrimitiveDependencyService#GetOnly#get
-			- 3: IPrimitiveDependencyService#SetOnly#set = 123
-			- 4: IPrimitiveDependencyService#GetInit#set = "value"
-			- 5: IPrimitiveDependencyService#Invoke()
-			- 6: IPrimitiveDependencyService#Invoke(out 0)
-			- 7: IPrimitiveDependencyService#InvokeWithParameter(345)
-			- 8: IPrimitiveDependencyService#InvokeWithParameter("another value")
-			- 9: IPrimitiveDependencyService#InvokeWithParameter(ref 1234)
+			- 1: IPrimitiveDependencyService.HandlerEvent.add
+			- 2: IPrimitiveDependencyService.GetOnly.get
+			- 3: IPrimitiveDependencyService.SetOnly.set = 123
+			- 4: IPrimitiveDependencyService.GetInit.set = "value"
+			- 5: IPrimitiveDependencyService.Invoke()
+			- 6: IPrimitiveDependencyService.Invoke(out 0)
+			- 7: IPrimitiveDependencyService.InvokeWithParameter(345)
+			- 8: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 9: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
 			- 10: 1, 2 // TODO fix
-			- 11: IPrimitiveDependencyService#InvokeWithSeveralParameters(98, 2)
-			- 12: IPrimitiveDependencyService#InvokeWithSeveralParameters(1, 98)
-			- 13: IPrimitiveDependencyService#InvokeWithSeveralParameters(98, 98)
-			- 14: IPrimitiveDependencyService#Return()
-			- 15: IPrimitiveDependencyService#Return(out null)
-			- 16: IPrimitiveDependencyService#ReturnWithParameter("ret val")
-			- 17: IPrimitiveDependencyService#ReturnWithParameter(ref 3488)
-			- 18: IPrimitiveDependencyService#ReturnWithSeveralParameters(1, 2)
-			- 19: IPrimitiveDependencyService#ReturnWithSeveralParameters(98, 2)
-			- 20: IPrimitiveDependencyService#ReturnWithSeveralParameters(1, 98)
-			- 21: IPrimitiveDependencyService#ReturnWithSeveralParameters(98, 98)
+			- 11: IPrimitiveDependencyService.InvokeWithSeveralParameters(98, 2)
+			- 12: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 98)
+			- 13: IPrimitiveDependencyService.InvokeWithSeveralParameters(98, 98)
+			- 14: IPrimitiveDependencyService.Return()
+			- 15: IPrimitiveDependencyService.Return(out null)
+			- 16: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 17: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
+			- 18: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
+			- 19: IPrimitiveDependencyService.ReturnWithSeveralParameters(98, 2)
+			- 20: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 98)
+			- 21: IPrimitiveDependencyService.ReturnWithSeveralParameters(98, 98)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);

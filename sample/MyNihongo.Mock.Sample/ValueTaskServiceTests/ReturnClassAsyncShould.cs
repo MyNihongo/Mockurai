@@ -13,7 +13,7 @@
 // 			.ReturnClassAsync(cts.Token);
 //
 // 		var exception = await Assert.ThrowsAsync<NullReferenceException>(actual);
-// 		Assert.Equal("IValueTaskDependencyService#ReturnClassAsync() method has not been set up", exception.Message);
+// 		Assert.Equal("IValueTaskDependencyService.ReturnClassAsync() method has not been set up", exception.Message);
 // 	}
 //
 // 	[Fact]
@@ -56,7 +56,7 @@
 // 			.ReturnClassAsync(ctsInput.Token);
 //
 // 		var exception = await Assert.ThrowsAsync<NullReferenceException>(actual);
-// 		Assert.Equal("IValueTaskDependencyService#ReturnClassAsync() method has not been set up", exception.Message);
+// 		Assert.Equal("IValueTaskDependencyService.ReturnClassAsync() method has not been set up", exception.Message);
 // 	}
 //
 // 	[Fact]
@@ -91,6 +91,6 @@
 // 			.ReturnClassAsync(ctsInput.Token);
 //
 // 		var exception = await Assert.ThrowsAsync<NullReferenceException>(actual);
-// 		Assert.Equal("IValueTaskDependencyService#ReturnClassAsync() method has not been set up", exception.Message);
+// 		Assert.Equal("IValueTaskDependencyService.ReturnClassAsync() method has not been set up", exception.Message);
 // 	}
 // }

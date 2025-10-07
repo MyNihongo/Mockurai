@@ -44,7 +44,7 @@ public sealed class HandlerEventShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#HandlerEvent#add to be called 1 time, but instead it was called 0 times.
+			Expected IPrimitiveDependencyService.HandlerEvent.add to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: System.EventHandler`1[System.String]
 			""";
@@ -69,7 +69,7 @@ public sealed class HandlerEventShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#HandlerEvent#add to be verified, but the following invocations have not been verified:
+			Expected IPrimitiveDependencyService.HandlerEvent.add to be verified, but the following invocations have not been verified:
 			- 1: System.EventHandler`1[System.String]
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -93,7 +93,7 @@ public sealed class HandlerEventShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#HandlerEvent#remove to be verified, but the following invocations have not been verified:
+			Expected IPrimitiveDependencyService.HandlerEvent.remove to be verified, but the following invocations have not been verified:
 			- 2: System.EventHandler`1[System.String]
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -138,7 +138,7 @@ public sealed class HandlerEventShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#HandlerEvent#add to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.HandlerEvent.add to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: System.EventHandler`1[System.String]
 			""";
@@ -164,7 +164,7 @@ public sealed class HandlerEventShould : PrimitiveTypeServiceTestsBase
 			ctx.DependencyServiceMock.RemoveHandlerEvent(OnEventHandler);
 		});
 
-		const string expectedMessage = "Expected IPrimitiveDependencyService#InvokeWithSeveralParameters(123, 321) to be invoked at index 2, but there are no invocations.";
+		const string expectedMessage = "Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321) to be invoked at index 2, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}

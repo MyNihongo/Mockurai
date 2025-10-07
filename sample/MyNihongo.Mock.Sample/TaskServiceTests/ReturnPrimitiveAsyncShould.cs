@@ -13,7 +13,7 @@
 // 			.ReturnPrimitiveAsync(cts.Token);
 //
 // 		var exception = await Assert.ThrowsAsync<NullReferenceException>(actual);
-// 		Assert.Equal("ITaskDependencyService#ReturnPrimitiveAsync() method has not been set up", exception.Message);
+// 		Assert.Equal("ITaskDependencyService.ReturnPrimitiveAsync() method has not been set up", exception.Message);
 // 	}
 //
 // 	[Fact]
@@ -50,7 +50,7 @@
 // 			.ReturnPrimitiveAsync(ctsInput.Token);
 //
 // 		var exception = await Assert.ThrowsAsync<NullReferenceException>(actual);
-// 		Assert.Equal("ITaskDependencyService#ReturnPrimitiveAsync() method has not been set up", exception.Message);
+// 		Assert.Equal("ITaskDependencyService.ReturnPrimitiveAsync() method has not been set up", exception.Message);
 // 	}
 //
 // 	[Fact]
@@ -85,6 +85,6 @@
 // 			.ReturnPrimitiveAsync(ctsInput.Token);
 //
 // 		var exception = await Assert.ThrowsAsync<NullReferenceException>(actual);
-// 		Assert.Equal("ITaskDependencyService#ReturnPrimitiveAsync() method has not been set up", exception.Message);
+// 		Assert.Equal("ITaskDependencyService.ReturnPrimitiveAsync() method has not been set up", exception.Message);
 // 	}
 // }

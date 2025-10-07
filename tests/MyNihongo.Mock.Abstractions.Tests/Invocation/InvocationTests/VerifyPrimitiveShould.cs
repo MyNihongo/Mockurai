@@ -32,7 +32,7 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 
 		var expectedMessage =
 			$"""
-			 Expected MyClass#MyMethod() to be called {expected} times, but instead it was called 3 times.
+			 Expected MyClass.MyMethod() to be called {expected} times, but instead it was called 3 times.
 			 Performed invocations:
 			 - 1
 			 - 2
@@ -57,7 +57,7 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 
 		var actual = () => fixture.Verify(Times.Exactly(expected));
 
-		const string expectedMessage = $"Expected MyClass#MyMethod() to be called 1 time, but instead it was called 0 times.";
+		const string expectedMessage = $"Expected MyClass.MyMethod() to be called 1 time, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -71,7 +71,7 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 
 		var actual = () => fixture.Verify(Times.Exactly(expected));
 
-		var expectedMessage = $"Expected MyClass#MyMethod() to be called {expected} times, but instead it was called 0 times.";
+		var expectedMessage = $"Expected MyClass.MyMethod() to be called {expected} times, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -108,7 +108,7 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod() to be invoked at index 3, but it has not been called.
+			Expected MyClass.MyMethod() to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1
 			- 2
@@ -126,7 +126,7 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 
 		Action actual = () => fixture.Verify(verifyIndex);
 
-		var expectedMessage = $"Expected MyClass#MyMethod() to be invoked at index {verifyIndex}, but there are no invocations.";
+		var expectedMessage = $"Expected MyClass.MyMethod() to be invoked at index {verifyIndex}, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}

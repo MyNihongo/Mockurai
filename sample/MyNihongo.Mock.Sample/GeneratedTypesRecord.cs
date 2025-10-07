@@ -122,7 +122,7 @@
 //
 // 		public RecordReturn Return()
 // 		{
-// 			return _mock._return?.Invoke() ?? throw new NullReferenceException("IRecordDependencyService#Return() method has not been set up");
+// 			return _mock._return?.Invoke() ?? throw new NullReferenceException("IRecordDependencyService.Return() method has not been set up");
 // 		}
 //
 // 		public RecordReturn? ReturnNullable()
@@ -133,7 +133,7 @@
 // 		public RecordReturn ReturnWithParameter(in RecordParameter1 parameter)
 // 		{
 // 			var hashCode = parameter.GetHashCode();
-// 			return _mock._returnWithOneParameter?.TryInvoke(hashCode, out var returnValue) == true ? returnValue : throw new NullReferenceException("IRecordDependencyService#ReturnWithParameter() method has not been set up");
+// 			return _mock._returnWithOneParameter?.TryInvoke(hashCode, out var returnValue) == true ? returnValue : throw new NullReferenceException("IRecordDependencyService.ReturnWithParameter() method has not been set up");
 // 		}
 //
 // 		public RecordReturn? ReturnWithParameterNullable(in RecordParameter1 parameter)
@@ -145,7 +145,7 @@
 // 		public RecordReturn ReturnWithMultipleParameters(RecordParameter1 parameter1, RecordParameter1 parameter2)
 // 		{
 // 			Span<int> hashCodes = stackalloc int[] { parameter1.GetHashCode(), parameter2.GetHashCode() };
-// 			return _mock._returnWithMultipleParameters?.TryInvoke(hashCodes, out var returnValue) == true ? returnValue : throw new NullReferenceException("IRecordDependencyService#ReturnWithMultipleParameters() method has not been set up");
+// 			return _mock._returnWithMultipleParameters?.TryInvoke(hashCodes, out var returnValue) == true ? returnValue : throw new NullReferenceException("IRecordDependencyService.ReturnWithMultipleParameters() method has not been set up");
 // 		}
 //
 // 		public RecordReturn? ReturnWithMultipleParametersNullable(RecordParameter1 parameter1, RecordParameter1 parameter2)

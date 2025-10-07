@@ -230,7 +230,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(where(predicate), any) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod(where(predicate), any) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -255,7 +255,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(any, where(predicate)) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod(any, where(predicate)) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -281,7 +281,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(124, any) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod(124, any) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -307,7 +307,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(any, 235) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod(any, 235) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -332,7 +332,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(where(predicate), where(predicate)) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod(where(predicate), where(predicate)) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -357,7 +357,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(where(predicate), where(predicate)) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod(where(predicate), where(predicate)) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -382,7 +382,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(where(predicate), where(predicate)) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod(where(predicate), where(predicate)) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -408,7 +408,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(234, 123) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod(234, 123) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -434,7 +434,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 123) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod(123, 123) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -460,7 +460,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(234, 234) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod(234, 234) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -712,7 +712,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 0L);
 		};
 
-		const string expectedMessage = "Expected MyClass#MyMethod(any, any) to be invoked at index 0, but there are no invocations.";
+		const string expectedMessage = "Expected MyClass.MyMethod(any, any) to be invoked at index 0, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -728,7 +728,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 0L);
 		};
 
-		const string expectedMessage = "Expected MyClass#MyMethod(where(predicate), where(predicate)) to be invoked at index 0, but there are no invocations.";
+		const string expectedMessage = "Expected MyClass.MyMethod(where(predicate), where(predicate)) to be invoked at index 0, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -744,7 +744,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1, verify2, 0L);
 		};
 
-		const string expectedMessage = "Expected MyClass#MyMethod(123, 321) to be invoked at index 0, but there are no invocations.";
+		const string expectedMessage = "Expected MyClass.MyMethod(123, 321) to be invoked at index 0, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -765,7 +765,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(where(predicate), any) to be invoked at index 1, but it has not been called.
+			Expected MyClass.MyMethod(where(predicate), any) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -789,7 +789,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(any, where(predicate)) to be invoked at index 1, but it has not been called.
+			Expected MyClass.MyMethod(any, where(predicate)) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -814,7 +814,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(124, any) to be invoked at index 1, but it has not been called.
+			Expected MyClass.MyMethod(124, any) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -839,7 +839,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(any, 235) to be invoked at index 1, but it has not been called.
+			Expected MyClass.MyMethod(any, 235) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -863,7 +863,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(where(predicate), where(predicate)) to be invoked at index 1, but it has not been called.
+			Expected MyClass.MyMethod(where(predicate), where(predicate)) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -887,7 +887,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(where(predicate), where(predicate)) to be invoked at index 1, but it has not been called.
+			Expected MyClass.MyMethod(where(predicate), where(predicate)) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -911,7 +911,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(where(predicate), where(predicate)) to be invoked at index 1, but it has not been called.
+			Expected MyClass.MyMethod(where(predicate), where(predicate)) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -936,7 +936,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(234, 123) to be invoked at index 1, but it has not been called.
+			Expected MyClass.MyMethod(234, 123) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -961,7 +961,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 123) to be invoked at index 1, but it has not been called.
+			Expected MyClass.MyMethod(123, 123) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -986,7 +986,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(234, 234) to be invoked at index 1, but it has not been called.
+			Expected MyClass.MyMethod(234, 234) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			""";
@@ -1026,7 +1026,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 234) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod(123, 234) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 124, 236
 			  - parameter1:
@@ -1065,7 +1065,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 234) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod(123, 234) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 123, 236
 			  - parameter2:
@@ -1101,7 +1101,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 234) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod(123, 234) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 124, 234
 			  - parameter1:
@@ -1139,7 +1139,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 234) to be called 2 times, but instead it was called 1 time.
+			Expected MyClass.MyMethod(123, 234) to be called 2 times, but instead it was called 1 time.
 			Performed invocations:
 			- 1: 124, 236
 			  - parameter1:
@@ -1181,7 +1181,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 234) to be called 2 times, but instead it was called 1 time.
+			Expected MyClass.MyMethod(123, 234) to be called 2 times, but instead it was called 1 time.
 			Performed invocations:
 			- 1: 123, 236
 			  - parameter2:
@@ -1220,7 +1220,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 234) to be called 2 times, but instead it was called 1 time.
+			Expected MyClass.MyMethod(123, 234) to be called 2 times, but instead it was called 1 time.
 			Performed invocations:
 			- 1: 124, 234
 			  - parameter1:
@@ -1273,7 +1273,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 234) to be invoked at index 3, but it has not been called.
+			Expected MyClass.MyMethod(123, 234) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: 124, 236
 			- 2: 126, 238
@@ -1301,7 +1301,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 234) to be invoked at index 3, but it has not been called.
+			Expected MyClass.MyMethod(123, 234) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: 123, 236
 			- 2: 126, 238
@@ -1329,7 +1329,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 234) to be invoked at index 3, but it has not been called.
+			Expected MyClass.MyMethod(123, 234) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: 124, 234
 			- 2: 126, 238
@@ -1358,7 +1358,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 234) to be invoked at index 3, but it has not been called.
+			Expected MyClass.MyMethod(123, 234) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: 124, 236
 			- 2: 123, 234
@@ -1394,7 +1394,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 234) to be invoked at index 3, but it has not been called.
+			Expected MyClass.MyMethod(123, 234) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: 123, 236
 			- 2: 123, 234
@@ -1430,7 +1430,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123, 234) to be invoked at index 3, but it has not been called.
+			Expected MyClass.MyMethod(123, 234) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: 124, 234
 			- 2: 123, 234

@@ -22,7 +22,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 	{
 		var actual = () => DependencyServiceMock.VerifyGetGetInit(Times.Once);
 
-		const string errorMessage = "Expected IPrimitiveDependencyService#GetInit#get to be called 1 time, but instead it was called 0 times.";
+		const string errorMessage = "Expected IPrimitiveDependencyService.GetInit.get to be called 1 time, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 	}
@@ -79,7 +79,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#GetInit#get to be called 1 time, but instead it was called 2 times.
+			Expected IPrimitiveDependencyService.GetInit.get to be called 1 time, but instead it was called 2 times.
 			Performed invocations:
 			- 1
 			- 2
@@ -101,7 +101,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#ReturnWithParameter(String) to be verified, but the following invocations have not been verified:
+			Expected IPrimitiveDependencyService.ReturnWithParameter(String) to be verified, but the following invocations have not been verified:
 			- 2: "value"
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -139,7 +139,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#GetInit#get to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.GetInit.get to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1
 			- 2
@@ -167,7 +167,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 	{
 		var actual = () => DependencyServiceMock.VerifySetGetInit(It<string>.Any(), Times.Once);
 
-		const string errorMessage = "Expected IPrimitiveDependencyService#GetInit#set = any to be called 1 time, but instead it was called 0 times.";
+		const string errorMessage = "Expected IPrimitiveDependencyService.GetInit.set = any to be called 1 time, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 	}
@@ -301,7 +301,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#GetInit#set = any to be called at least 3 times, but instead it was called 2 times.
+			Expected IPrimitiveDependencyService.GetInit.set = any to be called at least 3 times, but instead it was called 2 times.
 			Performed invocations:
 			- 1: "parameter1"
 			- 2: "parameter2"
@@ -325,7 +325,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#GetInit#set = String to be verified, but the following invocations have not been verified:
+			Expected IPrimitiveDependencyService.GetInit.set = String to be verified, but the following invocations have not been verified:
 			- 2: "parameter2"
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -420,7 +420,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#GetInit#set = "parameter1" to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.GetInit.set = "parameter1" to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: "parameter1"
 			- 2: "parameter2"
@@ -447,7 +447,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#GetInit#set = where(predicate) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.GetInit.set = where(predicate) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: "parameter1"
 			- 2: "parameter2"
@@ -497,7 +497,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 			ctx.DependencyServiceMock.GetGetInit();
 		});
 
-		const string expectedMessage = "Expected IPrimitiveDependencyService#InvokeWithParameter(123) to be invoked at index 2, but there are no invocations.";
+		const string expectedMessage = "Expected IPrimitiveDependencyService.InvokeWithParameter(123) to be invoked at index 2, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}

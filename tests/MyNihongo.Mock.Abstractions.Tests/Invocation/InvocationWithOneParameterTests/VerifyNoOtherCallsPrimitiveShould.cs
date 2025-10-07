@@ -145,7 +145,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
+			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 1: 123
 			- 2: 234
 			- 3: 345
@@ -171,7 +171,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
+			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 1: 123
 			- 2: 234
 			""";
@@ -196,7 +196,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
+			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 1: 123
 			""";
 
@@ -222,7 +222,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
+			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 2: 234
 			- 3: 345
 			""";
@@ -249,7 +249,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
+			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 2: 234
 			""";
 
@@ -273,7 +273,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
+			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 2: 234
 			""";
 
@@ -297,7 +297,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
+			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 1: 123
 			""";
 
@@ -320,7 +320,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
+			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 2: 234
 			""";
 
@@ -343,7 +343,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
+			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 1: 123
 			""";
 
@@ -366,7 +366,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
+			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 2: 234
 			""";
 
@@ -389,7 +389,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(Int32) to be verified, but the following invocations have not been verified:
+			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
 			- 1: 123
 			""";
 

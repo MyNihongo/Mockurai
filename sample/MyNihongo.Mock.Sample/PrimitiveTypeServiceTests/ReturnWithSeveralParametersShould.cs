@@ -25,7 +25,7 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 	{
 		var actual = () => DependencyServiceMock.VerifyReturnWithSeveralParameters(It<int>.Any(), It<int>.Any(), Times.Once);
 
-		const string errorMessage = "Expected IPrimitiveDependencyService#ReturnWithSeveralParameters(any, any) to be called 1 time, but instead it was called 0 times.";
+		const string errorMessage = "Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(any, any) to be called 1 time, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 	}
@@ -225,7 +225,7 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#ReturnWithSeveralParameters(any, 234) to be called 3 times, but instead it was called 2 times.
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(any, 234) to be called 3 times, but instead it was called 2 times.
 			Performed invocations:
 			- 1: 123, 234
 			- 2: 234, 234
@@ -252,7 +252,7 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#ReturnWithSeveralParameters(Int32, Int32) to be verified, but the following invocations have not been verified:
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(Int32, Int32) to be verified, but the following invocations have not been verified:
 			- 1: 123, 234
 			- 3: 234, 123
 			""";
@@ -358,7 +358,7 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#ReturnWithSeveralParameters(234, 234) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(234, 234) to be invoked at index 4, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			- 2: 234, 234
@@ -388,7 +388,7 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#ReturnWithSeveralParameters(where(predicate), where(predicate)) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(where(predicate), where(predicate)) to be invoked at index 4, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			- 2: 234, 234
@@ -418,7 +418,7 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#ReturnWithSeveralParameters(123, 234) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(123, 234) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			- 2: 234, 234
@@ -455,7 +455,7 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#ReturnWithSeveralParameters(any, any) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(any, any) to be invoked at index 4, but it has not been called.
 			Performed invocations:
 			- 1: 123, 234
 			- 2: 234, 234
@@ -483,7 +483,7 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue2, parameterValue1);
 		});
 
-		const string expectedMessage = "Expected IPrimitiveDependencyService#GetInit#get to be invoked at index 3, but there are no invocations.";
+		const string expectedMessage = "Expected IPrimitiveDependencyService.GetInit.get to be invoked at index 3, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}

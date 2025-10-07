@@ -9,7 +9,7 @@ public sealed class ReturnShould : ClassTypeServiceTestsBase
 			.Return();
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#Return() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService.Return() method has not been set up", exception.Message);
 	}
 
 	[Fact]
