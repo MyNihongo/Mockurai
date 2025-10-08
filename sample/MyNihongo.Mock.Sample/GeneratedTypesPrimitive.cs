@@ -307,13 +307,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	public void VerifyInvokeWithSeveralParameters(in ItRef<int> parameter1, in It<int> parameter2, in Times times)
 	{
-		_invokeWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters(ref {0}, {1})");
+		_invokeWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters({0}, {1})", prefix1: "ref");
 		_invokeWithSeveralParametersInvocation2.Verify(parameter1, parameter2, times, GetInvocations);
 	}
 
 	public long VerifyInvokeWithSeveralParameters(in ItRef<int> parameter1, in It<int> parameter2, in long index)
 	{
-		_invokeWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters(ref {0}, {1})");
+		_invokeWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters({0}, {1})", prefix1: "ref");
 		return _invokeWithSeveralParametersInvocation2.Verify(parameter1, parameter2, index, GetInvocations);
 	}
 
@@ -330,13 +330,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	public void VerifyInvokeWithSeveralParameters(in It<int> parameter1, in ItRef<int> parameter2, in Times times)
 	{
-		_invokeWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters({0}, ref {1})");
+		_invokeWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters({0}, {1})", prefix2: "ref");
 		_invokeWithSeveralParametersInvocation3.Verify(parameter1, parameter2, times, GetInvocations);
 	}
 
 	public long VerifyInvokeWithSeveralParameters(in It<int> parameter1, in ItRef<int> parameter2, in long index)
 	{
-		_invokeWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters({0}, ref {1})");
+		_invokeWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters({0}, {1})", prefix2: "ref");
 		return _invokeWithSeveralParametersInvocation3.Verify(parameter1, parameter2, index, GetInvocations);
 	}
 
@@ -353,13 +353,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	public void VerifyInvokeWithSeveralParameters(in ItRef<int> parameter1, in ItRef<int> parameter2, in Times times)
 	{
-		_invokeWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters(ref {0}, ref {1})");
+		_invokeWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters(ref {0}, {1})", prefix2: "ref");
 		_invokeWithSeveralParametersInvocation4.Verify(parameter1, parameter2, times, GetInvocations);
 	}
 
 	public long VerifyInvokeWithSeveralParameters(in ItRef<int> parameter1, in ItRef<int> parameter2, in long index)
 	{
-		_invokeWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters(ref {0}, ref {1})");
+		_invokeWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters(ref {0}, {1})", prefix2: "ref");
 		return _invokeWithSeveralParametersInvocation4.Verify(parameter1, parameter2, index, GetInvocations);
 	}
 
@@ -395,13 +395,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	public void VerifyReturn(in ItOut<string> result, in Times times)
 	{
-		_returnInvocation2 ??= new Invocation<string>("IPrimitiveDependencyService.Return(out {0})", prefix: "out");
+		_returnInvocation2 ??= new Invocation<string>("IPrimitiveDependencyService.Return({0})", prefix: "out");
 		_returnInvocation2.Verify(result, times, GetInvocations);
 	}
 
 	public long VerifyReturn(in ItOut<string> result, in long index)
 	{
-		_returnInvocation2 ??= new Invocation<string>("IPrimitiveDependencyService.Return(out {0})", prefix: "out");
+		_returnInvocation2 ??= new Invocation<string>("IPrimitiveDependencyService.Return({0})", prefix: "out");
 		return _returnInvocation2.Verify(result, index, GetInvocations);
 	}
 
@@ -441,13 +441,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	public void VerifyReturnWithParameter(in ItRef<double> parameter, in Times times)
 	{
-		_returnWithParameterInvocation2 ??= new Invocation<double>("IPrimitiveDependencyService.ReturnWithParameter(ref {0})", prefix: "ref");
+		_returnWithParameterInvocation2 ??= new Invocation<double>("IPrimitiveDependencyService.ReturnWithParameter({0})", prefix: "ref");
 		_returnWithParameterInvocation2.Verify(parameter, times, GetInvocations);
 	}
 
 	public long VerifyReturnWithParameter(in ItRef<double> parameter, in long index)
 	{
-		_returnWithParameterInvocation2 ??= new Invocation<double>("IPrimitiveDependencyService.ReturnWithParameter(ref {0})", prefix: "ref");
+		_returnWithParameterInvocation2 ??= new Invocation<double>("IPrimitiveDependencyService.ReturnWithParameter({0})", prefix: "ref");
 		return _returnWithParameterInvocation2.Verify(parameter, index, GetInvocations);
 	}
 
@@ -487,13 +487,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	public void VerifyReturnWithSeveralParameters(in ItRef<int> parameter1, in It<int> parameter2, in Times times)
 	{
-		_returnWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters(ref {0}, {1})");
+		_returnWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters({0}, {1})", prefix1: "ref");
 		_returnWithSeveralParametersInvocation2.Verify(parameter1, parameter2, times, GetInvocations);
 	}
 
 	public long VerifyReturnWithSeveralParameters(in ItRef<int> parameter1, in It<int> parameter2, in long index)
 	{
-		_returnWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters(ref {0}, {1})");
+		_returnWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters({0}, {1})", prefix1: "ref");
 		return _returnWithSeveralParametersInvocation2.Verify(parameter1, parameter2, index, GetInvocations);
 	}
 
@@ -510,13 +510,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	public void VerifyReturnWithSeveralParameters(in It<int> parameter1, in ItRef<int> parameter2, in Times times)
 	{
-		_returnWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters({0}, ref {1})");
+		_returnWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters({0}, {1})", prefix2: "ref");
 		_returnWithSeveralParametersInvocation3.Verify(parameter1, parameter2, times, GetInvocations);
 	}
 
 	public long VerifyReturnWithSeveralParameters(in It<int> parameter1, in ItRef<int> parameter2, in long index)
 	{
-		_returnWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters({0}, ref {1})");
+		_returnWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters({0}, {1})", prefix2: "ref");
 		return _returnWithSeveralParametersInvocation3.Verify(parameter1, parameter2, index, GetInvocations);
 	}
 
@@ -533,13 +533,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	public void VerifyReturnWithSeveralParameters(in ItRef<int> parameter1, in ItRef<int> parameter2, in Times times)
 	{
-		_returnWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters(ref {0}, ref {1})");
+		_returnWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters(ref {0}, {1})", prefix2: "ref");
 		_returnWithSeveralParametersInvocation4.Verify(parameter1, parameter2, times, GetInvocations);
 	}
 
 	public long VerifyReturnWithSeveralParameters(in ItRef<int> parameter1, in ItRef<int> parameter2, in long index)
 	{
-		_returnWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters(ref {0}, ref {1})");
+		_returnWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters(ref {0}, {1})", prefix2: "ref");
 		return _returnWithSeveralParametersInvocation4.Verify(parameter1, parameter2, index, GetInvocations);
 	}
 
@@ -687,7 +687,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 		public void Invoke(out int result)
 		{
-			_mock._invokeInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService.Invoke(out {0})", prefix: "out");
+			_mock._invokeInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService.Invoke({0})", prefix: "out");
 			_mock._invokeInvocation2.Register(InvocationIndex.CounterValue, 0);
 			if (_mock._invoke2 is not null)
 				_mock._invoke2.Invoke(out result);
@@ -711,7 +711,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 		public void InvokeWithParameter(ref decimal parameter)
 		{
-			_mock._invokeWithParameterInvocation3 ??= new Invocation<decimal>("IPrimitiveDependencyService.InvokeWithParameter(ref {0})", prefix: "ref");
+			_mock._invokeWithParameterInvocation3 ??= new Invocation<decimal>("IPrimitiveDependencyService.InvokeWithParameter({0})", prefix: "ref");
 			_mock._invokeWithParameterInvocation3.Register(InvocationIndex.CounterValue, parameter);
 			_mock._invokeWithParameter3?.Invoke(ref parameter);
 		}
@@ -725,21 +725,21 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 		public void InvokeWithSeveralParameters(ref int parameter1, int parameter2)
 		{
-			_mock._invokeWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters(ref {0}, {1})");
+			_mock._invokeWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters({0}, {1})", prefix1: "ref");
 			_mock._invokeWithSeveralParametersInvocation2.Register(InvocationIndex.CounterValue, parameter1, parameter2);
 			_mock._invokeWithSeveralParameters2?.Invoke(ref parameter1, parameter2);
 		}
 
 		public void InvokeWithSeveralParameters(int parameter1, ref int parameter2)
 		{
-			_mock._invokeWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters({0}, ref {1})");
+			_mock._invokeWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters({0}, {1})", prefix2: "ref");
 			_mock._invokeWithSeveralParametersInvocation3.Register(InvocationIndex.CounterValue, parameter1, parameter2);
 			_mock._invokeWithSeveralParameters3?.Invoke(parameter1, ref parameter2);
 		}
 
 		public void InvokeWithSeveralParameters(ref int parameter1, ref int parameter2)
 		{
-			_mock._invokeWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters(ref {0}, ref {1})");
+			_mock._invokeWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters(ref {0}, {1})", prefix2: "ref");
 			_mock._invokeWithSeveralParametersInvocation4.Register(InvocationIndex.CounterValue, parameter1, parameter2);
 			_mock._invokeWithSeveralParameters4?.Invoke(ref parameter1, ref parameter2);
 		}
@@ -753,7 +753,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 		public bool Return(out string result)
 		{
-			_mock._returnInvocation2 ??= new Invocation<string>("IPrimitiveDependencyService.Return(out {0})", prefix: "out");
+			_mock._returnInvocation2 ??= new Invocation<string>("IPrimitiveDependencyService.Return({0})", prefix: "out");
 			_mock._returnInvocation2.Register(InvocationIndex.CounterValue, null!);
 			if (_mock._return2 is not null)
 				return _mock._return2.Execute(out result!, out var returnValue) ? returnValue : false;
@@ -771,7 +771,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 		public int ReturnWithParameter(ref double parameter)
 		{
-			_mock._returnWithParameterInvocation2 ??= new Invocation<double>("IPrimitiveDependencyService.ReturnWithParameter(ref {0})", prefix: "ref");
+			_mock._returnWithParameterInvocation2 ??= new Invocation<double>("IPrimitiveDependencyService.ReturnWithParameter({0})", prefix: "ref");
 			_mock._returnWithParameterInvocation2.Register(InvocationIndex.CounterValue, parameter);
 			return _mock._returnWithParameter2?.Execute(ref parameter, out var returnValue) == true ? returnValue! : 0;
 		}
@@ -785,21 +785,21 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 		public decimal ReturnWithSeveralParameters(ref int parameter1, int parameter2)
 		{
-			_mock._returnWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters(ref {0}, {1})");
+			_mock._returnWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters({0}, {1})");
 			_mock._returnWithSeveralParametersInvocation2.Register(InvocationIndex.CounterValue, parameter1, parameter2);
 			return _mock._returnWithSeveralParameters2?.Execute(ref parameter1, parameter2, out var returnValue) == true ? returnValue : 0m;
 		}
 
 		public decimal ReturnWithSeveralParameters(int parameter1, ref int parameter2)
 		{
-			_mock._returnWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters({0}, ref {1})");
+			_mock._returnWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters({0}, {1})", prefix2: "ref");
 			_mock._returnWithSeveralParametersInvocation3.Register(InvocationIndex.CounterValue, parameter1, parameter2);
 			return _mock._returnWithSeveralParameters3?.Execute(parameter1, ref parameter2, out var returnValue) == true ? returnValue : 0m;
 		}
 
 		public decimal ReturnWithSeveralParameters(ref int parameter1, ref int parameter2)
 		{
-			_mock._returnWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters(ref {0}, ref {1})");
+			_mock._returnWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters(ref {0}, {1})", prefix2: "ref");
 			_mock._returnWithSeveralParametersInvocation4.Register(InvocationIndex.CounterValue, parameter1, parameter2);
 			return _mock._returnWithSeveralParameters4?.Execute(ref parameter1, ref parameter2, out var returnValue) == true ? returnValue : 0m;
 		}
