@@ -2,6 +2,7 @@ namespace MyNihongo.Mock;
 
 public static class StringEx
 {
+	[Obsolete("Use ToString()")]
 	public static string FormatParameters(this string @this, in string parameters)
 	{
 		var bracketIndex = @this.IndexOf('(');

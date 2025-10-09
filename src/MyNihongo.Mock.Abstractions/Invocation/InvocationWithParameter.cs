@@ -18,7 +18,7 @@ public sealed class Invocation<TParameter> : IInvocationProvider
 	public void Register(in InvocationIndex.Counter index, in TParameter parameter)
 	{
 		var invokedIndex = index.Increment();
-		_invocations.Add(invokedIndex, new Item(parameter, _prefix));
+		_invocations.Add(invokedIndex, new Item(parameter, invocation: this));
 	}
 
 	public void Verify(in It<TParameter> parameter, in Times times, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
@@ -98,27 +98,25 @@ public sealed class Invocation<TParameter> : IInvocationProvider
 
 	public IEnumerable<IInvocation> GetInvocations()
 	{
-		foreach (var x in _invocations)
-		{
-			yield return new InvocationSnapshot
+		return _invocations
+			.Select(static x => new InvocationSnapshot
 			{
 				Index = x.Index,
-				Snapshot = _name.FormatParameters(x.Invocation.ToString()),
-			};
-		}
+				Snapshot = x.Invocation.ToString(),
+			});
 	}
 
 	private sealed class Item
 	{
 		public bool IsVerified;
 		private readonly TParameter _parameter;
-		private readonly string? _prefix;
 		private readonly string? _jsonSnapshot;
+		private readonly Invocation<TParameter> _invocation;
 
-		public Item(in TParameter parameter, in string? prefix)
+		public Item(in TParameter parameter, in Invocation<TParameter> invocation)
 		{
 			_parameter = parameter;
-			_prefix = prefix;
+			_invocation = invocation;
 
 			try
 			{
@@ -143,9 +141,11 @@ public sealed class Invocation<TParameter> : IInvocationProvider
 				? _parameter?.ToString() ?? string.Empty
 				: _jsonSnapshot;
 
-			return !string.IsNullOrEmpty(_prefix)
-				? $"{_prefix} {stringValue}"
+			stringValue = !string.IsNullOrEmpty(_invocation._prefix)
+				? $"{_invocation._prefix} {stringValue}"
 				: stringValue;
+
+			return string.Format(_invocation._name, stringValue);
 		}
 	}
 }

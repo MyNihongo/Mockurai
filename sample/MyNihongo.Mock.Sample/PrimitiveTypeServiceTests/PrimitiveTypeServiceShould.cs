@@ -66,21 +66,21 @@ public sealed class PrimitiveTypeServiceShould : PrimitiveTypeServiceTestsBase
 			- 4: IPrimitiveDependencyService.GetInit.set = "value"
 			- 5: IPrimitiveDependencyService.Invoke()
 			- 6: IPrimitiveDependencyService.Invoke(out 0)
-			- 7: 345 // TODO fix
+			- 7: IPrimitiveDependencyService.InvokeWithParameter(345)
 			- 8: IPrimitiveDependencyService.InvokeWithParameter("another value")
 			- 9: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
 			- 10: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
 			- 11: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
 			- 12: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
-			- 13: IPrimitiveDependencyService.InvokeWithSeveralParameters(98, ref 98)
+			- 13: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
 			- 14: IPrimitiveDependencyService.Return()
 			- 15: IPrimitiveDependencyService.Return(out null)
 			- 16: IPrimitiveDependencyService.ReturnWithParameter("ret val")
 			- 17: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
 			- 18: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
-			- 19: IPrimitiveDependencyService.ReturnWithSeveralParameters(98, 2)
+			- 19: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
 			- 20: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
-			- 21: IPrimitiveDependencyService.ReturnWithSeveralParameters(98, ref 98)
+			- 21: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
