@@ -130,14 +130,12 @@ public sealed class InvocationIntInt : IInvocationProvider
 
 	public IEnumerable<IInvocation> GetInvocations()
 	{
-		foreach (var x in _invocations)
-		{
-			yield return new InvocationSnapshot
+		return _invocations
+			.Select(static x => new InvocationSnapshot
 			{
 				Index = x.Index,
-				Snapshot = _name.FormatParameters(x.Invocation.ToString()),
-			};
-		}
+				Snapshot = x.Invocation.ToString(),
+			});
 	}
 
 	private sealed class Item
@@ -197,7 +195,8 @@ public sealed class InvocationIntInt : IInvocationProvider
 			else
 				stringBuilder.Append(_parameter1);
 
-			stringBuilder.Append(", ");
+			var parameter1 = stringBuilder.ToString();
+			stringBuilder.Clear();
 
 			if (!string.IsNullOrEmpty(_invocation._prefix2))
 				stringBuilder.Append($"{_invocation._prefix2} ");
@@ -206,7 +205,8 @@ public sealed class InvocationIntInt : IInvocationProvider
 			else
 				stringBuilder.Append(_parameter2);
 
-			return stringBuilder.ToString();
+			var parameter2 = stringBuilder.ToString();
+			return string.Format(_invocation._name, parameter1, parameter2);
 		}
 	}
 }
