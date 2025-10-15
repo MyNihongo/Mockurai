@@ -41,7 +41,7 @@ public sealed class Invocation : IInvocationProvider
 		return item.Value.Index + 1;
 	}
 
-	public void VerifyNoOtherCalls()
+	public void VerifyNoOtherCalls(Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		if (_isVerified)
 			return;

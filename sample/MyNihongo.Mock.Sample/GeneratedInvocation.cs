@@ -114,7 +114,7 @@ public sealed class InvocationIntInt : IInvocationProvider
 		throw new MockVerifySequenceOutOfRangeException(verifyName, index, invocations);
 	}
 
-	public void VerifyNoOtherCalls()
+	public void VerifyNoOtherCalls(Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var unverifiedItems = _invocations
 			.Where(static x => !x.Invocation.IsVerified)
