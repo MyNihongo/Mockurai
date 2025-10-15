@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock.Sample.PrimitiveTypeServiceTests;
 
-public sealed class PrimitiveTypeServiceShould : PrimitiveTypeServiceTestsBase
+public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 {
 	[Fact]
 	public void ThrowInvalidSequenceMultipleCallsVerify()
