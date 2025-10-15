@@ -3,7 +3,124 @@ namespace MyNihongo.Mock.Sample.PrimitiveTypeServiceTests;
 public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 {
 	[Fact]
-	public void ThrowInvalidSequenceMultipleCallsVerify()
+	public void ThrowInvalidInvocation()
+	{
+		CreateFixture()
+			.InvokeAll();
+
+		var actual = () => DependencyServiceMock
+			.VerifyInvoke(Times.Exactly(100));
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService.Invoke() to be called 100 times, but instead it was called 1 time.
+			Performed invocations:
+			- 1: IPrimitiveDependencyService.HandlerEvent.add
+			- 2: IPrimitiveDependencyService.GetOnly.get
+			- 3: IPrimitiveDependencyService.SetOnly.set = 123
+			- 4: IPrimitiveDependencyService.GetInit.set = "value"
+			- 5: IPrimitiveDependencyService.Invoke()
+			- 6: IPrimitiveDependencyService.Invoke(out 0)
+			- 7: IPrimitiveDependencyService.InvokeWithParameter(345)
+			- 8: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 9: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
+			- 10: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
+			- 11: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
+			- 12: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
+			- 13: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
+			- 14: IPrimitiveDependencyService.Return()
+			- 15: IPrimitiveDependencyService.Return(out null)
+			- 16: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 17: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
+			- 18: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
+			- 19: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
+			- 20: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
+			- 21: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowInvalidInvocationOneParam()
+	{
+		CreateFixture()
+			.InvokeAll();
+
+		var actual = () => DependencyServiceMock
+			.VerifyInvokeWithParameter(8374646, Times.Once);
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService.InvokeWithParameter(8374646) to be called 1 time, but instead it was called 0 times.
+			Performed invocations:
+			- 1: IPrimitiveDependencyService.HandlerEvent.add
+			- 2: IPrimitiveDependencyService.GetOnly.get
+			- 3: IPrimitiveDependencyService.SetOnly.set = 123
+			- 4: IPrimitiveDependencyService.GetInit.set = "value"
+			- 5: IPrimitiveDependencyService.Invoke()
+			- 6: IPrimitiveDependencyService.Invoke(out 0)
+			- 7: IPrimitiveDependencyService.InvokeWithParameter(345)
+			- 8: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 9: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
+			- 10: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
+			- 11: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
+			- 12: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
+			- 13: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
+			- 14: IPrimitiveDependencyService.Return()
+			- 15: IPrimitiveDependencyService.Return(out null)
+			- 16: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 17: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
+			- 18: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
+			- 19: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
+			- 20: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
+			- 21: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowInvalidInvocationMultipleParams()
+	{
+		CreateFixture()
+			.InvokeAll();
+
+		var actual = () => DependencyServiceMock
+			.VerifyInvokeWithSeveralParameters(8374646, 2843253, Times.Once);
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(8374646, 2843253) to be called 1 time, but instead it was called 0 times.
+			Performed invocations:
+			- 1: IPrimitiveDependencyService.HandlerEvent.add
+			- 2: IPrimitiveDependencyService.GetOnly.get
+			- 3: IPrimitiveDependencyService.SetOnly.set = 123
+			- 4: IPrimitiveDependencyService.GetInit.set = "value"
+			- 5: IPrimitiveDependencyService.Invoke()
+			- 6: IPrimitiveDependencyService.Invoke(out 0)
+			- 7: IPrimitiveDependencyService.InvokeWithParameter(345)
+			- 8: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 9: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
+			- 10: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
+			- 11: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
+			- 12: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
+			- 13: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
+			- 14: IPrimitiveDependencyService.Return()
+			- 15: IPrimitiveDependencyService.Return(out null)
+			- 16: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 17: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
+			- 18: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
+			- 19: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
+			- 20: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
+			- 21: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowInvalidSequence()
 	{
 		CreateFixture()
 			.InvokeAll();
@@ -43,9 +160,9 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
-	
+
 	[Fact]
-	public void ThrowInvalidSequenceMultipleCallsVerifyOneParam()
+	public void ThrowInvalidSequenceOneParam()
 	{
 		CreateFixture()
 			.InvokeAll();
@@ -87,7 +204,7 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void ThrowInvalidSequenceMultipleCallsVerifyMultipleParams()
+	public void ThrowInvalidSequenceMultipleParams()
 	{
 		CreateFixture()
 			.InvokeAll();
