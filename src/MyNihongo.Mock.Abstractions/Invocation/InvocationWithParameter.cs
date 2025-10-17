@@ -84,9 +84,20 @@ public sealed class Invocation<TParameter> : IInvocationProvider
 
 	public void VerifyNoOtherCalls(Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
+		var hasUnverifiedInvocations = _invocations
+			.Any(static x => !x.Invocation.IsVerified);
+
+		if (!hasUnverifiedInvocations)
+			return;
+
+		// TODO: resume after rework
 		var unverifiedItems = _invocations
 			.Where(static x => !x.Invocation.IsVerified)
-			.Select(static x => x.GetString())
+			.Select(static x => new InvocationSnapshot
+			{
+				Index = x.Index,
+				Snapshot = x.Invocation.ToString(),
+			})
 			.ToArray();
 
 		if (unverifiedItems.Length > 0)

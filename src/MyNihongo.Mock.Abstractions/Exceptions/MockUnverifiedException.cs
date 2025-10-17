@@ -4,28 +4,9 @@ namespace MyNihongo.Mock;
 
 public sealed class MockUnverifiedException : MockVerifyException
 {
-	public MockUnverifiedException(in string name, in IReadOnlyList<long> indices)
-		: base(CreateMessage(name, indices))
-	{
-	}
-
 	public MockUnverifiedException(in string name, in IReadOnlyList<string> invocations)
 		: base(CreateMessage(name, invocations))
 	{
-	}
-
-	private static string CreateMessage(in string name, in IReadOnlyList<long> indices)
-	{
-		var stringBuilder = InitStringBuilder(name);
-
-		foreach (var index in indices)
-		{
-			stringBuilder
-				.AppendLine()
-				.Append($"- index {index}");
-		}
-
-		return stringBuilder.ToString();
 	}
 
 	private static string CreateMessage(in string name, in IReadOnlyList<string> invocations)
