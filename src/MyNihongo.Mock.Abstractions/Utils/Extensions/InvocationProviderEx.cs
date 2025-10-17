@@ -6,7 +6,7 @@ public static class InvocationProviderEx
 	{
 		return @this
 			.GetInvocations()
-			.GetStrings();
+			.Select(static x => x.ToString());
 	}
 
 	public static IEnumerable<IInvocation> GetInvocations(this Func<IEnumerable<IInvocationProvider?>> @this)
@@ -14,18 +14,5 @@ public static class InvocationProviderEx
 		return @this.Invoke()
 			.SelectMany(static x => x?.GetInvocations() ?? [])
 			.OrderBy(static x => x.Index);
-	}
-
-	public static IEnumerable<string> GetStrings(this IEnumerable<IInvocation> @this)
-	{
-		return @this
-			.Select(static x => x.GetString());
-	}
-
-	public static string GetString(this IInvocation @this)
-	{
-		return !string.IsNullOrEmpty(@this.Snapshot)
-			? $"{@this.Index}: {@this.Snapshot}"
-			: @this.Index.ToString();
 	}
 }
