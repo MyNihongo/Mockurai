@@ -9,11 +9,14 @@ public static class TupleEx
 		return $"{@this.Item1}: {@this.Item2}";
 	}
 
-	public static IEnumerable<string>? GetStrings<T>(this List<(long, T, ComparisonResult?)> @this)
+	public static IEnumerable<string>? GetStrings<T>(this List<(long, T, ComparisonResult?)> @this, Func<IEnumerable<IInvocationProvider?>>? invocationProviders)
 	{
-		return @this.Count > 0
-			? EnumerateStrings(@this)
-			: null;
+		if (@this.Count == 0)
+			return invocationProviders?.GetStrings();
+
+		return invocationProviders is not null
+			? EnumerateInvocationStrings(@this, invocationProviders)
+			: EnumerateStrings(@this);
 
 		static IEnumerable<string> EnumerateStrings(List<(long, T, ComparisonResult?)> @this)
 		{
@@ -21,46 +24,72 @@ public static class TupleEx
 
 			foreach (var item in @this)
 			{
-				var message = $"{item.Item1}: {item.Item2}";
-				if (item.Item3 is null || item.Item3.Entries.Count == 0)
-				{
-					yield return message;
-					continue;
-				}
-
-				stringBuilder.AppendLine(message);
-
-				for (var i = 0; i < item.Item3.Entries.Count; i++)
-				{
-					if (i > 0)
-						stringBuilder.AppendLine();
-
-					if (item.Item3.Entries[i].Path == ComparisonResult.RootPath)
-					{
-						stringBuilder
-							.AppendLine($"  expected: {item.Item3.Entries[i].ExpectedValue}")
-							.Append($"  actual: {item.Item3.Entries[i].ActualValue}");
-					}
-					else
-					{
-						stringBuilder
-							.AppendLine($"  - {item.Item3.Entries[i].Path}:")
-							.AppendLine($"    expected: {item.Item3.Entries[i].ExpectedValue}")
-							.Append($"    actual: {item.Item3.Entries[i].ActualValue}");
-					}
-				}
+				Append(stringBuilder, item);
 
 				yield return stringBuilder.ToString();
 				stringBuilder.Clear();
 			}
 		}
+
+		static IEnumerable<string> EnumerateInvocationStrings(List<(long, T, ComparisonResult?)> @this, Func<IEnumerable<IInvocationProvider?>> invocationProviders)
+		{
+			var stringBuilder = new StringBuilder();
+
+			var i = 0;
+			foreach (var invocation in invocationProviders.GetInvocations())
+			{
+				if (i < @this.Count && @this[i].Item1 == invocation.Index)
+				{
+					Append(stringBuilder, @this[i++]);
+					yield return stringBuilder.ToString();
+					stringBuilder.Clear();
+				}
+				else
+				{
+					yield return invocation.GetString();
+				}
+			}
+		}
+
+		static void Append(in StringBuilder stringBuilder, in (long, T, ComparisonResult?) item)
+		{
+			stringBuilder
+				.Append(item.Item1)
+				.Append(": ")
+				.Append(item.Item2);
+
+			if (item.Item3 is null || item.Item3.Entries.Count <= 0)
+				return;
+
+			for (var i = 0; i < item.Item3.Entries.Count; i++)
+			{
+				stringBuilder.AppendLine();
+
+				if (item.Item3.Entries[i].Path == ComparisonResult.RootPath)
+				{
+					stringBuilder
+						.AppendLine($"  expected: {item.Item3.Entries[i].ExpectedValue}")
+						.Append($"  actual: {item.Item3.Entries[i].ActualValue}");
+				}
+				else
+				{
+					stringBuilder
+						.AppendLine($"  - {item.Item3.Entries[i].Path}:")
+						.AppendLine($"    expected: {item.Item3.Entries[i].ExpectedValue}")
+						.Append($"    actual: {item.Item3.Entries[i].ActualValue}");
+				}
+			}
+		}
 	}
 
-	public static IEnumerable<string>? GetStrings<T>(this List<(long, T, (string, ComparisonResult?)[]?)> @this)
+	public static IEnumerable<string>? GetStrings<T>(this List<(long, T, (string, ComparisonResult?)[]?)> @this, Func<IEnumerable<IInvocationProvider?>>? invocationProviders)
 	{
-		return @this.Count > 0
-			? EnumerateStrings(@this)
-			: null;
+		if (@this.Count == 0)
+			return invocationProviders?.GetStrings();
+
+		return invocationProviders is not null
+			? EnumerateInvocationStrings(@this, invocationProviders)
+			: EnumerateStrings(@this);
 
 		static IEnumerable<string> EnumerateStrings(List<(long, T, (string, ComparisonResult?)[]?)> @this)
 		{
@@ -68,46 +97,69 @@ public static class TupleEx
 
 			foreach (var item in @this)
 			{
-				var message = $"{item.Item1}: {item.Item2}";
-				if (item.Item3 is null || item.Item3.Length == 0)
-				{
-					yield return message;
-					continue;
-				}
-
-				stringBuilder.Append(message);
-
-				foreach (var resultItem in item.Item3)
-				{
-					if (resultItem.Item2 is null || resultItem.Item2.Entries.Count == 0)
-						continue;
-
-					stringBuilder.AppendLine();
-					stringBuilder.AppendLine($"  - {resultItem.Item1}:");
-
-					for (var i = 0; i < resultItem.Item2.Entries.Count; i++)
-					{
-						if (i > 0)
-							stringBuilder.AppendLine();
-
-						if (resultItem.Item2.Entries[i].Path == ComparisonResult.RootPath)
-						{
-							stringBuilder
-								.AppendLine($"    expected: {resultItem.Item2.Entries[i].ExpectedValue}")
-								.Append($"    actual: {resultItem.Item2.Entries[i].ActualValue}");
-						}
-						else
-						{
-							stringBuilder
-								.AppendLine($"    - {resultItem.Item2.Entries[i].Path}:")
-								.AppendLine($"      expected: {resultItem.Item2.Entries[i].ExpectedValue}")
-								.Append($"      actual: {resultItem.Item2.Entries[i].ActualValue}");
-						}
-					}
-				}
-
+				Append(stringBuilder, item);
 				yield return stringBuilder.ToString();
 				stringBuilder.Clear();
+			}
+		}
+
+		static IEnumerable<string> EnumerateInvocationStrings(List<(long, T, (string, ComparisonResult?)[]?)> @this, Func<IEnumerable<IInvocationProvider?>> invocationProviders)
+		{
+			var stringBuilder = new StringBuilder();
+
+			var i = 0;
+			foreach (var invocation in invocationProviders.GetInvocations())
+			{
+				if (i < @this.Count && @this[i].Item1 == invocation.Index)
+				{
+					Append(stringBuilder, @this[i++]);
+					yield return stringBuilder.ToString();
+					stringBuilder.Clear();
+				}
+				else
+				{
+					yield return invocation.GetString();
+				}
+			}
+		}
+
+		static void Append(in StringBuilder stringBuilder, in (long, T, (string, ComparisonResult?)[]?) item)
+		{
+			stringBuilder
+				.Append(item.Item1)
+				.Append(": ")
+				.Append(item.Item2);
+
+			if (item.Item3 is null || item.Item3.Length == 0)
+				return;
+
+			foreach (var resultItem in item.Item3)
+			{
+				if (resultItem.Item2 is null || resultItem.Item2.Entries.Count == 0)
+					continue;
+
+				stringBuilder.AppendLine();
+				stringBuilder.AppendLine($"  - {resultItem.Item1}:");
+
+				for (var i = 0; i < resultItem.Item2.Entries.Count; i++)
+				{
+					if (i > 0)
+						stringBuilder.AppendLine();
+
+					if (resultItem.Item2.Entries[i].Path == ComparisonResult.RootPath)
+					{
+						stringBuilder
+							.AppendLine($"    expected: {resultItem.Item2.Entries[i].ExpectedValue}")
+							.Append($"    actual: {resultItem.Item2.Entries[i].ActualValue}");
+					}
+					else
+					{
+						stringBuilder
+							.AppendLine($"    - {resultItem.Item2.Entries[i].Path}:")
+							.AppendLine($"      expected: {resultItem.Item2.Entries[i].ExpectedValue}")
+							.Append($"      actual: {resultItem.Item2.Entries[i].ActualValue}");
+					}
+				}
 			}
 		}
 	}

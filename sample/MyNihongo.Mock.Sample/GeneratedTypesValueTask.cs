@@ -116,7 +116,7 @@
 // 		public ValueTask<int> ReturnPrimitiveAsync(CancellationToken ct = default)
 // 		{
 // 			var hashCode = ct.GetHashCode();
-// 			return _mock._returnPrimitiveAsync?.TryInvoke(hashCode, out var returnValue) == true ? ValueTask.FromResult(returnValue) : throw new NullReferenceException("IValueTaskDependencyService#ReturnPrimitiveAsync() method has not been set up");
+// 			return _mock._returnPrimitiveAsync?.TryInvoke(hashCode, out var returnValue) == true ? ValueTask.FromResult(returnValue) : throw new NullReferenceException("IValueTaskDependencyService.ReturnPrimitiveAsync() method has not been set up");
 // 		}
 //
 // 		public ValueTask<short?> ReturnPrimitiveNullableAsync(CancellationToken ct = default)
@@ -128,7 +128,7 @@
 // 		public ValueTask<StructReturn> ReturnStructAsync(CancellationToken ct = default)
 // 		{
 // 			var hashCode = ct.GetHashCode();
-// 			return _mock._returnStructAsync?.TryInvoke(hashCode, out var returnValue) == true ? ValueTask.FromResult(returnValue) : throw new NullReferenceException("IValueTaskDependencyService#ReturnStructAsync() method has not been set up");
+// 			return _mock._returnStructAsync?.TryInvoke(hashCode, out var returnValue) == true ? ValueTask.FromResult(returnValue) : throw new NullReferenceException("IValueTaskDependencyService.ReturnStructAsync() method has not been set up");
 // 		}
 //
 // 		public ValueTask<StructReturn?> ReturnStructNullableAsync(CancellationToken ct = default)
@@ -140,7 +140,7 @@
 // 		public ValueTask<ClassReturn> ReturnClassAsync(CancellationToken ct = default)
 // 		{
 // 			var hashCode = ct.GetHashCode();
-// 			return _mock._returnClassAsync?.TryInvoke(hashCode, out var returnValue) == true ? ValueTask.FromResult(returnValue) : throw new NullReferenceException("IValueTaskDependencyService#ReturnClassAsync() method has not been set up");
+// 			return _mock._returnClassAsync?.TryInvoke(hashCode, out var returnValue) == true ? ValueTask.FromResult(returnValue) : throw new NullReferenceException("IValueTaskDependencyService.ReturnClassAsync() method has not been set up");
 // 		}
 //
 // 		public ValueTask<ClassReturn?> ReturnClassNullableAsync(CancellationToken ct = default)
@@ -152,7 +152,7 @@
 // 		public ValueTask<RecordReturn> ReturnRecordAsync(CancellationToken ct = default)
 // 		{
 // 			var hashCode = ct.GetHashCode();
-// 			return _mock._returnRecordAsync?.TryInvoke(hashCode, out var returnValue) == true ? ValueTask.FromResult(returnValue) : throw new NullReferenceException("IValueTaskDependencyService#ReturnRecordAsync() method has not been set up");
+// 			return _mock._returnRecordAsync?.TryInvoke(hashCode, out var returnValue) == true ? ValueTask.FromResult(returnValue) : throw new NullReferenceException("IValueTaskDependencyService.ReturnRecordAsync() method has not been set up");
 // 		}
 //
 // 		public ValueTask<RecordReturn?> ReturnRecordNullableAsync(CancellationToken ct = default)

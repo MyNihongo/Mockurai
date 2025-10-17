@@ -24,7 +24,7 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 	{
 		var actual = () => DependencyServiceMock.VerifyGetGetOnly(Times.Once);
 
-		const string errorMessage = "Expected IPrimitiveDependencyService#GetOnly#get to be called 1 time, but instead it was called 0 times.";
+		const string errorMessage = "Expected IPrimitiveDependencyService.GetOnly.get to be called 1 time, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 	}
@@ -81,7 +81,7 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#GetOnly#get to be called 1 time, but instead it was called 2 times.
+			Expected IPrimitiveDependencyService.GetOnly.get to be called 1 time, but instead it was called 2 times.
 			Performed invocations:
 			- 1
 			- 2
@@ -103,7 +103,7 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#ReturnWithParameter(String) to be verified, but the following invocations have not been verified:
+			Expected IPrimitiveDependencyService.ReturnWithParameter(String) to be verified, but the following invocations have not been verified:
 			- 2: "value"
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -141,7 +141,7 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#GetOnly#get to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.GetOnly.get to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1
 			- 2
@@ -164,7 +164,7 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 			ctx.DependencyServiceMock.InvokeWithSeveralParameters(123, 321);
 		});
 
-		const string expectedMessage = "Expected IPrimitiveDependencyService#InvokeWithSeveralParameters(123, 321) to be invoked at index 3, but there are no invocations.";
+		const string expectedMessage = "Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321) to be invoked at index 3, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}

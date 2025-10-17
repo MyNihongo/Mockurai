@@ -21,7 +21,7 @@ public sealed class ReturnWithSeveralParametersShould : ClassTypeServiceTestsBas
 			.ReturnWithSeveralParameters(input1, input2);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService.ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -83,7 +83,7 @@ public sealed class ReturnWithSeveralParametersShould : ClassTypeServiceTestsBas
 			.ReturnWithSeveralParameters(input1, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService.ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -114,7 +114,7 @@ public sealed class ReturnWithSeveralParametersShould : ClassTypeServiceTestsBas
 			.ReturnWithSeveralParameters(input2, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService.ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -145,7 +145,7 @@ public sealed class ReturnWithSeveralParametersShould : ClassTypeServiceTestsBas
 			.ReturnWithSeveralParameters(input2, input2);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService.ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -176,7 +176,7 @@ public sealed class ReturnWithSeveralParametersShould : ClassTypeServiceTestsBas
 			.ReturnWithSeveralParameters(input2, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService.ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -207,7 +207,7 @@ public sealed class ReturnWithSeveralParametersShould : ClassTypeServiceTestsBas
 			.ReturnWithSeveralParameters(input1, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService.ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -238,7 +238,7 @@ public sealed class ReturnWithSeveralParametersShould : ClassTypeServiceTestsBas
 			.ReturnWithSeveralParameters(input2, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService.ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -294,7 +294,7 @@ public sealed class ReturnWithSeveralParametersShould : ClassTypeServiceTestsBas
 			.ReturnWithSeveralParameters(input1, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService.ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -322,7 +322,7 @@ public sealed class ReturnWithSeveralParametersShould : ClassTypeServiceTestsBas
 			.ReturnWithSeveralParameters(input2, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService.ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -350,7 +350,7 @@ public sealed class ReturnWithSeveralParametersShould : ClassTypeServiceTestsBas
 			.ReturnWithSeveralParameters(input2, input2);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService.ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -378,7 +378,7 @@ public sealed class ReturnWithSeveralParametersShould : ClassTypeServiceTestsBas
 			.ReturnWithSeveralParameters(input2, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService.ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -406,7 +406,7 @@ public sealed class ReturnWithSeveralParametersShould : ClassTypeServiceTestsBas
 			.ReturnWithSeveralParameters(input1, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService.ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -434,6 +434,6 @@ public sealed class ReturnWithSeveralParametersShould : ClassTypeServiceTestsBas
 			.ReturnWithSeveralParameters(input2, input1);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService.ReturnWithSeveralParameters() method has not been set up", exception.Message);
 	}
 }

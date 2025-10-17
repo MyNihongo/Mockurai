@@ -15,7 +15,7 @@
 // 			.ReturnWithOneParameter(input);
 //
 // 		var exception = Assert.Throws<NullReferenceException>(actual);
-// 		Assert.Equal("IStructDependencyService#ReturnWithParameter() method has not been set up", exception.Message);
+// 		Assert.Equal("IStructDependencyService.ReturnWithParameter() method has not been set up", exception.Message);
 // 	}
 //
 // 	[Fact]
@@ -99,7 +99,7 @@
 // 			.ReturnWithOneParameter(input);
 //
 // 		var exception = Assert.Throws<NullReferenceException>(actual);
-// 		Assert.Equal("IStructDependencyService#ReturnWithParameter() method has not been set up", exception.Message);
+// 		Assert.Equal("IStructDependencyService.ReturnWithParameter() method has not been set up", exception.Message);
 // 	}
 //
 // 	[Fact]
@@ -177,6 +177,6 @@
 // 			.ReturnWithOneParameter(input);
 //
 // 		var exception = Assert.Throws<NullReferenceException>(actual);
-// 		Assert.Equal("IStructDependencyService#ReturnWithParameter() method has not been set up", exception.Message);
+// 		Assert.Equal("IStructDependencyService.ReturnWithParameter() method has not been set up", exception.Message);
 // 	}
 // }

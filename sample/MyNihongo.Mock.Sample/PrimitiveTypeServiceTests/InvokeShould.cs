@@ -28,7 +28,7 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 	{
 		var actual = () => DependencyServiceMock.VerifyInvoke(Times.Once);
 
-		const string errorMessage = "Expected IPrimitiveDependencyService#Invoke() to be called 1 time, but instead it was called 0 times.";
+		const string errorMessage = "Expected IPrimitiveDependencyService.Invoke() to be called 1 time, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 	}
@@ -38,7 +38,7 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 	{
 		var actual = () => DependencyServiceMock.VerifyInvoke(ItOut<int>.Any(), Times.Once);
 
-		const string errorMessage = "Expected IPrimitiveDependencyService#Invoke(out any) to be called 1 time, but instead it was called 0 times.";
+		const string errorMessage = "Expected IPrimitiveDependencyService.Invoke(out any) to be called 1 time, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 	}
@@ -108,7 +108,7 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#Invoke() to be called 1 time, but instead it was called 2 times.
+			Expected IPrimitiveDependencyService.Invoke() to be called 1 time, but instead it was called 2 times.
 			Performed invocations:
 			- 1
 			- 2
@@ -128,7 +128,7 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#Invoke(out any) to be called 1 time, but instead it was called 2 times.
+			Expected IPrimitiveDependencyService.Invoke(out any) to be called 1 time, but instead it was called 2 times.
 			Performed invocations:
 			- 1: out 0
 			- 2: out 0
@@ -150,7 +150,7 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#InvokeWithParameter(String) to be verified, but the following invocations have not been verified:
+			Expected IPrimitiveDependencyService.InvokeWithParameter(String) to be verified, but the following invocations have not been verified:
 			- 2: "value"
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -170,7 +170,7 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#InvokeWithParameter(String) to be verified, but the following invocations have not been verified:
+			Expected IPrimitiveDependencyService.InvokeWithParameter(String) to be verified, but the following invocations have not been verified:
 			- 2: "value"
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -223,7 +223,7 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#Invoke() to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.Invoke() to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1
 			- 2
@@ -248,7 +248,7 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService#Invoke(out any) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.Invoke(out any) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: out 0
 			- 2: out 0
@@ -271,7 +271,7 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 			ctx.DependencyServiceMock.Invoke();
 		});
 
-		const string expectedMessage = "Expected IPrimitiveDependencyService#Return() to be invoked at index 2, but there are no invocations.";
+		const string expectedMessage = "Expected IPrimitiveDependencyService.Return() to be invoked at index 2, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -290,7 +290,7 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 			ctx.DependencyServiceMock.Invoke(ItOut<int>.Any());
 		});
 
-		const string expectedMessage = "Expected IPrimitiveDependencyService#Return() to be invoked at index 2, but there are no invocations.";
+		const string expectedMessage = "Expected IPrimitiveDependencyService.Return() to be invoked at index 2, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}

@@ -9,7 +9,7 @@
 // 			.Return();
 //
 // 		var exception = Assert.Throws<NullReferenceException>(actual);
-// 		Assert.Equal("IStructDependencyService#Return() method has not been set up", exception.Message);
+// 		Assert.Equal("IStructDependencyService.Return() method has not been set up", exception.Message);
 // 	}
 //
 // 	[Fact]

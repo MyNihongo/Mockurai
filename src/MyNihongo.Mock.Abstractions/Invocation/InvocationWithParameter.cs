@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace MyNihongo.Mock;
 
-public sealed class Invocation<TParameter>
+public sealed class Invocation<TParameter> : IInvocationProvider
 {
 	private readonly string _name;
 	private readonly string? _prefix;
@@ -18,10 +18,10 @@ public sealed class Invocation<TParameter>
 	public void Register(in InvocationIndex.Counter index, in TParameter parameter)
 	{
 		var invokedIndex = index.Increment();
-		_invocations.Add(invokedIndex, new Item(parameter, _prefix));
+		_invocations.Add(invokedIndex, new Item(parameter, invocation: this));
 	}
 
-	public void Verify(in It<TParameter> parameter, in Times times)
+	public void Verify(in It<TParameter> parameter, in Times times, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var span = _invocations.GetItemsSpan();
 
@@ -46,12 +46,12 @@ public sealed class Invocation<TParameter>
 		if (times.Predicate(count))
 			return;
 
-		var invocations = verifyOutput.GetStrings();
+		var invocations = verifyOutput.GetStrings(invocationProviders);
 		var verifyName = string.Format(_name, parameter.ToString());
 		throw new MockVerifyCountException(verifyName, times, count, invocations);
 	}
 
-	public long Verify(in It<TParameter> parameter, in long index)
+	public long Verify(in It<TParameter> parameter, in long index, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var span = _invocations.GetItemsSpanFrom(index);
 
@@ -77,16 +77,27 @@ public sealed class Invocation<TParameter>
 		for (var i = 0; i < span.Length; i++)
 			verifyOutput.Insert(i, (span[i].Index, span[i].Invocation, null));
 
-		var invocations = verifyOutput.GetStrings();
+		var invocations = verifyOutput.GetStrings(invocationProviders);
 		var verifyName = string.Format(_name, parameter.ToString());
 		throw new MockVerifySequenceOutOfRangeException(verifyName, index, invocations);
 	}
 
-	public void VerifyNoOtherCalls()
+	public void VerifyNoOtherCalls(Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
+		var hasUnverifiedInvocations = _invocations
+			.Any(static x => !x.Invocation.IsVerified);
+
+		if (!hasUnverifiedInvocations)
+			return;
+
+		// TODO: resume after rework
 		var unverifiedItems = _invocations
 			.Where(static x => !x.Invocation.IsVerified)
-			.Select(static x => x.GetString())
+			.Select(static x => new InvocationSnapshot
+			{
+				Index = x.Index,
+				Snapshot = x.Invocation.ToString(),
+			})
 			.ToArray();
 
 		if (unverifiedItems.Length > 0)
@@ -96,17 +107,27 @@ public sealed class Invocation<TParameter>
 		}
 	}
 
+	public IEnumerable<IInvocation> GetInvocations()
+	{
+		return _invocations
+			.Select(static x => new InvocationSnapshot
+			{
+				Index = x.Index,
+				Snapshot = x.Invocation.ToString(),
+			});
+	}
+
 	private sealed class Item
 	{
 		public bool IsVerified;
 		private readonly TParameter _parameter;
-		private readonly string? _prefix;
 		private readonly string? _jsonSnapshot;
+		private readonly Invocation<TParameter> _invocation;
 
-		public Item(in TParameter parameter, in string? prefix)
+		public Item(in TParameter parameter, in Invocation<TParameter> invocation)
 		{
 			_parameter = parameter;
-			_prefix = prefix;
+			_invocation = invocation;
 
 			try
 			{
@@ -131,9 +152,11 @@ public sealed class Invocation<TParameter>
 				? _parameter?.ToString() ?? string.Empty
 				: _jsonSnapshot;
 
-			return !string.IsNullOrEmpty(_prefix)
-				? $"{_prefix} {stringValue}"
+			stringValue = !string.IsNullOrEmpty(_invocation._prefix)
+				? $"{_invocation._prefix} {stringValue}"
 				: stringValue;
+
+			return string.Format(_invocation._name, stringValue);
 		}
 	}
 }

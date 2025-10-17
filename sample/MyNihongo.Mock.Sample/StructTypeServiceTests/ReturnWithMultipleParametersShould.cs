@@ -21,7 +21,7 @@
 // 			.ReturnWithMultipleParameters(input1, input2);
 //
 // 		var exception = Assert.Throws<NullReferenceException>(actual);
-// 		Assert.Equal("IStructDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+// 		Assert.Equal("IStructDependencyService.ReturnWithMultipleParameters() method has not been set up", exception.Message);
 // 	}
 //
 // 	[Fact]
@@ -81,7 +81,7 @@
 // 			.ReturnWithMultipleParameters(input1, input1);
 //
 // 		var exception = Assert.Throws<NullReferenceException>(actual);
-// 		Assert.Equal("IStructDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+// 		Assert.Equal("IStructDependencyService.ReturnWithMultipleParameters() method has not been set up", exception.Message);
 // 	}
 //
 // 	[Fact]
@@ -111,7 +111,7 @@
 // 			.ReturnWithMultipleParameters(input2, input1);
 //
 // 		var exception = Assert.Throws<NullReferenceException>(actual);
-// 		Assert.Equal("IStructDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+// 		Assert.Equal("IStructDependencyService.ReturnWithMultipleParameters() method has not been set up", exception.Message);
 // 	}
 //
 // 	[Fact]
@@ -141,7 +141,7 @@
 // 			.ReturnWithMultipleParameters(input2, input2);
 //
 // 		var exception = Assert.Throws<NullReferenceException>(actual);
-// 		Assert.Equal("IStructDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+// 		Assert.Equal("IStructDependencyService.ReturnWithMultipleParameters() method has not been set up", exception.Message);
 // 	}
 //
 // 	[Fact]
@@ -287,7 +287,7 @@
 // 			.ReturnWithMultipleParameters(input1, input1);
 //
 // 		var exception = Assert.Throws<NullReferenceException>(actual);
-// 		Assert.Equal("IStructDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+// 		Assert.Equal("IStructDependencyService.ReturnWithMultipleParameters() method has not been set up", exception.Message);
 // 	}
 //
 // 	[Fact]
@@ -315,7 +315,7 @@
 // 			.ReturnWithMultipleParameters(input2, input1);
 //
 // 		var exception = Assert.Throws<NullReferenceException>(actual);
-// 		Assert.Equal("IStructDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+// 		Assert.Equal("IStructDependencyService.ReturnWithMultipleParameters() method has not been set up", exception.Message);
 // 	}
 //
 // 	[Fact]
@@ -343,7 +343,7 @@
 // 			.ReturnWithMultipleParameters(input2, input2);
 //
 // 		var exception = Assert.Throws<NullReferenceException>(actual);
-// 		Assert.Equal("IStructDependencyService#ReturnWithMultipleParameters() method has not been set up", exception.Message);
+// 		Assert.Equal("IStructDependencyService.ReturnWithMultipleParameters() method has not been set up", exception.Message);
 // 	}
 //
 // 	[Fact]

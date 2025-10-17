@@ -15,7 +15,7 @@ public sealed class ReturnWithOneParameterShould : ClassTypeServiceTestsBase
 			.ReturnWithOneParameter(input);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithParameter() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService.ReturnWithParameter() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -71,7 +71,7 @@ public sealed class ReturnWithOneParameterShould : ClassTypeServiceTestsBase
 			.ReturnWithOneParameter(input);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithParameter() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService.ReturnWithParameter() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -102,7 +102,7 @@ public sealed class ReturnWithOneParameterShould : ClassTypeServiceTestsBase
 			.ReturnWithOneParameter(input);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithParameter() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService.ReturnWithParameter() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -202,7 +202,7 @@ public sealed class ReturnWithOneParameterShould : ClassTypeServiceTestsBase
 			.ReturnWithOneParameter(input);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithParameter() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService.ReturnWithParameter() method has not been set up", exception.Message);
 	}
 
 	[Fact]
@@ -230,7 +230,7 @@ public sealed class ReturnWithOneParameterShould : ClassTypeServiceTestsBase
 			.ReturnWithOneParameter(input);
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
-		Assert.Equal("IClassDependencyService#ReturnWithParameter() method has not been set up", exception.Message);
+		Assert.Equal("IClassDependencyService.ReturnWithParameter() method has not been set up", exception.Message);
 	}
 
 	[Fact]

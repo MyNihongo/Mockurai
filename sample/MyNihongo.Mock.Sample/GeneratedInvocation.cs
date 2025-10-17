@@ -5,23 +5,26 @@ using System.Text.Json;
 namespace MyNihongo.Mock.Sample;
 
 [Obsolete("Will be generated")]
-public sealed class InvocationIntInt
+public sealed class InvocationIntInt : IInvocationProvider
 {
 	private readonly string _name;
+	private readonly string? _prefix1, _prefix2;
 	private readonly InvocationContainer<Item> _invocations = [];
 
-	public InvocationIntInt(in string name)
+	public InvocationIntInt(in string name, in string? prefix1 = null, in string? prefix2 = null)
 	{
 		_name = name;
+		_prefix1 = prefix1;
+		_prefix2 = prefix2;
 	}
 
 	public void Register(in InvocationIndex.Counter index, in int parameter1, in int parameter2)
 	{
 		var invokedIndex = index.Increment();
-		_invocations.Add(invokedIndex, new Item(parameter1, parameter2));
+		_invocations.Add(invokedIndex, new Item(parameter1, parameter2, invocation: this));
 	}
 
-	public void Verify(in It<int> parameter1, in It<int> parameter2, in Times times)
+	public void Verify(in It<int> parameter1, in It<int> parameter2, in Times times, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var span = _invocations.GetItemsSpan();
 
@@ -61,12 +64,12 @@ public sealed class InvocationIntInt
 		if (times.Predicate(count))
 			return;
 
-		var invocations = verifyOutput.GetStrings();
+		var invocations = verifyOutput.GetStrings(invocationProviders);
 		var verifyName = string.Format(_name, parameter1.ToString(), parameter2.ToString());
 		throw new MockVerifyCountException(verifyName, times, count, invocations);
 	}
 
-	public long Verify(in It<int> parameter1, in It<int> parameter2, in long index)
+	public long Verify(in It<int> parameter1, in It<int> parameter2, in long index, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var span = _invocations.GetItemsSpanFrom(index);
 
@@ -106,12 +109,12 @@ public sealed class InvocationIntInt
 		for (var i = 0; i < span.Length; i++)
 			verifyOutput.Insert(i, (span[i].Index, span[i].Invocation, null));
 
-		var invocations = verifyOutput.GetStrings();
+		var invocations = verifyOutput.GetStrings(invocationProviders);
 		var verifyName = string.Format(_name, parameter1.ToString(), parameter2.ToString());
 		throw new MockVerifySequenceOutOfRangeException(verifyName, index, invocations);
 	}
 
-	public void VerifyNoOtherCalls()
+	public void VerifyNoOtherCalls(Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var unverifiedItems = _invocations
 			.Where(static x => !x.Invocation.IsVerified)
@@ -125,16 +128,28 @@ public sealed class InvocationIntInt
 		}
 	}
 
+	public IEnumerable<IInvocation> GetInvocations()
+	{
+		return _invocations
+			.Select(static x => new InvocationSnapshot
+			{
+				Index = x.Index,
+				Snapshot = x.Invocation.ToString(),
+			});
+	}
+
 	private sealed class Item
 	{
 		public bool IsVerified;
 		private readonly int _parameter1, _parameter2;
 		private readonly string? _jsonSnapshot1, _jsonSnapshot2;
+		private readonly InvocationIntInt _invocation;
 
-		public Item(in int parameter1, in int parameter2)
+		public Item(in int parameter1, in int parameter2, in InvocationIntInt invocation)
 		{
 			_parameter1 = parameter1;
 			_parameter2 = parameter2;
+			_invocation = invocation;
 
 			try
 			{
@@ -173,19 +188,25 @@ public sealed class InvocationIntInt
 		{
 			var stringBuilder = new StringBuilder();
 
+			if (!string.IsNullOrEmpty(_invocation._prefix1))
+				stringBuilder.Append($"{_invocation._prefix1} ");
 			if (!string.IsNullOrEmpty(_jsonSnapshot1))
 				stringBuilder.Append(_jsonSnapshot1);
 			else
 				stringBuilder.Append(_parameter1);
 
-			stringBuilder.Append(", ");
+			var parameter1 = stringBuilder.ToString();
+			stringBuilder.Clear();
 
+			if (!string.IsNullOrEmpty(_invocation._prefix2))
+				stringBuilder.Append($"{_invocation._prefix2} ");
 			if (!string.IsNullOrEmpty(_jsonSnapshot2))
 				stringBuilder.Append(_jsonSnapshot2);
 			else
 				stringBuilder.Append(_parameter2);
 
-			return stringBuilder.ToString();
+			var parameter2 = stringBuilder.ToString();
+			return string.Format(_invocation._name, parameter1, parameter2);
 		}
 	}
 }

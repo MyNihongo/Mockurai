@@ -120,7 +120,7 @@ public sealed class ClassDependencyServiceMock : IMock<IClassDependencyService>
 
 		public ClassReturn Return()
 		{
-			return _mock._return?.Execute(out var returnValue) == true ? returnValue : throw new NullReferenceException("IClassDependencyService#Return() method has not been set up");
+			return _mock._return?.Execute(out var returnValue) == true ? returnValue : throw new NullReferenceException("IClassDependencyService.Return() method has not been set up");
 		}
 
 		public ClassReturn? ReturnNullable()
@@ -132,7 +132,7 @@ public sealed class ClassDependencyServiceMock : IMock<IClassDependencyService>
 		{
 			var hashcode = parameter.GetHashCode();
 			throw new NotImplementedException();
-			// return _mock._returnWithOneParameter?.TryInvoke(hashcode, out var returnValue) == true ? returnValue : throw new NullReferenceException("IClassDependencyService#ReturnWithParameter() method has not been set up");
+			// return _mock._returnWithOneParameter?.TryInvoke(hashcode, out var returnValue) == true ? returnValue : throw new NullReferenceException("IClassDependencyService.ReturnWithParameter() method has not been set up");
 		}
 
 		public ClassReturn? ReturnWithOneParameterNullable(in ClassParameter1 parameter)
@@ -146,7 +146,7 @@ public sealed class ClassDependencyServiceMock : IMock<IClassDependencyService>
 		{
 			Span<int> hashCodes = stackalloc int[] { parameter1.GetHashCode(), parameter2.GetHashCode() };
 			throw new NotImplementedException();
-			// return _mock._returnWithSeveralParameters?.TryInvoke(hashCodes, out var returnValue) == true ? returnValue : throw new NullReferenceException("IClassDependencyService#ReturnWithSeveralParameters() method has not been set up");
+			// return _mock._returnWithSeveralParameters?.TryInvoke(hashCodes, out var returnValue) == true ? returnValue : throw new NullReferenceException("IClassDependencyService.ReturnWithSeveralParameters() method has not been set up");
 		}
 
 		public ClassReturn? ReturnWithSeveralParametersNullable(ClassParameter1 parameter1, ClassParameter1 parameter2)

@@ -82,7 +82,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		var expectedMessage =
 			$"""
-			 Expected MyClass#MyMethod(where(predicate)) to be called {expected} times, but instead it was called 3 times.
+			 Expected MyClass.MyMethod(where(predicate)) to be called {expected} times, but instead it was called 3 times.
 			 Performed invocations:
 			 - 1: 123
 			 - 2: 234
@@ -167,7 +167,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		var expectedMessage =
 			$"""
-			 Expected MyClass#MyMethod(123) to be called {expected} times, but instead it was called 3 times.
+			 Expected MyClass.MyMethod(123) to be called {expected} times, but instead it was called 3 times.
 			 Performed invocations:
 			 - 1: {setupValue}
 			 - 2: {setupValue}
@@ -204,7 +204,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod(123) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 321
 			""";
@@ -229,7 +229,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(where(predicate)) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod(where(predicate)) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 321
 			""";
@@ -315,7 +315,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(any) to be invoked at index 4, but it has not been called.
+			Expected MyClass.MyMethod(any) to be invoked at index 4, but it has not been called.
 			Performed invocations:
 			- 1: 123
 			- 2: 234
@@ -344,7 +344,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(where(predicate)) to be invoked at index 2, but it has not been called.
+			Expected MyClass.MyMethod(where(predicate)) to be invoked at index 2, but it has not been called.
 			Performed invocations:
 			- 1: 123
 			- 2: 234
@@ -374,7 +374,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123) to be invoked at index 2, but it has not been called.
+			Expected MyClass.MyMethod(123) to be invoked at index 2, but it has not been called.
 			Performed invocations:
 			- 1: 123
 			- 2: 234
@@ -397,7 +397,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			fixture.Verify(verify, verifyIndex);
 		};
 
-		var expectedMessage = $"Expected MyClass#MyMethod(any) to be invoked at index {verifyIndex}, but there are no invocations.";
+		var expectedMessage = $"Expected MyClass.MyMethod(any) to be invoked at index {verifyIndex}, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -415,7 +415,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			fixture.Verify(verify, verifyIndex);
 		};
 
-		var expectedMessage = $"Expected MyClass#MyMethod(where(predicate)) to be invoked at index {verifyIndex}, but there are no invocations.";
+		var expectedMessage = $"Expected MyClass.MyMethod(where(predicate)) to be invoked at index {verifyIndex}, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -433,7 +433,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			fixture.Verify(verify, verifyIndex);
 		};
 
-		var expectedMessage = $"Expected MyClass#MyMethod(123) to be invoked at index {verifyIndex}, but there are no invocations.";
+		var expectedMessage = $"Expected MyClass.MyMethod(123) to be invoked at index {verifyIndex}, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -538,7 +538,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod(123) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: 113
 			  expected: 123
@@ -572,7 +572,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123) to be called 2 times, but instead it was called 1 time.
+			Expected MyClass.MyMethod(123) to be called 2 times, but instead it was called 1 time.
 			Performed invocations:
 			- 1: 113
 			  expected: 123
@@ -622,7 +622,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123) to be invoked at index 1, but it has not been called.
+			Expected MyClass.MyMethod(123) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: 113
 			  expected: 123
@@ -656,7 +656,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected MyClass#MyMethod(123) to be invoked at index 3, but it has not been called.
+			Expected MyClass.MyMethod(123) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: 113
 			- 2: 123

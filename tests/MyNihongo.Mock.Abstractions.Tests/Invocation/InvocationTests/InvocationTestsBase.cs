@@ -4,6 +4,6 @@ public abstract class InvocationTestsBase
 {
 	protected static Mock.Invocation CreateFixture()
 	{
-		return new Mock.Invocation(name: "MyClass#MyMethod()");
+		return new Mock.Invocation(name: "MyClass.MyMethod()");
 	}
 }
