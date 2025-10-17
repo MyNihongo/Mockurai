@@ -1,12 +1,12 @@
 namespace MyNihongo.Mock.Abstractions.Tests.Collections.InvocationContainerTests;
 
-public sealed class GetItemsSpanFromShould : InvocationContainerTestsBase
+public sealed class GetItemsSpanBeforeShould : InvocationContainerTestsBase
 {
 	[Theory]
 	[InlineData(0)]
 	[InlineData(1)]
 	[InlineData(2)]
-	public void ReturnEntireCollectionFromStart(int index)
+	public void ReturnEmpty(int index)
 	{
 		var fixture = CreateFixture();
 		fixture.Add(new Invocation { Index = 2 });
@@ -14,17 +14,10 @@ public sealed class GetItemsSpanFromShould : InvocationContainerTestsBase
 		fixture.Add(new Invocation { Index = 7 });
 		fixture.Add(new Invocation { Index = 10 });
 
-		var actual = fixture.GetItemsSpanFrom(index)
+		var actual = fixture.GetItemsSpanBefore(index)
 			.ToArray();
 
-		var expected = new Invocation[]
-		{
-			new() { Index = 2 },
-			new() { Index = 3 },
-			new() { Index = 7 },
-			new() { Index = 10 },
-		};
-		Assert.Equivalent(expected, actual);
+		Assert.Empty(actual);
 	}
 
 	[Fact]
@@ -36,13 +29,13 @@ public sealed class GetItemsSpanFromShould : InvocationContainerTestsBase
 		fixture.Add(new Invocation { Index = 7 });
 		fixture.Add(new Invocation { Index = 10 });
 
-		var actual = fixture.GetItemsSpanFrom(index: 4)
+		var actual = fixture.GetItemsSpanBefore(index: 4)
 			.ToArray();
 
 		var expected = new Invocation[]
 		{
-			new() { Index = 7 },
-			new() { Index = 10 },
+			new() { Index = 2 },
+			new() { Index = 3 },
 		};
 		Assert.Equivalent(expected, actual);
 	}
@@ -51,7 +44,7 @@ public sealed class GetItemsSpanFromShould : InvocationContainerTestsBase
 	[InlineData(8)]
 	[InlineData(9)]
 	[InlineData(10)]
-	public void ReturnLastElement(int index)
+	public void ReturnExceptLastElement(int index)
 	{
 		var fixture = CreateFixture();
 		fixture.Add(new Invocation { Index = 1 });
@@ -59,12 +52,14 @@ public sealed class GetItemsSpanFromShould : InvocationContainerTestsBase
 		fixture.Add(new Invocation { Index = 7 });
 		fixture.Add(new Invocation { Index = 10 });
 
-		var actual = fixture.GetItemsSpanFrom(index)
+		var actual = fixture.GetItemsSpanBefore(index)
 			.ToArray();
 
 		var expected = new Invocation[]
 		{
-			new() { Index = 10 },
+			new() { Index = 1 },
+			new() { Index = 3 },
+			new() { Index = 7 },
 		};
 		Assert.Equivalent(expected, actual);
 	}
@@ -72,7 +67,7 @@ public sealed class GetItemsSpanFromShould : InvocationContainerTestsBase
 	[Theory]
 	[InlineData(11)]
 	[InlineData(100)]
-	public void ReturnEmpty(int index)
+	public void ReturnEntireCollection(int index)
 	{
 		var fixture = CreateFixture();
 		fixture.Add(new Invocation { Index = 1 });
@@ -80,9 +75,16 @@ public sealed class GetItemsSpanFromShould : InvocationContainerTestsBase
 		fixture.Add(new Invocation { Index = 7 });
 		fixture.Add(new Invocation { Index = 10 });
 
-		var actual = fixture.GetItemsSpanFrom(index)
+		var actual = fixture.GetItemsSpanBefore(index)
 			.ToArray();
 
-		Assert.Empty(actual);
+		var expected = new Invocation[]
+		{
+			new() { Index = 1 },
+			new() { Index = 3 },
+			new() { Index = 7 },
+			new() { Index = 10 },
+		};
+		Assert.Equivalent(expected, actual);
 	}
 }
