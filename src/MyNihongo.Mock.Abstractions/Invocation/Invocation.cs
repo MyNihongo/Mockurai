@@ -14,7 +14,7 @@ public sealed class Invocation : IInvocationProvider
 	public void Register(in InvocationIndex.Counter index)
 	{
 		var invokedIndex = index.Increment();
-		_invocations.Add(invokedIndex, new Item());
+		_invocations.Add(new Item(invokedIndex, invocation: this));
 	}
 
 	public void Verify(in Times times, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
@@ -31,14 +31,14 @@ public sealed class Invocation : IInvocationProvider
 	public long Verify(in long index, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var item = _invocations.TryGetItemAt(index);
-		if (!item.HasValue)
+		if (item is null)
 		{
 			var invocations = GetStrings(invocationProviders, _invocations);
 			throw new MockVerifySequenceOutOfRangeException(_name, index, invocations);
 		}
 
-		item.Value.Invocation.IsVerified = true;
-		return item.Value.Index + 1;
+		item.IsVerified = true;
+		return item.Index + 1;
 	}
 
 	public void VerifyNoOtherCalls(Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
@@ -47,8 +47,8 @@ public sealed class Invocation : IInvocationProvider
 			return;
 
 		var unverifiedItems = _invocations
-			.Where(static x => !x.Invocation.IsVerified)
-			.Select(static x => x.Index)
+			.Where(static x => !x.IsVerified)
+			.Select(static x => x.ToString())
 			.ToArray();
 
 		if (unverifiedItems.Length > 0)
@@ -57,14 +57,7 @@ public sealed class Invocation : IInvocationProvider
 
 	public IEnumerable<IInvocation> GetInvocations()
 	{
-		foreach (var x in _invocations)
-		{
-			yield return new InvocationSnapshot
-			{
-				Index = x.Index,
-				Snapshot = _name,
-			};
-		}
+		return _invocations;
 	}
 
 	private static IEnumerable<string>? GetStrings(Func<IEnumerable<IInvocationProvider?>>? invocationProviders, in InvocationContainer<Item> invocations)
@@ -73,12 +66,26 @@ public sealed class Invocation : IInvocationProvider
 			return invocationProviders.GetStrings();
 
 		return invocations.Count > 0
-			? invocations.Select(static x => x.Index.ToString())
+			? invocations.Select(static x => x.ToString())
 			: null;
 	}
 
-	private sealed class Item
+	private sealed class Item : IInvocation
 	{
 		public bool IsVerified;
+		private readonly Invocation _invocation;
+
+		public Item(in long index, in Invocation invocation)
+		{
+			_invocation = invocation;
+			Index = index;
+		}
+
+		public long Index { get; }
+
+		public override string ToString()
+		{
+			return $"{Index}: {_invocation._name}";
+		}
 	}
 }

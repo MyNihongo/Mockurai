@@ -4,12 +4,8 @@ namespace MyNihongo.Mock;
 
 public static class TupleEx
 {
-	public static string GetString<T>(this (long, T) @this)
-	{
-		return $"{@this.Item1}: {@this.Item2}";
-	}
-
-	public static IEnumerable<string>? GetStrings<T>(this List<(long, T, ComparisonResult?)> @this, Func<IEnumerable<IInvocationProvider?>>? invocationProviders)
+	public static IEnumerable<string>? GetStrings<T>(this List<(T, ComparisonResult?)> @this, Func<IEnumerable<IInvocationProvider?>>? invocationProviders)
+		where T : IInvocation
 	{
 		if (@this.Count == 0)
 			return invocationProviders?.GetStrings();
@@ -18,7 +14,7 @@ public static class TupleEx
 			? EnumerateInvocationStrings(@this, invocationProviders)
 			: EnumerateStrings(@this);
 
-		static IEnumerable<string> EnumerateStrings(List<(long, T, ComparisonResult?)> @this)
+		static IEnumerable<string> EnumerateStrings(List<(T, ComparisonResult?)> @this)
 		{
 			var stringBuilder = new StringBuilder();
 
@@ -31,14 +27,14 @@ public static class TupleEx
 			}
 		}
 
-		static IEnumerable<string> EnumerateInvocationStrings(List<(long, T, ComparisonResult?)> @this, Func<IEnumerable<IInvocationProvider?>> invocationProviders)
+		static IEnumerable<string> EnumerateInvocationStrings(List<(T, ComparisonResult?)> @this, Func<IEnumerable<IInvocationProvider?>> invocationProviders)
 		{
 			var stringBuilder = new StringBuilder();
 
 			var i = 0;
 			foreach (var invocation in invocationProviders.GetInvocations())
 			{
-				if (i < @this.Count && @this[i].Item1 == invocation.Index)
+				if (i < @this.Count && @this[i].Item1.Index == invocation.Index)
 				{
 					Append(stringBuilder, @this[i++]);
 					yield return stringBuilder.ToString();
@@ -46,43 +42,41 @@ public static class TupleEx
 				}
 				else
 				{
-					yield return invocation.GetString();
+					yield return invocation.ToString();
 				}
 			}
 		}
 
-		static void Append(in StringBuilder stringBuilder, in (long, T, ComparisonResult?) item)
+		static void Append(in StringBuilder stringBuilder, in (T, ComparisonResult?) item)
 		{
-			stringBuilder
-				.Append(item.Item1)
-				.Append(": ")
-				.Append(item.Item2);
+			stringBuilder.Append(item.Item1.ToString());
 
-			if (item.Item3 is null || item.Item3.Entries.Count <= 0)
+			if (item.Item2 is null || item.Item2.Entries.Count <= 0)
 				return;
 
-			for (var i = 0; i < item.Item3.Entries.Count; i++)
+			for (var i = 0; i < item.Item2.Entries.Count; i++)
 			{
 				stringBuilder.AppendLine();
 
-				if (item.Item3.Entries[i].Path == ComparisonResult.RootPath)
+				if (item.Item2.Entries[i].Path == ComparisonResult.RootPath)
 				{
 					stringBuilder
-						.AppendLine($"  expected: {item.Item3.Entries[i].ExpectedValue}")
-						.Append($"  actual: {item.Item3.Entries[i].ActualValue}");
+						.AppendLine($"  expected: {item.Item2.Entries[i].ExpectedValue}")
+						.Append($"  actual: {item.Item2.Entries[i].ActualValue}");
 				}
 				else
 				{
 					stringBuilder
-						.AppendLine($"  - {item.Item3.Entries[i].Path}:")
-						.AppendLine($"    expected: {item.Item3.Entries[i].ExpectedValue}")
-						.Append($"    actual: {item.Item3.Entries[i].ActualValue}");
+						.AppendLine($"  - {item.Item2.Entries[i].Path}:")
+						.AppendLine($"    expected: {item.Item2.Entries[i].ExpectedValue}")
+						.Append($"    actual: {item.Item2.Entries[i].ActualValue}");
 				}
 			}
 		}
 	}
 
-	public static IEnumerable<string>? GetStrings<T>(this List<(long, T, (string, ComparisonResult?)[]?)> @this, Func<IEnumerable<IInvocationProvider?>>? invocationProviders)
+	public static IEnumerable<string>? GetStrings<T>(this List<(T, (string, ComparisonResult?)[]?)> @this, Func<IEnumerable<IInvocationProvider?>>? invocationProviders)
+		where T : IInvocation
 	{
 		if (@this.Count == 0)
 			return invocationProviders?.GetStrings();
@@ -91,7 +85,7 @@ public static class TupleEx
 			? EnumerateInvocationStrings(@this, invocationProviders)
 			: EnumerateStrings(@this);
 
-		static IEnumerable<string> EnumerateStrings(List<(long, T, (string, ComparisonResult?)[]?)> @this)
+		static IEnumerable<string> EnumerateStrings(List<(T, (string, ComparisonResult?)[]?)> @this)
 		{
 			var stringBuilder = new StringBuilder();
 
@@ -103,14 +97,14 @@ public static class TupleEx
 			}
 		}
 
-		static IEnumerable<string> EnumerateInvocationStrings(List<(long, T, (string, ComparisonResult?)[]?)> @this, Func<IEnumerable<IInvocationProvider?>> invocationProviders)
+		static IEnumerable<string> EnumerateInvocationStrings(List<(T, (string, ComparisonResult?)[]?)> @this, Func<IEnumerable<IInvocationProvider?>> invocationProviders)
 		{
 			var stringBuilder = new StringBuilder();
 
 			var i = 0;
 			foreach (var invocation in invocationProviders.GetInvocations())
 			{
-				if (i < @this.Count && @this[i].Item1 == invocation.Index)
+				if (i < @this.Count && @this[i].Item1.Index == invocation.Index)
 				{
 					Append(stringBuilder, @this[i++]);
 					yield return stringBuilder.ToString();
@@ -118,22 +112,19 @@ public static class TupleEx
 				}
 				else
 				{
-					yield return invocation.GetString();
+					yield return invocation.ToString();
 				}
 			}
 		}
 
-		static void Append(in StringBuilder stringBuilder, in (long, T, (string, ComparisonResult?)[]?) item)
+		static void Append(in StringBuilder stringBuilder, in (T, (string, ComparisonResult?)[]?) item)
 		{
-			stringBuilder
-				.Append(item.Item1)
-				.Append(": ")
-				.Append(item.Item2);
+			stringBuilder.Append(item.Item1.ToString());
 
-			if (item.Item3 is null || item.Item3.Length == 0)
+			if (item.Item2 is null || item.Item2.Length == 0)
 				return;
 
-			foreach (var resultItem in item.Item3)
+			foreach (var resultItem in item.Item2)
 			{
 				if (resultItem.Item2 is null || resultItem.Item2.Entries.Count == 0)
 					continue;

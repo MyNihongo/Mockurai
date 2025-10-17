@@ -18,28 +18,28 @@ public sealed class Invocation<TParameter> : IInvocationProvider
 	public void Register(in InvocationIndex.Counter index, in TParameter parameter)
 	{
 		var invokedIndex = index.Increment();
-		_invocations.Add(invokedIndex, new Item(parameter, invocation: this));
+		_invocations.Add(new Item(invokedIndex, parameter, invocation: this));
 	}
 
 	public void Verify(in It<TParameter> parameter, in Times times, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var span = _invocations.GetItemsSpan();
 
-		var verifyOutput = new List<(long, Item, ComparisonResult?)>();
+		var verifyOutput = new List<(Item, ComparisonResult?)>();
 		CollectionsMarshal.SetCount(verifyOutput, span.Length);
 
 		var count = 0;
 		for (var i = 0; i < span.Length; i++)
 		{
-			var verifyParameter = span[i].Invocation.GetParameter(parameter.ValueSetup?.Type);
+			var verifyParameter = span[i].GetParameter(parameter.ValueSetup?.Type);
 			if (parameter.ValueSetup.HasValue && !parameter.ValueSetup.Value.Check(verifyParameter, out var result))
 			{
-				verifyOutput[i] = (span[i].Index, span[i].Invocation, result);
+				verifyOutput[i] = (span[i], result);
 				continue;
 			}
 
-			verifyOutput[i] = (span[i].Index, span[i].Invocation, null);
-			span[i].Invocation.IsVerified = true;
+			verifyOutput[i] = (span[i], null);
+			span[i].IsVerified = true;
 			count++;
 		}
 
@@ -55,27 +55,30 @@ public sealed class Invocation<TParameter> : IInvocationProvider
 	{
 		var span = _invocations.GetItemsSpanFrom(index);
 
-		var verifyOutput = new List<(long, Item, ComparisonResult?)>();
+		var verifyOutput = new List<(Item, ComparisonResult?)>();
 		CollectionsMarshal.SetCount(verifyOutput, span.Length);
 
 		for (var i = 0; i < span.Length; i++)
 		{
-			var verifyParameter = span[i].Invocation.GetParameter(parameter.ValueSetup?.Type);
+			var verifyParameter = span[i].GetParameter(parameter.ValueSetup?.Type);
 
 			if (parameter.ValueSetup.HasValue && !parameter.ValueSetup.Value.Check(verifyParameter, out var result))
 			{
-				verifyOutput[i] = (span[i].Index, span[i].Invocation, result);
+				verifyOutput[i] = (span[i], result);
 				continue;
 			}
 
-			verifyOutput[i] = (span[i].Index, span[i].Invocation, null);
-			span[i].Invocation.IsVerified = true;
+			verifyOutput[i] = (span[i], null);
+			span[i].IsVerified = true;
 			return span[i].Index + 1;
 		}
 
-		span = _invocations.GetItemsSpanBefore(index);
-		for (var i = 0; i < span.Length; i++)
-			verifyOutput.Insert(i, (span[i].Index, span[i].Invocation, null));
+		if (invocationProviders is null)
+		{
+			span = _invocations.GetItemsSpanBefore(index);
+			for (var i = 0; i < span.Length; i++)
+				verifyOutput.Insert(i, (span[i], null));
+		}
 
 		var invocations = verifyOutput.GetStrings(invocationProviders);
 		var verifyName = string.Format(_name, parameter.ToString());
@@ -85,19 +88,15 @@ public sealed class Invocation<TParameter> : IInvocationProvider
 	public void VerifyNoOtherCalls(Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var hasUnverifiedInvocations = _invocations
-			.Any(static x => !x.Invocation.IsVerified);
+			.Any(static x => !x.IsVerified);
 
 		if (!hasUnverifiedInvocations)
 			return;
 
 		// TODO: resume after rework
 		var unverifiedItems = _invocations
-			.Where(static x => !x.Invocation.IsVerified)
-			.Select(static x => new InvocationSnapshot
-			{
-				Index = x.Index,
-				Snapshot = x.Invocation.ToString(),
-			})
+			.Where(static x => !x.IsVerified)
+			.Select(static x => x.ToString())
 			.ToArray();
 
 		if (unverifiedItems.Length > 0)
@@ -109,25 +108,21 @@ public sealed class Invocation<TParameter> : IInvocationProvider
 
 	public IEnumerable<IInvocation> GetInvocations()
 	{
-		return _invocations
-			.Select(static x => new InvocationSnapshot
-			{
-				Index = x.Index,
-				Snapshot = x.Invocation.ToString(),
-			});
+		return _invocations;
 	}
 
-	private sealed class Item
+	private sealed class Item : IInvocation
 	{
 		public bool IsVerified;
 		private readonly TParameter _parameter;
 		private readonly string? _jsonSnapshot;
 		private readonly Invocation<TParameter> _invocation;
 
-		public Item(in TParameter parameter, in Invocation<TParameter> invocation)
+		public Item(in long index, in TParameter parameter, in Invocation<TParameter> invocation)
 		{
 			_parameter = parameter;
 			_invocation = invocation;
+			Index = index;
 
 			try
 			{
@@ -138,6 +133,8 @@ public sealed class Invocation<TParameter> : IInvocationProvider
 				// Swallow
 			}
 		}
+
+		public long Index { get; }
 
 		public TParameter GetParameter(SetupType? setupType)
 		{
@@ -156,7 +153,8 @@ public sealed class Invocation<TParameter> : IInvocationProvider
 				? $"{_invocation._prefix} {stringValue}"
 				: stringValue;
 
-			return string.Format(_invocation._name, stringValue);
+			stringValue = string.Format(_invocation._name, stringValue);
+			return $"{Index}: {stringValue}";
 		}
 	}
 }
