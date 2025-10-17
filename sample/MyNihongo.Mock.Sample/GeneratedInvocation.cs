@@ -207,7 +207,8 @@ public sealed class InvocationIntInt : IInvocationProvider
 				stringBuilder.Append(_parameter2);
 
 			var parameter2 = stringBuilder.ToString();
-			return string.Format(_invocation._name, parameter1, parameter2);
+			var value = string.Format(_invocation._name, parameter1, parameter2);
+			return $"{Index}: {value}";
 		}
 	}
 }

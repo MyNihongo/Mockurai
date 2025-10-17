@@ -153,7 +153,8 @@ public sealed class Invocation<TParameter> : IInvocationProvider
 				? $"{_invocation._prefix} {stringValue}"
 				: stringValue;
 
-			return string.Format(_invocation._name, stringValue);
+			stringValue = string.Format(_invocation._name, stringValue);
+			return $"{Index}: {stringValue}";
 		}
 	}
 }
