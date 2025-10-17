@@ -4,24 +4,24 @@ using System.Runtime.InteropServices;
 
 namespace MyNihongo.Mock;
 
-public sealed class InvocationContainer<T> : IEnumerable<(long Index, T Invocation)>
+public sealed class InvocationContainer<T> : IEnumerable<T>
+	where T : class, IInvocation
 {
-	private readonly List<(long Index, T Invocation)> _invocations = [];
+	private readonly List<T> _invocations = [];
 
 	public int Count => _invocations.Count;
 
-	public void Add(in long index, in T item)
+	public void Add(in T item)
 	{
-		var indexPair = (index, item);
-		var insertIndex = _invocations.BinarySearch(indexPair);
+		var insertIndex = _invocations.BinarySearch(item.Index);
 
 		if (insertIndex < 0)
 			insertIndex = ~insertIndex;
 
-		_invocations.Insert(insertIndex, indexPair);
+		_invocations.Insert(insertIndex, item);
 	}
 
-	public (long Index, T Invocation)? TryGetItemAt(in long index)
+	public T? TryGetItemAt(in long index)
 	{
 		var itemIndex = TryGetIndexAt(index);
 
@@ -30,27 +30,27 @@ public sealed class InvocationContainer<T> : IEnumerable<(long Index, T Invocati
 			: null;
 	}
 
-	public Span<(long Index, T Invocation)> GetItemsSpan()
+	public Span<T> GetItemsSpan()
 	{
 		return CollectionsMarshal.AsSpan(_invocations);
 	}
 
-	public Span<(long Index, T Invocation)> GetItemsSpanFrom(in long index)
+	public Span<T> GetItemsSpanFrom(in long index)
 	{
 		var itemIndex = TryGetIndexAt(index);
 
 		return itemIndex.HasValue
 			? CollectionsMarshal.AsSpan(_invocations)[itemIndex.Value..]
-			: Span<(long Index, T Invocation)>.Empty;
+			: Span<T>.Empty;
 	}
 
-	public Span<(long Index, T Invocation)> GetItemsSpanBefore(in long index)
+	public Span<T> GetItemsSpanBefore(in long index)
 	{
 		var itemIndex = TryGetIndexAt(index, inclusive: true);
 
 		return itemIndex.HasValue
 			? CollectionsMarshal.AsSpan(_invocations)[..itemIndex.Value]
-			: Span<(long Index, T Invocation)>.Empty;
+			: Span<T>.Empty;
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -59,8 +59,7 @@ public sealed class InvocationContainer<T> : IEnumerable<(long Index, T Invocati
 		if (_invocations.Count == 0)
 			return null;
 
-		var indexPair = (index, default(T));
-		var itemIndex = _invocations.BinarySearch(indexPair!);
+		var itemIndex = _invocations.BinarySearch(index);
 
 		if (itemIndex < 0)
 			itemIndex = ~itemIndex;
@@ -70,9 +69,34 @@ public sealed class InvocationContainer<T> : IEnumerable<(long Index, T Invocati
 			: null;
 	}
 
-	public IEnumerator<(long Index, T Invocation)> GetEnumerator() =>
+	public IEnumerator<T> GetEnumerator() =>
 		_invocations.GetEnumerator();
 
 	IEnumerator IEnumerable.GetEnumerator() =>
 		GetEnumerator();
+}
+
+file static class ListEx
+{
+	public static int BinarySearch<T>(this List<T> @this, in long index)
+		where T : class, IInvocation
+	{
+		var span = CollectionsMarshal.AsSpan(@this);
+		int start = 0, end = span.Length - 1;
+
+		while (start <= end)
+		{
+			var mid = (start + end) / 2;
+			var compare = span[mid].Index.CompareTo(index);
+
+			if (compare == 0)
+				return mid;
+			if (compare > 0)
+				end = mid - 1;
+			else
+				start = mid + 1;
+		}
+
+		return ~start;
+	}
 }

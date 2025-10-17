@@ -73,9 +73,12 @@ public sealed class Invocation<TParameter> : IInvocationProvider
 			return span[i].Index + 1;
 		}
 
-		span = _invocations.GetItemsSpanBefore(index);
-		for (var i = 0; i < span.Length; i++)
-			verifyOutput.Insert(i, (span[i], null));
+		if (invocationProviders is null)
+		{
+			span = _invocations.GetItemsSpanBefore(index);
+			for (var i = 0; i < span.Length; i++)
+				verifyOutput.Insert(i, (span[i], null));
+		}
 
 		var invocations = verifyOutput.GetStrings(invocationProviders);
 		var verifyName = string.Format(_name, parameter.ToString());
