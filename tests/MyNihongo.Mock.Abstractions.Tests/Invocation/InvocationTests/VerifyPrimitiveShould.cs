@@ -34,9 +34,9 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 			$"""
 			 Expected MyClass.MyMethod() to be called {expected} times, but instead it was called 3 times.
 			 Performed invocations:
-			 - 1
-			 - 2
-			 - 3
+			 - 1: MyClass.MyMethod()
+			 - 2: MyClass.MyMethod()
+			 - 3: MyClass.MyMethod()
 			 """;
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -110,8 +110,8 @@ public sealed class VerifyPrimitiveShould : InvocationTestsBase
 			"""
 			Expected MyClass.MyMethod() to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1
-			- 2
+			- 1: MyClass.MyMethod()
+			- 2: MyClass.MyMethod()
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
