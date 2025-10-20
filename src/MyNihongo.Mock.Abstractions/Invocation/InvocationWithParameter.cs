@@ -91,7 +91,11 @@ public sealed class Invocation<TParameter> : IInvocationProvider
 		if (unverifiedItems is null)
 			return;
 
-		var verifyName = string.Format(_name, typeof(TParameter).Name);
+		var typeName = !string.IsNullOrEmpty(_prefix)
+			? $"{_prefix} {typeof(TParameter).Name}"
+			: typeof(TParameter).Name;
+		
+		var verifyName = string.Format(_name, typeName);
 		throw new MockUnverifiedException(verifyName, unverifiedItems);
 	}
 

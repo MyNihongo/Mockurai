@@ -267,13 +267,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	public void VerifyInvokeWithParameter(in ItRef<decimal> parameter, in Times times)
 	{
-		_invokeWithParameterInvocation3 ??= new Invocation<decimal>("IPrimitiveDependencyService.InvokeWithParameter(ref {0})", prefix: "ref");
+		_invokeWithParameterInvocation3 ??= new Invocation<decimal>("IPrimitiveDependencyService.InvokeWithParameter({0})", prefix: "ref");
 		_invokeWithParameterInvocation3.Verify(parameter, times, _invocationProviders);
 	}
 
 	public long VerifyInvokeWithParameter(in ItRef<decimal> parameter, in long index)
 	{
-		_invokeWithParameterInvocation3 ??= new Invocation<decimal>("IPrimitiveDependencyService.InvokeWithParameter(ref {0})", prefix: "ref");
+		_invokeWithParameterInvocation3 ??= new Invocation<decimal>("IPrimitiveDependencyService.InvokeWithParameter({0})", prefix: "ref");
 		return _invokeWithParameterInvocation3.Verify(parameter, index, _invocationProviders);
 	}
 

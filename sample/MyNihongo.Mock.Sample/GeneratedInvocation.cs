@@ -123,7 +123,9 @@ public sealed class InvocationIntInt : IInvocationProvider
 		if (unverifiedItems is null)
 			return;
 
-		var verifyName = string.Format(_name, "Int32", "Int32");
+		var typeName1 = !string.IsNullOrEmpty(_prefix1) ? $"{_prefix1} Int32" : "Int32";
+		var typeName2 = !string.IsNullOrEmpty(_prefix2) ? $"{_prefix2} Int32" : "Int32";
+		var verifyName = string.Format(_name, typeName1, typeName2);
 		throw new MockUnverifiedException(verifyName, unverifiedItems);
 	}
 
