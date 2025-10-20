@@ -244,6 +244,24 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public void ThrowVerifyNoOtherCalls()
+	{
+		throw new NotImplementedException();
+	}
+
+	[Fact]
+	public void ThrowVerifyNoOtherCallsOneParam()
+	{
+		throw new NotImplementedException();
+	}
+
+	[Fact]
+	public void ThrowVerifyNoOtherCallsMultipleParams()
+	{
+		throw new NotImplementedException();
+	}
 }
 
 file static class PrimitiveTypeServiceEx
