@@ -58,12 +58,9 @@ public sealed class Invocation : IInvocationProvider
 
 	private static IEnumerable<string>? GetStrings(Func<IEnumerable<IInvocationProvider?>>? invocationProviders, in InvocationContainer<Item> invocations)
 	{
-		if (invocationProviders is not null)
-			return invocationProviders.GetStrings();
-
-		return invocations.Count > 0
-			? invocations.Select(static x => x.ToString())
-			: null;
+		return invocationProviders is not null
+			? invocationProviders.GetStrings()
+			: invocations.NullIfEmpty();
 	}
 
 	private sealed class Item : IInvocation

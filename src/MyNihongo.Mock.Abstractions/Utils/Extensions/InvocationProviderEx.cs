@@ -4,18 +4,11 @@ namespace MyNihongo.Mock;
 
 public static class InvocationProviderEx
 {
-	public static IEnumerable<string> GetStrings(this Func<IEnumerable<IInvocationProvider?>> @this)
+	public static IEnumerable<string>? GetStrings(this Func<IEnumerable<IInvocationProvider?>> @this)
 	{
 		return @this
 			.GetInvocations()
-			.Select(static x => x.ToString());
-	}
-
-	private static IEnumerable<IInvocation> GetInvocations(this Func<IEnumerable<IInvocationProvider?>> @this)
-	{
-		return @this.Invoke()
-			.SelectMany(static x => x?.GetInvocations() ?? [])
-			.OrderBy(static x => x.Index);
+			.NullIfEmpty();
 	}
 
 	public static IEnumerable<string>? GetUnverifiedInvocations<T>(this InvocationContainer<T> @this, Func<IEnumerable<IInvocationProvider?>>? invocationProviders)
@@ -25,14 +18,9 @@ public static class InvocationProviderEx
 			? invocationProviders.GetInvocations()
 			: @this;
 
-		var unverifiedInvocations = invocations
+		return invocations
 			.Where(static x => !x.IsVerified)
-			.Select(static x => x.ToString())
-			.ToArray();
-
-		return unverifiedInvocations.Length > 0
-			? unverifiedInvocations
-			: null;
+			.NullIfEmpty();
 	}
 
 	public static IEnumerable<string>? GetStrings<T>(this List<(T, ComparisonResult?)> @this, Func<IEnumerable<IInvocationProvider?>>? invocationProviders)
@@ -41,9 +29,11 @@ public static class InvocationProviderEx
 		if (@this.Count == 0)
 			return invocationProviders?.GetStrings();
 
-		return invocationProviders is not null
+		var result = invocationProviders is not null
 			? EnumerateInvocationStrings(@this, invocationProviders)
 			: EnumerateStrings(@this);
+
+		return result.NullIfEmpty();
 
 		static IEnumerable<string> EnumerateStrings(List<(T, ComparisonResult?)> @this)
 		{
@@ -112,9 +102,11 @@ public static class InvocationProviderEx
 		if (@this.Count == 0)
 			return invocationProviders?.GetStrings();
 
-		return invocationProviders is not null
+		var result = invocationProviders is not null
 			? EnumerateInvocationStrings(@this, invocationProviders)
 			: EnumerateStrings(@this);
+
+		return result.NullIfEmpty();
 
 		static IEnumerable<string> EnumerateStrings(List<(T, (string, ComparisonResult?)[]?)> @this)
 		{
@@ -184,5 +176,12 @@ public static class InvocationProviderEx
 				}
 			}
 		}
+	}
+
+	private static IEnumerable<IInvocation> GetInvocations(this Func<IEnumerable<IInvocationProvider?>> @this)
+	{
+		return @this.Invoke()
+			.SelectMany(static x => x?.GetInvocations() ?? [])
+			.OrderBy(static x => x.Index);
 	}
 }
