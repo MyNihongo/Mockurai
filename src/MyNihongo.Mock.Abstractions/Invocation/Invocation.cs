@@ -4,7 +4,6 @@ public sealed class Invocation : IInvocationProvider
 {
 	private readonly string _name;
 	private readonly InvocationContainer<Item> _invocations = [];
-	private bool _isVerified;
 
 	public Invocation(in string name)
 	{
@@ -25,7 +24,8 @@ public sealed class Invocation : IInvocationProvider
 			throw new MockVerifyCountException(_name, times, _invocations.Count, invocations);
 		}
 
-		_isVerified = true;
+		foreach (var item in _invocations.GetItemsSpan())
+			item.IsVerified = true;
 	}
 
 	public long Verify(in long index, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
@@ -43,9 +43,6 @@ public sealed class Invocation : IInvocationProvider
 
 	public void VerifyNoOtherCalls(Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
-		if (_isVerified)
-			return;
-
 		var unverifiedItems = _invocations.GetUnverifiedInvocations(invocationProviders);
 		if (unverifiedItems is not null)
 			throw new MockUnverifiedException(_name, unverifiedItems);

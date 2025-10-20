@@ -14,6 +14,9 @@ public static class InvocationProviderEx
 	public static IEnumerable<string>? GetUnverifiedInvocations<T>(this InvocationContainer<T> @this, Func<IEnumerable<IInvocationProvider?>>? invocationProviders)
 		where T : class, IInvocation
 	{
+		if (!@this.Any(static x => !x.IsVerified))
+			return null;
+
 		var invocations = invocationProviders is not null
 			? invocationProviders.GetInvocations()
 			: @this;

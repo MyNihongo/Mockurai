@@ -47,7 +47,7 @@ public sealed class Invocation<TParameter> : IInvocationProvider
 			return;
 
 		var invocations = verifyOutput.GetStrings(invocationProviders);
-		var verifyName = string.Format(_name, parameter.ToString());
+		var verifyName = string.Format(_name, parameter.ToString(_prefix));
 		throw new MockVerifyCountException(verifyName, times, count, invocations);
 	}
 
@@ -81,7 +81,7 @@ public sealed class Invocation<TParameter> : IInvocationProvider
 		}
 
 		var invocations = verifyOutput.GetStrings(invocationProviders);
-		var verifyName = string.Format(_name, parameter.ToString());
+		var verifyName = string.Format(_name, parameter.ToString(_prefix));
 		throw new MockVerifySequenceOutOfRangeException(verifyName, index, invocations);
 	}
 

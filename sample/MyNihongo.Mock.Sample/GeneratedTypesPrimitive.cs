@@ -198,13 +198,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	public void VerifyInvoke(in ItOut<int> result, in Times times)
 	{
-		_invokeInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService.Invoke(out {0})", prefix: "out");
+		_invokeInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService.Invoke({0})", prefix: "out");
 		_invokeInvocation2.Verify(result, times, _invocationProviders);
 	}
 
 	public long VerifyInvoke(in ItOut<int> result, in long index)
 	{
-		_invokeInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService.Invoke(out {0})", prefix: "out");
+		_invokeInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService.Invoke({0})", prefix: "out");
 		return _invokeInvocation2.Verify(result, index, _invocationProviders);
 	}
 
