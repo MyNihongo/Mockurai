@@ -83,8 +83,8 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.GetOnly.get to be called 1 time, but instead it was called 2 times.
 			Performed invocations:
-			- 1
-			- 2
+			- 1: IPrimitiveDependencyService.GetOnly.get
+			- 2: IPrimitiveDependencyService.GetOnly.get
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -104,7 +104,8 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService.ReturnWithParameter(String) to be verified, but the following invocations have not been verified:
-			- 2: "value"
+			- 1: IPrimitiveDependencyService.GetOnly.get
+			- 2: IPrimitiveDependencyService.ReturnWithParameter("value")
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -143,8 +144,8 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.GetOnly.get to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1
-			- 2
+			- 1: IPrimitiveDependencyService.GetOnly.get
+			- 2: IPrimitiveDependencyService.GetOnly.get
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -164,7 +165,13 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 			ctx.DependencyServiceMock.InvokeWithSeveralParameters(123, 321);
 		});
 
-		const string expectedMessage = "Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321) to be invoked at index 3, but there are no invocations.";
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321) to be invoked at index 3, but it has not been called.
+			Performed invocations:
+			- 1: IPrimitiveDependencyService.GetOnly.get
+			- 2: IPrimitiveDependencyService.GetOnly.get
+			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
