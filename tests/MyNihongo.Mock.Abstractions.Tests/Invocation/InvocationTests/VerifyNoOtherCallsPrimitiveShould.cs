@@ -48,7 +48,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationTestsBase
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod() to be verified, but the following invocations have not been verified:
-			- index 1
+			- 1: MyClass.MyMethod()
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -69,8 +69,8 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationTestsBase
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod() to be verified, but the following invocations have not been verified:
-			- index 1
-			- index 2
+			- 1: MyClass.MyMethod()
+			- 2: MyClass.MyMethod()
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -92,7 +92,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationTestsBase
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod() to be verified, but the following invocations have not been verified:
-			- index 1
+			- 1: MyClass.MyMethod()
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -114,7 +114,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationTestsBase
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod() to be verified, but the following invocations have not been verified:
-			- index 2
+			- 2: MyClass.MyMethod()
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
