@@ -36,7 +36,8 @@ public sealed class HandlerShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.Handler.add to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
-			- 1: MyNihongo.Mock.Sample.PrimitiveHandler
+			- 1: IPrimitiveDependencyService.Handler.add
+			- 2: IPrimitiveDependencyService.Handler.remove
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -59,7 +60,7 @@ public sealed class HandlerShould : PrimitiveTypeServiceTestsBase
 		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService.Handler.add to be verified, but the following invocations have not been verified:
-			- 1: MyNihongo.Mock.Sample.PrimitiveHandler
+			- 1: IPrimitiveDependencyService.Handler.add
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -81,8 +82,8 @@ public sealed class HandlerShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.Handler.remove to be verified, but the following invocations have not been verified:
-			- 2: MyNihongo.Mock.Sample.PrimitiveHandler
+			Expected IPrimitiveDependencyService.Handler.add to be verified, but the following invocations have not been verified:
+			- 2: IPrimitiveDependencyService.Handler.remove
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -126,7 +127,8 @@ public sealed class HandlerShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.Handler.add to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: MyNihongo.Mock.Sample.PrimitiveHandler
+			- 1: IPrimitiveDependencyService.Handler.add
+			- 2: IPrimitiveDependencyService.Handler.remove
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -149,7 +151,13 @@ public sealed class HandlerShould : PrimitiveTypeServiceTestsBase
 			ctx.DependencyServiceMock.RemoveHandler(((PrimitiveTypeService)fixture).PrimitiveDependencyServiceOnHandler);
 		});
 
-		const string expectedMessage = "Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321) to be invoked at index 2, but there are no invocations.";
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321) to be invoked at index 2, but it has not been called.
+			Performed invocations:
+			- 1: IPrimitiveDependencyService.Handler.add
+			- 2: IPrimitiveDependencyService.Handler.remove
+			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
