@@ -146,9 +146,9 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
-			- 1: 123
-			- 2: 234
-			- 3: 345
+			- 1: MyClass.MyMethod(123)
+			- 2: MyClass.MyMethod(234)
+			- 3: MyClass.MyMethod(345)
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -172,8 +172,8 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
-			- 1: 123
-			- 2: 234
+			- 1: MyClass.MyMethod(123)
+			- 2: MyClass.MyMethod(234)
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -197,7 +197,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
-			- 1: 123
+			- 1: MyClass.MyMethod(123)
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -223,8 +223,8 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
-			- 2: 234
-			- 3: 345
+			- 2: MyClass.MyMethod(234)
+			- 3: MyClass.MyMethod(345)
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -250,7 +250,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
-			- 2: 234
+			- 2: MyClass.MyMethod(234)
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -274,7 +274,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
-			- 2: 234
+			- 2: MyClass.MyMethod(234)
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -298,7 +298,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
-			- 1: 123
+			- 1: MyClass.MyMethod(123)
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -321,7 +321,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
-			- 2: 234
+			- 2: MyClass.MyMethod(234)
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -344,7 +344,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
-			- 1: 123
+			- 1: MyClass.MyMethod(123)
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -367,7 +367,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
-			- 2: 234
+			- 2: MyClass.MyMethod(234)
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -390,7 +390,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithOneParamet
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod(Int32) to be verified, but the following invocations have not been verified:
-			- 1: 123
+			- 1: MyClass.MyMethod(123)
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);

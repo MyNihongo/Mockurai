@@ -65,14 +65,14 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 			"""
 			Expected MyClass.MyMethod({"Text":"Okayama Issei","Number":1}) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
-			- 1: {"Text":"Okayama Issei another name","Number":12346}
+			- 1: MyClass.MyMethod({"Text":"Okayama Issei another name","Number":12346})
 			  - Text:
 			    expected: Okayama Issei
 			    actual: Okayama Issei another name
 			  - Number:
 			    expected: 1
 			    actual: 12346
-			- 2: {"Text":"Okayama Issei2","Number":2}
+			- 2: MyClass.MyMethod({"Text":"Okayama Issei2","Number":2})
 			  - Text:
 			    expected: Okayama Issei
 			    actual: Okayama Issei2
@@ -124,12 +124,12 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 			"""
 			Expected MyClass.MyMethod({"Text":"Okayama Issei","Number":1}) to be called 2 times, but instead it was called 1 time.
 			Performed invocations:
-			- 1: {"Text":"Okayama Issei","Number":12346}
+			- 1: MyClass.MyMethod({"Text":"Okayama Issei","Number":12346})
 			  - Number:
 			    expected: 1
 			    actual: 12346
-			- 2: {"Text":"Okayama Issei","Number":1}
-			- 3: {"Text":"Okayama Issei2","Number":1}
+			- 2: MyClass.MyMethod({"Text":"Okayama Issei","Number":1})
+			- 3: MyClass.MyMethod({"Text":"Okayama Issei2","Number":1})
 			  - Text:
 			    expected: Okayama Issei
 			    actual: Okayama Issei2
@@ -202,14 +202,14 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 			"""
 			Expected MyClass.MyMethod({"Text":"Okayama Issei","Number":1}) to be invoked at index 1, but it has not been called.
 			Performed invocations:
-			- 1: {"Text":"Okayama Issei another name","Number":12346}
+			- 1: MyClass.MyMethod({"Text":"Okayama Issei another name","Number":12346})
 			  - Text:
 			    expected: Okayama Issei
 			    actual: Okayama Issei another name
 			  - Number:
 			    expected: 1
 			    actual: 12346
-			- 2: {"Text":"Okayama Issei2","Number":2}
+			- 2: MyClass.MyMethod({"Text":"Okayama Issei2","Number":2})
 			  - Text:
 			    expected: Okayama Issei
 			    actual: Okayama Issei2
@@ -261,9 +261,9 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 			"""
 			Expected MyClass.MyMethod({"Text":"Okayama Issei","Number":1}) to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: {"Text":"Okayama Issei","Number":12346}
-			- 2: {"Text":"Okayama Issei","Number":1}
-			- 3: {"Text":"Okayama Issei2","Number":1}
+			- 1: MyClass.MyMethod({"Text":"Okayama Issei","Number":12346})
+			- 2: MyClass.MyMethod({"Text":"Okayama Issei","Number":1})
+			- 3: MyClass.MyMethod({"Text":"Okayama Issei2","Number":1})
 			  - Text:
 			    expected: Okayama Issei
 			    actual: Okayama Issei2
