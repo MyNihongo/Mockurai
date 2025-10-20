@@ -87,23 +87,12 @@ public sealed class Invocation<TParameter> : IInvocationProvider
 
 	public void VerifyNoOtherCalls(Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
-		var hasUnverifiedInvocations = _invocations
-			.Any(static x => !x.IsVerified);
-
-		if (!hasUnverifiedInvocations)
+		var unverifiedItems = _invocations.GetUnverifiedInvocations(invocationProviders);
+		if (unverifiedItems is null)
 			return;
 
-		// TODO: resume after rework
-		var unverifiedItems = _invocations
-			.Where(static x => !x.IsVerified)
-			.Select(static x => x.ToString())
-			.ToArray();
-
-		if (unverifiedItems.Length > 0)
-		{
-			var verifyName = string.Format(_name, typeof(TParameter).Name);
-			throw new MockUnverifiedException(verifyName, unverifiedItems);
-		}
+		var verifyName = string.Format(_name, typeof(TParameter).Name);
+		throw new MockUnverifiedException(verifyName, unverifiedItems);
 	}
 
 	public IEnumerable<IInvocation> GetInvocations()
@@ -113,7 +102,6 @@ public sealed class Invocation<TParameter> : IInvocationProvider
 
 	private sealed class Item : IInvocation
 	{
-		public bool IsVerified;
 		private readonly TParameter _parameter;
 		private readonly string? _jsonSnapshot;
 		private readonly Invocation<TParameter> _invocation;
@@ -135,6 +123,8 @@ public sealed class Invocation<TParameter> : IInvocationProvider
 		}
 
 		public long Index { get; }
+
+		public bool IsVerified { get; set; }
 
 		public TParameter GetParameter(SetupType? setupType)
 		{

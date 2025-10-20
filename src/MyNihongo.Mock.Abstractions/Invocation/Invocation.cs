@@ -46,12 +46,8 @@ public sealed class Invocation : IInvocationProvider
 		if (_isVerified)
 			return;
 
-		var unverifiedItems = _invocations
-			.Where(static x => !x.IsVerified)
-			.Select(static x => x.ToString())
-			.ToArray();
-
-		if (unverifiedItems.Length > 0)
+		var unverifiedItems = _invocations.GetUnverifiedInvocations(invocationProviders);
+		if (unverifiedItems is not null)
 			throw new MockUnverifiedException(_name, unverifiedItems);
 	}
 
@@ -72,7 +68,6 @@ public sealed class Invocation : IInvocationProvider
 
 	private sealed class Item : IInvocation
 	{
-		public bool IsVerified;
 		private readonly Invocation _invocation;
 
 		public Item(in long index, in Invocation invocation)
@@ -82,6 +77,8 @@ public sealed class Invocation : IInvocationProvider
 		}
 
 		public long Index { get; }
+
+		public bool IsVerified { get; set; }
 
 		public override string ToString()
 		{

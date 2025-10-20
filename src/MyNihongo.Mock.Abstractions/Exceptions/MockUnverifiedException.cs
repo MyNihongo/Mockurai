@@ -4,12 +4,12 @@ namespace MyNihongo.Mock;
 
 public sealed class MockUnverifiedException : MockVerifyException
 {
-	public MockUnverifiedException(in string name, in IReadOnlyList<string> invocations)
+	public MockUnverifiedException(in string name, in IEnumerable<string> invocations)
 		: base(CreateMessage(name, invocations))
 	{
 	}
 
-	private static string CreateMessage(in string name, in IReadOnlyList<string> invocations)
+	private static string CreateMessage(in string name, in IEnumerable<string> invocations)
 	{
 		var stringBuilder = InitStringBuilder(name);
 
