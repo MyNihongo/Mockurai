@@ -248,19 +248,66 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 	[Fact]
 	public void ThrowVerifyNoOtherCalls()
 	{
-		throw new NotImplementedException();
+		var fixture = CreateFixture();
+		fixture.Invoke();
+		fixture.InvokeWithParameter("param");
+		fixture.InvokeWithSeveralParameters(123, 321);
+
+		var actual = VerifyNoOtherCalls;
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService.Invoke() to be verified, but the following invocations have not been verified:
+			- 1: IPrimitiveDependencyService.Invoke()
+			- 2: IPrimitiveDependencyService.InvokeWithParameter("param")
+			- 3: IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321)
+			""";
+		var exception = Assert.Throws<MockUnverifiedException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
 	public void ThrowVerifyNoOtherCallsOneParam()
 	{
-		throw new NotImplementedException();
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter("param");
+		fixture.InvokeWithSeveralParameters(123, 321);
+
+		var actual = VerifyNoOtherCalls;
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService.InvokeWithParameter(String) to be verified, but the following invocations have not been verified:
+			- 1: IPrimitiveDependencyService.InvokeWithParameter("param")
+			- 2: IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321)
+			""";
+		var exception = Assert.Throws<MockUnverifiedException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 
 	[Fact]
 	public void ThrowVerifyNoOtherCallsMultipleParams()
 	{
-		throw new NotImplementedException();
+		var input = 43321;
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParameters(123, 321);
+		fixture.InvokeWithSeveralParameters(ref input, 321);
+		fixture.ReturnWithSeveralParameters(123, ref input);
+		fixture.ReturnWithSeveralParameters(ref input, ref input);
+
+		var actual = VerifyNoOtherCalls;
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(Int32, Int32) to be verified, but the following invocations have not been verified:
+			- 1: IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321)
+			- 2: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 43321, 321)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters(123, ref 43321)
+			- 4: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 43321, ref 43321)
+			""";
+		var exception = Assert.Throws<MockUnverifiedException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
 	}
 }
 
