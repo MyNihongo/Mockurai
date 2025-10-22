@@ -18,6 +18,9 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 	public void VerifyIfNotCalled()
 	{
 		DependencyServiceMock.VerifyReturnWithSeveralParameters(default, default, Times.Never);
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(ItRef<int>.Any(), default, Times.Never);
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(default, ItRef<int>.Any(), Times.Never);
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(ItRef<int>.Any(), ItRef<int>.Any(), Times.Never);
 	}
 
 	[Fact]
@@ -363,6 +366,93 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters(123, 234)
 			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters(234, 234)
 			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters(234, 123)
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowInvalidSequenceRef1()
+	{
+		int parameterValue1 = 123, parameterValue2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.ReturnWithSeveralParameters(ref parameterValue1, parameterValue2);
+		fixture.ReturnWithSeveralParameters(ref parameterValue2, parameterValue2);
+		fixture.ReturnWithSeveralParameters(ref parameterValue2, parameterValue1);
+
+		var actual = () => VerifyInSequence(ctx =>
+		{
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ref parameterValue1, parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ref parameterValue2, parameterValue1);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ref parameterValue2, parameterValue2);
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 234, 234) to be invoked at index 4, but it has not been called.
+			Performed invocations:
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 123, 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 234, 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 234, 123)
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowInvalidSequenceRef2()
+	{
+		int parameterValue1 = 123, parameterValue2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.ReturnWithSeveralParameters(parameterValue1, ref parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, ref parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, ref parameterValue1);
+
+		var actual = () => VerifyInSequence(ctx =>
+		{
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue1, ref parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue2, ref parameterValue1);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue2, ref parameterValue2);
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(234, ref 234) to be invoked at index 4, but it has not been called.
+			Performed invocations:
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters(123, ref 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters(234, ref 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters(234, ref 123)
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowInvalidSequenceRef3()
+	{
+		int parameterValue1 = 123, parameterValue2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.ReturnWithSeveralParameters(ref parameterValue1, ref parameterValue2);
+		fixture.ReturnWithSeveralParameters(ref parameterValue2, ref parameterValue2);
+		fixture.ReturnWithSeveralParameters(ref parameterValue2, ref parameterValue1);
+
+		var actual = () => VerifyInSequence(ctx =>
+		{
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ref parameterValue1, ref parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ref parameterValue2, ref parameterValue1);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ref parameterValue2, ref parameterValue2);
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 234, ref 234) to be invoked at index 4, but it has not been called.
+			Performed invocations:
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 123, ref 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 234, ref 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 234, ref 123)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
