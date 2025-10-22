@@ -102,7 +102,6 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService.ReturnWithParameter(String) to be verified, but the following invocations have not been verified:
-			- 1: IPrimitiveDependencyService.GetInit.get
 			- 2: IPrimitiveDependencyService.ReturnWithParameter("value")
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);

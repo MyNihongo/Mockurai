@@ -82,7 +82,7 @@ public sealed class HandlerShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.Handler.add to be verified, but the following invocations have not been verified:
+			Expected IPrimitiveDependencyService.Handler.remove to be verified, but the following invocations have not been verified:
 			- 2: IPrimitiveDependencyService.Handler.remove
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);

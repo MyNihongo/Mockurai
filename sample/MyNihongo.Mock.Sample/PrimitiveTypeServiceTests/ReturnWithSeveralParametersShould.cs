@@ -227,8 +227,8 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 			"""
 			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(any, 234) to be called 3 times, but instead it was called 2 times.
 			Performed invocations:
-			- 1: 123, 234
-			- 2: 234, 234
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters(123, 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters(234, 234)
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -253,8 +253,8 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(Int32, Int32) to be verified, but the following invocations have not been verified:
-			- 1: 123, 234
-			- 3: 234, 123
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters(123, 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters(234, 123)
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -360,9 +360,9 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 			"""
 			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(234, 234) to be invoked at index 4, but it has not been called.
 			Performed invocations:
-			- 1: 123, 234
-			- 2: 234, 234
-			- 3: 234, 123
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters(123, 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters(234, 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters(234, 123)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -390,9 +390,9 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 			"""
 			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(where(predicate), where(predicate)) to be invoked at index 4, but it has not been called.
 			Performed invocations:
-			- 1: 123, 234
-			- 2: 234, 234
-			- 3: 234, 123
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters(123, 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters(234, 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters(234, 123)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -420,9 +420,9 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 			"""
 			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(123, 234) to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: 123, 234
-			- 2: 234, 234
-			- 3: 234, 123
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters(123, 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters(234, 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters(234, 123)
 			  - parameter1:
 			    expected: 123
 			    actual: 234
@@ -457,9 +457,9 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 			"""
 			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(any, any) to be invoked at index 4, but it has not been called.
 			Performed invocations:
-			- 1: 123, 234
-			- 2: 234, 234
-			- 3: 234, 123
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters(123, 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters(234, 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters(234, 123)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -483,7 +483,44 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue2, parameterValue1);
 		});
 
-		const string expectedMessage = "Expected IPrimitiveDependencyService.GetInit.get to be invoked at index 3, but there are no invocations.";
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService.GetInit.get to be invoked at index 3, but it has not been called.
+			Performed invocations:
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters(123, 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters(234, 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters(234, 123)
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowInvalidMethodInSequenceRef()
+	{
+		int parameterValue1 = 123, parameterValue2 = 234;
+
+		var fixture = CreateFixture();
+		fixture.ReturnWithSeveralParameters(ref parameterValue1, parameterValue2);
+		fixture.ReturnWithSeveralParameters(parameterValue2, ref parameterValue2);
+		fixture.ReturnWithSeveralParameters(ref parameterValue2, ref parameterValue1);
+
+		var actual = () => VerifyInSequence(ctx =>
+		{
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ref parameterValue1, parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue2, ref parameterValue2);
+			ctx.DependencyServiceMock.GetGetInit();
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ref parameterValue2, ref parameterValue1);
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService.GetInit.get to be invoked at index 3, but it has not been called.
+			Performed invocations:
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 123, 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters(234, ref 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 234, ref 123)
+			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
