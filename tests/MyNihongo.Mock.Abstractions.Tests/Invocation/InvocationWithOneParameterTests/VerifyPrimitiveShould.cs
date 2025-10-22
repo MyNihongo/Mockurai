@@ -84,10 +84,10 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			$"""
 			 Expected MyClass.MyMethod(where(predicate)) to be called {expected} times, but instead it was called 3 times.
 			 Performed invocations:
-			 - 1: 123
-			 - 2: 234
-			 - 3: 345
-			 - 4: 456
+			 - 1: MyClass.MyMethod(123)
+			 - 2: MyClass.MyMethod(234)
+			 - 3: MyClass.MyMethod(345)
+			 - 4: MyClass.MyMethod(456)
 			 """;
 
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
@@ -169,10 +169,10 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			$"""
 			 Expected MyClass.MyMethod(123) to be called {expected} times, but instead it was called 3 times.
 			 Performed invocations:
-			 - 1: {setupValue}
-			 - 2: {setupValue}
-			 - 3: 345
-			 - 4: {setupValue}
+			 - 1: MyClass.MyMethod({setupValue})
+			 - 2: MyClass.MyMethod({setupValue})
+			 - 3: MyClass.MyMethod(345)
+			 - 4: MyClass.MyMethod({setupValue})
 			 """;
 
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
@@ -206,7 +206,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			"""
 			Expected MyClass.MyMethod(123) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
-			- 1: 321
+			- 1: MyClass.MyMethod(321)
 			""";
 
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
@@ -231,7 +231,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			"""
 			Expected MyClass.MyMethod(where(predicate)) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
-			- 1: 321
+			- 1: MyClass.MyMethod(321)
 			""";
 
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
@@ -317,9 +317,9 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			"""
 			Expected MyClass.MyMethod(any) to be invoked at index 4, but it has not been called.
 			Performed invocations:
-			- 1: 123
-			- 2: 234
-			- 3: 345
+			- 1: MyClass.MyMethod(123)
+			- 2: MyClass.MyMethod(234)
+			- 3: MyClass.MyMethod(345)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -346,9 +346,9 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			"""
 			Expected MyClass.MyMethod(where(predicate)) to be invoked at index 2, but it has not been called.
 			Performed invocations:
-			- 1: 123
-			- 2: 234
-			- 3: 345
+			- 1: MyClass.MyMethod(123)
+			- 2: MyClass.MyMethod(234)
+			- 3: MyClass.MyMethod(345)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -376,9 +376,9 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			"""
 			Expected MyClass.MyMethod(123) to be invoked at index 2, but it has not been called.
 			Performed invocations:
-			- 1: 123
-			- 2: 234
-			- 3: 345
+			- 1: MyClass.MyMethod(123)
+			- 2: MyClass.MyMethod(234)
+			- 3: MyClass.MyMethod(345)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -540,10 +540,10 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			"""
 			Expected MyClass.MyMethod(123) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
-			- 1: 113
+			- 1: MyClass.MyMethod(113)
 			  expected: 123
 			  actual: 113
-			- 2: 124
+			- 2: MyClass.MyMethod(124)
 			  expected: 123
 			  actual: 124
 			""";
@@ -574,11 +574,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			"""
 			Expected MyClass.MyMethod(123) to be called 2 times, but instead it was called 1 time.
 			Performed invocations:
-			- 1: 113
+			- 1: MyClass.MyMethod(113)
 			  expected: 123
 			  actual: 113
-			- 2: 123
-			- 3: 124
+			- 2: MyClass.MyMethod(123)
+			- 3: MyClass.MyMethod(124)
 			  expected: 123
 			  actual: 124
 			""";
@@ -624,10 +624,10 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			"""
 			Expected MyClass.MyMethod(123) to be invoked at index 1, but it has not been called.
 			Performed invocations:
-			- 1: 113
+			- 1: MyClass.MyMethod(113)
 			  expected: 123
 			  actual: 113
-			- 2: 124
+			- 2: MyClass.MyMethod(124)
 			  expected: 123
 			  actual: 124
 			""";
@@ -658,9 +658,9 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 			"""
 			Expected MyClass.MyMethod(123) to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: 113
-			- 2: 123
-			- 3: 124
+			- 1: MyClass.MyMethod(113)
+			- 2: MyClass.MyMethod(123)
+			- 3: MyClass.MyMethod(124)
 			  expected: 123
 			  actual: 124
 			""";

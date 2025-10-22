@@ -157,8 +157,8 @@ public sealed class SetOnlyShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.SetOnly.set = any to be called at least 3 times, but instead it was called 2 times.
 			Performed invocations:
-			- 1: 123
-			- 2: 234
+			- 1: IPrimitiveDependencyService.SetOnly.set = 123
+			- 2: IPrimitiveDependencyService.SetOnly.set = 234
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -180,7 +180,7 @@ public sealed class SetOnlyShould : PrimitiveTypeServiceTestsBase
 		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService.SetOnly.set = Decimal to be verified, but the following invocations have not been verified:
-			- 2: 234
+			- 2: IPrimitiveDependencyService.SetOnly.set = 234
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -276,8 +276,8 @@ public sealed class SetOnlyShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.SetOnly.set = 123 to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: 123
-			- 2: 234
+			- 1: IPrimitiveDependencyService.SetOnly.set = 123
+			- 2: IPrimitiveDependencyService.SetOnly.set = 234
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -303,8 +303,8 @@ public sealed class SetOnlyShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.SetOnly.set = where(predicate) to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: 123
-			- 2: 234
+			- 1: IPrimitiveDependencyService.SetOnly.set = 123
+			- 2: IPrimitiveDependencyService.SetOnly.set = 234
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -326,7 +326,13 @@ public sealed class SetOnlyShould : PrimitiveTypeServiceTestsBase
 			ctx.DependencyServiceMock.SetSetOnly(parameter2);
 		});
 
-		const string expectedMessage = "Expected IPrimitiveDependencyService.Return() to be invoked at index 2, but there are no invocations.";
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService.Return() to be invoked at index 2, but it has not been called.
+			Performed invocations:
+			- 1: IPrimitiveDependencyService.SetOnly.set = 123
+			- 2: IPrimitiveDependencyService.SetOnly.set = 234
+			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}

@@ -155,9 +155,9 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod(Int32, Int32) to be verified, but the following invocations have not been verified:
-			- 1: 123, 234
-			- 2: 234, 345
-			- 3: 345, 456
+			- 1: MyClass.MyMethod(123, 234)
+			- 2: MyClass.MyMethod(234, 345)
+			- 3: MyClass.MyMethod(345, 456)
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -180,8 +180,8 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod(Int32, Int32) to be verified, but the following invocations have not been verified:
-			- 2: 234, 345
-			- 3: 345, 456
+			- 2: MyClass.MyMethod(234, 345)
+			- 3: MyClass.MyMethod(345, 456)
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -205,7 +205,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod(Int32, Int32) to be verified, but the following invocations have not been verified:
-			- 1: 123, 234
+			- 1: MyClass.MyMethod(123, 234)
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -366,8 +366,8 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod(Int32, Int32) to be verified, but the following invocations have not been verified:
-			- 1: 123, 234
-			- 3: 345, 456
+			- 1: MyClass.MyMethod(123, 234)
+			- 3: MyClass.MyMethod(345, 456)
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -391,7 +391,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		const string expectedMessage =
 			"""
 			Expected MyClass.MyMethod(Int32, Int32) to be verified, but the following invocations have not been verified:
-			- 2: 234, 345
+			- 2: MyClass.MyMethod(234, 345)
 			""";
 
 		var exception = Assert.Throws<MockUnverifiedException>(actual);

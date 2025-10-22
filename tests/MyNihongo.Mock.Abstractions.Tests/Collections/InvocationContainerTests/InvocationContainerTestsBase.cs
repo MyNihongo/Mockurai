@@ -11,6 +11,8 @@ public abstract class InvocationContainerTestsBase
 	{
 		public long Index { get; init; }
 
+		public bool IsVerified { get; set; }
+
 		public string? Label { get; init; }
 
 		public override string ToString()

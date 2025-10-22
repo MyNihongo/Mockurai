@@ -4,7 +4,6 @@ public sealed class Invocation : IInvocationProvider
 {
 	private readonly string _name;
 	private readonly InvocationContainer<Item> _invocations = [];
-	private bool _isVerified;
 
 	public Invocation(in string name)
 	{
@@ -25,7 +24,8 @@ public sealed class Invocation : IInvocationProvider
 			throw new MockVerifyCountException(_name, times, _invocations.Count, invocations);
 		}
 
-		_isVerified = true;
+		foreach (var item in _invocations.GetItemsSpan())
+			item.IsVerified = true;
 	}
 
 	public long Verify(in long index, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
@@ -43,15 +43,8 @@ public sealed class Invocation : IInvocationProvider
 
 	public void VerifyNoOtherCalls(Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
-		if (_isVerified)
-			return;
-
-		var unverifiedItems = _invocations
-			.Where(static x => !x.IsVerified)
-			.Select(static x => x.ToString())
-			.ToArray();
-
-		if (unverifiedItems.Length > 0)
+		var unverifiedItems = _invocations.GetUnverifiedInvocations(invocationProviders);
+		if (unverifiedItems is not null)
 			throw new MockUnverifiedException(_name, unverifiedItems);
 	}
 
@@ -62,17 +55,13 @@ public sealed class Invocation : IInvocationProvider
 
 	private static IEnumerable<string>? GetStrings(Func<IEnumerable<IInvocationProvider?>>? invocationProviders, in InvocationContainer<Item> invocations)
 	{
-		if (invocationProviders is not null)
-			return invocationProviders.GetStrings();
-
-		return invocations.Count > 0
-			? invocations.Select(static x => x.ToString())
-			: null;
+		return invocationProviders is not null
+			? invocationProviders.GetStrings()
+			: invocations.NullIfEmpty();
 	}
 
 	private sealed class Item : IInvocation
 	{
-		public bool IsVerified;
 		private readonly Invocation _invocation;
 
 		public Item(in long index, in Invocation invocation)
@@ -82,6 +71,8 @@ public sealed class Invocation : IInvocationProvider
 		}
 
 		public long Index { get; }
+
+		public bool IsVerified { get; set; }
 
 		public override string ToString()
 		{

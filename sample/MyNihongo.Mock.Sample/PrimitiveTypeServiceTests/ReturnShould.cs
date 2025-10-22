@@ -149,8 +149,8 @@ public sealed class ReturnShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.Return() to be called 1 time, but instead it was called 2 times.
 			Performed invocations:
-			- 1
-			- 2
+			- 1: IPrimitiveDependencyService.Return()
+			- 2: IPrimitiveDependencyService.Return()
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -169,8 +169,8 @@ public sealed class ReturnShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.Return(out any) to be called 1 time, but instead it was called 2 times.
 			Performed invocations:
-			- 1: out null
-			- 2: out null
+			- 1: IPrimitiveDependencyService.Return(out null)
+			- 2: IPrimitiveDependencyService.Return(out null)
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -190,7 +190,7 @@ public sealed class ReturnShould : PrimitiveTypeServiceTestsBase
 		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService.ReturnWithParameter(String) to be verified, but the following invocations have not been verified:
-			- 2: "value"
+			- 2: IPrimitiveDependencyService.ReturnWithParameter("value")
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -210,7 +210,7 @@ public sealed class ReturnShould : PrimitiveTypeServiceTestsBase
 		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService.ReturnWithParameter(String) to be verified, but the following invocations have not been verified:
-			- 2: "value"
+			- 2: IPrimitiveDependencyService.ReturnWithParameter("value")
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -264,8 +264,8 @@ public sealed class ReturnShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.Return() to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1
-			- 2
+			- 1: IPrimitiveDependencyService.Return()
+			- 2: IPrimitiveDependencyService.Return()
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -289,8 +289,8 @@ public sealed class ReturnShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.Return(out any) to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: out null
-			- 2: out null
+			- 1: IPrimitiveDependencyService.Return(out null)
+			- 2: IPrimitiveDependencyService.Return(out null)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -310,7 +310,13 @@ public sealed class ReturnShould : PrimitiveTypeServiceTestsBase
 			ctx.DependencyServiceMock.Return();
 		});
 
-		const string expectedMessage = "Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321) to be invoked at index 2, but there are no invocations.";
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321) to be invoked at index 2, but it has not been called.
+			Performed invocations:
+			- 1: IPrimitiveDependencyService.Return()
+			- 2: IPrimitiveDependencyService.Return()
+			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -329,7 +335,13 @@ public sealed class ReturnShould : PrimitiveTypeServiceTestsBase
 			ctx.DependencyServiceMock.Return(ItOut<string>.Any());
 		});
 
-		const string expectedMessage = "Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321) to be invoked at index 2, but there are no invocations.";
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321) to be invoked at index 2, but it has not been called.
+			Performed invocations:
+			- 1: IPrimitiveDependencyService.Return(out null)
+			- 2: IPrimitiveDependencyService.Return(out null)
+			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}

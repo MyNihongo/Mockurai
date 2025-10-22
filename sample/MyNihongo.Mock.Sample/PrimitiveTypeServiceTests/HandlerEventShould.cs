@@ -46,7 +46,8 @@ public sealed class HandlerEventShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.HandlerEvent.add to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
-			- 1: System.EventHandler`1[System.String]
+			- 1: IPrimitiveDependencyService.HandlerEvent.add
+			- 2: IPrimitiveDependencyService.HandlerEvent.remove
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -70,7 +71,7 @@ public sealed class HandlerEventShould : PrimitiveTypeServiceTestsBase
 		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService.HandlerEvent.add to be verified, but the following invocations have not been verified:
-			- 1: System.EventHandler`1[System.String]
+			- 1: IPrimitiveDependencyService.HandlerEvent.add
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -94,7 +95,7 @@ public sealed class HandlerEventShould : PrimitiveTypeServiceTestsBase
 		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService.HandlerEvent.remove to be verified, but the following invocations have not been verified:
-			- 2: System.EventHandler`1[System.String]
+			- 2: IPrimitiveDependencyService.HandlerEvent.remove
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -140,7 +141,8 @@ public sealed class HandlerEventShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.HandlerEvent.add to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: System.EventHandler`1[System.String]
+			- 1: IPrimitiveDependencyService.HandlerEvent.add
+			- 2: IPrimitiveDependencyService.HandlerEvent.remove
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -164,7 +166,13 @@ public sealed class HandlerEventShould : PrimitiveTypeServiceTestsBase
 			ctx.DependencyServiceMock.RemoveHandlerEvent(OnEventHandler);
 		});
 
-		const string expectedMessage = "Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321) to be invoked at index 2, but there are no invocations.";
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321) to be invoked at index 2, but it has not been called.
+			Performed invocations:
+			- 1: IPrimitiveDependencyService.HandlerEvent.add
+			- 2: IPrimitiveDependencyService.HandlerEvent.remove
+			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}

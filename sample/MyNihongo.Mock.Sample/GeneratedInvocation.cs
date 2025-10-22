@@ -65,7 +65,7 @@ public sealed class InvocationIntInt : IInvocationProvider
 			return;
 
 		var invocations = verifyOutput.GetStrings(invocationProviders);
-		var verifyName = string.Format(_name, parameter1.ToString(), parameter2.ToString());
+		var verifyName = string.Format(_name, parameter1.ToString(_prefix1), parameter2.ToString(_prefix2));
 		throw new MockVerifyCountException(verifyName, times, count, invocations);
 	}
 
@@ -113,22 +113,20 @@ public sealed class InvocationIntInt : IInvocationProvider
 		}
 
 		var invocations = verifyOutput.GetStrings(invocationProviders);
-		var verifyName = string.Format(_name, parameter1.ToString(), parameter2.ToString());
+		var verifyName = string.Format(_name, parameter1.ToString(_prefix1), parameter2.ToString(_prefix2));
 		throw new MockVerifySequenceOutOfRangeException(verifyName, index, invocations);
 	}
 
 	public void VerifyNoOtherCalls(Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
-		var unverifiedItems = _invocations
-			.Where(static x => !x.IsVerified)
-			.Select(static x => x.ToString())
-			.ToArray();
+		var unverifiedItems = _invocations.GetUnverifiedInvocations(invocationProviders);
+		if (unverifiedItems is null)
+			return;
 
-		if (unverifiedItems.Length > 0)
-		{
-			var verifyName = string.Format(_name, "Int32", "Int32");
-			throw new MockUnverifiedException(verifyName, unverifiedItems);
-		}
+		var typeName1 = !string.IsNullOrEmpty(_prefix1) ? $"{_prefix1} Int32" : "Int32";
+		var typeName2 = !string.IsNullOrEmpty(_prefix2) ? $"{_prefix2} Int32" : "Int32";
+		var verifyName = string.Format(_name, typeName1, typeName2);
+		throw new MockUnverifiedException(verifyName, unverifiedItems);
 	}
 
 	public IEnumerable<IInvocation> GetInvocations()
@@ -138,7 +136,6 @@ public sealed class InvocationIntInt : IInvocationProvider
 
 	private sealed class Item : IInvocation
 	{
-		public bool IsVerified;
 		private readonly int _parameter1, _parameter2;
 		private readonly string? _jsonSnapshot1, _jsonSnapshot2;
 		private readonly InvocationIntInt _invocation;
@@ -170,6 +167,8 @@ public sealed class InvocationIntInt : IInvocationProvider
 		}
 
 		public long Index { get; }
+
+		public bool IsVerified { get; set; }
 
 		public int GetParameter1(SetupType? setupType)
 		{
