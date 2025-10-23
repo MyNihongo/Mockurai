@@ -19,7 +19,7 @@ public abstract class SetupWithParameterBase<TParameter, TReturns, TCallback, TR
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Callback = callback;
+		_currentSetup.Add(callback);
 	}
 
 	public void Returns(in TReturnsCallback value)
@@ -27,7 +27,7 @@ public abstract class SetupWithParameterBase<TParameter, TReturns, TCallback, TR
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Returns = value;
+		_currentSetup.Add(value);
 	}
 
 	public abstract void Returns(TReturns? value);
@@ -37,15 +37,38 @@ public abstract class SetupWithParameterBase<TParameter, TReturns, TCallback, TR
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Exception = exception;
+		_currentSetup.Add(exception);
 	}
 
 	protected sealed class Item(in It<TParameter>.Setup? parameter)
 	{
+		private readonly Queue<(TCallback? Callback, TReturnsCallback? Returns, Exception? Exception)> _queue = [];
 		public readonly It<TParameter>.Setup? Parameter = parameter;
-		public TCallback? Callback;
-		public TReturnsCallback? Returns;
-		public Exception? Exception;
+
+		public void Add(in TCallback callback)
+		{
+			_queue.Enqueue((callback, default, null));
+		}
+
+		public void Add(in TReturnsCallback returns)
+		{
+			_queue.Enqueue((default, returns, null));
+		}
+
+		public void Add(in Exception exception)
+		{
+			_queue.Enqueue((default, default, exception));
+		}
+
+		public (TCallback? Callback, TReturnsCallback? Returns, Exception? Exception) GetSetup()
+		{
+			return _queue.Count switch
+			{
+				0 => (default, default, null),
+				1 => _queue.Peek(),
+				_ => _queue.Dequeue(),
+			};
+		}
 	}
 
 	private sealed class Comparer : IComparer<Item>

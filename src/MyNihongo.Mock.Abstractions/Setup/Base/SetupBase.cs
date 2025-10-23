@@ -1,11 +1,11 @@
 namespace MyNihongo.Mock;
 
-public abstract class SetupBase<TDelegate> : ISetup
+public abstract class SetupBase<TCallback> : ISetup
 {
 	protected Exception? Exception;
-	protected TDelegate? CallbackDelegate;
+	protected TCallback? CallbackDelegate;
 
-	public void Callback(in TDelegate callback)
+	public void Callback(in TCallback callback)
 	{
 		CallbackDelegate = callback;
 	}

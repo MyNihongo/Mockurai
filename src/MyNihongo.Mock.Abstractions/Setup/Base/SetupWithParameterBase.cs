@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock;
 
-public abstract class SetupWithParameterBase<TParameter, TDelegate> : ISetup
+public abstract class SetupWithParameterBase<TParameter, TCallback> : ISetup
 {
 	private static readonly Comparer SortComparer = new();
 	protected SetupContainer<Item>? Setups;
@@ -14,7 +14,7 @@ public abstract class SetupWithParameterBase<TParameter, TDelegate> : ISetup
 		Setups.Add(_currentSetup);
 	}
 
-	public void Callback(in TDelegate callback)
+	public void Callback(in TCallback callback)
 	{
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
@@ -32,10 +32,10 @@ public abstract class SetupWithParameterBase<TParameter, TDelegate> : ISetup
 
 	protected sealed class Item(in It<TParameter>.Setup? parameter)
 	{
-		private readonly Queue<(TDelegate? Callback, Exception? Exception)> _queue = [];
+		private readonly Queue<(TCallback? Callback, Exception? Exception)> _queue = [];
 		public readonly It<TParameter>.Setup? Parameter = parameter;
 
-		public void Add(in TDelegate callback)
+		public void Add(in TCallback callback)
 		{
 			_queue.Enqueue((callback, null));
 		}
@@ -45,7 +45,7 @@ public abstract class SetupWithParameterBase<TParameter, TDelegate> : ISetup
 			_queue.Enqueue((default, exception));
 		}
 
-		public (TDelegate? Callback, Exception? Exception) GetSetup()
+		public (TCallback? Callback, Exception? Exception) GetSetup()
 		{
 			return _queue.Count switch
 			{
