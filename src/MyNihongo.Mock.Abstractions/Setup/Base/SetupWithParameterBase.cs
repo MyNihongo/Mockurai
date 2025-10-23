@@ -19,7 +19,7 @@ public abstract class SetupWithParameterBase<TParameter, TDelegate> : ISetup
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Callback = callback;
+		_currentSetup.Add(callback);
 	}
 
 	public void Throws(in Exception exception)
@@ -27,14 +27,33 @@ public abstract class SetupWithParameterBase<TParameter, TDelegate> : ISetup
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Exception = exception;
+		_currentSetup.Add(exception);
 	}
 
 	protected sealed class Item(in It<TParameter>.Setup? parameter)
 	{
+		private readonly Queue<(TDelegate? Callback, Exception? Exception)> _queue = [];
 		public readonly It<TParameter>.Setup? Parameter = parameter;
-		public TDelegate? Callback;
-		public Exception? Exception;
+
+		public void Add(in TDelegate callback)
+		{
+			_queue.Enqueue((callback, null));
+		}
+
+		public void Add(in Exception exception)
+		{
+			_queue.Enqueue((default, exception));
+		}
+
+		public (TDelegate? Callback, Exception? Exception) GetSetup()
+		{
+			return _queue.Count switch
+			{
+				0 => (default, null),
+				1 => _queue.Peek(),
+				_ => _queue.Dequeue(),
+			};
+		}
 	}
 
 	private sealed class Comparer : IComparer<Item>
