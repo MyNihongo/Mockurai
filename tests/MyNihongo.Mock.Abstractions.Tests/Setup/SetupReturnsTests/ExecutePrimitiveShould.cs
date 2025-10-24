@@ -357,7 +357,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int expected = 1234;
 
 		var fixture = CreateFixture<int>();
-		fixture.Returns(1234);
+		fixture.Returns(expected);
 		fixture.Throws(new IndexOutOfRangeException(errorMessage));
 
 		var actual1 = fixture.Execute(out var returnValue1);
@@ -381,7 +381,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 
 		var fixture = CreateFixture<int>();
 		fixture.Throws(new IndexOutOfRangeException(errorMessage));
-		fixture.Returns(1234);
+		fixture.Returns(expected);
 
 		Action actual1 = () => fixture.Execute(out _);
 		var exception1 = Assert.Throws<IndexOutOfRangeException>(actual1);
