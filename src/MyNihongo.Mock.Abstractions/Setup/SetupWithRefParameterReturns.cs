@@ -33,8 +33,8 @@ public sealed class SetupWithRefParameter<TParameter, TReturns> : SetupWithParam
 		return false;
 	}
 
-	public override void Returns(TReturns? value)
+	public override void Returns(TReturns? returns)
 	{
-		Returns((ref TParameter _) => value);
+		Returns((ref TParameter _) => returns);
 	}
 }

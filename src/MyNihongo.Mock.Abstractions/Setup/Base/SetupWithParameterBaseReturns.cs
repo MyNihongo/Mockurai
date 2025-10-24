@@ -30,7 +30,7 @@ public abstract class SetupWithParameterBase<TParameter, TReturns, TCallback, TR
 		_currentSetup.Add(value);
 	}
 
-	public abstract void Returns(TReturns? value);
+	public abstract void Returns(TReturns? returns);
 
 	public void Throws(in Exception exception)
 	{
@@ -42,8 +42,8 @@ public abstract class SetupWithParameterBase<TParameter, TReturns, TCallback, TR
 
 	protected sealed class Item(in It<TParameter>.Setup? parameter)
 	{
-		private readonly Queue<ItemSetup> _queue = [];
 		public readonly It<TParameter>.Setup? Parameter = parameter;
+		private readonly Queue<ItemSetup> _queue = [];
 		private ItemSetup? _currentSetup;
 
 		public void Add(in TCallback callback)

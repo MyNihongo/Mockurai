@@ -23,12 +23,12 @@ public sealed class SetupWithOutParameter<TParameter, TReturns> : SetupBaseRetur
 		return false;
 	}
 
-	public override void Returns(TReturns? value)
+	public override void Returns(TReturns? returns)
 	{
 		Returns((out TParameter parameter) =>
 		{
 			parameter = default!;
-			return value;
+			return returns;
 		});
 	}
 }

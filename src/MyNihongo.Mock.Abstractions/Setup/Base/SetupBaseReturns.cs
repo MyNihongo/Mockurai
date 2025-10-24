@@ -5,7 +5,7 @@ public abstract class SetupBaseReturns<TReturns, TCallback, TReturnsCallback> : 
 	private readonly Queue<ItemSetup> _queue = [];
 	private ItemSetup? _currentSetup;
 
-	public abstract void Returns(TReturns? value);
+	public abstract void Returns(TReturns? returns);
 
 	public void Callback(in TCallback callback)
 	{
