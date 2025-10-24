@@ -64,21 +64,6 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 	}
 
 	[Fact]
-	public void ThrowExceptionWithReturn()
-	{
-		const string errorMessage = nameof(errorMessage);
-
-		var fixture = CreateFixture<int, int>();
-		fixture.Returns(1234);
-		fixture.Throws(new IndexOutOfRangeException(errorMessage));
-
-		Action actual = () => fixture.Execute(out _, out _);
-
-		var exception = Assert.Throws<IndexOutOfRangeException>(actual);
-		Assert.Equal(errorMessage, exception.Message);
-	}
-
-	[Fact]
 	public void ReturnValueFunc()
 	{
 		const int setupValue = 123;
@@ -111,8 +96,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 		var counter = 0;
 
 		var fixture = CreateFixture<int, int>();
-		fixture.Returns(setupValue);
 		fixture.Callback((out int x) => x = counter++);
+		fixture.Returns(setupValue);
 
 		var hasValue = fixture.Execute(out _, out var actual);
 
@@ -129,8 +114,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 		var counter = 0;
 
 		var fixture = CreateFixture<int, int>();
-		fixture.Throws(new IndexOutOfRangeException(errorMessage));
 		fixture.Callback((out int x) => x = counter++);
+		fixture.Throws(new IndexOutOfRangeException(errorMessage));
 
 		Action actual = () => fixture.Execute(out _, out _);
 
@@ -186,5 +171,261 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 		Assert.True(hasValue);
 		Assert.True(value);
 		Assert.Equal(expected, result);
+	}
+
+	[Fact]
+	public void ReturnDifferentValues()
+	{
+		const bool setupValue1 = true, setupValue2 = false;
+
+		var fixture = CreateFixture<int, bool>();
+		fixture.Returns(setupValue1);
+		fixture.Returns(setupValue2);
+
+		var actual1 = fixture.Execute(out _, out var returnValue1);
+		Assert.True(actual1);
+		Assert.Equal(setupValue1, returnValue1);
+
+		var actual2 = fixture.Execute(out _, out var returnValue2);
+		Assert.True(actual2);
+		Assert.Equal(setupValue2, returnValue2);
+
+		var actual3 = fixture.Execute(out _, out var returnValue3);
+		Assert.True(actual3);
+		Assert.Equal(setupValue2, returnValue3);
+	}
+
+	[Fact]
+	public void ReturnDifferentValuesWithCallback1()
+	{
+		const bool setupValue1 = true, setupValue2 = false;
+		var callback = 0;
+
+		var fixture = CreateFixture<int, bool>();
+		fixture.Callback((out int value) => value = callback++);
+		fixture.Returns(setupValue1);
+		fixture.Returns(setupValue2);
+
+		var actual1 = fixture.Execute(out _, out var returnValue1);
+		Assert.True(actual1);
+		Assert.Equal(setupValue1, returnValue1);
+
+		var actual2 = fixture.Execute(out _, out var returnValue2);
+		Assert.True(actual2);
+		Assert.Equal(setupValue2, returnValue2);
+
+		var actual3 = fixture.Execute(out _, out var returnValue3);
+		Assert.True(actual3);
+		Assert.Equal(setupValue2, returnValue3);
+
+		const int expectedCallback = 1;
+		Assert.Equal(expectedCallback, callback);
+	}
+
+	[Fact]
+	public void ReturnDifferentValuesWithCallback2()
+	{
+		const bool setupValue1 = true, setupValue2 = false;
+		var callback = 0;
+
+		var fixture = CreateFixture<int, bool>();
+		fixture.Returns(setupValue1);
+		fixture.Callback((out int value) => value = callback++);
+		fixture.Returns(setupValue2);
+
+		var actual1 = fixture.Execute(out _, out var returnValue1);
+		Assert.True(actual1);
+		Assert.Equal(setupValue1, returnValue1);
+
+		var actual2 = fixture.Execute(out _, out var returnValue2);
+		Assert.True(actual2);
+		Assert.Equal(setupValue2, returnValue2);
+
+		var actual3 = fixture.Execute(out _, out var returnValue3);
+		Assert.True(actual3);
+		Assert.Equal(setupValue2, returnValue3);
+
+		const int expectedCallback = 2;
+		Assert.Equal(expectedCallback, callback);
+	}
+
+	[Fact]
+	public void ReturnDifferentValuesWithCallback3()
+	{
+		const bool setupValue1 = true, setupValue2 = false;
+		int callback1 = 10, callback2 = 0;
+
+		var fixture = CreateFixture<int, bool>();
+		fixture.Callback((out int value) => value = callback1++);
+		fixture.Returns(setupValue1);
+		fixture.Callback((out int value) => value = callback2++);
+		fixture.Returns(setupValue2);
+
+		var actual1 = fixture.Execute(out _, out var returnValue1);
+		Assert.True(actual1);
+		Assert.Equal(setupValue1, returnValue1);
+
+		var actual2 = fixture.Execute(out _, out var returnValue2);
+		Assert.True(actual2);
+		Assert.Equal(setupValue2, returnValue2);
+
+		var actual3 = fixture.Execute(out _, out var returnValue3);
+		Assert.True(actual3);
+		Assert.Equal(setupValue2, returnValue3);
+
+		const int expectedCallback1 = 11, expectedCallback2 = 2;
+		Assert.Equal(expectedCallback1, callback1);
+		Assert.Equal(expectedCallback2, callback2);
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptions()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+
+		var fixture = CreateFixture<int, bool>();
+		fixture.Throws(new COMException(errorMessage1));
+		fixture.Throws(new NullReferenceException(errorMessage2));
+
+		Action actual1 = () => fixture.Execute(out _, out _);
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		Action actual2 = () => fixture.Execute(out _, out _);
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		Action actual3 = () => fixture.Execute(out _, out _);
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback1()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		var callback = 0;
+
+		var fixture = CreateFixture<int, bool>();
+		fixture.Callback((out int value) => value = callback++);
+		fixture.Throws(new COMException(errorMessage1));
+		fixture.Throws(new NullReferenceException(errorMessage2));
+
+		Action actual1 = () => fixture.Execute(out _, out _);
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		Action actual2 = () => fixture.Execute(out _, out _);
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		Action actual3 = () => fixture.Execute(out _, out _);
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		const int expectedCallback = 1;
+		Assert.Equal(expectedCallback, callback);
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback2()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		var callback = 0;
+
+		var fixture = CreateFixture<int, bool>();
+		fixture.Throws(new COMException(errorMessage1));
+		fixture.Callback((out int value) => value = callback++);
+		fixture.Throws(new NullReferenceException(errorMessage2));
+
+		Action actual1 = () => fixture.Execute(out _, out _);
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		Action actual2 = () => fixture.Execute(out _, out _);
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		Action actual3 = () => fixture.Execute(out _, out _);
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		const int expectedCallback = 2;
+		Assert.Equal(expectedCallback, callback);
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback3()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		int callback1 = 10, callback2 = 0;
+
+		var fixture = CreateFixture<int, bool>();
+		fixture.Callback((out int value) => value = callback1++);
+		fixture.Throws(new COMException(errorMessage1));
+		fixture.Callback((out int value) => value = callback2++);
+		fixture.Throws(new NullReferenceException(errorMessage2));
+
+		Action actual1 = () => fixture.Execute(out _, out _);
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		Action actual2 = () => fixture.Execute(out _, out _);
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		Action actual3 = () => fixture.Execute(out _, out _);
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		const int expectedCallback1 = 11, expectedCallback2 = 2;
+		Assert.Equal(expectedCallback1, callback1);
+		Assert.Equal(expectedCallback2, callback2);
+	}
+
+	[Fact]
+	public void ThrowExceptionWithReturn()
+	{
+		const string errorMessage = nameof(errorMessage);
+		const int expected = 1234;
+
+		var fixture = CreateFixture<int, int>();
+		fixture.Returns(expected);
+		fixture.Throws(new IndexOutOfRangeException(errorMessage));
+
+		var actual1 = fixture.Execute(out _, out var returnValue1);
+		Assert.True(actual1);
+		Assert.Equal(expected, returnValue1);
+
+		Action actual2 = () => fixture.Execute(out _, out _);
+		var exception2 = Assert.Throws<IndexOutOfRangeException>(actual2);
+		Assert.Equal(errorMessage, exception2.Message);
+
+		Action actual3 = () => fixture.Execute(out _, out _);
+		var exception3 = Assert.Throws<IndexOutOfRangeException>(actual3);
+		Assert.Equal(errorMessage, exception3.Message);
+	}
+
+	[Fact]
+	public void ReturnWithThrowException()
+	{
+		const string errorMessage = nameof(errorMessage);
+		const int expected = 1234;
+
+		var fixture = CreateFixture<int, int>();
+		fixture.Throws(new IndexOutOfRangeException(errorMessage));
+		fixture.Returns(expected);
+
+		Action actual1 = () => fixture.Execute(out _, out _);
+		var exception1 = Assert.Throws<IndexOutOfRangeException>(actual1);
+		Assert.Equal(errorMessage, exception1.Message);
+
+		var actual2 = fixture.Execute(out _, out var returnValue2);
+		Assert.True(actual2);
+		Assert.Equal(expected, returnValue2);
+
+		var actual3 = fixture.Execute(out _, out var returnValue3);
+		Assert.True(actual3);
+		Assert.Equal(expected, returnValue3);
 	}
 }

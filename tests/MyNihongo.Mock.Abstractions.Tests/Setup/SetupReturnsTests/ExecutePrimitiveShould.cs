@@ -1,5 +1,3 @@
-using System.Runtime.InteropServices;
-
 namespace MyNihongo.Mock.Abstractions.Tests.Setup.SetupReturnsTests;
 
 public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
