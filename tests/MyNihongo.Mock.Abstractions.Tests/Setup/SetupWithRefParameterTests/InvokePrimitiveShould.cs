@@ -238,8 +238,8 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 		var callbackValue = 0;
 
 		var fixture = CreateFixture(setup);
-		fixture.Throws(new Exception(expectedMessage));
 		fixture.Callback((ref int x) => callbackValue = x + 1);
+		fixture.Throws(new Exception(expectedMessage));
 
 		var inputValue = 12345678;
 		var actual = () => fixture.Invoke(ref inputValue);
@@ -287,8 +287,8 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 		var callbackValue = 0;
 
 		var fixture = CreateFixture(setup);
-		fixture.Throws(new Exception(expectedMessage));
 		fixture.Callback((ref int x) => callbackValue = x + 1);
+		fixture.Throws(new Exception(expectedMessage));
 
 		var inputValue = 12345678;
 		var actual = () => fixture.Invoke(ref inputValue);
@@ -383,8 +383,8 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 		var callbackValue = 0;
 
 		var fixture = CreateFixture(setup);
-		fixture.Throws(new Exception(expectedMessage));
 		fixture.Callback((ref int x) => callbackValue = x + 1);
+		fixture.Throws(new Exception(expectedMessage));
 
 		var inputValue = 12345678;
 		var actual = () => fixture.Invoke(ref inputValue);
@@ -512,5 +512,118 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 
 		var exception = Assert.Throws<NullReferenceException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptions()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Throws(new COMException(errorMessage1));
+		fixture.Throws(new NullReferenceException(errorMessage2));
+
+		var parameter = 1234;
+		var actual1 = () => fixture.Invoke(ref parameter);
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => fixture.Invoke(ref parameter);
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => fixture.Invoke(ref parameter);
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback1()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		var callback = 0;
+
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Callback((ref int value) => value = callback++);
+		fixture.Throws(new COMException(errorMessage1));
+		fixture.Throws(new NullReferenceException(errorMessage2));
+
+		var parameter = 1234;
+		var actual1 = () => fixture.Invoke(ref parameter);
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => fixture.Invoke(ref parameter);
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => fixture.Invoke(ref parameter);
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		const int expectedCallback = 1;
+		Assert.Equal(expectedCallback, callback);
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback2()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		var callback = 0;
+
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Throws(new COMException(errorMessage1));
+		fixture.Callback((ref int value) => value = callback++);
+		fixture.Throws(new NullReferenceException(errorMessage2));
+
+		var parameter = 1234;
+		var actual1 = () => fixture.Invoke(ref parameter);
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => fixture.Invoke(ref parameter);
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => fixture.Invoke(ref parameter);
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		const int expectedCallback = 2;
+		Assert.Equal(expectedCallback, callback);
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback3()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		int callback1 = 10, callback2 = 0;
+
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Callback((ref int value) => value = callback1++);
+		fixture.Throws(new COMException(errorMessage1));
+		fixture.Callback((ref int value) => value = callback2++);
+		fixture.Throws(new NullReferenceException(errorMessage2));
+
+		var parameter = 1234;
+		var actual1 = () => fixture.Invoke(ref parameter);
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => fixture.Invoke(ref parameter);
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => fixture.Invoke(ref parameter);
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		const int expectedCallback1 = 11, expectedCallback2 = 2;
+		Assert.Equal(expectedCallback1, callback1);
+		Assert.Equal(expectedCallback2, callback2);
 	}
 }
