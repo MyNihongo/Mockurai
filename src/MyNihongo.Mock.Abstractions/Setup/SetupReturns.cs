@@ -4,14 +4,15 @@ public sealed class Setup<TReturns> : SetupBaseReturns<TReturns, Action, Func<TR
 {
 	public bool Execute(out TReturns? returnValue)
 	{
-		CallbackDelegate?.Invoke();
+		var x = GetSetup();
+		x.Callback?.Invoke();
 
-		if (Exception is not null)
-			throw Exception;
+		if (x.Exception is not null)
+			throw x.Exception;
 
-		if (ReturnsDelegate is not null)
+		if (x.Returns is not null)
 		{
-			returnValue = ReturnsDelegate();
+			returnValue = x.Returns();
 			return true;
 		}
 

@@ -12,14 +12,15 @@ public sealed class SetupWithRefParameter<TParameter, TReturns> : SetupWithParam
 			if (setup.Parameter.HasValue && !setup.Parameter.Value.Check(parameter))
 				continue;
 
-			setup.Callback?.Invoke(ref parameter);
+			var x = setup.GetSetup();
+			x.Callback?.Invoke(ref parameter);
 
-			if (setup.Exception is not null)
-				throw setup.Exception;
+			if (x.Exception is not null)
+				throw x.Exception;
 
-			if (setup.Returns is not null)
+			if (x.Returns is not null)
 			{
-				returnValue = setup.Returns(ref parameter);
+				returnValue = x.Returns(ref parameter);
 				return true;
 			}
 

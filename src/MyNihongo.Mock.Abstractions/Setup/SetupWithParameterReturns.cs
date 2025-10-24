@@ -12,14 +12,15 @@ public sealed class SetupWithParameter<TParameter, TReturns> : SetupWithParamete
 			if (setup.Parameter.HasValue && !setup.Parameter.Value.Check(parameter))
 				continue;
 
-			setup.Callback?.Invoke(parameter);
+			var x = setup.GetSetup();
+			x.Callback?.Invoke(parameter);
 
-			if (setup.Exception is not null)
-				throw setup.Exception;
+			if (x.Exception is not null)
+				throw x.Exception;
 
-			if (setup.Returns is not null)
+			if (x.Returns is not null)
 			{
-				returnValue = setup.Returns(parameter);
+				returnValue = x.Returns(parameter);
 				return true;
 			}
 

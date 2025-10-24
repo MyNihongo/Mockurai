@@ -12,11 +12,11 @@ public sealed class SetupWithParameter<TParameter> : SetupWithParameterBase<TPar
 			if (setup.Parameter.HasValue && !setup.Parameter.Value.Check(parameter))
 				continue;
 
-			var (callback, exception) = setup.GetSetup();
-			callback?.Invoke(parameter);
+			var x = setup.GetSetup();
+			x.Callback?.Invoke(parameter);
 
-			if (exception is not null)
-				throw exception;
+			if (x.Exception is not null)
+				throw x.Exception;
 		}
 	}
 }

@@ -42,33 +42,61 @@ public abstract class SetupWithParameterBase<TParameter, TReturns, TCallback, TR
 
 	protected sealed class Item(in It<TParameter>.Setup? parameter)
 	{
-		private readonly Queue<(TCallback? Callback, TReturnsCallback? Returns, Exception? Exception)> _queue = [];
+		private readonly Queue<ItemSetup> _queue = [];
 		public readonly It<TParameter>.Setup? Parameter = parameter;
+		private ItemSetup? _currentSetup;
 
 		public void Add(in TCallback callback)
 		{
-			_queue.Enqueue((callback, default, null));
+			var currentSetup = new ItemSetup(callback);
+			_queue.Enqueue(currentSetup);
+			_currentSetup = currentSetup;
 		}
 
 		public void Add(in TReturnsCallback returns)
 		{
-			_queue.Enqueue((default, returns, null));
+			if (_currentSetup is null)
+			{
+				_queue.Enqueue(new ItemSetup(returns: returns));
+			}
+			else
+			{
+				_currentSetup.Returns = returns;
+				_currentSetup = null;
+			}
 		}
 
 		public void Add(in Exception exception)
 		{
-			_queue.Enqueue((default, default, exception));
+			if (_currentSetup is null)
+			{
+				_queue.Enqueue(new ItemSetup(exception: exception));
+			}
+			else
+			{
+				_currentSetup.Exception = exception;
+				_currentSetup = null;
+			}
 		}
 
-		public (TCallback? Callback, TReturnsCallback? Returns, Exception? Exception) GetSetup()
+		public ItemSetup GetSetup()
 		{
 			return _queue.Count switch
 			{
-				0 => (default, default, null),
+				0 => ItemSetup.Default,
 				1 => _queue.Peek(),
 				_ => _queue.Dequeue(),
 			};
 		}
+	}
+
+	protected sealed class ItemSetup(in TCallback? callback = default, in TReturnsCallback? returns = default, in Exception? exception = null)
+	{
+		public static readonly ItemSetup Default = new();
+
+		public readonly TCallback? Callback = callback;
+		public TReturnsCallback? Returns = returns;
+		public Exception? Exception = exception;
 	}
 
 	private sealed class Comparer : IComparer<Item>

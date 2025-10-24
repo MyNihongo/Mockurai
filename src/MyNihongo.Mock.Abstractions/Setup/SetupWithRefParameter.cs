@@ -12,11 +12,11 @@ public class SetupWithRefParameter<TParameter> : SetupWithParameterBase<TParamet
 			if (setup.Parameter.HasValue && !setup.Parameter.Value.Check(parameter))
 				continue;
 
-			var (callback, exception) = setup.GetSetup();
-			callback?.Invoke(ref parameter);
+			var x = setup.GetSetup();
+			x.Callback?.Invoke(ref parameter);
 
-			if (exception is not null)
-				throw exception;
+			if (x.Exception is not null)
+				throw x.Exception;
 		}
 	}
 }
