@@ -3774,6 +3774,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Returns(setupValue1);
 		fixture.Returns(setupValue2);
 
@@ -3798,6 +3799,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var callback = 0;
 
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Callback((ref _, ref _) => callback++);
 		fixture.Returns(setupValue1);
 		fixture.Returns(setupValue2);
@@ -3826,6 +3828,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var callback = 0;
 
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Returns(setupValue1);
 		fixture.Callback((ref _, ref _) => callback++);
 		fixture.Returns(setupValue2);
@@ -3854,6 +3857,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		int callback1 = 10, callback2 = 0;
 
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Callback((ref _, ref _) => callback1++);
 		fixture.Returns(setupValue1);
 		fixture.Callback((ref _, ref _) => callback2++);
@@ -3883,6 +3887,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
 
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Throws(new NullReferenceException(errorMessage2));
 
@@ -3907,6 +3912,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var callback = 0;
 
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Callback((ref _, ref _) => callback++);
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Throws(new NullReferenceException(errorMessage2));
@@ -3935,6 +3941,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var callback = 0;
 
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Callback((ref _, ref _) => callback++);
 		fixture.Throws(new NullReferenceException(errorMessage2));
@@ -3963,6 +3970,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		int callback1 = 10, callback2 = 0;
 
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Callback((ref _, ref _) => callback1++);
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Callback((ref _, ref _) => callback2++);
@@ -3993,6 +4001,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string expected = nameof(expected);
 
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Returns(expected);
 		fixture.Throws(new IndexOutOfRangeException(errorMessage));
 
@@ -4017,6 +4026,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string expected = nameof(expected);
 
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Throws(new IndexOutOfRangeException(errorMessage));
 		fixture.Returns(expected);
 
