@@ -3754,7 +3754,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var exception = Assert.Throws<NullReferenceException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
-	
+
 	[Fact]
 	public void ReturnDifferentValues()
 	{
@@ -3765,7 +3765,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Returns(setupValue1);
 		fixture.Returns(setupValue2);
 
-		int parameter1 = 123, parameter2 = 234;
+		var parameter1 = 123;
+		const int parameter2 = 234;
 		var actual1 = fixture.Execute(ref parameter1, parameter2, out var returnValue1);
 		Assert.True(actual1);
 		Assert.Equal(setupValue1, returnValue1);
@@ -3791,7 +3792,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Returns(setupValue1);
 		fixture.Returns(setupValue2);
 
-		int parameter1 = 123, parameter2 = 234;
+		var parameter1 = 123;
+		const int parameter2 = 234;
 		var actual1 = fixture.Execute(ref parameter1, parameter2, out var returnValue1);
 		Assert.True(actual1);
 		Assert.Equal(setupValue1, returnValue1);
@@ -3820,7 +3822,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Callback((ref _, _) => callback++);
 		fixture.Returns(setupValue2);
 
-		int parameter1 = 123, parameter2 = 234;
+		var parameter1 = 123;
+		const int parameter2 = 234;
 		var actual1 = fixture.Execute(ref parameter1, parameter2, out var returnValue1);
 		Assert.True(actual1);
 		Assert.Equal(setupValue1, returnValue1);
@@ -3850,7 +3853,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Callback((ref _, _) => callback2++);
 		fixture.Returns(setupValue2);
 
-		int parameter1 = 123, parameter2 = 234;
+		var parameter1 = 123;
+		const int parameter2 = 234;
 		var actual1 = fixture.Execute(ref parameter1, parameter2, out var returnValue1);
 		Assert.True(actual1);
 		Assert.Equal(setupValue1, returnValue1);
@@ -3878,7 +3882,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Throws(new NullReferenceException(errorMessage2));
 
-		int parameter1 = 123, parameter2 = 234;
+		var parameter1 = 123;
+		const int parameter2 = 234;
 		Action actual1 = () => fixture.Execute(ref parameter1, parameter2, out _);
 		var exception1 = Assert.Throws<COMException>(actual1);
 		Assert.Equal(errorMessage1, exception1.Message);
@@ -3904,7 +3909,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Throws(new NullReferenceException(errorMessage2));
 
-		int parameter1 = 123, parameter2 = 234;
+		var parameter1 = 123;
+		const int parameter2 = 234;
 		Action actual1 = () => fixture.Execute(ref parameter1, parameter2, out _);
 		var exception1 = Assert.Throws<COMException>(actual1);
 		Assert.Equal(errorMessage1, exception1.Message);
@@ -3933,7 +3939,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Callback((ref _, _) => callback++);
 		fixture.Throws(new NullReferenceException(errorMessage2));
 
-		int parameter1 = 123, parameter2 = 234;
+		var parameter1 = 123;
+		const int parameter2 = 234;
 		Action actual1 = () => fixture.Execute(ref parameter1, parameter2, out _);
 		var exception1 = Assert.Throws<COMException>(actual1);
 		Assert.Equal(errorMessage1, exception1.Message);
@@ -3963,7 +3970,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Callback((ref _, _) => callback2++);
 		fixture.Throws(new NullReferenceException(errorMessage2));
 
-		int parameter1 = 123, parameter2 = 234;
+		var parameter1 = 123;
+		const int parameter2 = 234;
 		Action actual1 = () => fixture.Execute(ref parameter1, parameter2, out _);
 		var exception1 = Assert.Throws<COMException>(actual1);
 		Assert.Equal(errorMessage1, exception1.Message);
@@ -3992,7 +4000,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Returns(expected);
 		fixture.Throws(new IndexOutOfRangeException(errorMessage));
 
-		int parameter1 = 123, parameter2 = 234;
+		var parameter1 = 123;
+		const int parameter2 = 234;
 		var actual1 = fixture.Execute(ref parameter1, parameter2, out var returnValue1);
 		Assert.True(actual1);
 		Assert.Equal(expected, returnValue1);
@@ -4011,6 +4020,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		const string errorMessage = nameof(errorMessage);
 		const string expected = nameof(expected);
+		const int parameter2 = 234;
 
 		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
@@ -4019,13 +4029,13 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 
 		var actual1 = () =>
 		{
-			int parameter1 = 123, parameter2 = 234;
+			var parameter1 = 123;
 			fixture.Execute(ref parameter1, parameter2, out _);
 		};
 		var exception1 = Assert.Throws<IndexOutOfRangeException>(actual1);
 		Assert.Equal(errorMessage, exception1.Message);
 
-		int parameter1 = 123, parameter2 = 234;
+		var parameter1 = 123;
 		var actual2 = fixture.Execute(ref parameter1, parameter2, out var returnValue2);
 		Assert.True(actual2);
 		Assert.Equal(expected, returnValue2);
