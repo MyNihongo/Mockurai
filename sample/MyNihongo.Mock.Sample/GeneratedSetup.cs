@@ -19,10 +19,11 @@ public sealed class SetupIntInt : ISetup
 			if (setup.Parameter2.HasValue && !setup.Parameter2.Value.Check(parameter2))
 				continue;
 
-			setup.Callback?.Invoke(parameter1, parameter2);
+			var x = setup.GetSetup();
+			x.Callback?.Invoke(parameter1, parameter2);
 
-			if (setup.Exception is not null)
-				throw setup.Exception;
+			if (x.Exception is not null)
+				throw x.Exception;
 		}
 	}
 
@@ -39,7 +40,7 @@ public sealed class SetupIntInt : ISetup
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Callback = callback;
+		_currentSetup.Add(callback);
 	}
 
 	public void Throws(in Exception exception)
@@ -47,15 +48,53 @@ public sealed class SetupIntInt : ISetup
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Exception = exception;
+		_currentSetup.Add(exception);
 	}
 
 	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
 	{
+		private readonly Queue<ItemSetup> _queue = [];
 		public readonly It<int>.Setup? Parameter1 = parameter1;
 		public readonly It<int>.Setup? Parameter2 = parameter2;
-		public Action<int, int>? Callback;
-		public Exception? Exception;
+		private ItemSetup? _currentSetup;
+
+		public void Add(in Action<int, int> callback)
+		{
+			var currentSetup = new ItemSetup(callback);
+			_queue.Enqueue(currentSetup);
+			_currentSetup = currentSetup;
+		}
+
+		public void Add(in Exception exception)
+		{
+			if (_currentSetup is null)
+			{
+				_queue.Enqueue(new ItemSetup(exception: exception));
+			}
+			else
+			{
+				_currentSetup.Exception = exception;
+				_currentSetup = null;
+			}
+		}
+
+		public ItemSetup GetSetup()
+		{
+			return _queue.Count switch
+			{
+				0 => ItemSetup.Default,
+				1 => _queue.Peek(),
+				_ => _queue.Dequeue(),
+			};
+		}
+	}
+
+	private sealed class ItemSetup(in Action<int, int>? callback = null, in Exception? exception = null)
+	{
+		public static readonly ItemSetup Default = new();
+
+		public readonly Action<int, int>? Callback = callback;
+		public Exception? Exception = exception;
 	}
 
 	private sealed class Comparer : IComparer<Item>
@@ -105,14 +144,15 @@ public sealed class SetupIntInt<TReturns> : ISetup<TReturns>
 			if (setup.Parameter2.HasValue && !setup.Parameter2.Value.Check(parameter2))
 				continue;
 
-			setup.Callback?.Invoke(parameter1, parameter2);
+			var x = setup.GetSetup();
+			x.Callback?.Invoke(parameter1, parameter2);
 
-			if (setup.Exception is not null)
-				throw setup.Exception;
+			if (x.Exception is not null)
+				throw x.Exception;
 
-			if (setup.Returns is not null)
+			if (x.Returns is not null)
 			{
-				returnValue = setup.Returns(parameter1, parameter2);
+				returnValue = x.Returns(parameter1, parameter2);
 				return true;
 			}
 
@@ -138,20 +178,20 @@ public sealed class SetupIntInt<TReturns> : ISetup<TReturns>
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Callback = callback;
+		_currentSetup.Add(callback);
 	}
 
-	public void Returns(TReturns? value)
+	public void Returns(TReturns? returns)
 	{
-		Returns((_, _) => value);
+		Returns((_, _) => returns);
 	}
 
-	public void Returns(in Func<int, int, TReturns?> value)
+	public void Returns(in Func<int, int, TReturns?> returns)
 	{
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Returns = value;
+		_currentSetup.Add(returns);
 	}
 
 	public void Throws(in Exception exception)
@@ -159,16 +199,68 @@ public sealed class SetupIntInt<TReturns> : ISetup<TReturns>
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Exception = exception;
+		_currentSetup.Add(exception);
 	}
 
 	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
 	{
 		public readonly It<int>.Setup? Parameter1 = parameter1;
 		public readonly It<int>.Setup? Parameter2 = parameter2;
-		public Action<int, int>? Callback;
-		public Func<int, int, TReturns?>? Returns;
-		public Exception? Exception;
+
+		private readonly Queue<ItemSetup> _queue = [];
+		private ItemSetup? _currentSetup;
+
+		public void Add(in Action<int, int> callback)
+		{
+			var currentSetup = new ItemSetup(callback);
+			_queue.Enqueue(currentSetup);
+			_currentSetup = currentSetup;
+		}
+
+		public void Add(in Func<int, int, TReturns?> returns)
+		{
+			if (_currentSetup is null)
+			{
+				_queue.Enqueue(new ItemSetup(returns: returns));
+			}
+			else
+			{
+				_currentSetup.Returns = returns;
+				_currentSetup = null;
+			}
+		}
+
+		public void Add(in Exception exception)
+		{
+			if (_currentSetup is null)
+			{
+				_queue.Enqueue(new ItemSetup(exception: exception));
+			}
+			else
+			{
+				_currentSetup.Exception = exception;
+				_currentSetup = null;
+			}
+		}
+
+		public ItemSetup GetSetup()
+		{
+			return _queue.Count switch
+			{
+				0 => ItemSetup.Default,
+				1 => _queue.Peek(),
+				_ => _queue.Dequeue(),
+			};
+		}
+	}
+
+	private sealed class ItemSetup(in Action<int, int>? callback = null, in Func<int, int, TReturns?>? returns = null, in Exception? exception = null)
+	{
+		public static readonly ItemSetup Default = new();
+
+		public readonly Action<int, int>? Callback = callback;
+		public Func<int, int, TReturns?>? Returns = returns;
+		public Exception? Exception = exception;
 	}
 
 	private sealed class Comparer : IComparer<Item>
@@ -218,10 +310,11 @@ public sealed class SetupRefIntInt : ISetup
 			if (setup.Parameter2.HasValue && !setup.Parameter2.Value.Check(parameter2))
 				continue;
 
-			setup.Callback?.Invoke(ref parameter1, parameter2);
+			var x = setup.GetSetup();
+			x.Callback?.Invoke(ref parameter1, parameter2);
 
-			if (setup.Exception is not null)
-				throw setup.Exception;
+			if (x.Exception is not null)
+				throw x.Exception;
 		}
 	}
 
@@ -233,12 +326,12 @@ public sealed class SetupRefIntInt : ISetup
 		_setups.Add(_currentSetup);
 	}
 
-	public void Callback(in Delegate callback)
+	public void Callback(in CallbackDelegate callback)
 	{
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Callback = callback;
+		_currentSetup.Add(callback);
 	}
 
 	public void Throws(in Exception exception)
@@ -246,17 +339,55 @@ public sealed class SetupRefIntInt : ISetup
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Exception = exception;
+		_currentSetup.Add(exception);
 	}
 
-	public delegate void Delegate(ref int parameter1, int parameter2);
+	public delegate void CallbackDelegate(ref int parameter1, int parameter2);
 
 	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
 	{
 		public readonly It<int>.Setup? Parameter1 = parameter1;
 		public readonly It<int>.Setup? Parameter2 = parameter2;
-		public Delegate? Callback;
-		public Exception? Exception;
+		private readonly Queue<ItemSetup> _queue = [];
+		private ItemSetup? _currentSetup;
+
+		public void Add(in CallbackDelegate callback)
+		{
+			var currentSetup = new ItemSetup(callback);
+			_queue.Enqueue(currentSetup);
+			_currentSetup = currentSetup;
+		}
+
+		public void Add(in Exception exception)
+		{
+			if (_currentSetup is null)
+			{
+				_queue.Enqueue(new ItemSetup(exception: exception));
+			}
+			else
+			{
+				_currentSetup.Exception = exception;
+				_currentSetup = null;
+			}
+		}
+
+		public ItemSetup GetSetup()
+		{
+			return _queue.Count switch
+			{
+				0 => ItemSetup.Default,
+				1 => _queue.Peek(),
+				_ => _queue.Dequeue(),
+			};
+		}
+	}
+
+	private sealed class ItemSetup(in CallbackDelegate? callback = null, in Exception? exception = null)
+	{
+		public static readonly ItemSetup Default = new();
+
+		public readonly CallbackDelegate? Callback = callback;
+		public Exception? Exception = exception;
 	}
 
 	private sealed class Comparer : IComparer<Item>
@@ -306,14 +437,15 @@ public sealed class SetupRefIntInt<TReturns> : ISetup<TReturns>
 			if (setup.Parameter2.HasValue && !setup.Parameter2.Value.Check(parameter2))
 				continue;
 
-			setup.Callback?.Invoke(ref parameter1, parameter2);
+			var x = setup.GetSetup();
+			x.Callback?.Invoke(ref parameter1, parameter2);
 
-			if (setup.Exception is not null)
-				throw setup.Exception;
+			if (x.Exception is not null)
+				throw x.Exception;
 
-			if (setup.Returns is not null)
+			if (x.Returns is not null)
 			{
-				returnValue = setup.Returns(ref parameter1, parameter2);
+				returnValue = x.Returns(ref parameter1, parameter2);
 				return true;
 			}
 
@@ -339,20 +471,20 @@ public sealed class SetupRefIntInt<TReturns> : ISetup<TReturns>
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Callback = callback;
+		_currentSetup.Add(callback);
 	}
 
-	public void Returns(TReturns? value)
+	public void Returns(TReturns? returns)
 	{
-		Returns((ref _, _) => value);
+		Returns((ref _, _) => returns);
 	}
 
-	public void Returns(in ReturnsCallbackDelegate value)
+	public void Returns(in ReturnsCallbackDelegate returns)
 	{
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Returns = value;
+		_currentSetup.Add(returns);
 	}
 
 	public void Throws(in Exception exception)
@@ -360,19 +492,71 @@ public sealed class SetupRefIntInt<TReturns> : ISetup<TReturns>
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Exception = exception;
+		_currentSetup.Add(exception);
 	}
 
 	public delegate void CallbackDelegate(ref int parameter1, int parameter2);
+
 	public delegate TReturns? ReturnsCallbackDelegate(ref int parameter1, int parameter2);
 
 	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
 	{
 		public readonly It<int>.Setup? Parameter1 = parameter1;
 		public readonly It<int>.Setup? Parameter2 = parameter2;
-		public CallbackDelegate? Callback;
-		public ReturnsCallbackDelegate? Returns;
-		public Exception? Exception;
+		private readonly Queue<ItemSetup> _queue = [];
+		private ItemSetup? _currentSetup;
+
+		public void Add(in CallbackDelegate callback)
+		{
+			var currentSetup = new ItemSetup(callback);
+			_queue.Enqueue(currentSetup);
+			_currentSetup = currentSetup;
+		}
+
+		public void Add(in ReturnsCallbackDelegate returns)
+		{
+			if (_currentSetup is null)
+			{
+				_queue.Enqueue(new ItemSetup(returns: returns));
+			}
+			else
+			{
+				_currentSetup.Returns = returns;
+				_currentSetup = null;
+			}
+		}
+
+		public void Add(in Exception exception)
+		{
+			if (_currentSetup is null)
+			{
+				_queue.Enqueue(new ItemSetup(exception: exception));
+			}
+			else
+			{
+				_currentSetup.Exception = exception;
+				_currentSetup = null;
+			}
+		}
+
+		public ItemSetup GetSetup()
+		{
+			return _queue.Count switch
+			{
+				0 => ItemSetup.Default,
+				1 => _queue.Peek(),
+				_ => _queue.Dequeue(),
+			};
+		}
+	}
+
+	private sealed class ItemSetup(in CallbackDelegate? callback = null, in ReturnsCallbackDelegate? returns = null, in Exception? exception = null)
+	{
+		public static readonly ItemSetup Default = new();
+
+		public readonly CallbackDelegate? Callback = callback;
+		public ReturnsCallbackDelegate? Returns = returns;
+		public Exception? Exception = exception;
 	}
 
 	private sealed class Comparer : IComparer<Item>
@@ -422,10 +606,11 @@ public sealed class SetupIntRefInt : ISetup
 			if (setup.Parameter2.HasValue && !setup.Parameter2.Value.Check(parameter2))
 				continue;
 
-			setup.Callback?.Invoke(parameter1, ref parameter2);
+			var x = setup.GetSetup();
+			x.Callback?.Invoke(parameter1, ref parameter2);
 
-			if (setup.Exception is not null)
-				throw setup.Exception;
+			if (x.Exception is not null)
+				throw x.Exception;
 		}
 	}
 
@@ -437,12 +622,12 @@ public sealed class SetupIntRefInt : ISetup
 		_setups.Add(_currentSetup);
 	}
 
-	public void Callback(in Delegate callback)
+	public void Callback(in CallbackDelegate callback)
 	{
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Callback = callback;
+		_currentSetup.Add(callback);
 	}
 
 	public void Throws(in Exception exception)
@@ -450,17 +635,55 @@ public sealed class SetupIntRefInt : ISetup
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Exception = exception;
+		_currentSetup.Add(exception);
 	}
-	
-	public delegate void Delegate(int parameter1, ref int parameter2);
+
+	public delegate void CallbackDelegate(int parameter1, ref int parameter2);
 
 	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
 	{
 		public readonly It<int>.Setup? Parameter1 = parameter1;
 		public readonly It<int>.Setup? Parameter2 = parameter2;
-		public Delegate? Callback;
-		public Exception? Exception;
+		private readonly Queue<ItemSetup> _queue = [];
+		private ItemSetup? _currentSetup;
+
+		public void Add(in CallbackDelegate callback)
+		{
+			var currentSetup = new ItemSetup(callback);
+			_queue.Enqueue(currentSetup);
+			_currentSetup = currentSetup;
+		}
+
+		public void Add(in Exception exception)
+		{
+			if (_currentSetup is null)
+			{
+				_queue.Enqueue(new ItemSetup(exception: exception));
+			}
+			else
+			{
+				_currentSetup.Exception = exception;
+				_currentSetup = null;
+			}
+		}
+
+		public ItemSetup GetSetup()
+		{
+			return _queue.Count switch
+			{
+				0 => ItemSetup.Default,
+				1 => _queue.Peek(),
+				_ => _queue.Dequeue(),
+			};
+		}
+	}
+
+	private sealed class ItemSetup(in CallbackDelegate? callback = null, in Exception? exception = null)
+	{
+		public static readonly ItemSetup Default = new();
+
+		public readonly CallbackDelegate? Callback = callback;
+		public Exception? Exception = exception;
 	}
 
 	private sealed class Comparer : IComparer<Item>
@@ -510,14 +733,15 @@ public sealed class SetupIntRefInt<TReturns> : ISetup<TReturns>
 			if (setup.Parameter2.HasValue && !setup.Parameter2.Value.Check(parameter2))
 				continue;
 
-			setup.Callback?.Invoke(parameter1, ref parameter2);
+			var x = setup.GetSetup();
+			x.Callback?.Invoke(parameter1, ref parameter2);
 
-			if (setup.Exception is not null)
-				throw setup.Exception;
+			if (x.Exception is not null)
+				throw x.Exception;
 
-			if (setup.Returns is not null)
+			if (x.Returns is not null)
 			{
-				returnValue = setup.Returns(parameter1, ref parameter2);
+				returnValue = x.Returns(parameter1, ref parameter2);
 				return true;
 			}
 
@@ -543,12 +767,12 @@ public sealed class SetupIntRefInt<TReturns> : ISetup<TReturns>
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Callback = callback;
+		_currentSetup.Add(callback);
 	}
 
-	public void Returns(TReturns? value)
+	public void Returns(TReturns? returns)
 	{
-		Returns((_, ref _) => value);
+		Returns((_, ref _) => returns);
 	}
 
 	public void Returns(in ReturnsCallbackDelegate value)
@@ -556,7 +780,7 @@ public sealed class SetupIntRefInt<TReturns> : ISetup<TReturns>
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Returns = value;
+		_currentSetup.Add(value);
 	}
 
 	public void Throws(in Exception exception)
@@ -564,19 +788,71 @@ public sealed class SetupIntRefInt<TReturns> : ISetup<TReturns>
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Exception = exception;
+		_currentSetup.Add(exception);
 	}
-	
+
 	public delegate void CallbackDelegate(int parameter1, ref int parameter2);
+
 	public delegate TReturns? ReturnsCallbackDelegate(int parameter1, ref int parameter2);
 
 	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
 	{
 		public readonly It<int>.Setup? Parameter1 = parameter1;
 		public readonly It<int>.Setup? Parameter2 = parameter2;
-		public CallbackDelegate? Callback;
-		public ReturnsCallbackDelegate? Returns;
-		public Exception? Exception;
+		private readonly Queue<ItemSetup> _queue = [];
+		private ItemSetup? _currentSetup;
+
+		public void Add(in CallbackDelegate callback)
+		{
+			var currentSetup = new ItemSetup(callback);
+			_queue.Enqueue(currentSetup);
+			_currentSetup = currentSetup;
+		}
+
+		public void Add(in ReturnsCallbackDelegate returns)
+		{
+			if (_currentSetup is null)
+			{
+				_queue.Enqueue(new ItemSetup(returns: returns));
+			}
+			else
+			{
+				_currentSetup.Returns = returns;
+				_currentSetup = null;
+			}
+		}
+
+		public void Add(in Exception exception)
+		{
+			if (_currentSetup is null)
+			{
+				_queue.Enqueue(new ItemSetup(exception: exception));
+			}
+			else
+			{
+				_currentSetup.Exception = exception;
+				_currentSetup = null;
+			}
+		}
+
+		public ItemSetup GetSetup()
+		{
+			return _queue.Count switch
+			{
+				0 => ItemSetup.Default,
+				1 => _queue.Peek(),
+				_ => _queue.Dequeue(),
+			};
+		}
+	}
+
+	private sealed class ItemSetup(in CallbackDelegate? callback = null, in ReturnsCallbackDelegate? returns = null, in Exception? exception = null)
+	{
+		public static readonly ItemSetup Default = new();
+
+		public readonly CallbackDelegate? Callback = callback;
+		public ReturnsCallbackDelegate? Returns = returns;
+		public Exception? Exception = exception;
 	}
 
 	private sealed class Comparer : IComparer<Item>
@@ -626,10 +902,11 @@ public sealed class SetupRefIntRefInt : ISetup
 			if (setup.Parameter2.HasValue && !setup.Parameter2.Value.Check(parameter2))
 				continue;
 
-			setup.Callback?.Invoke(ref parameter1, ref parameter2);
+			var x = setup.GetSetup();
+			x.Callback?.Invoke(ref parameter1, ref parameter2);
 
-			if (setup.Exception is not null)
-				throw setup.Exception;
+			if (x.Exception is not null)
+				throw x.Exception;
 		}
 	}
 
@@ -641,12 +918,12 @@ public sealed class SetupRefIntRefInt : ISetup
 		_setups.Add(_currentSetup);
 	}
 
-	public void Callback(in Delegate callback)
+	public void Callback(in CallbackDelegate callback)
 	{
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Callback = callback;
+		_currentSetup.Add(callback);
 	}
 
 	public void Throws(in Exception exception)
@@ -654,17 +931,55 @@ public sealed class SetupRefIntRefInt : ISetup
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Exception = exception;
+		_currentSetup.Add(exception);
 	}
-	
-	public delegate void Delegate(ref int parameter1, ref int parameter2);
+
+	public delegate void CallbackDelegate(ref int parameter1, ref int parameter2);
 
 	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
 	{
 		public readonly It<int>.Setup? Parameter1 = parameter1;
 		public readonly It<int>.Setup? Parameter2 = parameter2;
-		public Delegate? Callback;
-		public Exception? Exception;
+		private readonly Queue<ItemSetup> _queue = [];
+		private ItemSetup? _currentSetup;
+
+		public void Add(in CallbackDelegate callback)
+		{
+			var currentSetup = new ItemSetup(callback);
+			_queue.Enqueue(currentSetup);
+			_currentSetup = currentSetup;
+		}
+
+		public void Add(in Exception exception)
+		{
+			if (_currentSetup is null)
+			{
+				_queue.Enqueue(new ItemSetup(exception: exception));
+			}
+			else
+			{
+				_currentSetup.Exception = exception;
+				_currentSetup = null;
+			}
+		}
+
+		public ItemSetup GetSetup()
+		{
+			return _queue.Count switch
+			{
+				0 => ItemSetup.Default,
+				1 => _queue.Peek(),
+				_ => _queue.Dequeue(),
+			};
+		}
+	}
+
+	private sealed class ItemSetup(in CallbackDelegate? callback = null, in Exception? exception = null)
+	{
+		public static readonly ItemSetup Default = new();
+
+		public readonly CallbackDelegate? Callback = callback;
+		public Exception? Exception = exception;
 	}
 
 	private sealed class Comparer : IComparer<Item>
@@ -714,14 +1029,15 @@ public sealed class SetupRefIntRefInt<TReturns> : ISetup<TReturns>
 			if (setup.Parameter2.HasValue && !setup.Parameter2.Value.Check(parameter2))
 				continue;
 
-			setup.Callback?.Invoke(ref parameter1, ref parameter2);
+			var x = setup.GetSetup();
+			x.Callback?.Invoke(ref parameter1, ref parameter2);
 
-			if (setup.Exception is not null)
-				throw setup.Exception;
+			if (x.Exception is not null)
+				throw x.Exception;
 
-			if (setup.Returns is not null)
+			if (x.Returns is not null)
 			{
-				returnValue = setup.Returns(ref parameter1, ref parameter2);
+				returnValue = x.Returns(ref parameter1, ref parameter2);
 				return true;
 			}
 
@@ -747,12 +1063,12 @@ public sealed class SetupRefIntRefInt<TReturns> : ISetup<TReturns>
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Callback = callback;
+		_currentSetup.Add(callback);
 	}
 
-	public void Returns(TReturns? value)
+	public void Returns(TReturns? returns)
 	{
-		Returns((ref _, ref _) => value);
+		Returns((ref _, ref _) => returns);
 	}
 
 	public void Returns(in ReturnsCallbackDelegate value)
@@ -760,7 +1076,7 @@ public sealed class SetupRefIntRefInt<TReturns> : ISetup<TReturns>
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Returns = value;
+		_currentSetup.Add(value);
 	}
 
 	public void Throws(in Exception exception)
@@ -768,19 +1084,71 @@ public sealed class SetupRefIntRefInt<TReturns> : ISetup<TReturns>
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Exception = exception;
+		_currentSetup.Add(exception);
 	}
-	
+
 	public delegate void CallbackDelegate(ref int parameter1, ref int parameter2);
+
 	public delegate TReturns? ReturnsCallbackDelegate(ref int parameter1, ref int parameter2);
 
 	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
 	{
 		public readonly It<int>.Setup? Parameter1 = parameter1;
 		public readonly It<int>.Setup? Parameter2 = parameter2;
-		public CallbackDelegate? Callback;
-		public ReturnsCallbackDelegate? Returns;
-		public Exception? Exception;
+		private readonly Queue<ItemSetup> _queue = [];
+		private ItemSetup? _currentSetup;
+
+		public void Add(in CallbackDelegate callback)
+		{
+			var currentSetup = new ItemSetup(callback);
+			_queue.Enqueue(currentSetup);
+			_currentSetup = currentSetup;
+		}
+
+		public void Add(in ReturnsCallbackDelegate returns)
+		{
+			if (_currentSetup is null)
+			{
+				_queue.Enqueue(new ItemSetup(returns: returns));
+			}
+			else
+			{
+				_currentSetup.Returns = returns;
+				_currentSetup = null;
+			}
+		}
+
+		public void Add(in Exception exception)
+		{
+			if (_currentSetup is null)
+			{
+				_queue.Enqueue(new ItemSetup(exception: exception));
+			}
+			else
+			{
+				_currentSetup.Exception = exception;
+				_currentSetup = null;
+			}
+		}
+
+		public ItemSetup GetSetup()
+		{
+			return _queue.Count switch
+			{
+				0 => ItemSetup.Default,
+				1 => _queue.Peek(),
+				_ => _queue.Dequeue(),
+			};
+		}
+	}
+
+	private sealed class ItemSetup(in CallbackDelegate? callback = null, in ReturnsCallbackDelegate? returns = null, in Exception? exception = null)
+	{
+		public static readonly ItemSetup Default = new();
+
+		public readonly CallbackDelegate? Callback = callback;
+		public ReturnsCallbackDelegate? Returns = returns;
+		public Exception? Exception = exception;
 	}
 
 	private sealed class Comparer : IComparer<Item>

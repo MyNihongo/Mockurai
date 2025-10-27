@@ -4,9 +4,10 @@ public sealed class Setup : SetupBase<Action>
 {
 	public void Invoke()
 	{
-		CallbackDelegate?.Invoke();
+		var x = GetSetup();
+		x.Callback?.Invoke();
 
-		if (Exception is not null)
-			throw Exception;
+		if (x.Exception is not null)
+			throw x.Exception;
 	}
 }

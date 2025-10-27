@@ -4,12 +4,13 @@ public sealed class SetupWithOutParameter<TParameter> : SetupBase<ActionOut<TPar
 {
 	public void Invoke(out TParameter? parameter)
 	{
-		if (CallbackDelegate is not null)
-			CallbackDelegate.Invoke(out parameter);
+		var x = GetSetup();
+		if (x.Callback is not null)
+			x.Callback.Invoke(out parameter);
 		else
 			parameter = default!;
 
-		if (Exception is not null)
-			throw Exception;
+		if (x.Exception is not null)
+			throw x.Exception;
 	}
 }

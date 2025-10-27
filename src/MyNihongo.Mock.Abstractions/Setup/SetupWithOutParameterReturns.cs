@@ -4,17 +4,18 @@ public sealed class SetupWithOutParameter<TParameter, TReturns> : SetupBaseRetur
 {
 	public bool Execute(out TParameter? parameter, out TReturns? returnValue)
 	{
-		if (CallbackDelegate is not null)
-			CallbackDelegate.Invoke(out parameter);
+		var x = GetSetup();
+		if (x.Callback is not null)
+			x.Callback.Invoke(out parameter);
 		else
 			parameter = default!;
 
-		if (Exception is not null)
-			throw Exception;
+		if (x.Exception is not null)
+			throw x.Exception;
 
-		if (ReturnsDelegate is not null)
+		if (x.Returns is not null)
 		{
-			returnValue = ReturnsDelegate(out parameter);
+			returnValue = x.Returns(out parameter);
 			return true;
 		}
 
@@ -22,12 +23,12 @@ public sealed class SetupWithOutParameter<TParameter, TReturns> : SetupBaseRetur
 		return false;
 	}
 
-	public override void Returns(TReturns? value)
+	public override void Returns(TReturns? returns)
 	{
 		Returns((out TParameter parameter) =>
 		{
 			parameter = default!;
-			return value;
+			return returns;
 		});
 	}
 }

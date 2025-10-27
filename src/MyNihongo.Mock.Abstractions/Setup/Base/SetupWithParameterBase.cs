@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock;
 
-public abstract class SetupWithParameterBase<TParameter, TDelegate> : ISetup
+public abstract class SetupWithParameterBase<TParameter, TCallback> : ISetup
 {
 	private static readonly Comparer SortComparer = new();
 	protected SetupContainer<Item>? Setups;
@@ -14,12 +14,12 @@ public abstract class SetupWithParameterBase<TParameter, TDelegate> : ISetup
 		Setups.Add(_currentSetup);
 	}
 
-	public void Callback(in TDelegate callback)
+	public void Callback(in TCallback callback)
 	{
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Callback = callback;
+		_currentSetup.Add(callback);
 	}
 
 	public void Throws(in Exception exception)
@@ -27,14 +27,52 @@ public abstract class SetupWithParameterBase<TParameter, TDelegate> : ISetup
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Exception = exception;
+		_currentSetup.Add(exception);
 	}
 
 	protected sealed class Item(in It<TParameter>.Setup? parameter)
 	{
 		public readonly It<TParameter>.Setup? Parameter = parameter;
-		public TDelegate? Callback;
-		public Exception? Exception;
+		private readonly Queue<ItemSetup> _queue = [];
+		private ItemSetup? _currentSetup;
+
+		public void Add(in TCallback callback)
+		{
+			var currentSetup = new ItemSetup(callback);
+			_queue.Enqueue(currentSetup);
+			_currentSetup = currentSetup;
+		}
+
+		public void Add(in Exception exception)
+		{
+			if (_currentSetup is null)
+			{
+				_queue.Enqueue(new ItemSetup(exception: exception));
+			}
+			else
+			{
+				_currentSetup.Exception = exception;
+				_currentSetup = null;
+			}
+		}
+
+		public ItemSetup GetSetup()
+		{
+			return _queue.Count switch
+			{
+				0 => ItemSetup.Default,
+				1 => _queue.Peek(),
+				_ => _queue.Dequeue(),
+			};
+		}
+	}
+
+	protected sealed class ItemSetup(in TCallback? callback = default, in Exception? exception = null)
+	{
+		public static readonly ItemSetup Default = new();
+
+		public readonly TCallback? Callback = callback;
+		public Exception? Exception = exception;
 	}
 
 	private sealed class Comparer : IComparer<Item>

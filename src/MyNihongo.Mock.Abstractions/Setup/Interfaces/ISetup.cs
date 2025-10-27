@@ -7,5 +7,5 @@ public interface ISetup
 
 public interface ISetup<in T> : ISetup
 {
-	void Returns(T? value);
+	void Returns(T? returns);
 }
