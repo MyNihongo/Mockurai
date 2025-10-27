@@ -1025,8 +1025,8 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 
 		var fixture = CreateFixture<SetupRefIntRefInt>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Throws(new Exception(expectedMessage));
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
+		fixture.Throws(new Exception(expectedMessage));
 
 		int inputValue1 = 99, inputValue2 = 11;
 		var actual = () => fixture.Invoke(ref inputValue1, ref inputValue2);
@@ -1085,8 +1085,8 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 
 		var fixture = CreateFixture<SetupRefIntRefInt>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Throws(new Exception(expectedMessage));
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
+		fixture.Throws(new Exception(expectedMessage));
 
 		var actual = () => fixture.Invoke(ref setupValue1, ref setupValue2);
 
@@ -1143,8 +1143,8 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 
 		var fixture = CreateFixture<SetupRefIntRefInt>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Throws(new Exception(expectedMessage));
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
+		fixture.Throws(new Exception(expectedMessage));
 
 		int inputValue1 = 99, inputValue2 = 11;
 		var actual = () => fixture.Invoke(ref inputValue1, ref inputValue2);
@@ -1739,6 +1739,7 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
 
 		var fixture = CreateFixture<SetupRefIntRefInt>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Throws(new NullReferenceException(errorMessage2));
 
@@ -1763,6 +1764,7 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		var callback = 0;
 
 		var fixture = CreateFixture<SetupRefIntRefInt>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Callback((ref _, ref _) => callback++);
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Throws(new NullReferenceException(errorMessage2));
@@ -1791,6 +1793,7 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		var callback = 0;
 
 		var fixture = CreateFixture<SetupRefIntRefInt>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Callback((ref _, ref _) => callback++);
 		fixture.Throws(new NullReferenceException(errorMessage2));
@@ -1819,6 +1822,7 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		int callback1 = 10, callback2 = 0;
 
 		var fixture = CreateFixture<SetupRefIntRefInt>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Callback((ref _, ref _) => callback1++);
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Callback((ref _, ref _) => callback2++);
