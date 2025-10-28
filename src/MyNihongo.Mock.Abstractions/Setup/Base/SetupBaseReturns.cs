@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock;
 
-public abstract class SetupBaseReturns<TReturns, TCallback, TReturnsCallback> : ISetup<TReturns>
+public abstract class SetupBaseReturns<TCallback, TReturns, TReturnsCallback>
 {
 	private readonly Queue<ItemSetup> _queue = [];
 	private ItemSetup? _currentSetup;

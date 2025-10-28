@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock;
 
-public abstract class SetupWithParameterBase<TParameter, TCallback> : ISetup
+public abstract class SetupWithParameterBase<TParameter, TCallback>
 {
 	private static readonly Comparer SortComparer = new();
 	protected SetupContainer<Item>? Setups;
