@@ -1,7 +1,7 @@
 namespace MyNihongo.Mock.Sample;
 
 [Obsolete("Will be generated")]
-public sealed class SetupIntInt : ISetup
+public sealed class SetupIntInt
 {
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;
@@ -126,7 +126,7 @@ public sealed class SetupIntInt : ISetup
 }
 
 [Obsolete("Will be generated")]
-public sealed class SetupIntInt<TReturns> : ISetup<TReturns>
+public sealed class SetupIntInt<TReturns>
 {
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;
@@ -292,7 +292,7 @@ public sealed class SetupIntInt<TReturns> : ISetup<TReturns>
 }
 
 [Obsolete("Will be generated")]
-public sealed class SetupRefIntInt : ISetup
+public sealed class SetupRefIntInt
 {
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;
@@ -419,7 +419,7 @@ public sealed class SetupRefIntInt : ISetup
 }
 
 [Obsolete("Will be generated")]
-public sealed class SetupRefIntInt<TReturns> : ISetup<TReturns>
+public sealed class SetupRefIntInt<TReturns>
 {
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;
@@ -588,7 +588,7 @@ public sealed class SetupRefIntInt<TReturns> : ISetup<TReturns>
 }
 
 [Obsolete("Will be generated")]
-public sealed class SetupIntRefInt : ISetup
+public sealed class SetupIntRefInt
 {
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;
@@ -715,7 +715,7 @@ public sealed class SetupIntRefInt : ISetup
 }
 
 [Obsolete("Will be generated")]
-public sealed class SetupIntRefInt<TReturns> : ISetup<TReturns>
+public sealed class SetupIntRefInt<TReturns>
 {
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;
@@ -884,7 +884,7 @@ public sealed class SetupIntRefInt<TReturns> : ISetup<TReturns>
 }
 
 [Obsolete("Will be generated")]
-public sealed class SetupRefIntRefInt : ISetup
+public sealed class SetupRefIntRefInt
 {
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;
@@ -1011,7 +1011,7 @@ public sealed class SetupRefIntRefInt : ISetup
 }
 
 [Obsolete("Will be generated")]
-public sealed class SetupRefIntRefInt<TReturns> : ISetup<TReturns>
+public sealed class SetupRefIntRefInt<TReturns>
 {
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;

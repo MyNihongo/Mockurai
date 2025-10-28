@@ -2840,8 +2840,8 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 
 		var fixture = CreateFixture<SetupRefIntInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Returns(returnValue);
 		fixture.Callback((ref x, y) => callbackValue = x - y + 1);
+		fixture.Returns(returnValue);
 
 		var inputValue1 = 99;
 		const int inputValue2 = 11;
