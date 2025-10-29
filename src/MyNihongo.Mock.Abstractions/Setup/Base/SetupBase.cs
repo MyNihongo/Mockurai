@@ -1,18 +1,20 @@
 namespace MyNihongo.Mock;
 
-public abstract class SetupBase<TCallback>
+public abstract class SetupBase<TCallback> : ISetup<TCallback>
 {
 	private readonly Queue<ItemSetup> _queue = [];
 	private ItemSetup? _currentSetup;
 
-	public void Callback(in TCallback callback)
+	public ISetup<TCallback> Callback(in TCallback callback)
 	{
 		var currentSetup = new ItemSetup(callback);
 		_queue.Enqueue(currentSetup);
 		_currentSetup = currentSetup;
+
+		return this;
 	}
 
-	public void Throws(in Exception exception)
+	public ISetup<TCallback> Throws(in Exception exception)
 	{
 		if (_currentSetup is null)
 		{
@@ -23,6 +25,8 @@ public abstract class SetupBase<TCallback>
 			_currentSetup.Exception = exception;
 			_currentSetup = null;
 		}
+
+		return this;
 	}
 
 	protected ItemSetup GetSetup()

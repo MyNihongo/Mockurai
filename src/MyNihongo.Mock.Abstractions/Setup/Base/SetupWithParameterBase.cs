@@ -1,33 +1,37 @@
 namespace MyNihongo.Mock;
 
-public abstract class SetupWithParameterBase<TParameter, TCallback>
+public abstract class SetupWithParameterBase<TParameter, TCallback> : ISetup<TCallback>
 {
 	private static readonly Comparer SortComparer = new();
 	protected SetupContainer<Item>? Setups;
 	private Item? _currentSetup;
 
-	public void SetupParameter(in It<TParameter> parameter)
+	public ISetup<TCallback> SetupParameter(in It<TParameter> parameter)
 	{
 		_currentSetup = new Item(parameter.ValueSetup);
 
 		Setups ??= new SetupContainer<Item>(SortComparer);
 		Setups.Add(_currentSetup);
+
+		return this;
 	}
 
-	public void Callback(in TCallback callback)
+	public ISetup<TCallback> Callback(in TCallback callback)
 	{
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
 		_currentSetup.Add(callback);
+		return this;
 	}
 
-	public void Throws(in Exception exception)
+	public ISetup<TCallback> Throws(in Exception exception)
 	{
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
 		_currentSetup.Add(exception);
+		return this;
 	}
 
 	protected sealed class Item(in It<TParameter>.Setup? parameter)

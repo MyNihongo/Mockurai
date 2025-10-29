@@ -23,9 +23,9 @@ public sealed class SetupWithOutParameter<TParameter, TReturns> : SetupBaseRetur
 		return false;
 	}
 
-	public override void Returns(TReturns? returns)
+	public override ISetup<ActionOut<TParameter>, TReturns, FuncOut<TParameter, TReturns?>> Returns(TReturns? returns)
 	{
-		Returns((out TParameter parameter) =>
+		return Returns((out TParameter parameter) =>
 		{
 			parameter = default!;
 			return returns;

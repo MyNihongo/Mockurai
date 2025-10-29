@@ -33,8 +33,8 @@ public sealed class SetupWithParameter<TParameter, TReturns> : SetupWithParamete
 		return false;
 	}
 
-	public override void Returns(TReturns? returns)
+	public override ISetup<Action<TParameter>, TReturns, Func<TParameter, TReturns?>> Returns(TReturns? returns)
 	{
-		Returns(_ => returns);
+		return Returns(_ => returns);
 	}
 }
