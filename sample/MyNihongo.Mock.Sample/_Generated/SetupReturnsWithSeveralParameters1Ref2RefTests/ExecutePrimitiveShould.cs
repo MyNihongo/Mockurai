@@ -2821,6 +2821,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
+		fixture.And();
 		fixture.Returns(returnValue);
 
 		int inputValue1 = 99, inputValue2 = 11;
@@ -2841,8 +2842,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 		fixture.Throws(new Exception(expectedMessage));
+		fixture.And();
+		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 
 		int inputValue1 = 99, inputValue2 = 11;
 		Action actual = () => fixture.Execute(ref inputValue1, ref inputValue2, out _);
@@ -2926,6 +2928,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
+		fixture.And();
 		fixture.Returns(returnValue);
 
 		var hasValue = fixture.Execute(ref setupValue1, ref setupValue2, out var actual);
@@ -2947,6 +2950,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
+		fixture.And();
 		fixture.Throws(new Exception(expectedMessage));
 
 		Action actual = () => fixture.Execute(ref setupValue1, ref setupValue2, out _);
@@ -3029,6 +3033,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
+		fixture.And();
 		fixture.Returns(returnValue);
 
 		int inputValue1 = 99, inputValue2 = 11;
@@ -3050,6 +3055,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
+		fixture.And();
 		fixture.Throws(new Exception(expectedMessage));
 
 		int inputValue1 = 99, inputValue2 = 11;
@@ -3806,6 +3812,40 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 
 		int parameter1 = 123, parameter2 = 234;
 		var actual1 = fixture.Execute(ref parameter1, ref parameter2, out var returnValue1);
+		Assert.False(actual1);
+		Assert.Null(returnValue1);
+
+		var actual2 = fixture.Execute(ref parameter1, ref parameter2, out var returnValue2);
+		Assert.True(actual2);
+		Assert.Equal(setupValue1, returnValue2);
+
+		var actual3 = fixture.Execute(ref parameter1, ref parameter2, out var returnValue3);
+		Assert.True(actual3);
+		Assert.Equal(setupValue2, returnValue3);
+
+		var actual4 = fixture.Execute(ref parameter1, ref parameter2, out var returnValue4);
+		Assert.True(actual4);
+		Assert.Equal(setupValue2, returnValue4);
+
+		const int expectedCallback = 1;
+		Assert.Equal(expectedCallback, callback);
+	}
+
+	[Fact]
+	public void ReturnDifferentValuesWithCallback2()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		var callback = 0;
+
+		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
+		fixture.Callback((ref _, ref _) => callback++);
+		fixture.And();
+		fixture.Returns(setupValue1);
+		fixture.Returns(setupValue2);
+
+		int parameter1 = 123, parameter2 = 234;
+		var actual1 = fixture.Execute(ref parameter1, ref parameter2, out var returnValue1);
 		Assert.True(actual1);
 		Assert.Equal(setupValue1, returnValue1);
 
@@ -3822,7 +3862,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	}
 
 	[Fact]
-	public void ReturnDifferentValuesWithCallback2()
+	public void ReturnDifferentValuesWithCallback3()
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		var callback = 0;
@@ -3831,6 +3871,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Returns(setupValue1);
 		fixture.Callback((ref _, ref _) => callback++);
+		fixture.And();
 		fixture.Returns(setupValue2);
 
 		int parameter1 = 123, parameter2 = 234;
@@ -3851,7 +3892,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	}
 
 	[Fact]
-	public void ReturnDifferentValuesWithCallback3()
+	public void ReturnDifferentValuesWithCallback4()
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		int callback1 = 10, callback2 = 0;
@@ -3859,9 +3900,11 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
 		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Callback((ref _, ref _) => callback1++);
+		fixture.And();
 		fixture.Returns(setupValue1);
-		fixture.Callback((ref _, ref _) => callback2++);
 		fixture.Returns(setupValue2);
+		fixture.And();
+		fixture.Callback((ref _, ref _) => callback2++);
 
 		int parameter1 = 123, parameter2 = 234;
 		var actual1 = fixture.Execute(ref parameter1, ref parameter2, out var returnValue1);
@@ -3918,6 +3961,38 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.Throws(new NullReferenceException(errorMessage2));
 
 		int parameter1 = 123, parameter2 = 234;
+		fixture.Execute(ref parameter1, ref parameter2, out _);
+
+		Action actual2 = () => fixture.Execute(ref parameter1, ref parameter2, out _);
+		var exception2 = Assert.Throws<COMException>(actual2);
+		Assert.Equal(errorMessage1, exception2.Message);
+
+		Action actual3 = () => fixture.Execute(ref parameter1, ref parameter2, out _);
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		Action actual4 = () => fixture.Execute(ref parameter1, ref parameter2, out _);
+		var exception4 = Assert.Throws<NullReferenceException>(actual4);
+		Assert.Equal(errorMessage2, exception4.Message);
+
+		const int expectedCallback = 1;
+		Assert.Equal(expectedCallback, callback);
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback2()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		var callback = 0;
+
+		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
+		fixture.Callback((ref _, ref _) => callback++);
+		fixture.And();
+		fixture.Throws(new COMException(errorMessage1));
+		fixture.Throws(new NullReferenceException(errorMessage2));
+
+		int parameter1 = 123, parameter2 = 234;
 		Action actual1 = () => fixture.Execute(ref parameter1, ref parameter2, out _);
 		var exception1 = Assert.Throws<COMException>(actual1);
 		Assert.Equal(errorMessage1, exception1.Message);
@@ -3935,7 +4010,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	}
 
 	[Fact]
-	public void ThrowDifferentExceptionsWithCallback2()
+	public void ThrowDifferentExceptionsWithCallback3()
 	{
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
 		var callback = 0;
@@ -3944,6 +4019,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Callback((ref _, ref _) => callback++);
+		fixture.And();
 		fixture.Throws(new NullReferenceException(errorMessage2));
 
 		int parameter1 = 123, parameter2 = 234;
@@ -3964,7 +4040,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	}
 
 	[Fact]
-	public void ThrowDifferentExceptionsWithCallback3()
+	public void ThrowDifferentExceptionsWithCallback4()
 	{
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
 		int callback1 = 10, callback2 = 0;
@@ -3972,7 +4048,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
 		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Callback((ref _, ref _) => callback1++);
+		fixture.And();
 		fixture.Throws(new COMException(errorMessage1));
+		fixture.And();
 		fixture.Callback((ref _, ref _) => callback2++);
 		fixture.Throws(new NullReferenceException(errorMessage2));
 
