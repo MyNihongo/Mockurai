@@ -1,32 +1,39 @@
 namespace MyNihongo.Mock;
 
-public abstract class SetupBase<TCallback> : ISetup<TCallback>
+public abstract class SetupBase<TCallback> : ISetupCallbackJoin<TCallback>, ISetupCallback<TCallback>, ISetupThrowsJoin<TCallback>, ISetupThrows<TCallback>
 {
 	private readonly Queue<ItemSetup> _queue = [];
-	private ItemSetup? _currentSetup;
+	private ItemSetup? _currentItem;
+	private bool _andContinue;
 
-	public ISetup<TCallback> Callback(in TCallback callback)
+	public void Callback(in TCallback callback)
 	{
-		var currentSetup = new ItemSetup(callback);
-		_queue.Enqueue(currentSetup);
-		_currentSetup = currentSetup;
-
-		return this;
-	}
-
-	public ISetup<TCallback> Throws(in Exception exception)
-	{
-		if (_currentSetup is null)
+		if (_andContinue && _currentItem is not null)
 		{
-			_queue.Enqueue(new ItemSetup(exception: exception));
+			_currentItem.Callback = callback;
+			_andContinue = false;
+			_currentItem = null;
 		}
 		else
 		{
-			_currentSetup.Exception = exception;
-			_currentSetup = null;
+			_currentItem = new ItemSetup(callback);
+			_queue.Enqueue(_currentItem);
 		}
+	}
 
-		return this;
+	public void Throws(in Exception exception)
+	{
+		if (_andContinue && _currentItem is not null)
+		{
+			_currentItem.Exception = exception;
+			_andContinue = false;
+			_currentItem = null;
+		}
+		else
+		{
+			_currentItem = new ItemSetup(exception: exception);
+			_queue.Enqueue(_currentItem);
+		}
 	}
 
 	protected ItemSetup GetSetup()
@@ -39,11 +46,47 @@ public abstract class SetupBase<TCallback> : ISetup<TCallback>
 		};
 	}
 
+	ISetupCallbackJoin<TCallback> ISetupCallbackChain<TCallback>.Callback(in TCallback callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetup<TCallback> ISetupCallback<TCallback>.Callback(in TCallback callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetupThrowsJoin<TCallback> ISetupThrowsChain<TCallback>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetup<TCallback> ISetupThrows<TCallback>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetupThrows<TCallback> ISetupCallbackJoin<TCallback>.And()
+	{
+		_andContinue = true;
+		return this;
+	}
+
+	ISetupCallback<TCallback> ISetupThrowsJoin<TCallback>.And()
+	{
+		_andContinue = true;
+		return this;
+	}
+
 	protected sealed class ItemSetup(in TCallback? callback = default, in Exception? exception = null)
 	{
 		public static readonly ItemSetup Default = new();
 
-		public readonly TCallback? Callback = callback;
+		public TCallback? Callback = callback;
 		public Exception? Exception = exception;
 	}
 }
