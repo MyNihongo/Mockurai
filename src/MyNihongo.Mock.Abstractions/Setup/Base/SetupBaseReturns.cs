@@ -77,18 +77,6 @@ public abstract class SetupBaseReturns<TCallback, TReturns, TReturnsCallback>
 		return this;
 	}
 
-	ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsChain<TCallback, TReturns, TReturnsCallback>.Throws(in Exception exception)
-	{
-		Throws(exception);
-		return this;
-	}
-
-	ISetup<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrows<TCallback, TReturns, TReturnsCallback>.Throws(in Exception exception)
-	{
-		Throws(exception);
-		return this;
-	}
-
 	ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsChain<TCallback, TReturns, TReturnsCallback>.Returns(in TReturns returns)
 	{
 		Returns(returns);
@@ -110,6 +98,18 @@ public abstract class SetupBaseReturns<TCallback, TReturns, TReturnsCallback>
 	ISetup<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrows<TCallback, TReturns, TReturnsCallback>.Returns(in TReturnsCallback returns)
 	{
 		Returns(returns);
+		return this;
+	}
+
+	ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsChain<TCallback, TReturns, TReturnsCallback>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetup<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrows<TCallback, TReturns, TReturnsCallback>.Throws(in Exception exception)
+	{
+		Throws(exception);
 		return this;
 	}
 

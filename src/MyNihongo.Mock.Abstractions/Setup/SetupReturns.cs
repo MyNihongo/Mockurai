@@ -20,8 +20,8 @@ public sealed class Setup<TReturns> : SetupBaseReturns<Action, TReturns, Func<TR
 		return false;
 	}
 
-	public override ISetup<Action, TReturns, Func<TReturns?>> Returns(TReturns? returns)
+	public override void Returns(TReturns? returns)
 	{
-		return Returns(() => returns);
+		Returns(() => returns);
 	}
 }
