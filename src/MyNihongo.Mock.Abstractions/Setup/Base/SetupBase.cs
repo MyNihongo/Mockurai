@@ -1,6 +1,8 @@
 namespace MyNihongo.Mock;
 
-public abstract class SetupBase<TCallback> : ISetupCallbackJoin<TCallback>, ISetupCallback<TCallback>, ISetupThrowsJoin<TCallback>, ISetupThrows<TCallback>
+public abstract class SetupBase<TCallback>
+	: ISetupCallbackJoin<TCallback>, ISetupCallback<TCallback>,
+		ISetupThrowsJoin<TCallback>, ISetupThrows<TCallback>
 {
 	private readonly Queue<ItemSetup> _queue = [];
 	private ItemSetup? _currentItem;
