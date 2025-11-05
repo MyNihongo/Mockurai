@@ -5,53 +5,53 @@ public abstract class SetupBaseReturns<TCallback, TReturns, TReturnsCallback>
 		ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback>, ISetupReturnsThrowsReset<TCallback, TReturns, TReturnsCallback>
 {
 	private readonly Queue<ItemSetup> _queue = [];
-	private ItemSetup? _currentItem;
+	private ItemSetup? _currentSetup;
 	private bool _andContinue;
 
 	public abstract void Returns(TReturns? returns);
 
 	public void Callback(in TCallback callback)
 	{
-		if (_andContinue && _currentItem is not null)
+		if (_andContinue && _currentSetup is not null)
 		{
-			_currentItem.Callback = callback;
+			_currentSetup.Callback = callback;
 			_andContinue = false;
-			_currentItem = null;
+			_currentSetup = null;
 		}
 		else
 		{
-			_currentItem = new ItemSetup(callback);
-			_queue.Enqueue(_currentItem);
+			_currentSetup = new ItemSetup(callback);
+			_queue.Enqueue(_currentSetup);
 		}
 	}
 
 	public void Returns(in TReturnsCallback returns)
 	{
-		if (_andContinue && _currentItem is not null)
+		if (_andContinue && _currentSetup is not null)
 		{
-			_currentItem.Returns = returns;
+			_currentSetup.Returns = returns;
 			_andContinue = false;
-			_currentItem = null;
+			_currentSetup = null;
 		}
 		else
 		{
-			_currentItem = new ItemSetup(returns: returns);
-			_queue.Enqueue(_currentItem);
+			_currentSetup = new ItemSetup(returns: returns);
+			_queue.Enqueue(_currentSetup);
 		}
 	}
 
 	public void Throws(in Exception exception)
 	{
-		if (_andContinue && _currentItem is not null)
+		if (_andContinue && _currentSetup is not null)
 		{
-			_currentItem.Exception = exception;
+			_currentSetup.Exception = exception;
 			_andContinue = false;
-			_currentItem = null;
+			_currentSetup = null;
 		}
 		else
 		{
-			_currentItem = new ItemSetup(exception: exception);
-			_queue.Enqueue(_currentItem);
+			_currentSetup = new ItemSetup(exception: exception);
+			_queue.Enqueue(_currentSetup);
 		}
 	}
 

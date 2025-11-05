@@ -5,36 +5,36 @@ public abstract class SetupBase<TCallback>
 		ISetupThrowsJoin<TCallback>, ISetupThrowsReset<TCallback>
 {
 	private readonly Queue<ItemSetup> _queue = [];
-	private ItemSetup? _currentItem;
+	private ItemSetup? _currentSetup;
 	private bool _andContinue;
 
 	public void Callback(in TCallback callback)
 	{
-		if (_andContinue && _currentItem is not null)
+		if (_andContinue && _currentSetup is not null)
 		{
-			_currentItem.Callback = callback;
+			_currentSetup.Callback = callback;
 			_andContinue = false;
-			_currentItem = null;
+			_currentSetup = null;
 		}
 		else
 		{
-			_currentItem = new ItemSetup(callback);
-			_queue.Enqueue(_currentItem);
+			_currentSetup = new ItemSetup(callback);
+			_queue.Enqueue(_currentSetup);
 		}
 	}
 
 	public void Throws(in Exception exception)
 	{
-		if (_andContinue && _currentItem is not null)
+		if (_andContinue && _currentSetup is not null)
 		{
-			_currentItem.Exception = exception;
+			_currentSetup.Exception = exception;
 			_andContinue = false;
-			_currentItem = null;
+			_currentSetup = null;
 		}
 		else
 		{
-			_currentItem = new ItemSetup(exception: exception);
-			_queue.Enqueue(_currentItem);
+			_currentSetup = new ItemSetup(exception: exception);
+			_queue.Enqueue(_currentSetup);
 		}
 	}
 

@@ -110,51 +110,51 @@ public abstract class SetupWithParameterBase<TParameter, TCallback, TReturns, TR
 	{
 		public readonly It<TParameter>.Setup? Parameter = parameter;
 		private readonly Queue<ItemSetup> _queue = [];
-		private ItemSetup? _currentItem;
+		private ItemSetup? _currentSetup;
 		public bool AndContinue;
 
 		public void Add(in TCallback callback)
 		{
-			if (AndContinue && _currentItem is not null)
+			if (AndContinue && _currentSetup is not null)
 			{
-				_currentItem.Callback = callback;
+				_currentSetup.Callback = callback;
 				AndContinue = false;
-				_currentItem = null;
+				_currentSetup = null;
 			}
 			else
 			{
-				_currentItem = new ItemSetup(callback);
-				_queue.Enqueue(_currentItem);
+				_currentSetup = new ItemSetup(callback);
+				_queue.Enqueue(_currentSetup);
 			}
 		}
 
 		public void Add(in TReturnsCallback returns)
 		{
-			if (AndContinue && _currentItem is not null)
+			if (AndContinue && _currentSetup is not null)
 			{
-				_currentItem.Returns = returns;
+				_currentSetup.Returns = returns;
 				AndContinue = false;
-				_currentItem = null;
+				_currentSetup = null;
 			}
 			else
 			{
-				_currentItem = new ItemSetup(returns: returns);
-				_queue.Enqueue(_currentItem);
+				_currentSetup = new ItemSetup(returns: returns);
+				_queue.Enqueue(_currentSetup);
 			}
 		}
 
 		public void Add(in Exception exception)
 		{
-			if (AndContinue && _currentItem is not null)
+			if (AndContinue && _currentSetup is not null)
 			{
-				_currentItem.Exception = exception;
+				_currentSetup.Exception = exception;
 				AndContinue = false;
-				_currentItem = null;
+				_currentSetup = null;
 			}
 			else
 			{
-				_currentItem = new ItemSetup(exception: exception);
-				_queue.Enqueue(_currentItem);
+				_currentSetup = new ItemSetup(exception: exception);
+				_queue.Enqueue(_currentSetup);
 			}
 		}
 

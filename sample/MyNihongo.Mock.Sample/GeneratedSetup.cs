@@ -2,10 +2,12 @@ namespace MyNihongo.Mock.Sample;
 
 [Obsolete("Will be generated")]
 public sealed class SetupIntInt
+	: ISetupCallbackJoin<Action<int, int>>, ISetupCallbackReset<Action<int, int>>,
+		ISetupThrowsJoin<Action<int, int>>, ISetupThrowsReset<Action<int, int>>
 {
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;
-	private Item? _currentSetup;
+	private Item? _currentItem;
 
 	public void Invoke(in int parameter1, in int parameter2)
 	{
@@ -29,26 +31,66 @@ public sealed class SetupIntInt
 
 	public void SetupParameters(in It<int> setup1, in It<int> setup2)
 	{
-		_currentSetup = new Item(setup1.ValueSetup, setup2.ValueSetup);
+		_currentItem = new Item(setup1.ValueSetup, setup2.ValueSetup);
 
 		_setups ??= new SetupContainer<Item>(SortComparer);
-		_setups.Add(_currentSetup);
+		_setups.Add(_currentItem);
 	}
 
 	public void Callback(in Action<int, int> callback)
 	{
-		if (_currentSetup is null)
+		if (_currentItem is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Add(callback);
+		_currentItem.Add(callback);
 	}
 
 	public void Throws(in Exception exception)
 	{
-		if (_currentSetup is null)
+		if (_currentItem is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentSetup.Add(exception);
+		_currentItem.Add(exception);
+	}
+
+	ISetupCallbackJoin<Action<int, int>> ISetupCallbackStart<Action<int, int>>.Callback(in Action<int, int> callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetup<Action<int, int>> ISetupCallbackReset<Action<int, int>>.Callback(in Action<int, int> callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetupThrowsJoin<Action<int, int>> ISetupThrowsStart<Action<int, int>>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetup<Action<int, int>> ISetupThrowsReset<Action<int, int>>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetupThrowsReset<Action<int, int>> ISetupCallbackJoin<Action<int, int>>.And()
+	{
+		if (_currentItem is not null)
+			_currentItem.AndContinue = true;
+
+		return this;
+	}
+
+	ISetupCallbackReset<Action<int, int>> ISetupThrowsJoin<Action<int, int>>.And()
+	{
+		if (_currentItem is not null)
+			_currentItem.AndContinue = true;
+
+		return this;
 	}
 
 	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
@@ -57,24 +99,35 @@ public sealed class SetupIntInt
 		public readonly It<int>.Setup? Parameter1 = parameter1;
 		public readonly It<int>.Setup? Parameter2 = parameter2;
 		private ItemSetup? _currentSetup;
+		public bool AndContinue;
 
 		public void Add(in Action<int, int> callback)
 		{
-			var currentSetup = new ItemSetup(callback);
-			_queue.Enqueue(currentSetup);
-			_currentSetup = currentSetup;
+			if (AndContinue && _currentSetup is not null)
+			{
+				_currentSetup.Callback = callback;
+				AndContinue = false;
+				_currentSetup = null;
+			}
+			else
+			{
+				_currentSetup = new ItemSetup(callback);
+				_queue.Enqueue(_currentSetup);
+			}
 		}
 
 		public void Add(in Exception exception)
 		{
-			if (_currentSetup is null)
+			if (AndContinue && _currentSetup is not null)
 			{
-				_queue.Enqueue(new ItemSetup(exception: exception));
+				_currentSetup.Exception = exception;
+				AndContinue = false;
+				_currentSetup = null;
 			}
 			else
 			{
-				_currentSetup.Exception = exception;
-				_currentSetup = null;
+				_currentSetup = new ItemSetup(exception: exception);
+				_queue.Enqueue(_currentSetup);
 			}
 		}
 
@@ -93,7 +146,7 @@ public sealed class SetupIntInt
 	{
 		public static readonly ItemSetup Default = new();
 
-		public readonly Action<int, int>? Callback = callback;
+		public Action<int, int>? Callback = callback;
 		public Exception? Exception = exception;
 	}
 
