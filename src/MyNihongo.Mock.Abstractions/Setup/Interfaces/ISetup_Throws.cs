@@ -1,16 +1,16 @@
 namespace MyNihongo.Mock;
 
-public interface ISetupThrows<TCallback>
-{
-	ISetup<TCallback> Throws(in Exception exception);
-}
-
-public interface ISetupThrowsChain<TCallback>
+public interface ISetupThrowsStart<TCallback>
 {
 	ISetupThrowsJoin<TCallback> Throws(in Exception exception);
 }
 
 public interface ISetupThrowsJoin<TCallback> : ISetup<TCallback>
 {
-	ISetupCallback<TCallback> And();
+	ISetupCallbackReset<TCallback> And();
+}
+
+public interface ISetupThrowsReset<TCallback>
+{
+	ISetup<TCallback> Throws(in Exception exception);
 }

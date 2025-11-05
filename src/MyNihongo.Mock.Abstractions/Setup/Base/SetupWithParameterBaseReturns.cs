@@ -1,8 +1,8 @@
 namespace MyNihongo.Mock;
 
 public abstract class SetupWithParameterBase<TParameter, TCallback, TReturns, TReturnsCallback>
-	: ISetupCallbackJoin<TCallback, TReturns, TReturnsCallback>, ISetupCallback<TCallback, TReturns, TReturnsCallback>,
-		ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback>, ISetupReturnsThrows<TCallback, TReturns, TReturnsCallback>
+	: ISetupCallbackJoin<TCallback, TReturns, TReturnsCallback>, ISetupCallbackReset<TCallback, TReturns, TReturnsCallback>,
+		ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback>, ISetupReturnsThrowsReset<TCallback, TReturns, TReturnsCallback>
 {
 	private static readonly Comparer SortComparer = new();
 	protected SetupContainer<Item>? Setups;
@@ -42,55 +42,55 @@ public abstract class SetupWithParameterBase<TParameter, TCallback, TReturns, TR
 		_currentSetup.Add(exception);
 	}
 
-	ISetupCallbackJoin<TCallback, TReturns, TReturnsCallback> ISetupCallbackChain<TCallback, TReturns, TReturnsCallback>.Callback(in TCallback callback)
+	ISetupCallbackJoin<TCallback, TReturns, TReturnsCallback> ISetupCallbackStart<TCallback, TReturns, TReturnsCallback>.Callback(in TCallback callback)
 	{
 		Callback(callback);
 		return this;
 	}
 
-	ISetup<TCallback, TReturns, TReturnsCallback> ISetupCallback<TCallback, TReturns, TReturnsCallback>.Callback(in TCallback callback)
+	ISetup<TCallback, TReturns, TReturnsCallback> ISetupCallbackReset<TCallback, TReturns, TReturnsCallback>.Callback(in TCallback callback)
 	{
 		Callback(callback);
 		return this;
 	}
 
-	ISetup<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrows<TCallback, TReturns, TReturnsCallback>.Returns(in TReturns returns)
+	ISetup<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsReset<TCallback, TReturns, TReturnsCallback>.Returns(in TReturns returns)
 	{
 		Returns(returns);
 		return this;
 	}
 
-	ISetup<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrows<TCallback, TReturns, TReturnsCallback>.Returns(in TReturnsCallback returns)
+	ISetup<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsReset<TCallback, TReturns, TReturnsCallback>.Returns(in TReturnsCallback returns)
 	{
 		Returns(returns);
 		return this;
 	}
 
-	ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsChain<TCallback, TReturns, TReturnsCallback>.Returns(in TReturns returns)
+	ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsStart<TCallback, TReturns, TReturnsCallback>.Returns(in TReturns returns)
 	{
 		Returns(returns);
 		return this;
 	}
 
-	ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsChain<TCallback, TReturns, TReturnsCallback>.Returns(in TReturnsCallback returns)
+	ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsStart<TCallback, TReturns, TReturnsCallback>.Returns(in TReturnsCallback returns)
 	{
 		Returns(returns);
 		return this;
 	}
 
-	ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsChain<TCallback, TReturns, TReturnsCallback>.Throws(in Exception exception)
+	ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsStart<TCallback, TReturns, TReturnsCallback>.Throws(in Exception exception)
 	{
 		Throws(exception);
 		return this;
 	}
 
-	ISetup<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrows<TCallback, TReturns, TReturnsCallback>.Throws(in Exception exception)
+	ISetup<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsReset<TCallback, TReturns, TReturnsCallback>.Throws(in Exception exception)
 	{
 		Throws(exception);
 		return this;
 	}
 
-	ISetupReturnsThrows<TCallback, TReturns, TReturnsCallback> ISetupCallbackJoin<TCallback, TReturns, TReturnsCallback>.And()
+	ISetupReturnsThrowsReset<TCallback, TReturns, TReturnsCallback> ISetupCallbackJoin<TCallback, TReturns, TReturnsCallback>.And()
 	{
 		if (_currentSetup is not null)
 			_currentSetup.AndContinue = true;
@@ -98,7 +98,7 @@ public abstract class SetupWithParameterBase<TParameter, TCallback, TReturns, TR
 		return this;
 	}
 
-	ISetupCallback<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback>.And()
+	ISetupCallbackReset<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback>.And()
 	{
 		if (_currentSetup is not null)
 			_currentSetup.AndContinue = true;

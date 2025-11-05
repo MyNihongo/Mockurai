@@ -1,8 +1,8 @@
 namespace MyNihongo.Mock;
 
 public abstract class SetupBase<TCallback>
-	: ISetupCallbackJoin<TCallback>, ISetupCallback<TCallback>,
-		ISetupThrowsJoin<TCallback>, ISetupThrows<TCallback>
+	: ISetupCallbackJoin<TCallback>, ISetupCallbackReset<TCallback>,
+		ISetupThrowsJoin<TCallback>, ISetupThrowsReset<TCallback>
 {
 	private readonly Queue<ItemSetup> _queue = [];
 	private ItemSetup? _currentItem;
@@ -48,37 +48,37 @@ public abstract class SetupBase<TCallback>
 		};
 	}
 
-	ISetupCallbackJoin<TCallback> ISetupCallbackChain<TCallback>.Callback(in TCallback callback)
+	ISetupCallbackJoin<TCallback> ISetupCallbackStart<TCallback>.Callback(in TCallback callback)
 	{
 		Callback(callback);
 		return this;
 	}
 
-	ISetup<TCallback> ISetupCallback<TCallback>.Callback(in TCallback callback)
+	ISetup<TCallback> ISetupCallbackReset<TCallback>.Callback(in TCallback callback)
 	{
 		Callback(callback);
 		return this;
 	}
 
-	ISetupThrowsJoin<TCallback> ISetupThrowsChain<TCallback>.Throws(in Exception exception)
+	ISetupThrowsJoin<TCallback> ISetupThrowsStart<TCallback>.Throws(in Exception exception)
 	{
 		Throws(exception);
 		return this;
 	}
 
-	ISetup<TCallback> ISetupThrows<TCallback>.Throws(in Exception exception)
+	ISetup<TCallback> ISetupThrowsReset<TCallback>.Throws(in Exception exception)
 	{
 		Throws(exception);
 		return this;
 	}
 
-	ISetupThrows<TCallback> ISetupCallbackJoin<TCallback>.And()
+	ISetupThrowsReset<TCallback> ISetupCallbackJoin<TCallback>.And()
 	{
 		_andContinue = true;
 		return this;
 	}
 
-	ISetupCallback<TCallback> ISetupThrowsJoin<TCallback>.And()
+	ISetupCallbackReset<TCallback> ISetupThrowsJoin<TCallback>.And()
 	{
 		_andContinue = true;
 		return this;

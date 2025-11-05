@@ -1,3 +1,3 @@
 namespace MyNihongo.Mock;
 
-public interface ISetup<TCallback> : ISetupCallbackChain<TCallback>, ISetupThrowsChain<TCallback>;
+public interface ISetup<TCallback> : ISetupCallbackStart<TCallback>, ISetupThrowsStart<TCallback>;

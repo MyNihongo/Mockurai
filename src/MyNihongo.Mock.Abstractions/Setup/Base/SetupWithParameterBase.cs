@@ -1,8 +1,8 @@
 namespace MyNihongo.Mock;
 
 public abstract class SetupWithParameterBase<TParameter, TCallback>
-	: ISetupCallbackJoin<TCallback>, ISetupCallback<TCallback>,
-		ISetupThrowsJoin<TCallback>, ISetupThrows<TCallback>
+	: ISetupCallbackJoin<TCallback>, ISetupCallbackReset<TCallback>,
+		ISetupThrowsJoin<TCallback>, ISetupThrowsReset<TCallback>
 {
 	private static readonly Comparer SortComparer = new();
 	protected SetupContainer<Item>? Setups;
@@ -32,31 +32,31 @@ public abstract class SetupWithParameterBase<TParameter, TCallback>
 		_currentSetup.Add(exception);
 	}
 
-	ISetupCallbackJoin<TCallback> ISetupCallbackChain<TCallback>.Callback(in TCallback callback)
+	ISetupCallbackJoin<TCallback> ISetupCallbackStart<TCallback>.Callback(in TCallback callback)
 	{
 		Callback(callback);
 		return this;
 	}
 
-	ISetup<TCallback> ISetupCallback<TCallback>.Callback(in TCallback callback)
+	ISetup<TCallback> ISetupCallbackReset<TCallback>.Callback(in TCallback callback)
 	{
 		Callback(callback);
 		return this;
 	}
 
-	ISetupThrowsJoin<TCallback> ISetupThrowsChain<TCallback>.Throws(in Exception exception)
+	ISetupThrowsJoin<TCallback> ISetupThrowsStart<TCallback>.Throws(in Exception exception)
 	{
 		Throws(exception);
 		return this;
 	}
 
-	ISetup<TCallback> ISetupThrows<TCallback>.Throws(in Exception exception)
+	ISetup<TCallback> ISetupThrowsReset<TCallback>.Throws(in Exception exception)
 	{
 		Throws(exception);
 		return this;
 	}
 
-	ISetupThrows<TCallback> ISetupCallbackJoin<TCallback>.And()
+	ISetupThrowsReset<TCallback> ISetupCallbackJoin<TCallback>.And()
 	{
 		if (_currentSetup is not null)
 			_currentSetup.AndContinue = true;
@@ -64,7 +64,7 @@ public abstract class SetupWithParameterBase<TParameter, TCallback>
 		return this;
 	}
 
-	ISetupCallback<TCallback> ISetupThrowsJoin<TCallback>.And()
+	ISetupCallbackReset<TCallback> ISetupThrowsJoin<TCallback>.And()
 	{
 		if (_currentSetup is not null)
 			_currentSetup.AndContinue = true;
