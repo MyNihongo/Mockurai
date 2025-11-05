@@ -7,7 +7,7 @@ public sealed class SetupIntInt
 {
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;
-	private Item? _currentItem;
+	private Item? _currentSetup;
 
 	public void Invoke(in int parameter1, in int parameter2)
 	{
@@ -31,26 +31,26 @@ public sealed class SetupIntInt
 
 	public void SetupParameters(in It<int> setup1, in It<int> setup2)
 	{
-		_currentItem = new Item(setup1.ValueSetup, setup2.ValueSetup);
+		_currentSetup = new Item(setup1.ValueSetup, setup2.ValueSetup);
 
 		_setups ??= new SetupContainer<Item>(SortComparer);
-		_setups.Add(_currentItem);
+		_setups.Add(_currentSetup);
 	}
 
 	public void Callback(in Action<int, int> callback)
 	{
-		if (_currentItem is null)
+		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentItem.Add(callback);
+		_currentSetup.Add(callback);
 	}
 
 	public void Throws(in Exception exception)
 	{
-		if (_currentItem is null)
+		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-		_currentItem.Add(exception);
+		_currentSetup.Add(exception);
 	}
 
 	ISetupCallbackJoin<Action<int, int>> ISetupCallbackStart<Action<int, int>>.Callback(in Action<int, int> callback)
@@ -79,16 +79,16 @@ public sealed class SetupIntInt
 
 	ISetupThrowsReset<Action<int, int>> ISetupCallbackJoin<Action<int, int>>.And()
 	{
-		if (_currentItem is not null)
-			_currentItem.AndContinue = true;
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
 
 		return this;
 	}
 
 	ISetupCallbackReset<Action<int, int>> ISetupThrowsJoin<Action<int, int>>.And()
 	{
-		if (_currentItem is not null)
-			_currentItem.AndContinue = true;
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
 
 		return this;
 	}
@@ -180,6 +180,8 @@ public sealed class SetupIntInt
 
 [Obsolete("Will be generated")]
 public sealed class SetupIntInt<TReturns>
+	: ISetupCallbackJoin<Action<int, int>, TReturns, Func<int, int, TReturns?>>, ISetupCallbackReset<Action<int, int>, TReturns, Func<int, int, TReturns?>>,
+		ISetupReturnsThrowsJoin<Action<int, int>, TReturns, Func<int, int, TReturns?>>, ISetupReturnsThrowsReset<Action<int, int>, TReturns, Func<int, int, TReturns?>>
 {
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;
@@ -255,6 +257,70 @@ public sealed class SetupIntInt<TReturns>
 		_currentSetup.Add(exception);
 	}
 
+	ISetupCallbackJoin<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupCallbackStart<Action<int, int>, TReturns, Func<int, int, TReturns?>>.Callback(in Action<int, int> callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetup<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupCallbackReset<Action<int, int>, TReturns, Func<int, int, TReturns?>>.Callback(in Action<int, int> callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetupReturnsThrowsJoin<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupReturnsThrowsStart<Action<int, int>, TReturns, Func<int, int, TReturns?>>.Returns(in TReturns returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetup<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupReturnsThrowsReset<Action<int, int>, TReturns, Func<int, int, TReturns?>>.Returns(in Func<int, int, TReturns?> returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetupReturnsThrowsJoin<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupReturnsThrowsStart<Action<int, int>, TReturns, Func<int, int, TReturns?>>.Returns(in Func<int, int, TReturns?> returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetup<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupReturnsThrowsReset<Action<int, int>, TReturns, Func<int, int, TReturns?>>.Returns(in TReturns returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetup<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupReturnsThrowsReset<Action<int, int>, TReturns, Func<int, int, TReturns?>>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetupReturnsThrowsJoin<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupReturnsThrowsStart<Action<int, int>, TReturns, Func<int, int, TReturns?>>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetupReturnsThrowsReset<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupCallbackJoin<Action<int, int>, TReturns, Func<int, int, TReturns?>>.And()
+	{
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
+
+		return this;
+	}
+
+	ISetupCallbackReset<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupReturnsThrowsJoin<Action<int, int>, TReturns, Func<int, int, TReturns?>>.And()
+	{
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
+
+		return this;
+	}
+
 	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
 	{
 		public readonly It<int>.Setup? Parameter1 = parameter1;
@@ -262,37 +328,50 @@ public sealed class SetupIntInt<TReturns>
 
 		private readonly Queue<ItemSetup> _queue = [];
 		private ItemSetup? _currentSetup;
+		public bool AndContinue;
 
 		public void Add(in Action<int, int> callback)
 		{
-			var currentSetup = new ItemSetup(callback);
-			_queue.Enqueue(currentSetup);
-			_currentSetup = currentSetup;
+			if (AndContinue && _currentSetup is not null)
+			{
+				_currentSetup.Callback = callback;
+				AndContinue = false;
+				_currentSetup = null;
+			}
+			else
+			{
+				_currentSetup = new ItemSetup(callback);
+				_queue.Enqueue(_currentSetup);
+			}
 		}
 
 		public void Add(in Func<int, int, TReturns?> returns)
 		{
-			if (_currentSetup is null)
+			if (AndContinue && _currentSetup is not null)
 			{
-				_queue.Enqueue(new ItemSetup(returns: returns));
+				_currentSetup.Returns = returns;
+				AndContinue = false;
+				_currentSetup = null;
 			}
 			else
 			{
-				_currentSetup.Returns = returns;
-				_currentSetup = null;
+				_currentSetup = new ItemSetup(returns: returns);
+				_queue.Enqueue(_currentSetup);
 			}
 		}
 
 		public void Add(in Exception exception)
 		{
-			if (_currentSetup is null)
+			if (AndContinue && _currentSetup is not null)
 			{
-				_queue.Enqueue(new ItemSetup(exception: exception));
+				_currentSetup.Exception = exception;
+				AndContinue = false;
+				_currentSetup = null;
 			}
 			else
 			{
-				_currentSetup.Exception = exception;
-				_currentSetup = null;
+				_currentSetup = new ItemSetup(exception: exception);
+				_queue.Enqueue(_currentSetup);
 			}
 		}
 
@@ -311,7 +390,7 @@ public sealed class SetupIntInt<TReturns>
 	{
 		public static readonly ItemSetup Default = new();
 
-		public readonly Action<int, int>? Callback = callback;
+		public Action<int, int>? Callback = callback;
 		public Func<int, int, TReturns?>? Returns = returns;
 		public Exception? Exception = exception;
 	}
@@ -346,10 +425,14 @@ public sealed class SetupIntInt<TReturns>
 
 [Obsolete("Will be generated")]
 public sealed class SetupRefIntInt
+	: ISetupCallbackJoin<SetupRefIntInt.CallbackDelegate>, ISetupCallbackReset<SetupRefIntInt.CallbackDelegate>,
+		ISetupThrowsJoin<SetupRefIntInt.CallbackDelegate>, ISetupThrowsReset<SetupRefIntInt.CallbackDelegate>
 {
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;
 	private Item? _currentSetup;
+
+	public delegate void CallbackDelegate(ref int parameter1, int parameter2);
 
 	public void Invoke(ref int parameter1, in int parameter2)
 	{
@@ -395,7 +478,45 @@ public sealed class SetupRefIntInt
 		_currentSetup.Add(exception);
 	}
 
-	public delegate void CallbackDelegate(ref int parameter1, int parameter2);
+	ISetupCallbackJoin<CallbackDelegate> ISetupCallbackStart<CallbackDelegate>.Callback(in CallbackDelegate callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetup<CallbackDelegate> ISetupCallbackReset<CallbackDelegate>.Callback(in CallbackDelegate callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetupThrowsJoin<CallbackDelegate> ISetupThrowsStart<CallbackDelegate>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetup<CallbackDelegate> ISetupThrowsReset<CallbackDelegate>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetupThrowsReset<CallbackDelegate> ISetupCallbackJoin<CallbackDelegate>.And()
+	{
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
+
+		return this;
+	}
+
+	ISetupCallbackReset<CallbackDelegate> ISetupThrowsJoin<CallbackDelegate>.And()
+	{
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
+
+		return this;
+	}
 
 	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
 	{
@@ -403,24 +524,35 @@ public sealed class SetupRefIntInt
 		public readonly It<int>.Setup? Parameter2 = parameter2;
 		private readonly Queue<ItemSetup> _queue = [];
 		private ItemSetup? _currentSetup;
+		public bool AndContinue;
 
 		public void Add(in CallbackDelegate callback)
 		{
-			var currentSetup = new ItemSetup(callback);
-			_queue.Enqueue(currentSetup);
-			_currentSetup = currentSetup;
+			if (AndContinue && _currentSetup is not null)
+			{
+				_currentSetup.Callback = callback;
+				AndContinue = false;
+				_currentSetup = null;
+			}
+			else
+			{
+				_currentSetup = new ItemSetup(callback);
+				_queue.Enqueue(_currentSetup);
+			}
 		}
 
 		public void Add(in Exception exception)
 		{
-			if (_currentSetup is null)
+			if (AndContinue && _currentSetup is not null)
 			{
-				_queue.Enqueue(new ItemSetup(exception: exception));
+				_currentSetup.Exception = exception;
+				AndContinue = false;
+				_currentSetup = null;
 			}
 			else
 			{
-				_currentSetup.Exception = exception;
-				_currentSetup = null;
+				_currentSetup = new ItemSetup(exception: exception);
+				_queue.Enqueue(_currentSetup);
 			}
 		}
 
@@ -439,7 +571,7 @@ public sealed class SetupRefIntInt
 	{
 		public static readonly ItemSetup Default = new();
 
-		public readonly CallbackDelegate? Callback = callback;
+		public CallbackDelegate? Callback = callback;
 		public Exception? Exception = exception;
 	}
 
@@ -473,10 +605,16 @@ public sealed class SetupRefIntInt
 
 [Obsolete("Will be generated")]
 public sealed class SetupRefIntInt<TReturns>
+	: ISetupCallbackJoin<SetupRefIntInt<TReturns>.CallbackDelegate, TReturns, SetupRefIntInt<TReturns>.ReturnsCallbackDelegate>, ISetupCallbackReset<SetupRefIntInt<TReturns>.CallbackDelegate, TReturns, SetupRefIntInt<TReturns>.ReturnsCallbackDelegate>,
+		ISetupReturnsThrowsJoin<SetupRefIntInt<TReturns>.CallbackDelegate, TReturns, SetupRefIntInt<TReturns>.ReturnsCallbackDelegate>, ISetupReturnsThrowsReset<SetupRefIntInt<TReturns>.CallbackDelegate, TReturns, SetupRefIntInt<TReturns>.ReturnsCallbackDelegate>
 {
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;
 	private Item? _currentSetup;
+
+	public delegate void CallbackDelegate(ref int parameter1, int parameter2);
+
+	public delegate TReturns? ReturnsCallbackDelegate(ref int parameter1, int parameter2);
 
 	public bool Execute(ref int parameter1, in int parameter2, out TReturns? returnValue)
 	{
@@ -548,9 +686,69 @@ public sealed class SetupRefIntInt<TReturns>
 		_currentSetup.Add(exception);
 	}
 
-	public delegate void CallbackDelegate(ref int parameter1, int parameter2);
+	ISetupCallbackJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupCallbackStart<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Callback(in CallbackDelegate callback)
+	{
+		Callback(callback);
+		return this;
+	}
 
-	public delegate TReturns? ReturnsCallbackDelegate(ref int parameter1, int parameter2);
+	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupCallbackReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Callback(in CallbackDelegate callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetupReturnsThrowsJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsStart<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in TReturns returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in ReturnsCallbackDelegate returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetupReturnsThrowsJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsStart<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in ReturnsCallbackDelegate returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in TReturns returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetupReturnsThrowsJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsStart<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupCallbackJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.And()
+	{
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
+
+		return this;
+	}
+
+	ISetupCallbackReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.And()
+	{
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
+
+		return this;
+	}
 
 	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
 	{
@@ -558,37 +756,50 @@ public sealed class SetupRefIntInt<TReturns>
 		public readonly It<int>.Setup? Parameter2 = parameter2;
 		private readonly Queue<ItemSetup> _queue = [];
 		private ItemSetup? _currentSetup;
+		public bool AndContinue;
 
 		public void Add(in CallbackDelegate callback)
 		{
-			var currentSetup = new ItemSetup(callback);
-			_queue.Enqueue(currentSetup);
-			_currentSetup = currentSetup;
+			if (AndContinue && _currentSetup is not null)
+			{
+				_currentSetup.Callback = callback;
+				AndContinue = false;
+				_currentSetup = null;
+			}
+			else
+			{
+				_currentSetup = new ItemSetup(callback);
+				_queue.Enqueue(_currentSetup);
+			}
 		}
 
 		public void Add(in ReturnsCallbackDelegate returns)
 		{
-			if (_currentSetup is null)
+			if (AndContinue && _currentSetup is not null)
 			{
-				_queue.Enqueue(new ItemSetup(returns: returns));
+				_currentSetup.Returns = returns;
+				AndContinue = false;
+				_currentSetup = null;
 			}
 			else
 			{
-				_currentSetup.Returns = returns;
-				_currentSetup = null;
+				_currentSetup = new ItemSetup(returns: returns);
+				_queue.Enqueue(_currentSetup);
 			}
 		}
 
 		public void Add(in Exception exception)
 		{
-			if (_currentSetup is null)
+			if (AndContinue && _currentSetup is not null)
 			{
-				_queue.Enqueue(new ItemSetup(exception: exception));
+				_currentSetup.Exception = exception;
+				AndContinue = false;
+				_currentSetup = null;
 			}
 			else
 			{
-				_currentSetup.Exception = exception;
-				_currentSetup = null;
+				_currentSetup = new ItemSetup(exception: exception);
+				_queue.Enqueue(_currentSetup);
 			}
 		}
 
@@ -607,7 +818,7 @@ public sealed class SetupRefIntInt<TReturns>
 	{
 		public static readonly ItemSetup Default = new();
 
-		public readonly CallbackDelegate? Callback = callback;
+		public CallbackDelegate? Callback = callback;
 		public ReturnsCallbackDelegate? Returns = returns;
 		public Exception? Exception = exception;
 	}
@@ -642,10 +853,14 @@ public sealed class SetupRefIntInt<TReturns>
 
 [Obsolete("Will be generated")]
 public sealed class SetupIntRefInt
+	: ISetupCallbackJoin<SetupIntRefInt.CallbackDelegate>, ISetupCallbackReset<SetupIntRefInt.CallbackDelegate>,
+		ISetupThrowsJoin<SetupIntRefInt.CallbackDelegate>, ISetupThrowsReset<SetupIntRefInt.CallbackDelegate>
 {
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;
 	private Item? _currentSetup;
+
+	public delegate void CallbackDelegate(int parameter1, ref int parameter2);
 
 	public void Invoke(in int parameter1, ref int parameter2)
 	{
@@ -691,7 +906,45 @@ public sealed class SetupIntRefInt
 		_currentSetup.Add(exception);
 	}
 
-	public delegate void CallbackDelegate(int parameter1, ref int parameter2);
+	ISetupCallbackJoin<CallbackDelegate> ISetupCallbackStart<CallbackDelegate>.Callback(in CallbackDelegate callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetup<CallbackDelegate> ISetupCallbackReset<CallbackDelegate>.Callback(in CallbackDelegate callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetupThrowsJoin<CallbackDelegate> ISetupThrowsStart<CallbackDelegate>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetup<CallbackDelegate> ISetupThrowsReset<CallbackDelegate>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetupThrowsReset<CallbackDelegate> ISetupCallbackJoin<CallbackDelegate>.And()
+	{
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
+
+		return this;
+	}
+
+	ISetupCallbackReset<CallbackDelegate> ISetupThrowsJoin<CallbackDelegate>.And()
+	{
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
+
+		return this;
+	}
 
 	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
 	{
@@ -699,24 +952,35 @@ public sealed class SetupIntRefInt
 		public readonly It<int>.Setup? Parameter2 = parameter2;
 		private readonly Queue<ItemSetup> _queue = [];
 		private ItemSetup? _currentSetup;
+		public bool AndContinue;
 
 		public void Add(in CallbackDelegate callback)
 		{
-			var currentSetup = new ItemSetup(callback);
-			_queue.Enqueue(currentSetup);
-			_currentSetup = currentSetup;
+			if (AndContinue && _currentSetup is not null)
+			{
+				_currentSetup.Callback = callback;
+				AndContinue = false;
+				_currentSetup = null;
+			}
+			else
+			{
+				_currentSetup = new ItemSetup(callback);
+				_queue.Enqueue(_currentSetup);
+			}
 		}
 
 		public void Add(in Exception exception)
 		{
-			if (_currentSetup is null)
+			if (AndContinue && _currentSetup is not null)
 			{
-				_queue.Enqueue(new ItemSetup(exception: exception));
+				_currentSetup.Exception = exception;
+				AndContinue = false;
+				_currentSetup = null;
 			}
 			else
 			{
-				_currentSetup.Exception = exception;
-				_currentSetup = null;
+				_currentSetup = new ItemSetup(exception: exception);
+				_queue.Enqueue(_currentSetup);
 			}
 		}
 
@@ -735,7 +999,7 @@ public sealed class SetupIntRefInt
 	{
 		public static readonly ItemSetup Default = new();
 
-		public readonly CallbackDelegate? Callback = callback;
+		public CallbackDelegate? Callback = callback;
 		public Exception? Exception = exception;
 	}
 
@@ -769,10 +1033,16 @@ public sealed class SetupIntRefInt
 
 [Obsolete("Will be generated")]
 public sealed class SetupIntRefInt<TReturns>
+	: ISetupCallbackJoin<SetupIntRefInt<TReturns>.CallbackDelegate, TReturns, SetupIntRefInt<TReturns>.ReturnsCallbackDelegate>, ISetupCallbackReset<SetupIntRefInt<TReturns>.CallbackDelegate, TReturns, SetupIntRefInt<TReturns>.ReturnsCallbackDelegate>,
+		ISetupReturnsThrowsJoin<SetupIntRefInt<TReturns>.CallbackDelegate, TReturns, SetupIntRefInt<TReturns>.ReturnsCallbackDelegate>, ISetupReturnsThrowsReset<SetupIntRefInt<TReturns>.CallbackDelegate, TReturns, SetupIntRefInt<TReturns>.ReturnsCallbackDelegate>
 {
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;
 	private Item? _currentSetup;
+
+	public delegate void CallbackDelegate(int parameter1, ref int parameter2);
+
+	public delegate TReturns? ReturnsCallbackDelegate(int parameter1, ref int parameter2);
 
 	public bool Execute(in int parameter1, ref int parameter2, out TReturns? returnValue)
 	{
@@ -844,9 +1114,69 @@ public sealed class SetupIntRefInt<TReturns>
 		_currentSetup.Add(exception);
 	}
 
-	public delegate void CallbackDelegate(int parameter1, ref int parameter2);
+	ISetupCallbackJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupCallbackStart<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Callback(in CallbackDelegate callback)
+	{
+		Callback(callback);
+		return this;
+	}
 
-	public delegate TReturns? ReturnsCallbackDelegate(int parameter1, ref int parameter2);
+	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupCallbackReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Callback(in CallbackDelegate callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetupReturnsThrowsJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsStart<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in TReturns returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in ReturnsCallbackDelegate returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetupReturnsThrowsJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsStart<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in ReturnsCallbackDelegate returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in TReturns returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetupReturnsThrowsJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsStart<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupCallbackJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.And()
+	{
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
+
+		return this;
+	}
+
+	ISetupCallbackReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.And()
+	{
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
+
+		return this;
+	}
 
 	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
 	{
@@ -854,37 +1184,50 @@ public sealed class SetupIntRefInt<TReturns>
 		public readonly It<int>.Setup? Parameter2 = parameter2;
 		private readonly Queue<ItemSetup> _queue = [];
 		private ItemSetup? _currentSetup;
+		public bool AndContinue;
 
 		public void Add(in CallbackDelegate callback)
 		{
-			var currentSetup = new ItemSetup(callback);
-			_queue.Enqueue(currentSetup);
-			_currentSetup = currentSetup;
+			if (AndContinue && _currentSetup is not null)
+			{
+				_currentSetup.Callback = callback;
+				AndContinue = false;
+				_currentSetup = null;
+			}
+			else
+			{
+				_currentSetup = new ItemSetup(callback);
+				_queue.Enqueue(_currentSetup);
+			}
 		}
 
 		public void Add(in ReturnsCallbackDelegate returns)
 		{
-			if (_currentSetup is null)
+			if (AndContinue && _currentSetup is not null)
 			{
-				_queue.Enqueue(new ItemSetup(returns: returns));
+				_currentSetup.Returns = returns;
+				AndContinue = false;
+				_currentSetup = null;
 			}
 			else
 			{
-				_currentSetup.Returns = returns;
-				_currentSetup = null;
+				_currentSetup = new ItemSetup(returns: returns);
+				_queue.Enqueue(_currentSetup);
 			}
 		}
 
 		public void Add(in Exception exception)
 		{
-			if (_currentSetup is null)
+			if (AndContinue && _currentSetup is not null)
 			{
-				_queue.Enqueue(new ItemSetup(exception: exception));
+				_currentSetup.Exception = exception;
+				AndContinue = false;
+				_currentSetup = null;
 			}
 			else
 			{
-				_currentSetup.Exception = exception;
-				_currentSetup = null;
+				_currentSetup = new ItemSetup(exception: exception);
+				_queue.Enqueue(_currentSetup);
 			}
 		}
 
@@ -903,7 +1246,7 @@ public sealed class SetupIntRefInt<TReturns>
 	{
 		public static readonly ItemSetup Default = new();
 
-		public readonly CallbackDelegate? Callback = callback;
+		public CallbackDelegate? Callback = callback;
 		public ReturnsCallbackDelegate? Returns = returns;
 		public Exception? Exception = exception;
 	}
