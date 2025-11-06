@@ -1034,6 +1034,7 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		var fixture = CreateFixture<SetupIntRefInt>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Callback((x, ref y) => callbackValue = x - y + 1);
+		fixture.And();
 		fixture.Throws(new Exception(expectedMessage));
 
 		const int inputValue1 = 99;
@@ -1092,8 +1093,9 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 
 		var fixture = CreateFixture<SetupIntRefInt>();
 		fixture.SetupParameters(setup1, setup2);
-		fixture.Callback((x, ref y) => callbackValue = x - y + 1);
 		fixture.Throws(new Exception(expectedMessage));
+		fixture.And();
+		fixture.Callback((x, ref y) => callbackValue = x - y + 1);
 
 		var actual = () => fixture.Invoke(setupValue1, ref setupValue2);
 
@@ -1148,6 +1150,7 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		var fixture = CreateFixture<SetupIntRefInt>();
 		fixture.SetupParameters(setup1, setup2);
 		fixture.Callback((x, ref y) => callbackValue = x - y + 1);
+		fixture.And();
 		fixture.Throws(new Exception(expectedMessage));
 
 		const int inputValue1 = 99;
@@ -1753,6 +1756,39 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 
 		const int parameter1 = 123;
 		var parameter2 = 321;
+		fixture.Invoke(parameter1, ref parameter2);
+
+		var actual2 = () => fixture.Invoke(parameter1, ref parameter2);
+		var exception2 = Assert.Throws<COMException>(actual2);
+		Assert.Equal(errorMessage1, exception2.Message);
+
+		var actual3 = () => fixture.Invoke(parameter1, ref parameter2);
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		var actual4 = () => fixture.Invoke(parameter1, ref parameter2);
+		var exception4 = Assert.Throws<NullReferenceException>(actual4);
+		Assert.Equal(errorMessage2, exception4.Message);
+
+		const int expectedCallback = 1;
+		Assert.Equal(expectedCallback, callback);
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback2()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		var callback = 0;
+
+		var fixture = CreateFixture<SetupIntRefInt>();
+		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
+		fixture.Callback((_, ref _) => callback++);
+		fixture.And();
+		fixture.Throws(new COMException(errorMessage1));
+		fixture.Throws(new NullReferenceException(errorMessage2));
+
+		const int parameter1 = 123;
+		var parameter2 = 321;
 		var actual1 = () => fixture.Invoke(parameter1, ref parameter2);
 		var exception1 = Assert.Throws<COMException>(actual1);
 		Assert.Equal(errorMessage1, exception1.Message);
@@ -1770,7 +1806,7 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 	}
 
 	[Fact]
-	public void ThrowDifferentExceptionsWithCallback2()
+	public void ThrowDifferentExceptionsWithCallback3()
 	{
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
 		var callback = 0;
@@ -1779,6 +1815,7 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Callback((_, ref _) => callback++);
+		fixture.And();
 		fixture.Throws(new NullReferenceException(errorMessage2));
 
 		const int parameter1 = 123;
@@ -1800,7 +1837,7 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 	}
 
 	[Fact]
-	public void ThrowDifferentExceptionsWithCallback3()
+	public void ThrowDifferentExceptionsWithCallback4()
 	{
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
 		int callback1 = 10, callback2 = 0;
@@ -1808,9 +1845,11 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		var fixture = CreateFixture<SetupIntRefInt>();
 		fixture.SetupParameters(It<int>.Any(), It<int>.Any());
 		fixture.Callback((_, ref _) => callback1++);
+		fixture.And();
 		fixture.Throws(new COMException(errorMessage1));
-		fixture.Callback((_, ref _) => callback2++);
 		fixture.Throws(new NullReferenceException(errorMessage2));
+		fixture.And();
+		fixture.Callback((_, ref _) => callback2++);
 
 		const int parameter1 = 123;
 		var parameter2 = 321;
