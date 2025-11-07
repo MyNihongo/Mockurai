@@ -16,11 +16,15 @@ public interface IPrimitiveTypeService : IDisposable
 
 	void Invoke(out int result);
 
+	void Invoke<T>();
+
 	void InvokeWithParameter(in string parameter);
 
 	void InvokeWithParameter(in int parameter);
 
 	void InvokeWithParameter(ref decimal parameter);
+
+	void InvokeWithParameter<T>(T parameter);
 
 	void InvokeWithSeveralParameters(int parameter1, int parameter2);
 
@@ -34,9 +38,13 @@ public interface IPrimitiveTypeService : IDisposable
 
 	bool Return(out string result);
 
+	T Return<T>();
+
 	string ReturnWithParameter(in string parameter);
 
 	int ReturnWithParameter(ref double parameter);
+
+	TReturn ReturnWithParameter<TParameter, TReturn>(TParameter parameter);
 
 	double ReturnWithSeveralParameters(int parameter1, int parameter2);
 
