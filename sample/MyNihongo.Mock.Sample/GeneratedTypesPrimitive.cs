@@ -463,6 +463,30 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		return _returnInvocation2.Verify(result, index, _invocationProviders);
 	}
 
+	// Return
+	private ConcurrentDictionary<Type, object>? _return3;
+	private ConcurrentDictionary<Type, Invocation>? _returnInvocation3;
+
+	public Setup<T> SetupReturn<T>()
+	{
+		_return3 ??= new ConcurrentDictionary<Type, object>();
+		return (Setup<T>)_return3.GetOrAdd(typeof(T), static _ => new Setup<T>());
+	}
+
+	public void VerifyReturn<T>(in Times times)
+	{
+		_returnInvocation3 ??= new ConcurrentDictionary<Type, Invocation>();
+		var returnInvocation3 = _returnInvocation3.GetOrAdd(typeof(T), static _ => new Invocation("IPrimitiveDependencyService.Return<T>()"));
+		returnInvocation3.Verify(times, _invocationProviders);
+	}
+
+	public long VerifyReturn<T>(in long index)
+	{
+		_returnInvocation3 ??= new ConcurrentDictionary<Type, Invocation>();
+		var returnInvocation3 = _returnInvocation3.GetOrAdd(typeof(T), static _ => new Invocation("IPrimitiveDependencyService.Return<T>()"));
+		return returnInvocation3.Verify(index, _invocationProviders);
+	}
+
 	// ReturnWithParameter
 	private SetupWithParameter<string, string>? _returnWithParameter1;
 	private Invocation<string>? _returnWithParameterInvocation1;
@@ -836,6 +860,14 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 			return false;
 		}
 
+		public T Return<T>()
+		{
+			_mock._returnInvocation3 ??= new ConcurrentDictionary<Type, Invocation>();
+			var returnInvocation3 = _mock._returnInvocation3.GetOrAdd(typeof(T), static _ => new Invocation("IPrimitiveDependencyService.Return<T>()"));
+			returnInvocation3.Register(InvocationIndex.CounterValue);
+			return ((Setup<T>?)_mock._return3?.GetValueOrDefault(typeof(T)))?.Execute(out var returnValue) == true ? returnValue! : default!;
+		}
+
 		public string ReturnWithParameter(in string parameter)
 		{
 			_mock._returnWithParameterInvocation1 ??= new Invocation<string>("IPrimitiveDependencyService.ReturnWithParameter({0})");
@@ -1101,6 +1133,16 @@ public static class PrimitiveDependencyServiceMockEx
 	public static void VerifyReturn(this IMock<IPrimitiveDependencyService> @this, in ItOut<string> result, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifyReturn(result, times());
 
+	// Return
+	public static ISetup<Action, T, Func<T?>> SetupReturn<T>(this IMock<IPrimitiveDependencyService> @this) =>
+		((PrimitiveDependencyServiceMock)@this).SetupReturn<T>();
+
+	public static void VerifyReturn<T>(this IMock<IPrimitiveDependencyService> @this, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyReturn<T>(times);
+
+	public static void VerifyReturn<T>(this IMock<IPrimitiveDependencyService> @this, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyReturn<T>(times());
+
 	// ReturnWithParameter
 	public static ISetup<Action<string>, string, Func<string, string?>> SetupReturnWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<string> parameter = default) =>
 		((PrimitiveDependencyServiceMock)@this).SetupReturnWithParameter(parameter);
@@ -1360,6 +1402,13 @@ public static class PrimitiveDependencyServiceMockSequenceEx
 	public static void Return(this IMockSequence<IPrimitiveDependencyService> @this, in ItOut<string> result)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyReturn(result, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	// Return
+	public static void Return<T>(this IMockSequence<IPrimitiveDependencyService> @this)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyReturn<T>(@this.VerifyIndex);
 		@this.VerifyIndex.Set(nextIndex);
 	}
 
