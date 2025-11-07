@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock;
 
-public sealed class Setup<TReturns> : SetupBaseReturns<TReturns, Action, Func<TReturns?>>
+public sealed class Setup<TReturns> : SetupBaseReturns<Action, TReturns, Func<TReturns?>>
 {
 	public bool Execute(out TReturns? returnValue)
 	{

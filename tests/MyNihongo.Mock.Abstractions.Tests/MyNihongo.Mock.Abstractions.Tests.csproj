@@ -20,7 +20,7 @@
 
 	<ItemGroup>
 		<Using Include="Xunit" />
-		<Compile Include=".models\**" />
+		<Compile Include=".*\**" />
 		<None Remove="*.csproj.DotSettings" />
 	</ItemGroup>
 

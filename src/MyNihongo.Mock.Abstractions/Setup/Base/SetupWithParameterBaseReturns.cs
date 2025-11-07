@@ -1,10 +1,14 @@
 namespace MyNihongo.Mock;
 
-public abstract class SetupWithParameterBase<TParameter, TReturns, TCallback, TReturnsCallback> : ISetup<TReturns>
+public abstract class SetupWithParameterBase<TParameter, TCallback, TReturns, TReturnsCallback>
+	: ISetupCallbackJoin<TCallback, TReturns, TReturnsCallback>, ISetupCallbackReset<TCallback, TReturns, TReturnsCallback>,
+		ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback>, ISetupReturnsThrowsReset<TCallback, TReturns, TReturnsCallback>
 {
 	private static readonly Comparer SortComparer = new();
 	protected SetupContainer<Item>? Setups;
 	private Item? _currentSetup;
+
+	public abstract void Returns(TReturns? returns);
 
 	public void SetupParameter(in It<TParameter> parameter)
 	{
@@ -30,8 +34,6 @@ public abstract class SetupWithParameterBase<TParameter, TReturns, TCallback, TR
 		_currentSetup.Add(value);
 	}
 
-	public abstract void Returns(TReturns? returns);
-
 	public void Throws(in Exception exception)
 	{
 		if (_currentSetup is null)
@@ -40,42 +42,119 @@ public abstract class SetupWithParameterBase<TParameter, TReturns, TCallback, TR
 		_currentSetup.Add(exception);
 	}
 
+	ISetupCallbackJoin<TCallback, TReturns, TReturnsCallback> ISetupCallbackStart<TCallback, TReturns, TReturnsCallback>.Callback(in TCallback callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetup<TCallback, TReturns, TReturnsCallback> ISetupCallbackReset<TCallback, TReturns, TReturnsCallback>.Callback(in TCallback callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetup<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsReset<TCallback, TReturns, TReturnsCallback>.Returns(in TReturns returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetup<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsReset<TCallback, TReturns, TReturnsCallback>.Returns(in TReturnsCallback returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsStart<TCallback, TReturns, TReturnsCallback>.Returns(in TReturns returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsStart<TCallback, TReturns, TReturnsCallback>.Returns(in TReturnsCallback returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsStart<TCallback, TReturns, TReturnsCallback>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetup<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsReset<TCallback, TReturns, TReturnsCallback>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetupReturnsThrowsReset<TCallback, TReturns, TReturnsCallback> ISetupCallbackJoin<TCallback, TReturns, TReturnsCallback>.And()
+	{
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
+
+		return this;
+	}
+
+	ISetupCallbackReset<TCallback, TReturns, TReturnsCallback> ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback>.And()
+	{
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
+
+		return this;
+	}
+
 	protected sealed class Item(in It<TParameter>.Setup? parameter)
 	{
 		public readonly It<TParameter>.Setup? Parameter = parameter;
 		private readonly Queue<ItemSetup> _queue = [];
 		private ItemSetup? _currentSetup;
+		public bool AndContinue;
 
 		public void Add(in TCallback callback)
 		{
-			var currentSetup = new ItemSetup(callback);
-			_queue.Enqueue(currentSetup);
-			_currentSetup = currentSetup;
+			if (AndContinue && _currentSetup is not null)
+			{
+				_currentSetup.Callback = callback;
+				AndContinue = false;
+				_currentSetup = null;
+			}
+			else
+			{
+				_currentSetup = new ItemSetup(callback);
+				_queue.Enqueue(_currentSetup);
+			}
 		}
 
 		public void Add(in TReturnsCallback returns)
 		{
-			if (_currentSetup is null)
+			if (AndContinue && _currentSetup is not null)
 			{
-				_queue.Enqueue(new ItemSetup(returns: returns));
+				_currentSetup.Returns = returns;
+				AndContinue = false;
+				_currentSetup = null;
 			}
 			else
 			{
-				_currentSetup.Returns = returns;
-				_currentSetup = null;
+				_currentSetup = new ItemSetup(returns: returns);
+				_queue.Enqueue(_currentSetup);
 			}
 		}
 
 		public void Add(in Exception exception)
 		{
-			if (_currentSetup is null)
+			if (AndContinue && _currentSetup is not null)
 			{
-				_queue.Enqueue(new ItemSetup(exception: exception));
+				_currentSetup.Exception = exception;
+				AndContinue = false;
+				_currentSetup = null;
 			}
 			else
 			{
-				_currentSetup.Exception = exception;
-				_currentSetup = null;
+				_currentSetup = new ItemSetup(exception: exception);
+				_queue.Enqueue(_currentSetup);
 			}
 		}
 
@@ -94,7 +173,7 @@ public abstract class SetupWithParameterBase<TParameter, TReturns, TCallback, TR
 	{
 		public static readonly ItemSetup Default = new();
 
-		public readonly TCallback? Callback = callback;
+		public TCallback? Callback = callback;
 		public TReturnsCallback? Returns = returns;
 		public Exception? Exception = exception;
 	}

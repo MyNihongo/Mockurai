@@ -610,6 +610,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithParameterTestsBase
 
 		var fixture = CreateFixture<int, string>(setup);
 		fixture.Callback(x => callbackValue = x + 1);
+		fixture.And();
 		fixture.Returns(returnValue);
 
 		const int inputValue = 12345678;
@@ -628,8 +629,9 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithParameterTestsBase
 		var callbackValue = 0;
 
 		var fixture = CreateFixture<int, string>(setup);
-		fixture.Callback(x => callbackValue = x + 1);
 		fixture.Throws(new Exception(expectedMessage));
+		fixture.And();
+		fixture.Callback(x => callbackValue = x + 1);
 
 		const int inputValue = 12345678;
 		Action actual = () => fixture.Execute(inputValue, out _);
@@ -665,6 +667,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithParameterTestsBase
 
 		var fixture = CreateFixture<int, string>(setup);
 		fixture.Callback(x => callbackValue = x + 1);
+		fixture.And();
 		fixture.Returns(returnValue);
 
 		const int inputValue = 12345678;
@@ -685,6 +688,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithParameterTestsBase
 
 		var fixture = CreateFixture<int, string>(setup);
 		fixture.Callback(x => callbackValue = x + 1);
+		fixture.And();
 		fixture.Throws(new Exception(expectedMessage));
 
 		const int inputValue = 12345678;
@@ -720,6 +724,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithParameterTestsBase
 
 		var fixture = CreateFixture<int, string>(setup);
 		fixture.Callback(x => callbackValue = x + 1);
+		fixture.And();
 		fixture.Returns(returnValue);
 
 		const int inputValue = 12345678;
@@ -739,6 +744,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithParameterTestsBase
 
 		var fixture = CreateFixture<int, string>(setup);
 		fixture.Callback(x => callbackValue = x + 1);
+		fixture.And();
 		fixture.Throws(new Exception(expectedMessage));
 
 		const int inputValue = 12345678;
@@ -969,6 +975,40 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithParameterTestsBase
 
 		const int parameter = 1234567;
 		var actual1 = fixture.Execute(parameter, out var returnValue1);
+		Assert.False(actual1);
+		Assert.Null(returnValue1);
+
+		var actual2 = fixture.Execute(parameter, out var returnValue2);
+		Assert.True(actual2);
+		Assert.Equal(setupValue1, returnValue2);
+
+		var actual3 = fixture.Execute(parameter, out var returnValue3);
+		Assert.True(actual3);
+		Assert.Equal(setupValue2, returnValue3);
+
+		var actual4 = fixture.Execute(parameter, out var returnValue4);
+		Assert.True(actual4);
+		Assert.Equal(setupValue2, returnValue4);
+
+		const int expectedCallback = 1;
+		Assert.Equal(expectedCallback, callback);
+	}
+
+	[Fact]
+	public void ReturnDifferentValuesWithCallback2()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		var callback = 0;
+
+		var fixture = CreateFixture<int, string>();
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Callback(_ => callback++);
+		fixture.And();
+		fixture.Returns(setupValue1);
+		fixture.Returns(setupValue2);
+
+		const int parameter = 1234567;
+		var actual1 = fixture.Execute(parameter, out var returnValue1);
 		Assert.True(actual1);
 		Assert.Equal(setupValue1, returnValue1);
 
@@ -985,7 +1025,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithParameterTestsBase
 	}
 
 	[Fact]
-	public void ReturnDifferentValuesWithCallback2()
+	public void ReturnDifferentValuesWithCallback3()
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		var callback = 0;
@@ -994,6 +1034,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithParameterTestsBase
 		fixture.SetupParameter(It<int>.Any());
 		fixture.Returns(setupValue1);
 		fixture.Callback(_ => callback++);
+		fixture.And();
 		fixture.Returns(setupValue2);
 
 		const int parameter = 1234567;
@@ -1014,7 +1055,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithParameterTestsBase
 	}
 
 	[Fact]
-	public void ReturnDifferentValuesWithCallback3()
+	public void ReturnDifferentValuesWithCallback4()
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		int callback1 = 10, callback2 = 0;
@@ -1022,9 +1063,11 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithParameterTestsBase
 		var fixture = CreateFixture<int, string>();
 		fixture.SetupParameter(It<int>.Any());
 		fixture.Callback(_ => callback1++);
+		fixture.And();
 		fixture.Returns(setupValue1);
-		fixture.Callback(_ => callback2++);
 		fixture.Returns(setupValue2);
+		fixture.And();
+		fixture.Callback(_ => callback2++);
 
 		const int parameter = 1234567;
 		var actual1 = fixture.Execute(parameter, out var returnValue1);
@@ -1081,6 +1124,38 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithParameterTestsBase
 		fixture.Throws(new NullReferenceException(errorMessage2));
 
 		const int parameter = 1234567;
+		fixture.Execute(parameter, out _);
+
+		Action actual2 = () => fixture.Execute(parameter, out _);
+		var exception2 = Assert.Throws<COMException>(actual2);
+		Assert.Equal(errorMessage1, exception2.Message);
+
+		Action actual3 = () => fixture.Execute(parameter, out _);
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		Action actual4 = () => fixture.Execute(parameter, out _);
+		var exception4 = Assert.Throws<NullReferenceException>(actual4);
+		Assert.Equal(errorMessage2, exception4.Message);
+
+		const int expectedCallback = 1;
+		Assert.Equal(expectedCallback, callback);
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback2()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		var callback = 0;
+
+		var fixture = CreateFixture<int, string>();
+		fixture.SetupParameter(It<int>.Any());
+		fixture.Callback(_ => callback++);
+		fixture.And();
+		fixture.Throws(new COMException(errorMessage1));
+		fixture.Throws(new NullReferenceException(errorMessage2));
+
+		const int parameter = 1234567;
 		Action actual1 = () => fixture.Execute(parameter, out _);
 		var exception1 = Assert.Throws<COMException>(actual1);
 		Assert.Equal(errorMessage1, exception1.Message);
@@ -1098,7 +1173,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithParameterTestsBase
 	}
 
 	[Fact]
-	public void ThrowDifferentExceptionsWithCallback2()
+	public void ThrowDifferentExceptionsWithCallback3()
 	{
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
 		var callback = 0;
@@ -1107,6 +1182,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithParameterTestsBase
 		fixture.SetupParameter(It<int>.Any());
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Callback(_ => callback++);
+		fixture.And();
 		fixture.Throws(new NullReferenceException(errorMessage2));
 
 		const int parameter = 1234567;
@@ -1127,7 +1203,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithParameterTestsBase
 	}
 
 	[Fact]
-	public void ThrowDifferentExceptionsWithCallback3()
+	public void ThrowDifferentExceptionsWithCallback4()
 	{
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
 		int callback1 = 10, callback2 = 0;
@@ -1135,9 +1211,11 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithParameterTestsBase
 		var fixture = CreateFixture<int, string>();
 		fixture.SetupParameter(It<int>.Any());
 		fixture.Callback(_ => callback1++);
+		fixture.And();
 		fixture.Throws(new COMException(errorMessage1));
-		fixture.Callback(_ => callback2++);
 		fixture.Throws(new NullReferenceException(errorMessage2));
+		fixture.And();
+		fixture.Callback(_ => callback2++);
 
 		const int parameter = 1234567;
 		Action actual1 = () => fixture.Execute(parameter, out _);
@@ -1158,7 +1236,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithParameterTestsBase
 	}
 
 	[Fact]
-	public void ThrowExceptionWithReturn()
+	public void ReturnWithThrowException()
 	{
 		const string errorMessage = nameof(errorMessage);
 		const int expected = 1234;
@@ -1183,7 +1261,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithParameterTestsBase
 	}
 
 	[Fact]
-	public void ReturnWithThrowException()
+	public void ThrowExceptionWithReturn()
 	{
 		const string errorMessage = nameof(errorMessage);
 		const int expected = 1234;

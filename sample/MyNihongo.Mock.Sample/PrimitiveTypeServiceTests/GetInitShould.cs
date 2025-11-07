@@ -507,4 +507,478 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public void ReturnDifferentValuesGet()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+
+		DependencyServiceMock
+			.SetupGetGetInit()
+			.Returns(setupValue1)
+			.Returns(setupValue2);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(setupValue1, fixture.GetInit);
+		Assert.Equal(setupValue2, fixture.GetInit);
+		Assert.Equal(setupValue2, fixture.GetInit);
+
+		DependencyServiceMock.VerifyGetGetInit(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ReturnDifferentValuesWithCallbackGet1()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupGetGetInit()
+			.Callback(() => callback++)
+			.Returns(setupValue1)
+			.Returns(setupValue2);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(string.Empty, fixture.GetInit);
+		Assert.Equal(setupValue1, fixture.GetInit);
+		Assert.Equal(setupValue2, fixture.GetInit);
+		Assert.Equal(setupValue2, fixture.GetInit);
+		Assert.Equal(1, callback);
+
+		DependencyServiceMock.VerifyGetGetInit(Times.Exactly(4));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ReturnDifferentValuesWithCallbackGet2()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupGetGetInit()
+			.Callback(() => callback++).And().Returns(setupValue1)
+			.Returns(setupValue2);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(setupValue1, fixture.GetInit);
+		Assert.Equal(setupValue2, fixture.GetInit);
+		Assert.Equal(setupValue2, fixture.GetInit);
+		Assert.Equal(1, callback);
+
+		DependencyServiceMock.VerifyGetGetInit(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ReturnDifferentValuesWithCallbackGet3()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupGetGetInit()
+			.Returns(setupValue1)
+			.Returns(setupValue2).And().Callback(() => callback++);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(setupValue1, fixture.GetInit);
+		Assert.Equal(setupValue2, fixture.GetInit);
+		Assert.Equal(setupValue2, fixture.GetInit);
+		Assert.Equal(2, callback);
+
+		DependencyServiceMock.VerifyGetGetInit(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ReturnDifferentValuesWithCallbackGet4()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupGetGetInit()
+			.Callback(() => callback++).And().Returns(setupValue1)
+			.Returns(setupValue2).And().Callback(() => callback++);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(setupValue1, fixture.GetInit);
+		Assert.Equal(setupValue2, fixture.GetInit);
+		Assert.Equal(setupValue2, fixture.GetInit);
+		Assert.Equal(3, callback);
+
+		DependencyServiceMock.VerifyGetGetInit(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsGet()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+
+		DependencyServiceMock
+			.SetupGetGetInit()
+			.Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2));
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => fixture.GetInit;
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => fixture.GetInit;
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => fixture.GetInit;
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		DependencyServiceMock.VerifyGetGetInit(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallbackGet1()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupGetGetInit()
+			.Callback(() => callback++)
+			.Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2));
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(string.Empty, fixture.GetInit);
+
+		var actual2 = () => fixture.GetInit;
+		var exception2 = Assert.Throws<COMException>(actual2);
+		Assert.Equal(errorMessage1, exception2.Message);
+
+		var actual3 = () => fixture.GetInit;
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		var actual4 = () => fixture.GetInit;
+		var exception4 = Assert.Throws<NullReferenceException>(actual4);
+		Assert.Equal(errorMessage2, exception4.Message);
+
+		Assert.Equal(1, callback);
+
+		DependencyServiceMock.VerifyGetGetInit(Times.Exactly(4));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallbackGet2()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupGetGetInit()
+			.Callback(() => callback++).And().Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2));
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => fixture.GetInit;
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => fixture.GetInit;
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => fixture.GetInit;
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		Assert.Equal(1, callback);
+
+		DependencyServiceMock.VerifyGetGetInit(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallbackGet3()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupGetGetInit()
+			.Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2)).And().Callback(() => callback++);
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => fixture.GetInit;
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => fixture.GetInit;
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => fixture.GetInit;
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		Assert.Equal(2, callback);
+
+		DependencyServiceMock.VerifyGetGetInit(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallbackGet4()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupGetGetInit()
+			.Callback(() => callback++).And().Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2)).And().Callback(() => callback++);
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => fixture.GetInit;
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => fixture.GetInit;
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => fixture.GetInit;
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		Assert.Equal(3, callback);
+
+		DependencyServiceMock.VerifyGetGetInit(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowExceptionWithReturnGet()
+	{
+		const string errorMessage = nameof(errorMessage), setupValue = nameof(setupValue);
+
+		DependencyServiceMock
+			.SetupGetGetInit()
+			.Throws(new COMException(errorMessage))
+			.Returns(setupValue);
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => fixture.GetInit;
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage, exception1.Message);
+
+		Assert.Equal(setupValue, fixture.GetInit);
+		Assert.Equal(setupValue, fixture.GetInit);
+
+		DependencyServiceMock.VerifyGetGetInit(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ReturnWithThrowExceptionGet()
+	{
+		const string errorMessage = nameof(errorMessage), setupValue = nameof(setupValue);
+
+		DependencyServiceMock
+			.SetupGetGetInit()
+			.Returns(setupValue)
+			.Throws(new COMException(errorMessage));
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(setupValue, fixture.GetInit);
+
+		var actual2 = () => fixture.GetInit;
+		var exception1 = Assert.Throws<COMException>(actual2);
+		Assert.Equal(errorMessage, exception1.Message);
+
+		var actual3 = () => fixture.GetInit;
+		var exception3 = Assert.Throws<COMException>(actual3);
+		Assert.Equal(errorMessage, exception3.Message);
+
+		DependencyServiceMock.VerifyGetGetInit(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsSet()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		const string setValue = nameof(setValue);
+
+		DependencyServiceMock
+			.SetupSetGetInit()
+			.Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2));
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => fixture.GetInit = setValue;
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => fixture.GetInit = setValue;
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => fixture.GetInit = setValue;
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		DependencyServiceMock.VerifySetGetInit(setValue, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallbackSet1()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		const string setValue = nameof(setValue);
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupSetGetInit()
+			.Callback(x => callback += x.Length)
+			.Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2));
+
+		var fixture = CreateFixture();
+
+		fixture.GetInit = setValue;
+
+		var actual2 = () => fixture.GetInit = setValue;
+		var exception2 = Assert.Throws<COMException>(actual2);
+		Assert.Equal(errorMessage1, exception2.Message);
+
+		var actual3 = () => fixture.GetInit = setValue;
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		var actual4 = () => fixture.GetInit = setValue;
+		var exception4 = Assert.Throws<NullReferenceException>(actual4);
+		Assert.Equal(errorMessage2, exception4.Message);
+
+		Assert.Equal(setValue.Length, callback);
+
+		DependencyServiceMock.VerifySetGetInit(setValue, Times.Exactly(4));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallbackSet2()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		const string setValue = nameof(setValue);
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupSetGetInit()
+			.Callback(x => callback += x.Length).And().Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2));
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => fixture.GetInit = setValue;
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => fixture.GetInit = setValue;
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => fixture.GetInit = setValue;
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		Assert.Equal(setValue.Length, callback);
+
+		DependencyServiceMock.VerifySetGetInit(setValue, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallbackSet3()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		const string setValue = nameof(setValue);
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupSetGetInit()
+			.Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2)).And().Callback(x => callback += x.Length);
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => fixture.GetInit = setValue;
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => fixture.GetInit = setValue;
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => fixture.GetInit = setValue;
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		Assert.Equal(2 * setValue.Length, callback);
+
+		DependencyServiceMock.VerifySetGetInit(setValue, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallbackSet4()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		const string setValue = nameof(setValue);
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupSetGetInit()
+			.Callback(x => callback += x.Length).And().Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2)).And().Callback(x => callback += x.Length);
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => fixture.GetInit = setValue;
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => fixture.GetInit = setValue;
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => fixture.GetInit = setValue;
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		Assert.Equal(3 * setValue.Length, callback);
+
+		DependencyServiceMock.VerifySetGetInit(setValue, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

@@ -1,6 +1,8 @@
 namespace MyNihongo.Mock;
 
-public abstract class SetupWithParameterBase<TParameter, TCallback> : ISetup
+public abstract class SetupWithParameterBase<TParameter, TCallback>
+	: ISetupCallbackJoin<TCallback>, ISetupCallbackReset<TCallback>,
+		ISetupThrowsJoin<TCallback>, ISetupThrowsReset<TCallback>
 {
 	private static readonly Comparer SortComparer = new();
 	protected SetupContainer<Item>? Setups;
@@ -30,29 +32,80 @@ public abstract class SetupWithParameterBase<TParameter, TCallback> : ISetup
 		_currentSetup.Add(exception);
 	}
 
+	ISetupCallbackJoin<TCallback> ISetupCallbackStart<TCallback>.Callback(in TCallback callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetup<TCallback> ISetupCallbackReset<TCallback>.Callback(in TCallback callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetupThrowsJoin<TCallback> ISetupThrowsStart<TCallback>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetup<TCallback> ISetupThrowsReset<TCallback>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetupThrowsReset<TCallback> ISetupCallbackJoin<TCallback>.And()
+	{
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
+
+		return this;
+	}
+
+	ISetupCallbackReset<TCallback> ISetupThrowsJoin<TCallback>.And()
+	{
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
+
+		return this;
+	}
+
 	protected sealed class Item(in It<TParameter>.Setup? parameter)
 	{
 		public readonly It<TParameter>.Setup? Parameter = parameter;
 		private readonly Queue<ItemSetup> _queue = [];
 		private ItemSetup? _currentSetup;
+		public bool AndContinue;
 
 		public void Add(in TCallback callback)
 		{
-			var currentSetup = new ItemSetup(callback);
-			_queue.Enqueue(currentSetup);
-			_currentSetup = currentSetup;
+			if (AndContinue && _currentSetup is not null)
+			{
+				_currentSetup.Callback = callback;
+				AndContinue = false;
+				_currentSetup = null;
+			}
+			else
+			{
+				_currentSetup = new ItemSetup(callback);
+				_queue.Enqueue(_currentSetup);
+			}
 		}
 
 		public void Add(in Exception exception)
 		{
-			if (_currentSetup is null)
+			if (AndContinue && _currentSetup is not null)
 			{
-				_queue.Enqueue(new ItemSetup(exception: exception));
+				_currentSetup.Exception = exception;
+				AndContinue = false;
+				_currentSetup = null;
 			}
 			else
 			{
-				_currentSetup.Exception = exception;
-				_currentSetup = null;
+				_currentSetup = new ItemSetup(exception: exception);
+				_queue.Enqueue(_currentSetup);
 			}
 		}
 
@@ -71,7 +124,7 @@ public abstract class SetupWithParameterBase<TParameter, TCallback> : ISetup
 	{
 		public static readonly ItemSetup Default = new();
 
-		public readonly TCallback? Callback = callback;
+		public TCallback? Callback = callback;
 		public Exception? Exception = exception;
 	}
 

@@ -614,4 +614,332 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public void ReturnDifferentValues()
+	{
+		const int setupValue1 = 123, setupValue2 = 321;
+		const int setValue1 = 2, setValue2 = 3;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Returns(setupValue1)
+			.Returns(setupValue2);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(Math.Pow(setupValue1, 2), fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(setValue1, setValue2, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ReturnDifferentValuesWithCallback1()
+	{
+		const int setupValue1 = 123, setupValue2 = 321;
+		const int setValue1 = 2, setValue2 = 3;
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Callback((x, y) => callback += x + y)
+			.Returns(setupValue1)
+			.Returns(setupValue2);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(0d, fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+		Assert.Equal(Math.Pow(setupValue1, 2), fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+		Assert.Equal(setValue1 + setValue2, callback);
+
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(setValue1, setValue2, Times.Exactly(4));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ReturnDifferentValuesWithCallback2()
+	{
+		const int setupValue1 = 123, setupValue2 = 321;
+		const int setValue1 = 2, setValue2 = 3;
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Callback((x, y) => callback += x + y).And().Returns(setupValue1)
+			.Returns(setupValue2);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(Math.Pow(setupValue1, 2), fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+		Assert.Equal(setValue1 + setValue2, callback);
+
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(setValue1, setValue2, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ReturnDifferentValuesWithCallback3()
+	{
+		const int setupValue1 = 123, setupValue2 = 321;
+		const int setValue1 = 2, setValue2 = 3;
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Returns(setupValue1)
+			.Returns(setupValue2).And().Callback((x, y) => callback += x + y);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(Math.Pow(setupValue1, 2), fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+		Assert.Equal(2 * (setValue1 + setValue2), callback);
+
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(setValue1, setValue2, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ReturnDifferentValuesWithCallback4()
+	{
+		const int setupValue1 = 123, setupValue2 = 321;
+		const int setValue1 = 2, setValue2 = 3;
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Callback((x, y) => callback += x + y).And().Returns(setupValue1)
+			.Returns(setupValue2).And().Callback((x, y) => callback += x + y);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(Math.Pow(setupValue1, 2), fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+		Assert.Equal(3 * (setValue1 + setValue2), callback);
+
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(setValue1, setValue2, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptions()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		const int setValue1 = 2, setValue2 = 3;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2));
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => { _ = fixture.ReturnWithSeveralParameters(setValue1, setValue2); };
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => { _ = fixture.ReturnWithSeveralParameters(setValue1, setValue2); };
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => { _ = fixture.ReturnWithSeveralParameters(setValue1, setValue2); };
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(setValue1, setValue2, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback1()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		const int setValue1 = 2, setValue2 = 3;
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Callback((x, y) => callback += x + y)
+			.Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2));
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(0d, fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+
+		var actual2 = () => { _ = fixture.ReturnWithSeveralParameters(setValue1, setValue2); };
+		var exception2 = Assert.Throws<COMException>(actual2);
+		Assert.Equal(errorMessage1, exception2.Message);
+
+		var actual3 = () => { _ = fixture.ReturnWithSeveralParameters(setValue1, setValue2); };
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		var actual4 = () => { _ = fixture.ReturnWithSeveralParameters(setValue1, setValue2); };
+		var exception4 = Assert.Throws<NullReferenceException>(actual4);
+		Assert.Equal(errorMessage2, exception4.Message);
+
+		Assert.Equal(setValue1 + setValue2, callback);
+
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(setValue1, setValue2, Times.Exactly(4));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback2()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		const int setValue1 = 2, setValue2 = 3;
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Callback((x, y) => callback += x + y).And().Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2));
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => { _ = fixture.ReturnWithSeveralParameters(setValue1, setValue2); };
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => { _ = fixture.ReturnWithSeveralParameters(setValue1, setValue2); };
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => { _ = fixture.ReturnWithSeveralParameters(setValue1, setValue2); };
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		Assert.Equal(setValue1 + setValue2, callback);
+
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(setValue1, setValue2, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback3()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		const int setValue1 = 2, setValue2 = 3;
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2)).And().Callback((x, y) => callback += x + y);
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => { _ = fixture.ReturnWithSeveralParameters(setValue1, setValue2); };
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => { _ = fixture.ReturnWithSeveralParameters(setValue1, setValue2); };
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => { _ = fixture.ReturnWithSeveralParameters(setValue1, setValue2); };
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		Assert.Equal(2 * (setValue1 + setValue2), callback);
+
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(setValue1, setValue2, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback4()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		const int setValue1 = 2, setValue2 = 3;
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Callback((x, y) => callback += x + y).And().Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2)).And().Callback((x, y) => callback += x + y);
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => { _ = fixture.ReturnWithSeveralParameters(setValue1, setValue2); };
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => { _ = fixture.ReturnWithSeveralParameters(setValue1, setValue2); };
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => { _ = fixture.ReturnWithSeveralParameters(setValue1, setValue2); };
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		Assert.Equal(3 * (setValue1 + setValue2), callback);
+
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(setValue1, setValue2, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowExceptionWithReturn()
+	{
+		const string errorMessage = nameof(errorMessage);
+		const int setValue1 = 2, setValue2 = 3;
+		const decimal setupValue = 736m;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Throws(new COMException(errorMessage))
+			.Returns(setupValue);
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => { _ = fixture.ReturnWithSeveralParameters(setValue1, setValue2); };
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage, exception1.Message);
+
+		Assert.Equal(Convert.ToDouble(setupValue * setupValue), fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+		Assert.Equal(Convert.ToDouble(setupValue * setupValue), fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(setValue1, setValue2, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ReturnWithThrowException()
+	{
+		const string errorMessage = nameof(errorMessage);
+		const int setValue1 = 2, setValue2 = 3;
+		const decimal setupValue = 736m;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Returns(setupValue)
+			.Throws(new COMException(errorMessage));
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(Convert.ToDouble(setupValue * setupValue), fixture.ReturnWithSeveralParameters(setValue1, setValue2));
+
+		var actual2 = () => { _ = fixture.ReturnWithSeveralParameters(setValue1, setValue2); };
+		var exception1 = Assert.Throws<COMException>(actual2);
+		Assert.Equal(errorMessage, exception1.Message);
+
+		var actual3 = () => { _ = fixture.ReturnWithSeveralParameters(setValue1, setValue2); };
+		var exception3 = Assert.Throws<COMException>(actual3);
+		Assert.Equal(errorMessage, exception3.Message);
+
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(setValue1, setValue2, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }
