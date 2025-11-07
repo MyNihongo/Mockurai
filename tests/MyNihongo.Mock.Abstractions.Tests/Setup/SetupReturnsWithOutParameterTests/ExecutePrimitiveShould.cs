@@ -454,7 +454,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 	}
 
 	[Fact]
-	public void ThrowExceptionWithReturn()
+	public void ReturnWithThrowException()
 	{
 		const string errorMessage = nameof(errorMessage);
 		const int expected = 1234;
@@ -477,7 +477,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 	}
 
 	[Fact]
-	public void ReturnWithThrowException()
+	public void ThrowExceptionWithReturn()
 	{
 		const string errorMessage = nameof(errorMessage);
 		const int expected = 1234;

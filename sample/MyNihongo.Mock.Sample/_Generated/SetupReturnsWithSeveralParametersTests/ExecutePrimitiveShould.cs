@@ -3429,7 +3429,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	}
 
 	[Fact]
-	public void ThrowExceptionWithReturn()
+	public void ReturnWithThrowException()
 	{
 		const string errorMessage = nameof(errorMessage);
 		const string expected = nameof(expected);
@@ -3454,7 +3454,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	}
 
 	[Fact]
-	public void ReturnWithThrowException()
+	public void ThrowExceptionWithReturn()
 	{
 		const string errorMessage = nameof(errorMessage);
 		const string expected = nameof(expected);
