@@ -208,6 +208,30 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		return _invokeInvocation2.Verify(result, index, _invocationProviders);
 	}
 
+	// Invoke
+	private ConcurrentDictionary<Type, Setup>? _invoke3;
+	private ConcurrentDictionary<Type, Invocation>? _invokeInvocation3;
+
+	public Setup SetupInvoke<T>()
+	{
+		_invoke3 ??= new ConcurrentDictionary<Type, Setup>();
+		return _invoke3.GetOrAdd(typeof(T), static _ => new Setup());
+	}
+
+	public void VerifyInvoke<T>(in Times times)
+	{
+		_invokeInvocation3 ??= new ConcurrentDictionary<Type, Invocation>();
+		var invokeInvocation3 = _invokeInvocation3.GetOrAdd(typeof(T), static _ => new Invocation("IPrimitiveDependencyService.Invoke<T>()"));
+		invokeInvocation3.Verify(times, _invocationProviders);
+	}
+
+	public long VerifyInvoke<T>(in long index)
+	{
+		_invokeInvocation3 ??= new ConcurrentDictionary<Type, Invocation>();
+		var invokeInvocation3 = _invokeInvocation3.GetOrAdd(typeof(T), static _ => new Invocation("IPrimitiveDependencyService.Invoke<T>()"));
+		return invokeInvocation3.Verify(index, _invocationProviders);
+	}
+
 	// InvokeWithParameter
 	private SetupWithParameter<string>? _invokeWithParameter1;
 	private Invocation<string>? _invokeWithParameterInvocation1;
@@ -701,6 +725,14 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 				result = 0;
 		}
 
+		public void Invoke<T>()
+		{
+			_mock._invokeInvocation3 ??= new ConcurrentDictionary<Type, Invocation>();
+			var invokeInvocation3 = _mock._invokeInvocation3.GetOrAdd(typeof(T), static _ => new Invocation("IPrimitiveDependencyService.Invoke<T>()"));
+			invokeInvocation3.Register(InvocationIndex.CounterValue);
+			_mock._invoke3?.GetValueOrDefault(typeof(T))?.Invoke();
+		}
+
 		public void InvokeWithParameter(in string parameter)
 		{
 			_mock._invokeWithParameterInvocation1 ??= new Invocation<string>("IPrimitiveDependencyService.InvokeWithParameter({0})");
@@ -905,6 +937,16 @@ public static class PrimitiveDependencyServiceMockEx
 
 	public static void VerifyInvoke(this IMock<IPrimitiveDependencyService> @this, in ItOut<int> result, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifyInvoke(result, times());
+
+	// Invoke
+	public static ISetup<Action> SetupInvoke<T>(this IMock<IPrimitiveDependencyService> @this) =>
+		((PrimitiveDependencyServiceMock)@this).SetupInvoke<T>();
+
+	public static void VerifyInvoke<T>(this IMock<IPrimitiveDependencyService> @this, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvoke<T>(times);
+
+	public static void VerifyInvoke<T>(this IMock<IPrimitiveDependencyService> @this, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvoke<T>(times());
 
 	// InvokeWithParameter
 	public static ISetup<Action<string>> SetupInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<string> parameter = default) =>
@@ -1171,6 +1213,13 @@ public static class PrimitiveDependencyServiceMockSequenceEx
 	public static void Invoke(this IMockSequence<IPrimitiveDependencyService> @this, in ItOut<int> result)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvoke(result, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	// Invoke
+	public static void Invoke<T>(this IMockSequence<IPrimitiveDependencyService> @this)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvoke<T>(@this.VerifyIndex);
 		@this.VerifyIndex.Set(nextIndex);
 	}
 
