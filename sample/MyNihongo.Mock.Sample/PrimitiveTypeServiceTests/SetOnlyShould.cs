@@ -336,4 +336,164 @@ public sealed class SetOnlyShould : PrimitiveTypeServiceTestsBase
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public void ThrowDifferentExceptions()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		const decimal setValue = 123m;
+
+		DependencyServiceMock
+			.SetupSetSetOnly()
+			.Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2));
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => { fixture.SetOnly = setValue; };
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => { fixture.SetOnly = setValue; };
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => { fixture.SetOnly = setValue; };
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		DependencyServiceMock.VerifySetSetOnly(setValue, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback1()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		const decimal setValue = 123m;
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupSetSetOnly()
+			.Callback(x => callback += (int)x)
+			.Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2));
+
+		var fixture = CreateFixture();
+
+		fixture.SetOnly = setValue;
+
+		var actual2 = () => { fixture.SetOnly = setValue; };
+		var exception2 = Assert.Throws<COMException>(actual2);
+		Assert.Equal(errorMessage1, exception2.Message);
+
+		var actual3 = () => { fixture.SetOnly = setValue; };
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		var actual4 = () => { fixture.SetOnly = setValue; };
+		var exception4 = Assert.Throws<NullReferenceException>(actual4);
+		Assert.Equal(errorMessage2, exception4.Message);
+
+		Assert.Equal(setValue, callback);
+
+		DependencyServiceMock.VerifySetSetOnly(setValue, Times.Exactly(4));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback2()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		const decimal setValue = 123m;
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupSetSetOnly()
+			.Callback(x => callback += (int)x).And().Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2));
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => { fixture.SetOnly = setValue; };
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => { fixture.SetOnly = setValue; };
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => { fixture.SetOnly = setValue; };
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		Assert.Equal(setValue, callback);
+
+		DependencyServiceMock.VerifySetSetOnly(setValue, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback3()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		const decimal setValue = 123m;
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupSetSetOnly()
+			.Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2)).And().Callback(x => callback += (int)x);
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => { fixture.SetOnly = setValue; };
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => { fixture.SetOnly = setValue; };
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => { fixture.SetOnly = setValue; };
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		Assert.Equal(2 * setValue, callback);
+
+		DependencyServiceMock.VerifySetSetOnly(setValue, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback4()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		const decimal setValue = 123m;
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupSetSetOnly()
+			.Callback(x => callback += (int)x).And().Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2)).And().Callback(x => callback += (int)x);
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => { fixture.SetOnly = setValue; };
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => { fixture.SetOnly = setValue; };
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => { fixture.SetOnly = setValue; };
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		Assert.Equal(3 * setValue, callback);
+
+		DependencyServiceMock.VerifySetSetOnly(setValue, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }
