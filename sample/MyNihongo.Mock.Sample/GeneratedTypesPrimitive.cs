@@ -1,3 +1,5 @@
+using System.Collections.Concurrent;
+
 namespace MyNihongo.Mock.Sample;
 
 [Obsolete("Will be generated")]
