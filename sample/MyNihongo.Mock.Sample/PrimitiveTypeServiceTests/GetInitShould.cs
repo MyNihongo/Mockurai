@@ -509,7 +509,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void ReturnDifferentValues()
+	public void ReturnDifferentValuesGet()
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 
@@ -529,7 +529,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void ReturnDifferentValuesWithCallback1()
+	public void ReturnDifferentValuesWithCallbackGet1()
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		var callback = 0;
@@ -553,7 +553,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void ReturnDifferentValuesWithCallback2()
+	public void ReturnDifferentValuesWithCallbackGet2()
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		var callback = 0;
@@ -575,7 +575,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void ReturnDifferentValuesWithCallback3()
+	public void ReturnDifferentValuesWithCallbackGet3()
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		var callback = 0;
@@ -597,7 +597,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void ReturnDifferentValuesWithCallback4()
+	public void ReturnDifferentValuesWithCallbackGet4()
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		var callback = 0;
@@ -774,7 +774,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void ThrowExceptionWithReturn()
+	public void ThrowExceptionWithReturnGet()
 	{
 		const string errorMessage = nameof(errorMessage), setupValue = nameof(setupValue);
 
@@ -797,7 +797,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void ReturnWithThrowException()
+	public void ReturnWithThrowExceptionGet()
 	{
 		const string errorMessage = nameof(errorMessage), setupValue = nameof(setupValue);
 

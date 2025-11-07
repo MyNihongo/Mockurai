@@ -345,4 +345,320 @@ public sealed class ReturnShould : PrimitiveTypeServiceTestsBase
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public void ReturnDifferentValues()
+	{
+		const int setupValue1 = 123, setupValue2 = 321;
+
+		DependencyServiceMock
+			.SetupReturn()
+			.Returns(setupValue1)
+			.Returns(setupValue2);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(setupValue1 * 1000, fixture.Return());
+		Assert.Equal(setupValue2 * 1000, fixture.Return());
+		Assert.Equal(setupValue2 * 1000, fixture.Return());
+
+		DependencyServiceMock.VerifyReturn(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ReturnDifferentValuesWithCallback1()
+	{
+		const int setupValue1 = 123, setupValue2 = 321;
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupReturn()
+			.Callback(() => callback++)
+			.Returns(setupValue1)
+			.Returns(setupValue2);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(0, fixture.Return());
+		Assert.Equal(setupValue1 * 1000, fixture.Return());
+		Assert.Equal(setupValue2 * 1000, fixture.Return());
+		Assert.Equal(setupValue2 * 1000, fixture.Return());
+		Assert.Equal(1, callback);
+
+		DependencyServiceMock.VerifyReturn(Times.Exactly(4));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ReturnDifferentValuesWithCallback2()
+	{
+		const int setupValue1 = 123, setupValue2 = 321;
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupReturn()
+			.Callback(() => callback++).And().Returns(setupValue1)
+			.Returns(setupValue2);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(setupValue1 * 1000, fixture.Return());
+		Assert.Equal(setupValue2 * 1000, fixture.Return());
+		Assert.Equal(setupValue2 * 1000, fixture.Return());
+		Assert.Equal(1, callback);
+
+		DependencyServiceMock.VerifyReturn(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ReturnDifferentValuesWithCallback3()
+	{
+		const int setupValue1 = 123, setupValue2 = 321;
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupReturn()
+			.Returns(setupValue1)
+			.Returns(setupValue2).And().Callback(() => callback++);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(setupValue1 * 1000, fixture.Return());
+		Assert.Equal(setupValue2 * 1000, fixture.Return());
+		Assert.Equal(setupValue2 * 1000, fixture.Return());
+		Assert.Equal(2, callback);
+
+		DependencyServiceMock.VerifyReturn(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ReturnDifferentValuesWithCallback4()
+	{
+		const int setupValue1 = 123, setupValue2 = 321;
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupReturn()
+			.Callback(() => callback++).And().Returns(setupValue1)
+			.Returns(setupValue2).And().Callback(() => callback++);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(setupValue1 * 1000, fixture.Return());
+		Assert.Equal(setupValue2 * 1000, fixture.Return());
+		Assert.Equal(setupValue2 * 1000, fixture.Return());
+		Assert.Equal(3, callback);
+
+		DependencyServiceMock.VerifyReturn(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptions()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+
+		DependencyServiceMock
+			.SetupReturn()
+			.Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2));
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => { _ = fixture.Return(); };
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => { _ = fixture.Return(); };
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => { _ = fixture.Return(); };
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		DependencyServiceMock.VerifyReturn(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback1()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupReturn()
+			.Callback(() => callback++)
+			.Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2));
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(0, fixture.Return());
+
+		var actual2 = () => { _ = fixture.Return(); };
+		var exception2 = Assert.Throws<COMException>(actual2);
+		Assert.Equal(errorMessage1, exception2.Message);
+
+		var actual3 = () => { _ = fixture.Return(); };
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		var actual4 = () => { _ = fixture.Return(); };
+		var exception4 = Assert.Throws<NullReferenceException>(actual4);
+		Assert.Equal(errorMessage2, exception4.Message);
+
+		Assert.Equal(1, callback);
+
+		DependencyServiceMock.VerifyReturn(Times.Exactly(4));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback2()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupReturn()
+			.Callback(() => callback++).And().Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2));
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => { _ = fixture.Return(); };
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => { _ = fixture.Return(); };
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => { _ = fixture.Return(); };
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		Assert.Equal(1, callback);
+
+		DependencyServiceMock.VerifyReturn(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback3()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupReturn()
+			.Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2)).And().Callback(() => callback++);
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => { _ = fixture.Return(); };
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => { _ = fixture.Return(); };
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => { _ = fixture.Return(); };
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		Assert.Equal(2, callback);
+
+		DependencyServiceMock.VerifyReturn(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback4()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupReturn()
+			.Callback(() => callback++).And().Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2)).And().Callback(() => callback++);
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => { _ = fixture.Return(); };
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => { _ = fixture.Return(); };
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => { _ = fixture.Return(); };
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		Assert.Equal(3, callback);
+
+		DependencyServiceMock.VerifyReturn(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ThrowExceptionWithReturn()
+	{
+		const string errorMessage = nameof(errorMessage);
+		const int setupValue = 123;
+
+		DependencyServiceMock
+			.SetupReturn()
+			.Throws(new COMException(errorMessage))
+			.Returns(setupValue);
+
+		var fixture = CreateFixture();
+
+		var actual1 = () => { _ = fixture.Return(); };
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage, exception1.Message);
+
+		Assert.Equal(setupValue * 1000, fixture.Return());
+		Assert.Equal(setupValue * 1000, fixture.Return());
+
+		DependencyServiceMock.VerifyReturn(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ReturnWithThrowException()
+	{
+		const string errorMessage = nameof(errorMessage);
+		const int setupValue = 123;
+
+		DependencyServiceMock
+			.SetupReturn()
+			.Returns(setupValue)
+			.Throws(new COMException(errorMessage));
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(setupValue * 1000, fixture.Return());
+
+		var actual2 = () => { _ = fixture.Return(); };
+		var exception1 = Assert.Throws<COMException>(actual2);
+		Assert.Equal(errorMessage, exception1.Message);
+
+		var actual3 = () => { _ = fixture.Return(); };
+		var exception3 = Assert.Throws<COMException>(actual3);
+		Assert.Equal(errorMessage, exception3.Message);
+
+		DependencyServiceMock.VerifyReturn(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }
