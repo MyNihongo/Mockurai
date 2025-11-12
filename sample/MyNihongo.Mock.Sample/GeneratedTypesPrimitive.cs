@@ -212,7 +212,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	// Invoke
 	private ConcurrentDictionary<Type, Setup>? _invoke3;
-	private ConcurrentDictionary<Type, Invocation>? _invokeInvocation3;
+	private InvocationDictionary? _invokeInvocation3;
 
 	public Setup SetupInvoke<T>()
 	{
@@ -222,15 +222,15 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	public void VerifyInvoke<T>(in Times times)
 	{
-		_invokeInvocation3 ??= new ConcurrentDictionary<Type, Invocation>();
-		var invokeInvocation3 = _invokeInvocation3.GetOrAdd(typeof(T), static _ => new Invocation("IPrimitiveDependencyService.Invoke<T>()"));
+		_invokeInvocation3 ??= new InvocationDictionary();
+		var invokeInvocation3 = (Invocation)_invokeInvocation3.GetOrAdd(typeof(T), static _ => new Invocation("IPrimitiveDependencyService.Invoke<T>()"));
 		invokeInvocation3.Verify(times, _invocationProviders);
 	}
 
 	public long VerifyInvoke<T>(in long index)
 	{
-		_invokeInvocation3 ??= new ConcurrentDictionary<Type, Invocation>();
-		var invokeInvocation3 = _invokeInvocation3.GetOrAdd(typeof(T), static _ => new Invocation("IPrimitiveDependencyService.Invoke<T>()"));
+		_invokeInvocation3 ??= new InvocationDictionary();
+		var invokeInvocation3 = (Invocation)_invokeInvocation3.GetOrAdd(typeof(T), static _ => new Invocation("IPrimitiveDependencyService.Invoke<T>()"));
 		return invokeInvocation3.Verify(index, _invocationProviders);
 	}
 
@@ -305,7 +305,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	// InvokeWithParameter
 	private ConcurrentDictionary<Type, object>? _invokeWithParameter4;
-	private ConcurrentDictionary<Type, object>? _invokeWithParameterInvocation4;
+	private InvocationDictionary? _invokeWithParameterInvocation4;
 
 	public SetupWithParameter<T> SetupInvokeWithParameter<T>(in It<T> parameter)
 	{
@@ -317,14 +317,14 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	public void VerifyInvokeWithParameter<T>(in It<T> parameter, in Times times)
 	{
-		_invokeWithParameterInvocation4 ??= new ConcurrentDictionary<Type, object>();
+		_invokeWithParameterInvocation4 ??= new InvocationDictionary();
 		var invokeWithParameterInvocation4 = (Invocation<T>)_invokeWithParameterInvocation4.GetOrAdd(typeof(T), static _ => new Invocation<T>("IPrimitiveDependencyService.InvokeWithParameter<T>({0})"));
 		invokeWithParameterInvocation4.Verify(parameter, times, _invocationProviders);
 	}
 
 	public long VerifyInvokeWithParameter<T>(in It<T> parameter, in long index)
 	{
-		_invokeWithParameterInvocation4 ??= new ConcurrentDictionary<Type, object>();
+		_invokeWithParameterInvocation4 ??= new InvocationDictionary();
 		var invokeWithParameterInvocation4 = (Invocation<T>)_invokeWithParameterInvocation4.GetOrAdd(typeof(T), static _ => new Invocation<T>("IPrimitiveDependencyService.InvokeWithParameter<T>({0})"));
 		return invokeWithParameterInvocation4.Verify(parameter, index, _invocationProviders);
 	}
@@ -465,7 +465,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	// Return
 	private ConcurrentDictionary<Type, object>? _return3;
-	private ConcurrentDictionary<Type, Invocation>? _returnInvocation3;
+	private InvocationDictionary? _returnInvocation3;
 
 	public Setup<T> SetupReturn<T>()
 	{
@@ -475,15 +475,15 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	public void VerifyReturn<T>(in Times times)
 	{
-		_returnInvocation3 ??= new ConcurrentDictionary<Type, Invocation>();
-		var returnInvocation3 = _returnInvocation3.GetOrAdd(typeof(T), static _ => new Invocation("IPrimitiveDependencyService.Return<T>()"));
+		_returnInvocation3 ??= new InvocationDictionary();
+		var returnInvocation3 = (Invocation)_returnInvocation3.GetOrAdd(typeof(T), static _ => new Invocation("IPrimitiveDependencyService.Return<T>()"));
 		returnInvocation3.Verify(times, _invocationProviders);
 	}
 
 	public long VerifyReturn<T>(in long index)
 	{
-		_returnInvocation3 ??= new ConcurrentDictionary<Type, Invocation>();
-		var returnInvocation3 = _returnInvocation3.GetOrAdd(typeof(T), static _ => new Invocation("IPrimitiveDependencyService.Return<T>()"));
+		_returnInvocation3 ??= new InvocationDictionary();
+		var returnInvocation3 = (Invocation)_returnInvocation3.GetOrAdd(typeof(T), static _ => new Invocation("IPrimitiveDependencyService.Return<T>()"));
 		return returnInvocation3.Verify(index, _invocationProviders);
 	}
 
@@ -535,7 +535,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	// ReturnWithParameter
 	private ConcurrentDictionary<(Type, Type), object>? _returnWithParameter3;
-	private ConcurrentDictionary<(Type, Type), object>? _returnWithParameterInvocation3;
+	private InvocationDictionary<(Type, Type)>? _returnWithParameterInvocation3;
 
 	public SetupWithParameter<TParameter, TReturn> SetupReturnWithParameter<TParameter, TReturn>(in It<TParameter> parameter)
 	{
@@ -547,14 +547,14 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 	public void VerifyReturnWithParameter<TParameter, TReturn>(in It<TParameter> parameter, in Times times)
 	{
-		_returnWithParameterInvocation3 ??= new ConcurrentDictionary<(Type, Type), object>();
+		_returnWithParameterInvocation3 ??= new InvocationDictionary<(Type, Type)>();
 		var returnWithParameterInvocation3 = (Invocation<TParameter>)_returnWithParameterInvocation3.GetOrAdd((typeof(TParameter), typeof(TReturn)), static _ => new Invocation<TParameter>("IPrimitiveDependencyService.ReturnWithParameter<T>({0})"));
 		returnWithParameterInvocation3.Verify(parameter, times, _invocationProviders);
 	}
 
 	public long VerifyReturnWithParameter<TParameter, TReturn>(in It<TParameter> parameter, in long index)
 	{
-		_returnWithParameterInvocation3 ??= new ConcurrentDictionary<(Type, Type), object>();
+		_returnWithParameterInvocation3 ??= new InvocationDictionary<(Type, Type)>();
 		var returnWithParameterInvocation3 = (Invocation<TParameter>)_returnWithParameterInvocation3.GetOrAdd((typeof(TParameter), typeof(TReturn)), static _ => new Invocation<TParameter>("IPrimitiveDependencyService.ReturnWithParameter<T>({0})"));
 		return returnWithParameterInvocation3.Verify(parameter, index, _invocationProviders);
 	}
@@ -813,8 +813,8 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 		public void Invoke<T>()
 		{
-			_mock._invokeInvocation3 ??= new ConcurrentDictionary<Type, Invocation>();
-			var invokeInvocation3 = _mock._invokeInvocation3.GetOrAdd(typeof(T), static _ => new Invocation("IPrimitiveDependencyService.Invoke<T>()"));
+			_mock._invokeInvocation3 ??= new InvocationDictionary();
+			var invokeInvocation3 = (Invocation)_mock._invokeInvocation3.GetOrAdd(typeof(T), static _ => new Invocation("IPrimitiveDependencyService.Invoke<T>()"));
 			invokeInvocation3.Register(InvocationIndex.CounterValue);
 			_mock._invoke3?.GetValueOrDefault(typeof(T))?.Invoke();
 		}
@@ -842,7 +842,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 		public void InvokeWithParameter<T>(T parameter)
 		{
-			_mock._invokeWithParameterInvocation4 ??= new ConcurrentDictionary<Type, object>();
+			_mock._invokeWithParameterInvocation4 ??= new InvocationDictionary();
 			var invokeWithParameterInvocation4 = (Invocation<T>)_mock._invokeWithParameterInvocation4.GetOrAdd(typeof(T), static _ => new Invocation<T>("IPrimitiveDependencyService.InvokeWithParameter<T>({0})"));
 			invokeWithParameterInvocation4.Register(InvocationIndex.CounterValue, parameter);
 			((SetupWithParameter<T>?)_mock._invokeWithParameter4?.GetValueOrDefault(typeof(T)))?.Invoke(parameter);
@@ -896,8 +896,8 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 		public T Return<T>()
 		{
-			_mock._returnInvocation3 ??= new ConcurrentDictionary<Type, Invocation>();
-			var returnInvocation3 = _mock._returnInvocation3.GetOrAdd(typeof(T), static _ => new Invocation("IPrimitiveDependencyService.Return<T>()"));
+			_mock._returnInvocation3 ??= new InvocationDictionary();
+			var returnInvocation3 = (Invocation)_mock._returnInvocation3.GetOrAdd(typeof(T), static _ => new Invocation("IPrimitiveDependencyService.Return<T>()"));
 			returnInvocation3.Register(InvocationIndex.CounterValue);
 			return ((Setup<T>?)_mock._return3?.GetValueOrDefault(typeof(T)))?.Execute(out var returnValue) == true ? returnValue! : default!;
 		}
@@ -919,7 +919,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		public TReturn ReturnWithParameter<TParameter, TReturn>(TParameter parameter)
 		{
 			var key = (typeof(TParameter), typeof(TReturn));
-			_mock._returnWithParameterInvocation3 ??= new ConcurrentDictionary<(Type, Type), object>();
+			_mock._returnWithParameterInvocation3 ??= new InvocationDictionary<(Type, Type)>();
 			var returnWithParameterInvocation = (Invocation<TParameter>)_mock._returnWithParameterInvocation3.GetOrAdd(key, static _ => new Invocation<TParameter>("IPrimitiveDependencyService.ReturnWithParameter<TParameter>({0})"));
 			returnWithParameterInvocation.Register(InvocationIndex.CounterValue, parameter);
 			return ((SetupWithParameter<TParameter, TReturn>?)_mock._returnWithParameter3?.GetValueOrDefault(key))?.Execute(parameter, out var returnValue) == true ? returnValue! : default!;

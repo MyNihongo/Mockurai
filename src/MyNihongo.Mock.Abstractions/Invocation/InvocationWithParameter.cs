@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace MyNihongo.Mock;
 
-public sealed class Invocation<TParameter> : IInvocationProvider
+public sealed class Invocation<TParameter> : IInvocationVerify
 {
 	private readonly string _name;
 	private readonly string? _prefix;

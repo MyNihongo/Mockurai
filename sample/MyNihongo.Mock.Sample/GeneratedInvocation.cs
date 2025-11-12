@@ -1,11 +1,10 @@
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 
 namespace MyNihongo.Mock.Sample;
 
 [Obsolete("Will be generated")]
-public sealed class InvocationIntInt : IInvocationProvider
+public sealed class InvocationIntInt : IInvocationVerify
 {
 	private readonly string _name;
 	private readonly string? _prefix1, _prefix2;

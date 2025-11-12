@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock;
 
-public sealed class Invocation : IInvocationProvider
+public sealed class Invocation : IInvocationVerify
 {
 	private readonly string _name;
 	private readonly InvocationContainer<Item> _invocations = [];
