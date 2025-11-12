@@ -551,4 +551,44 @@ public sealed class InvokeWithParameterGenericShould : PrimitiveTypeServiceTests
 		DependencyServiceMock.VerifyInvokeWithParameter<float>(setValue, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void VerifyDifferentTypes()
+	{
+		const float floatParam = 123f;
+		const string stringParam = nameof(stringParam);
+		const decimal decimalParam = 123m;
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter<string>(stringParam);
+		fixture.InvokeWithParameter(decimalParam);
+		fixture.InvokeWithParameter(floatParam);
+		fixture.InvokeWithParameter<string>(stringParam);
+
+		DependencyServiceMock.VerifyInvokeWithParameter<string>(stringParam, Times.Exactly(2));
+		DependencyServiceMock.VerifyInvokeWithParameter<decimal>(decimalParam, Times.Once);
+		DependencyServiceMock.VerifyInvokeWithParameter<float>(floatParam, Times.Once);
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void VerifyDifferentTypesInSequence()
+	{
+		const float floatParam = 123f;
+		const string stringParam = nameof(stringParam);
+		const decimal decimalParam = 123m;
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter<string>(stringParam);
+		fixture.InvokeWithParameter(decimalParam);
+		fixture.InvokeWithParameter(floatParam);
+
+		VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.InvokeWithParameter<string>(stringParam);
+			ctx.DependencyServiceMock.InvokeWithParameter<decimal>(decimalParam);
+			ctx.DependencyServiceMock.InvokeWithParameter<float>(floatParam);
+		});
+		VerifyNoOtherCalls();
+	}
 }
