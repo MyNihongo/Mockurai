@@ -21,21 +21,25 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 4: IPrimitiveDependencyService.GetInit.set = "value"
 			- 5: IPrimitiveDependencyService.Invoke()
 			- 6: IPrimitiveDependencyService.Invoke(out 0)
-			- 7: IPrimitiveDependencyService.InvokeWithParameter(345)
-			- 8: IPrimitiveDependencyService.InvokeWithParameter("another value")
-			- 9: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
-			- 10: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
-			- 11: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
-			- 12: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
-			- 13: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
-			- 14: IPrimitiveDependencyService.Return()
-			- 15: IPrimitiveDependencyService.Return(out null)
-			- 16: IPrimitiveDependencyService.ReturnWithParameter("ret val")
-			- 17: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
-			- 18: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
-			- 19: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
-			- 20: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
-			- 21: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
+			- 7: IPrimitiveDependencyService.Invoke<T>()
+			- 8: IPrimitiveDependencyService.InvokeWithParameter(345)
+			- 9: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 10: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
+			- 11: IPrimitiveDependencyService.InvokeWithParameter<T>(123)
+			- 12: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
+			- 13: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
+			- 14: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
+			- 15: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
+			- 16: IPrimitiveDependencyService.Return()
+			- 17: IPrimitiveDependencyService.Return(out null)
+			- 18: IPrimitiveDependencyService.Return<T>()
+			- 19: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 20: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
+			- 21: IPrimitiveDependencyService.ReturnWithParameter<TParameter, TReturn>(123)
+			- 22: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
+			- 23: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
+			- 24: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
+			- 25: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -60,21 +64,25 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 4: IPrimitiveDependencyService.GetInit.set = "value"
 			- 5: IPrimitiveDependencyService.Invoke()
 			- 6: IPrimitiveDependencyService.Invoke(out 0)
-			- 7: IPrimitiveDependencyService.InvokeWithParameter(345)
-			- 8: IPrimitiveDependencyService.InvokeWithParameter("another value")
-			- 9: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
-			- 10: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
-			- 11: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
-			- 12: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
-			- 13: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
-			- 14: IPrimitiveDependencyService.Return()
-			- 15: IPrimitiveDependencyService.Return(out null)
-			- 16: IPrimitiveDependencyService.ReturnWithParameter("ret val")
-			- 17: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
-			- 18: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
-			- 19: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
-			- 20: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
-			- 21: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
+			- 7: IPrimitiveDependencyService.Invoke<T>()
+			- 8: IPrimitiveDependencyService.InvokeWithParameter(345)
+			- 9: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 10: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
+			- 11: IPrimitiveDependencyService.InvokeWithParameter<T>(123)
+			- 12: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
+			- 13: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
+			- 14: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
+			- 15: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
+			- 16: IPrimitiveDependencyService.Return()
+			- 17: IPrimitiveDependencyService.Return(out null)
+			- 18: IPrimitiveDependencyService.Return<T>()
+			- 19: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 20: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
+			- 21: IPrimitiveDependencyService.ReturnWithParameter<TParameter, TReturn>(123)
+			- 22: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
+			- 23: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
+			- 24: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
+			- 25: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -99,21 +107,25 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 4: IPrimitiveDependencyService.GetInit.set = "value"
 			- 5: IPrimitiveDependencyService.Invoke()
 			- 6: IPrimitiveDependencyService.Invoke(out 0)
-			- 7: IPrimitiveDependencyService.InvokeWithParameter(345)
-			- 8: IPrimitiveDependencyService.InvokeWithParameter("another value")
-			- 9: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
-			- 10: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
-			- 11: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
-			- 12: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
-			- 13: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
-			- 14: IPrimitiveDependencyService.Return()
-			- 15: IPrimitiveDependencyService.Return(out null)
-			- 16: IPrimitiveDependencyService.ReturnWithParameter("ret val")
-			- 17: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
-			- 18: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
-			- 19: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
-			- 20: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
-			- 21: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
+			- 7: IPrimitiveDependencyService.Invoke<T>()
+			- 8: IPrimitiveDependencyService.InvokeWithParameter(345)
+			- 9: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 10: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
+			- 11: IPrimitiveDependencyService.InvokeWithParameter<T>(123)
+			- 12: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
+			- 13: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
+			- 14: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
+			- 15: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
+			- 16: IPrimitiveDependencyService.Return()
+			- 17: IPrimitiveDependencyService.Return(out null)
+			- 18: IPrimitiveDependencyService.Return<T>()
+			- 19: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 20: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
+			- 21: IPrimitiveDependencyService.ReturnWithParameter<TParameter, TReturn>(123)
+			- 22: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
+			- 23: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
+			- 24: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
+			- 25: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -133,7 +145,7 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.Invoke() to be invoked at index 12, but it has not been called.
+			Expected IPrimitiveDependencyService.Invoke() to be invoked at index 14, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.HandlerEvent.add
 			- 2: IPrimitiveDependencyService.GetOnly.get
@@ -141,21 +153,25 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 4: IPrimitiveDependencyService.GetInit.set = "value"
 			- 5: IPrimitiveDependencyService.Invoke()
 			- 6: IPrimitiveDependencyService.Invoke(out 0)
-			- 7: IPrimitiveDependencyService.InvokeWithParameter(345)
-			- 8: IPrimitiveDependencyService.InvokeWithParameter("another value")
-			- 9: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
-			- 10: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
-			- 11: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
-			- 12: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
-			- 13: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
-			- 14: IPrimitiveDependencyService.Return()
-			- 15: IPrimitiveDependencyService.Return(out null)
-			- 16: IPrimitiveDependencyService.ReturnWithParameter("ret val")
-			- 17: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
-			- 18: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
-			- 19: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
-			- 20: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
-			- 21: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
+			- 7: IPrimitiveDependencyService.Invoke<T>()
+			- 8: IPrimitiveDependencyService.InvokeWithParameter(345)
+			- 9: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 10: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
+			- 11: IPrimitiveDependencyService.InvokeWithParameter<T>(123)
+			- 12: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
+			- 13: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
+			- 14: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
+			- 15: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
+			- 16: IPrimitiveDependencyService.Return()
+			- 17: IPrimitiveDependencyService.Return(out null)
+			- 18: IPrimitiveDependencyService.Return<T>()
+			- 19: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 20: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
+			- 21: IPrimitiveDependencyService.ReturnWithParameter<TParameter, TReturn>(123)
+			- 22: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
+			- 23: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
+			- 24: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
+			- 25: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -183,21 +199,25 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 4: IPrimitiveDependencyService.GetInit.set = "value"
 			- 5: IPrimitiveDependencyService.Invoke()
 			- 6: IPrimitiveDependencyService.Invoke(out 0)
-			- 7: IPrimitiveDependencyService.InvokeWithParameter(345)
-			- 8: IPrimitiveDependencyService.InvokeWithParameter("another value")
-			- 9: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
-			- 10: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
-			- 11: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
-			- 12: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
-			- 13: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
-			- 14: IPrimitiveDependencyService.Return()
-			- 15: IPrimitiveDependencyService.Return(out null)
-			- 16: IPrimitiveDependencyService.ReturnWithParameter("ret val")
-			- 17: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
-			- 18: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
-			- 19: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
-			- 20: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
-			- 21: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
+			- 7: IPrimitiveDependencyService.Invoke<T>()
+			- 8: IPrimitiveDependencyService.InvokeWithParameter(345)
+			- 9: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 10: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
+			- 11: IPrimitiveDependencyService.InvokeWithParameter<T>(123)
+			- 12: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
+			- 13: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
+			- 14: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
+			- 15: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
+			- 16: IPrimitiveDependencyService.Return()
+			- 17: IPrimitiveDependencyService.Return(out null)
+			- 18: IPrimitiveDependencyService.Return<T>()
+			- 19: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 20: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
+			- 21: IPrimitiveDependencyService.ReturnWithParameter<TParameter, TReturn>(123)
+			- 22: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
+			- 23: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
+			- 24: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
+			- 25: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -225,21 +245,25 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 4: IPrimitiveDependencyService.GetInit.set = "value"
 			- 5: IPrimitiveDependencyService.Invoke()
 			- 6: IPrimitiveDependencyService.Invoke(out 0)
-			- 7: IPrimitiveDependencyService.InvokeWithParameter(345)
-			- 8: IPrimitiveDependencyService.InvokeWithParameter("another value")
-			- 9: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
-			- 10: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
-			- 11: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
-			- 12: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
-			- 13: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
-			- 14: IPrimitiveDependencyService.Return()
-			- 15: IPrimitiveDependencyService.Return(out null)
-			- 16: IPrimitiveDependencyService.ReturnWithParameter("ret val")
-			- 17: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
-			- 18: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
-			- 19: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
-			- 20: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
-			- 21: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
+			- 7: IPrimitiveDependencyService.Invoke<T>()
+			- 8: IPrimitiveDependencyService.InvokeWithParameter(345)
+			- 9: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 10: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
+			- 11: IPrimitiveDependencyService.InvokeWithParameter<T>(123)
+			- 12: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
+			- 13: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
+			- 14: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
+			- 15: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
+			- 16: IPrimitiveDependencyService.Return()
+			- 17: IPrimitiveDependencyService.Return(out null)
+			- 18: IPrimitiveDependencyService.Return<T>()
+			- 19: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 20: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
+			- 21: IPrimitiveDependencyService.ReturnWithParameter<TParameter, TReturn>(123)
+			- 22: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
+			- 23: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
+			- 24: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
+			- 25: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -325,17 +349,21 @@ file static class PrimitiveTypeServiceEx
 		fixture.GetInit = "value";
 		fixture.Invoke();
 		fixture.Invoke(out _);
+		fixture.Invoke<double>();
 		fixture.InvokeWithParameter(345);
 		fixture.InvokeWithParameter("another value");
 		fixture.InvokeWithParameter(ref value);
+		fixture.InvokeWithParameter<float>(123);
 		fixture.InvokeWithSeveralParameters(1, 2);
 		fixture.InvokeWithSeveralParameters(ref valueInt, 2);
 		fixture.InvokeWithSeveralParameters(1, ref valueInt);
 		fixture.InvokeWithSeveralParameters(ref valueInt, ref valueInt);
 		fixture.Return();
 		fixture.Return(out _);
+		fixture.Return<decimal>();
 		fixture.ReturnWithParameter("ret val");
 		fixture.ReturnWithParameter(ref valueDouble);
+		fixture.ReturnWithParameter<float, string>(123f);
 		fixture.ReturnWithSeveralParameters(1, 2);
 		fixture.ReturnWithSeveralParameters(ref valueInt, 2);
 		fixture.ReturnWithSeveralParameters(1, ref valueInt);

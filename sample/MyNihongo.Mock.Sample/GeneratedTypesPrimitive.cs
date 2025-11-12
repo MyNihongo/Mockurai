@@ -548,14 +548,14 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	public void VerifyReturnWithParameter<TParameter, TReturn>(in It<TParameter> parameter, in Times times)
 	{
 		_returnWithParameterInvocation3 ??= new InvocationDictionary<(Type, Type)>();
-		var returnWithParameterInvocation3 = (Invocation<TParameter>)_returnWithParameterInvocation3.GetOrAdd((typeof(TParameter), typeof(TReturn)), static _ => new Invocation<TParameter>("IPrimitiveDependencyService.ReturnWithParameter<T>({0})"));
+		var returnWithParameterInvocation3 = (Invocation<TParameter>)_returnWithParameterInvocation3.GetOrAdd((typeof(TParameter), typeof(TReturn)), static _ => new Invocation<TParameter>("IPrimitiveDependencyService.ReturnWithParameter<TParameter, TReturn>({0})"));
 		returnWithParameterInvocation3.Verify(parameter, times, _invocationProviders);
 	}
 
 	public long VerifyReturnWithParameter<TParameter, TReturn>(in It<TParameter> parameter, in long index)
 	{
 		_returnWithParameterInvocation3 ??= new InvocationDictionary<(Type, Type)>();
-		var returnWithParameterInvocation3 = (Invocation<TParameter>)_returnWithParameterInvocation3.GetOrAdd((typeof(TParameter), typeof(TReturn)), static _ => new Invocation<TParameter>("IPrimitiveDependencyService.ReturnWithParameter<T>({0})"));
+		var returnWithParameterInvocation3 = (Invocation<TParameter>)_returnWithParameterInvocation3.GetOrAdd((typeof(TParameter), typeof(TReturn)), static _ => new Invocation<TParameter>("IPrimitiveDependencyService.ReturnWithParameter<TParameter, TReturn>({0})"));
 		return returnWithParameterInvocation3.Verify(parameter, index, _invocationProviders);
 	}
 
@@ -920,7 +920,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		{
 			var key = (typeof(TParameter), typeof(TReturn));
 			_mock._returnWithParameterInvocation3 ??= new InvocationDictionary<(Type, Type)>();
-			var returnWithParameterInvocation = (Invocation<TParameter>)_mock._returnWithParameterInvocation3.GetOrAdd(key, static _ => new Invocation<TParameter>("IPrimitiveDependencyService.ReturnWithParameter<TParameter>({0})"));
+			var returnWithParameterInvocation = (Invocation<TParameter>)_mock._returnWithParameterInvocation3.GetOrAdd(key, static _ => new Invocation<TParameter>("IPrimitiveDependencyService.ReturnWithParameter<TParameter, TReturn>({0})"));
 			returnWithParameterInvocation.Register(InvocationIndex.CounterValue, parameter);
 			return ((SetupWithParameter<TParameter, TReturn>?)_mock._returnWithParameter3?.GetValueOrDefault(key))?.Execute(parameter, out var returnValue) == true ? returnValue! : default!;
 		}
