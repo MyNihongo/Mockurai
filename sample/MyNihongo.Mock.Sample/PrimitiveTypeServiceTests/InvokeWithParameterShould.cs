@@ -507,7 +507,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void VerifyValidSequenceReq()
+	public void VerifyValidSequenceRef()
 	{
 		decimal parameter1 = 123m, parameter2 = 234m;
 
