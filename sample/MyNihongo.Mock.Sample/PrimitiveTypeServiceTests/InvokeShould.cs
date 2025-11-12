@@ -461,36 +461,4 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.VerifyInvoke(Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
-
-	[Fact]
-	public void VerifyDifferentTypes()
-	{
-		var fixture = CreateFixture();
-		fixture.Invoke<string>();
-		fixture.Invoke<decimal>();
-		fixture.Invoke<float>();
-		fixture.Invoke<string>();
-
-		DependencyServiceMock.VerifyInvoke<string>(Times.Exactly(2));
-		DependencyServiceMock.VerifyInvoke<decimal>(Times.Once);
-		DependencyServiceMock.VerifyInvoke<float>(Times.Once);
-		VerifyNoOtherCalls();
-	}
-
-	[Fact]
-	public void VerifyDifferentTypesInSequence()
-	{
-		var fixture = CreateFixture();
-		fixture.Invoke<string>();
-		fixture.Invoke<decimal>();
-		fixture.Invoke<float>();
-
-		VerifyInSequence(static ctx =>
-		{
-			ctx.DependencyServiceMock.Invoke<string>();
-			ctx.DependencyServiceMock.Invoke<decimal>();
-			ctx.DependencyServiceMock.Invoke<float>();
-		});
-		VerifyNoOtherCalls();
-	}
 }

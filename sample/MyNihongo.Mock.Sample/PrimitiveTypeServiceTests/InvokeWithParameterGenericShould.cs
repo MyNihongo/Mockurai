@@ -553,6 +553,32 @@ public sealed class InvokeWithParameterGenericShould : PrimitiveTypeServiceTests
 	}
 
 	[Fact]
+	public void SetupDifferentTypes()
+	{
+		const string errorMessage = nameof(errorMessage);
+		const string stringValue = nameof(stringValue);
+		const float floatValue = 123f;
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter<float>()
+			.Throws(new NullReferenceException(errorMessage));
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter<string>()
+			.Callback(x => callback += x.Length);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter<string>(stringValue);
+
+		var actual = () => fixture.InvokeWithParameter(floatValue);
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+
+		Assert.Equal(stringValue.Length, callback);
+	}
+
+	[Fact]
 	public void VerifyDifferentTypes()
 	{
 		const float floatParam = 123f;

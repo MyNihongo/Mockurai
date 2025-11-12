@@ -399,4 +399,61 @@ public sealed class InvokeGenericShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.VerifyInvoke<float>(Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void SetupDifferentTypes()
+	{
+		const string errorMessage = nameof(errorMessage);
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupInvoke<float>()
+			.Throws(new NullReferenceException(errorMessage));
+
+		DependencyServiceMock
+			.SetupInvoke<string>()
+			.Callback(() => callback++);
+
+		var fixture = CreateFixture();
+		fixture.Invoke<string>();
+
+		var actual = () => fixture.Invoke<float>();
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+
+		const int expectedCallback = 1;
+		Assert.Equal(expectedCallback, callback);
+	}
+
+	[Fact]
+	public void VerifyDifferentTypes()
+	{
+		var fixture = CreateFixture();
+		fixture.Invoke<string>();
+		fixture.Invoke<decimal>();
+		fixture.Invoke<float>();
+		fixture.Invoke<string>();
+
+		DependencyServiceMock.VerifyInvoke<string>(Times.Exactly(2));
+		DependencyServiceMock.VerifyInvoke<decimal>(Times.Once);
+		DependencyServiceMock.VerifyInvoke<float>(Times.Once);
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void VerifyDifferentTypesInSequence()
+	{
+		var fixture = CreateFixture();
+		fixture.Invoke<string>();
+		fixture.Invoke<decimal>();
+		fixture.Invoke<float>();
+
+		VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.Invoke<string>();
+			ctx.DependencyServiceMock.Invoke<decimal>();
+			ctx.DependencyServiceMock.Invoke<float>();
+		});
+		VerifyNoOtherCalls();
+	}
 }
