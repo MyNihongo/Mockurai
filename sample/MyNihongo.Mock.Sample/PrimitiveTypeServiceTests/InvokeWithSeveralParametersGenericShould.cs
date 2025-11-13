@@ -718,4 +718,73 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 		DependencyServiceMock.VerifyInvokeWithSeveralParameters<float>(setValue1, setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void SetupDifferentTypes()
+	{
+		const string errorMessage = nameof(errorMessage);
+		const string stringValue = nameof(stringValue);
+		const float floatValue = 123f;
+		const int intValue = 456;
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters<float>()
+			.Throws(new NullReferenceException(errorMessage));
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters<string>()
+			.Callback((x, _) => callback += x.Length);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParameters<string>(stringValue, intValue);
+
+		var actual = () => fixture.InvokeWithSeveralParameters(floatValue, intValue);
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+
+		Assert.Equal(stringValue.Length, callback);
+	}
+
+	[Fact]
+	public void VerifyDifferentTypes()
+	{
+		const float floatParam = 123f;
+		const string stringParam = nameof(stringParam);
+		const decimal decimalParam = 123m;
+		const int intParam = 456;
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParameters<string>(stringParam, intParam);
+		fixture.InvokeWithSeveralParameters(decimalParam, intParam);
+		fixture.InvokeWithSeveralParameters(floatParam, intParam);
+		fixture.InvokeWithSeveralParameters<string>(stringParam, intParam);
+
+		DependencyServiceMock.VerifyInvokeWithSeveralParameters<string>(stringParam, intParam, Times.Exactly(2));
+		DependencyServiceMock.VerifyInvokeWithSeveralParameters<decimal>(decimalParam, intParam, Times.Once);
+		DependencyServiceMock.VerifyInvokeWithSeveralParameters<float>(floatParam, intParam, Times.Once);
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void VerifyDifferentTypesInSequence()
+	{
+		const float floatParam = 123f;
+		const string stringParam = nameof(stringParam);
+		const decimal decimalParam = 123m;
+		const int intParam = 456;
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParameters<string>(stringParam, intParam);
+		fixture.InvokeWithSeveralParameters(decimalParam, intParam);
+		fixture.InvokeWithSeveralParameters(floatParam, intParam);
+
+		VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.InvokeWithSeveralParameters<string>(stringParam, intParam);
+			ctx.DependencyServiceMock.InvokeWithSeveralParameters<decimal>(decimalParam, intParam);
+			ctx.DependencyServiceMock.InvokeWithSeveralParameters<float>(floatParam, intParam);
+		});
+		VerifyNoOtherCalls();
+	}
 }
