@@ -34,6 +34,8 @@ public interface IPrimitiveTypeService : IDisposable
 
 	void InvokeWithSeveralParameters(ref int parameter1, ref int parameter2);
 
+	void InvokeWithSeveralParameters<T>(T parameter1, int parameter2);
+
 	decimal Return();
 
 	bool Return(out string result);

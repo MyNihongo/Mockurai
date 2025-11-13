@@ -33,6 +33,8 @@ public interface IPrimitiveDependencyService
 
 	void InvokeWithSeveralParameters(ref int parameter1, ref int parameter2);
 
+	void InvokeWithSeveralParameters<T>(T parameter1, int parameter2);
+
 	int Return();
 
 	bool Return(out string result);
