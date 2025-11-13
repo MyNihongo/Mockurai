@@ -158,6 +158,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		return Math.Pow(spendingDouble, 2d);
 	}
 
+	public TReturn ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref TParameter1 parameter1, TParameter2 parameter2)
+	{
+		return _primitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref parameter1, parameter2);
+	}
+
 	public void Dispose()
 	{
 		_primitiveDependencyService.Handler -= PrimitiveDependencyServiceOnHandler;

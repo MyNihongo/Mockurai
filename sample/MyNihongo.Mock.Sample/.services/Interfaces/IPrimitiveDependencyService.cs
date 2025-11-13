@@ -54,4 +54,6 @@ public interface IPrimitiveDependencyService
 	decimal ReturnWithSeveralParameters(int parameter1, ref int parameter2);
 
 	decimal ReturnWithSeveralParameters(ref int parameter1, ref int parameter2);
+
+	TReturn ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref TParameter1 parameter1, TParameter2 parameter2);
 }
