@@ -987,8 +987,8 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		{
 			var key = (typeof(TParameter), typeof(TReturn));
 			_mock._returnWithParameterInvocation3 ??= new InvocationDictionary<(Type, Type)>();
-			var returnWithParameterInvocation = (Invocation<TParameter>)_mock._returnWithParameterInvocation3.GetOrAdd(key, static _ => new Invocation<TParameter>("IPrimitiveDependencyService.ReturnWithParameter<TParameter, TReturn>({0})"));
-			returnWithParameterInvocation.Register(InvocationIndex.CounterValue, parameter);
+			var returnWithParameterInvocation3 = (Invocation<TParameter>)_mock._returnWithParameterInvocation3.GetOrAdd(key, static _ => new Invocation<TParameter>("IPrimitiveDependencyService.ReturnWithParameter<TParameter, TReturn>({0})"));
+			returnWithParameterInvocation3.Register(InvocationIndex.CounterValue, parameter);
 			return ((SetupWithParameter<TParameter, TReturn>?)_mock._returnWithParameter3?.GetValueOrDefault(key))?.Execute(parameter, out var returnValue) == true ? returnValue! : default!;
 		}
 
@@ -1022,7 +1022,11 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 
 		public TReturn ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref TParameter1 parameter1, TParameter2 parameter2)
 		{
-			throw new NotImplementedException();
+			var key = (typeof(TParameter1), typeof(TParameter2), typeof(TReturn));
+			_mock._returnWithSeveralParametersInvocation5 ??= new InvocationDictionary<(Type, Type, Type)>();
+			var returnWithParameterInvocation5 = (InvocationT1T2<TParameter1, TParameter2>)_mock._returnWithSeveralParametersInvocation5.GetOrAdd(key, static _ => new InvocationT1T2<TParameter1, TParameter2>("IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>({0}, {1})", prefix1: "ref"));
+			returnWithParameterInvocation5.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			return ((SetupRefT1T2<TParameter1, TParameter2, TReturn>?)_mock._returnWithSeveralParameters5?.GetValueOrDefault(key))?.Execute(ref parameter1, parameter2, out var returnValue) == true ? returnValue! : default!;
 		}
 	}
 }
