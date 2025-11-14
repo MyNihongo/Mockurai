@@ -23,7 +23,7 @@ public sealed class InvokeWithParameterGenericShould : PrimitiveTypeServiceTests
 	{
 		var actual = () => DependencyServiceMock.VerifyInvokeWithParameter(It<float>.Any(), Times.Once);
 
-		const string errorMessage = "Expected IPrimitiveDependencyService.InvokeWithParameter<T>(any) to be called 1 time, but instead it was called 0 times.";
+		const string errorMessage = "Expected IPrimitiveDependencyService.InvokeWithParameter<Single>(any) to be called 1 time, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 	}
@@ -179,10 +179,10 @@ public sealed class InvokeWithParameterGenericShould : PrimitiveTypeServiceTests
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter<T>(any) to be called at least 3 times, but instead it was called 2 times.
+			Expected IPrimitiveDependencyService.InvokeWithParameter<Single>(any) to be called at least 3 times, but instead it was called 2 times.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter<T>(123)
-			- 2: IPrimitiveDependencyService.InvokeWithParameter<T>(321)
+			- 1: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
+			- 2: IPrimitiveDependencyService.InvokeWithParameter<Single>(321)
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -203,8 +203,8 @@ public sealed class InvokeWithParameterGenericShould : PrimitiveTypeServiceTests
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter<T>(Single) to be verified, but the following invocations have not been verified:
-			- 2: IPrimitiveDependencyService.InvokeWithParameter<T>(321)
+			Expected IPrimitiveDependencyService.InvokeWithParameter<Single>(Single) to be verified, but the following invocations have not been verified:
+			- 2: IPrimitiveDependencyService.InvokeWithParameter<Single>(321)
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -298,10 +298,10 @@ public sealed class InvokeWithParameterGenericShould : PrimitiveTypeServiceTests
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter<T>(123) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameter<Single>(123) to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter<T>(123)
-			- 2: IPrimitiveDependencyService.InvokeWithParameter<T>(321)
+			- 1: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
+			- 2: IPrimitiveDependencyService.InvokeWithParameter<Single>(321)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -325,10 +325,10 @@ public sealed class InvokeWithParameterGenericShould : PrimitiveTypeServiceTests
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter<T>(where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameter<Single>(where(predicate)) to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter<T>(123)
-			- 2: IPrimitiveDependencyService.InvokeWithParameter<T>(321)
+			- 1: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
+			- 2: IPrimitiveDependencyService.InvokeWithParameter<Single>(321)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -354,8 +354,8 @@ public sealed class InvokeWithParameterGenericShould : PrimitiveTypeServiceTests
 			"""
 			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321) to be invoked at index 2, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter<T>(123)
-			- 2: IPrimitiveDependencyService.InvokeWithParameter<T>(321)
+			- 1: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
+			- 2: IPrimitiveDependencyService.InvokeWithParameter<Single>(321)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -380,11 +380,11 @@ public sealed class InvokeWithParameterGenericShould : PrimitiveTypeServiceTests
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter<T>(234) to be invoked at index 2, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameter<Single>(234) to be invoked at index 2, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter<T>(123)
+			- 1: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
 			- 2: IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321)
-			- 3: IPrimitiveDependencyService.InvokeWithParameter<T>(321)
+			- 3: IPrimitiveDependencyService.InvokeWithParameter<Single>(321)
 			  expected: 234
 			  actual: 321
 			""";
