@@ -43,6 +43,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		_primitiveDependencyService.Invoke(out result);
 	}
 
+	public void Invoke<T>()
+	{
+		_primitiveDependencyService.Invoke<T>();
+	}
+
 	public void InvokeWithParameter(in string parameter)
 	{
 		_primitiveDependencyService.InvokeWithParameter(parameter);
@@ -56,6 +61,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 	public void InvokeWithParameter(ref decimal parameter)
 	{
 		_primitiveDependencyService.InvokeWithParameter(ref parameter);
+	}
+
+	public void InvokeWithParameter<T>(T parameter)
+	{
+		_primitiveDependencyService.InvokeWithParameter(parameter);
 	}
 
 	public void InvokeWithSeveralParameters(int parameter1, int parameter2)
@@ -78,6 +88,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		_primitiveDependencyService.InvokeWithSeveralParameters(ref parameter1, ref parameter2);
 	}
 
+	public void InvokeWithSeveralParameters<T>(T parameter1, int parameter2)
+	{
+		_primitiveDependencyService.InvokeWithSeveralParameters(parameter1, parameter2);
+	}
+
 	public decimal Return()
 	{
 		var shopCount = _primitiveDependencyService.Return();
@@ -87,6 +102,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 	public bool Return(out string result)
 	{
 		return _primitiveDependencyService.Return(out result);
+	}
+
+	public T Return<T>()
+	{
+		return _primitiveDependencyService.Return<T>();
 	}
 
 	public string ReturnWithParameter(in string parameter)
@@ -99,6 +119,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 	{
 		var result = _primitiveDependencyService.ReturnWithParameter(ref parameter);
 		return result + 1;
+	}
+
+	public TReturn ReturnWithParameter<TParameter, TReturn>(TParameter parameter)
+	{
+		return _primitiveDependencyService.ReturnWithParameter<TParameter, TReturn>(parameter);
 	}
 
 	public double ReturnWithSeveralParameters(int parameter1, int parameter2)
@@ -131,6 +156,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		var spendingDouble = Convert.ToDouble(spending);
 
 		return Math.Pow(spendingDouble, 2d);
+	}
+
+	public TReturn ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref TParameter1 parameter1, TParameter2 parameter2)
+	{
+		return _primitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref parameter1, parameter2);
 	}
 
 	public void Dispose()
