@@ -234,6 +234,27 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		return invokeInvocation3.Verify(index, _invocationProviders);
 	}
 
+	// InvokeAsync
+	private Setup? _invokeAsync;
+	private Invocation? _invokeAsyncInvocation;
+
+	public Setup SetupInvokeAsync()
+	{
+		return _invokeAsync ??= new Setup();
+	}
+
+	public void VerifyInvokeAsync(in Times times)
+	{
+		_invokeAsyncInvocation ??= new Invocation("IPrimitiveDependencyService.InvokeAsync()");
+		_invokeAsyncInvocation.Verify(times, _invocationProviders);
+	}
+
+	public long VerifyInvokeAsync(in long index)
+	{
+		_invokeAsyncInvocation ??= new Invocation("IPrimitiveDependencyService.InvokeAsync()");
+		return _invokeAsyncInvocation.Verify(index, _invocationProviders);
+	}
+
 	// InvokeWithParameter
 	private SetupWithParameter<string>? _invokeWithParameter1;
 	private Invocation<string>? _invokeWithParameterInvocation1;
@@ -719,6 +740,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		_invokeInvocation1?.VerifyNoOtherCalls(_invocationProviders);
 		_invokeInvocation2?.VerifyNoOtherCalls(_invocationProviders);
 		_invokeInvocation3?.VerifyNoOtherCalls(_invocationProviders);
+		_invokeAsyncInvocation?.VerifyNoOtherCalls(_invocationProviders);
 		_invokeWithParameterInvocation1?.VerifyNoOtherCalls(_invocationProviders);
 		_invokeWithParameterInvocation2?.VerifyNoOtherCalls(_invocationProviders);
 		_invokeWithParameterInvocation3?.VerifyNoOtherCalls(_invocationProviders);
@@ -754,6 +776,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		yield return _invokeInvocation1;
 		yield return _invokeInvocation2;
 		yield return _invokeInvocation3;
+		yield return _invokeAsyncInvocation;
 		yield return _invokeWithParameterInvocation1;
 		yield return _invokeWithParameterInvocation2;
 		yield return _invokeWithParameterInvocation3;
@@ -876,6 +899,14 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 			var invokeInvocation3 = (Invocation)_mock._invokeInvocation3.GetOrAdd(typeof(T), static type => new Invocation($"IPrimitiveDependencyService.Invoke<{type.Name}>()"));
 			invokeInvocation3.Register(InvocationIndex.CounterValue);
 			_mock._invoke3?.GetValueOrDefault(typeof(T))?.Invoke();
+		}
+
+		public Task InvokeAsync()
+		{
+			_mock._invokeAsyncInvocation ??= new Invocation("IPrimitiveDependencyService.InvokeAsync()");
+			_mock._invokeAsyncInvocation.Register(InvocationIndex.CounterValue);
+			_mock._invokeAsync?.Invoke();
+			return Task.CompletedTask;
 		}
 
 		public void InvokeWithParameter(in string parameter)
@@ -1134,6 +1165,16 @@ public static class PrimitiveDependencyServiceMockEx
 
 	public static void VerifyInvoke<T>(this IMock<IPrimitiveDependencyService> @this, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock)@this).VerifyInvoke<T>(times());
+
+	// InvokeAsync
+	public static ISetup<Action> SetupInvokeAsync(this IMock<IPrimitiveDependencyService> @this) =>
+		((PrimitiveDependencyServiceMock)@this).SetupInvokeAsync();
+
+	public static void VerifyInvokeAsync(this IMock<IPrimitiveDependencyService> @this, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeAsync(times);
+
+	public static void VerifyInvokeAsync(this IMock<IPrimitiveDependencyService> @this, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeAsync(times());
 
 	// InvokeWithParameter
 	public static ISetup<Action<string>> SetupInvokeWithParameter(this IMock<IPrimitiveDependencyService> @this, in It<string> parameter = default) =>
@@ -1463,6 +1504,13 @@ public static class PrimitiveDependencyServiceMockSequenceEx
 	public static void Invoke<T>(this IMockSequence<IPrimitiveDependencyService> @this)
 	{
 		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvoke<T>(@this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	// Invoke
+	public static void InvokeAsync(this IMockSequence<IPrimitiveDependencyService> @this)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock)@this.Mock).VerifyInvokeAsync(@this.VerifyIndex);
 		@this.VerifyIndex.Set(nextIndex);
 	}
 
