@@ -30,7 +30,7 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 	{
 		var actual = () => DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Any(), It<float>.Any(), Times.Once);
 
-		const string errorMessage = "Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref any, any) to be called 1 time, but instead it was called 0 times.";
+		const string errorMessage = "Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref any, any) to be called 1 time, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 	}
@@ -38,7 +38,6 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 	[Fact]
 	public void ReturnValueWithSetup()
 	{
-		const double expected = 225d;
 		const double resultSetup = 15d;
 		var parameter1 = "name";
 		const float parameter2 = 2f;
@@ -50,7 +49,7 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 		var actual = CreateFixture()
 			.ReturnWithSeveralParameters<string, float, double>(ref parameter1, parameter2);
 
-		Assert.Equal(expected, actual);
+		Assert.Equal(resultSetup, actual);
 	}
 
 	[Fact]
@@ -227,10 +226,10 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref any, 234) to be called 3 times, but instead it was called 2 times.
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref any, 234) to be called 3 times, but instead it was called 2 times.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 123, 234)
-			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 234, 234)
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 123, 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 234, 234)
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -255,9 +254,9 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref Int32, Int32) to be verified, but the following invocations have not been verified:
-			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 123, 234)
-			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 234, 123)
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref Int32, Int32) to be verified, but the following invocations have not been verified:
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 123, 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 234, 123)
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -367,11 +366,11 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 234, 234) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 234, 234) to be invoked at index 4, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 123, 234)
-			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 234, 234)
-			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 234, 123)
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 123, 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 234, 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 234, 123)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -398,11 +397,11 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref where(predicate), where(predicate)) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref where(predicate), where(predicate)) to be invoked at index 4, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 123, 234)
-			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 234, 234)
-			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 234, 123)
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 123, 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 234, 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 234, 123)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -429,11 +428,11 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 123, 234) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 123, 234) to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 123, 234)
-			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 234, 234)
-			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 234, 123)
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 123, 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 234, 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 234, 123)
 			  - parameter1:
 			    expected: 123
 			    actual: 234
@@ -468,11 +467,11 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref any, any) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref any, any) to be invoked at index 4, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 123, 234)
-			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 234, 234)
-			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 234, 123)
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 123, 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 234, 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 234, 123)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -501,9 +500,9 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 			"""
 			Expected IPrimitiveDependencyService.GetInit.get to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 123, 234)
-			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 234, 234)
-			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<string, float, double>(ref 234, 123)
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 123, 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 234, 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref 234, 123)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -523,9 +522,9 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		var fixture = CreateFixture();
 
-		Assert.Equal(Math.Pow(setupValue1, 2), fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
-		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
-		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
+		Assert.Equal(setupValue1, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
+		Assert.Equal(setupValue2, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
+		Assert.Equal(setupValue2, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
 
 		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
@@ -548,9 +547,9 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 		var fixture = CreateFixture();
 
 		Assert.Equal(0d, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
-		Assert.Equal(Math.Pow(setupValue1, 2), fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
-		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
-		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
+		Assert.Equal(setupValue1, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
+		Assert.Equal(setupValue2, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
+		Assert.Equal(setupValue2, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
 		Assert.Equal(setValue1.Length + setValue2, callback);
 
 		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2, Times.Exactly(4));
@@ -572,9 +571,9 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		var fixture = CreateFixture();
 
-		Assert.Equal(Math.Pow(setupValue1, 2), fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
-		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
-		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
+		Assert.Equal(setupValue1, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
+		Assert.Equal(setupValue2, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
+		Assert.Equal(setupValue2, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
 		Assert.Equal(setValue1.Length + setValue2, callback);
 
 		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2, Times.Exactly(3));
@@ -596,9 +595,9 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		var fixture = CreateFixture();
 
-		Assert.Equal(Math.Pow(setupValue1, 2), fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
-		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
-		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
+		Assert.Equal(setupValue1, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
+		Assert.Equal(setupValue2, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
+		Assert.Equal(setupValue2, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
 		Assert.Equal(2 * (setValue1.Length + setValue2), callback);
 
 		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2, Times.Exactly(3));
@@ -620,9 +619,9 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		var fixture = CreateFixture();
 
-		Assert.Equal(Math.Pow(setupValue1, 2), fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
-		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
-		Assert.Equal(Math.Pow(setupValue2, 2), fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
+		Assert.Equal(setupValue1, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
+		Assert.Equal(setupValue2, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
+		Assert.Equal(setupValue2, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
 		Assert.Equal(3 * (setValue1.Length + setValue2), callback);
 
 		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2, Times.Exactly(3));
@@ -813,8 +812,8 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 		var exception1 = Assert.Throws<COMException>(actual1);
 		Assert.Equal(errorMessage, exception1.Message);
 
-		Assert.Equal(Convert.ToDouble(setupValue * setupValue), fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
-		Assert.Equal(Convert.ToDouble(setupValue * setupValue), fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
+		Assert.Equal(setupValue, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
+		Assert.Equal(setupValue, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
 
 		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
@@ -835,7 +834,7 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		var fixture = CreateFixture();
 
-		Assert.Equal(Convert.ToDouble(setupValue * setupValue), fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
+		Assert.Equal(Convert.ToDouble(setupValue), fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
 
 		var actual2 = () => { _ = fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2); };
 		var exception1 = Assert.Throws<COMException>(actual2);
