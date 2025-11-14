@@ -16,6 +16,7 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	public void VerifyIfNotCalled()
 	{
 		DependencyServiceMock.VerifyInvokeWithSeveralParameters(It<float>.Any(), default, Times.Never);
+		DependencyServiceMock.VerifyInvokeWithSeveralParameters(It<string>.Any(), default, Times.Never);
 	}
 
 	[Fact]
