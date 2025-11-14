@@ -30,7 +30,7 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 	{
 		var actual = () => DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Any(), It<float>.Any(), Times.Once);
 
-		const string errorMessage = "Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref any, any) to be called 1 time, but instead it was called 0 times.";
+		const string errorMessage = "Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref any, any) to be called 1 time, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 	}
@@ -226,10 +226,10 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref any, 234) to be called 3 times, but instead it was called 2 times.
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref any, 234) to be called 3 times, but instead it was called 2 times.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue1", 234)
-			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue3", 234)
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue1", 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", 234)
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -254,9 +254,9 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref System.String, Single) to be verified, but the following invocations have not been verified:
-			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue1", 234)
-			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue3", 456)
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref System.String, Single) to be verified, but the following invocations have not been verified:
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue1", 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", 456)
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -366,11 +366,11 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue3", 234) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", 234) to be invoked at index 4, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue1", 234)
-			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue3", 234)
-			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue3", 456)
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue1", 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", 456)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -397,11 +397,11 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue3", where(predicate)) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", where(predicate)) to be invoked at index 4, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue1", 234)
-			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue3", 234)
-			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue3", 456)
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue1", 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", 456)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -428,11 +428,11 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue1", 234) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue1", 234) to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue1", 234)
-			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue3", 234)
-			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue3", 456)
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue1", 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", 456)
 			  - parameter2:
 			    expected: 234
 			    actual: 456
@@ -464,11 +464,11 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref any, any) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref any, any) to be invoked at index 4, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue1", 234)
-			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue3", 234)
-			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue3", 456)
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue1", 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", 456)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -497,9 +497,9 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 			"""
 			Expected IPrimitiveDependencyService.GetInit.get to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue1", 234)
-			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue3", 234)
-			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref "parameterValue3", 456)
+			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue1", 234)
+			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", 234)
+			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", 456)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);

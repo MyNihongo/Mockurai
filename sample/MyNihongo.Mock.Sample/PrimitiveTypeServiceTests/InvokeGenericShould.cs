@@ -27,7 +27,7 @@ public sealed class InvokeGenericShould : PrimitiveTypeServiceTestsBase
 	{
 		var actual = () => DependencyServiceMock.VerifyInvoke<float>(Times.Once);
 
-		const string errorMessage = "Expected IPrimitiveDependencyService.Invoke<T>() to be called 1 time, but instead it was called 0 times.";
+		const string errorMessage = "Expected IPrimitiveDependencyService.Invoke<Single>() to be called 1 time, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 	}
@@ -86,10 +86,10 @@ public sealed class InvokeGenericShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.Invoke<T>() to be called 1 time, but instead it was called 2 times.
+			Expected IPrimitiveDependencyService.Invoke<Single>() to be called 1 time, but instead it was called 2 times.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.Invoke<T>()
-			- 2: IPrimitiveDependencyService.Invoke<T>()
+			- 1: IPrimitiveDependencyService.Invoke<Single>()
+			- 2: IPrimitiveDependencyService.Invoke<Single>()
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -161,10 +161,10 @@ public sealed class InvokeGenericShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.Invoke<T>() to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.Invoke<Single>() to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.Invoke<T>()
-			- 2: IPrimitiveDependencyService.Invoke<T>()
+			- 1: IPrimitiveDependencyService.Invoke<Single>()
+			- 2: IPrimitiveDependencyService.Invoke<Single>()
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -213,8 +213,8 @@ public sealed class InvokeGenericShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.Return() to be invoked at index 2, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.Invoke<T>()
-			- 2: IPrimitiveDependencyService.Invoke<T>()
+			- 1: IPrimitiveDependencyService.Invoke<Single>()
+			- 2: IPrimitiveDependencyService.Invoke<Single>()
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
