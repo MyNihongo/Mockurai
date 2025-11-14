@@ -48,6 +48,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		_primitiveDependencyService.Invoke<T>();
 	}
 
+	public async Task InvokeAsync()
+	{
+		await _primitiveDependencyService.InvokeAsync();
+	}
+
 	public void InvokeWithParameter(in string parameter)
 	{
 		_primitiveDependencyService.InvokeWithParameter(parameter);
@@ -66,6 +71,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 	public void InvokeWithParameter<T>(T parameter)
 	{
 		_primitiveDependencyService.InvokeWithParameter(parameter);
+	}
+
+	public async Task InvokeWithParameterAsync(int parameter)
+	{
+		await _primitiveDependencyService.InvokeWithParameterAsync(parameter);
 	}
 
 	public void InvokeWithSeveralParameters(int parameter1, int parameter2)
@@ -93,6 +103,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		_primitiveDependencyService.InvokeWithSeveralParameters(parameter1, parameter2);
 	}
 
+	public async Task InvokeWithSeveralParametersAsync(int parameter1, int parameter2)
+	{
+		await _primitiveDependencyService.InvokeWithSeveralParametersAsync(parameter1, parameter2);
+	}
+
 	public decimal Return()
 	{
 		var shopCount = _primitiveDependencyService.Return();
@@ -107,6 +122,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 	public T Return<T>()
 	{
 		return _primitiveDependencyService.Return<T>();
+	}
+
+	public async ValueTask<bool> ReturnAsync()
+	{
+		return await _primitiveDependencyService.ReturnAsync();
 	}
 
 	public string ReturnWithParameter(in string parameter)
@@ -124,6 +144,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 	public TReturn ReturnWithParameter<TParameter, TReturn>(TParameter parameter)
 	{
 		return _primitiveDependencyService.ReturnWithParameter<TParameter, TReturn>(parameter);
+	}
+
+	public async ValueTask<int> ReturnWithParameterAsync(string parameter)
+	{
+		return await _primitiveDependencyService.ReturnWithParameterAsync(parameter);
 	}
 
 	public double ReturnWithSeveralParameters(int parameter1, int parameter2)
@@ -161,6 +186,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 	public TReturn ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref TParameter1 parameter1, TParameter2 parameter2)
 	{
 		return _primitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref parameter1, parameter2);
+	}
+
+	public async ValueTask<decimal> ReturnWithSeveralParametersAsync(int parameter1, int parameter2)
+	{
+		return await _primitiveDependencyService.ReturnWithSeveralParametersAsync(parameter1, parameter2);
 	}
 
 	public void Dispose()
