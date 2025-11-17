@@ -1317,6 +1317,25 @@ public static class PrimitiveDependencyServiceMockEx
 		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithSeveralParameters(parameter1, ItRef<int>.Value(parameter2), times());
 
 	// InvokeWithSeveralParameters
+	public static ISetup<SetupRefIntRefInt.CallbackDelegate> SetupInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in ItRef<int> parameter1 = default, in ItRef<int> parameter2 = default) =>
+		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithSeveralParameters(parameter1, parameter2);
+
+	public static ISetup<SetupRefIntRefInt.CallbackDelegate> SetupInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, ref int parameter1, ref int parameter2) =>
+		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithSeveralParameters(ItRef<int>.Value(parameter1), ItRef<int>.Value(parameter2));
+
+	public static void VerifyInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in ItRef<int> parameter1, in ItRef<int> parameter2, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithSeveralParameters(parameter1, parameter2, times);
+
+	public static void VerifyInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, in ItRef<int> parameter1, in ItRef<int> parameter2, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithSeveralParameters(parameter1, parameter2, times());
+
+	public static void VerifyInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, ref int parameter1, ref int parameter2, in Times times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithSeveralParameters(ItRef<int>.Value(parameter1), ItRef<int>.Value(parameter2), times);
+
+	public static void VerifyInvokeWithSeveralParameters(this IMock<IPrimitiveDependencyService> @this, ref int parameter1, ref int parameter2, in Func<Times> times) =>
+		((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithSeveralParameters(ItRef<int>.Value(parameter1), ItRef<int>.Value(parameter2), times());
+
+	// InvokeWithSeveralParameters
 	public static ISetup<Action<T, int>> SetupInvokeWithSeveralParameters<T>(this IMock<IPrimitiveDependencyService> @this, in It<T> parameter1 = default, in It<int> parameter2 = default) =>
 		((PrimitiveDependencyServiceMock)@this).SetupInvokeWithSeveralParameters(parameter1, parameter2);
 
