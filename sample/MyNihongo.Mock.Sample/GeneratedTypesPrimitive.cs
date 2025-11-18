@@ -5,12 +5,14 @@ namespace MyNihongo.Mock.Sample;
 [Obsolete("Will be generated")]
 public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyService>
 {
+	private readonly InvocationIndex.Counter _invocationIndex;
 	private readonly Func<IEnumerable<IInvocationProvider?>> _invocationProviders;
 	private Proxy? _proxy;
 	public IPrimitiveDependencyService Object => _proxy ??= new Proxy(this);
 
-	public PrimitiveDependencyServiceMock()
+	public PrimitiveDependencyServiceMock(in InvocationIndex.Counter invocationIndex)
 	{
+		_invocationIndex = invocationIndex;
 		_invocationProviders = GetInvocations;
 	}
 
@@ -936,13 +938,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 			add
 			{
 				_mock._handlerAddInvocation ??= new Invocation<PrimitiveHandler?>("IPrimitiveDependencyService.Handler.add");
-				_mock._handlerAddInvocation.Register(InvocationIndex.CounterValue, value);
+				_mock._handlerAddInvocation.Register(_mock._invocationIndex, value);
 				_mock._handler += value;
 			}
 			remove
 			{
 				_mock._handlerRemoveInvocation ??= new Invocation<PrimitiveHandler?>("IPrimitiveDependencyService.Handler.remove");
-				_mock._handlerRemoveInvocation.Register(InvocationIndex.CounterValue, value);
+				_mock._handlerRemoveInvocation.Register(_mock._invocationIndex, value);
 				_mock._handler -= value;
 			}
 		}
@@ -952,13 +954,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 			add
 			{
 				_mock._handlerEventAddInvocation ??= new Invocation<EventHandler<string>?>("IPrimitiveDependencyService.HandlerEvent.add");
-				_mock._handlerEventAddInvocation.Register(InvocationIndex.CounterValue, value);
+				_mock._handlerEventAddInvocation.Register(_mock._invocationIndex, value);
 				_mock._handlerEvent += value;
 			}
 			remove
 			{
 				_mock._handlerEventRemoveInvocation ??= new Invocation<EventHandler<string>?>("IPrimitiveDependencyService.HandlerEvent.remove");
-				_mock._handlerEventRemoveInvocation.Register(InvocationIndex.CounterValue, value);
+				_mock._handlerEventRemoveInvocation.Register(_mock._invocationIndex, value);
 				_mock._handlerEvent -= value;
 			}
 		}
@@ -968,7 +970,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 			get
 			{
 				_mock._getOnlyGetInvocation ??= new Invocation("IPrimitiveDependencyService.GetOnly.get");
-				_mock._getOnlyGetInvocation.Register(InvocationIndex.CounterValue);
+				_mock._getOnlyGetInvocation.Register(_mock._invocationIndex);
 				return _mock._getOnlyGet?.Execute(out var returnValue) == true ? returnValue : 0;
 			}
 		}
@@ -978,7 +980,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 			set
 			{
 				_mock._setOnlySetInvocation ??= new Invocation<decimal>("IPrimitiveDependencyService.SetOnly.set = {0}");
-				_mock._setOnlySetInvocation.Register(InvocationIndex.CounterValue, value);
+				_mock._setOnlySetInvocation.Register(_mock._invocationIndex, value);
 				_mock._setOnlySet?.Invoke(value);
 			}
 		}
@@ -988,13 +990,13 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 			get
 			{
 				_mock._getInitGetInvocation ??= new Invocation("IPrimitiveDependencyService.GetInit.get");
-				_mock._getInitGetInvocation.Register(InvocationIndex.CounterValue);
+				_mock._getInitGetInvocation.Register(_mock._invocationIndex);
 				return _mock._getInitGet?.Execute(out var returnValue) == true ? returnValue! : string.Empty;
 			}
 			set
 			{
 				_mock._getInitSetInvocation ??= new Invocation<string>("IPrimitiveDependencyService.GetInit.set = {0}");
-				_mock._getInitSetInvocation.Register(InvocationIndex.CounterValue, value);
+				_mock._getInitSetInvocation.Register(_mock._invocationIndex, value);
 				_mock._getInitSet?.Invoke(value);
 			}
 		}
@@ -1002,14 +1004,14 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		public void Invoke()
 		{
 			_mock._invokeInvocation1 ??= new Invocation("IPrimitiveDependencyService.Invoke()");
-			_mock._invokeInvocation1.Register(InvocationIndex.CounterValue);
+			_mock._invokeInvocation1.Register(_mock._invocationIndex);
 			_mock._invoke1?.Invoke();
 		}
 
 		public void Invoke(out int result)
 		{
 			_mock._invokeInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService.Invoke({0})", prefix: "out");
-			_mock._invokeInvocation2.Register(InvocationIndex.CounterValue, 0);
+			_mock._invokeInvocation2.Register(_mock._invocationIndex, 0);
 			if (_mock._invoke2 is not null)
 				_mock._invoke2.Invoke(out result);
 			else
@@ -1020,14 +1022,14 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		{
 			_mock._invokeInvocation3 ??= new InvocationDictionary();
 			var invokeInvocation3 = (Invocation)_mock._invokeInvocation3.GetOrAdd(typeof(T), static type => new Invocation($"IPrimitiveDependencyService.Invoke<{type.Name}>()"));
-			invokeInvocation3.Register(InvocationIndex.CounterValue);
+			invokeInvocation3.Register(_mock._invocationIndex);
 			_mock._invoke3?.GetValueOrDefault(typeof(T))?.Invoke();
 		}
 
 		public Task InvokeAsync()
 		{
 			_mock._invokeAsyncInvocation ??= new Invocation("IPrimitiveDependencyService.InvokeAsync()");
-			_mock._invokeAsyncInvocation.Register(InvocationIndex.CounterValue);
+			_mock._invokeAsyncInvocation.Register(_mock._invocationIndex);
 			_mock._invokeAsync?.Invoke();
 			return Task.CompletedTask;
 		}
@@ -1035,21 +1037,21 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		public void InvokeWithParameter(in string parameter)
 		{
 			_mock._invokeWithParameterInvocation1 ??= new Invocation<string>("IPrimitiveDependencyService.InvokeWithParameter({0})");
-			_mock._invokeWithParameterInvocation1.Register(InvocationIndex.CounterValue, parameter);
+			_mock._invokeWithParameterInvocation1.Register(_mock._invocationIndex, parameter);
 			_mock._invokeWithParameter1?.Invoke(parameter);
 		}
 
 		public void InvokeWithParameter(in int parameter)
 		{
 			_mock._invokeWithParameterInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService.InvokeWithParameter({0})");
-			_mock._invokeWithParameterInvocation2.Register(InvocationIndex.CounterValue, parameter);
+			_mock._invokeWithParameterInvocation2.Register(_mock._invocationIndex, parameter);
 			_mock._invokeWithParameter2?.Invoke(parameter);
 		}
 
 		public void InvokeWithParameter(ref decimal parameter)
 		{
 			_mock._invokeWithParameterInvocation3 ??= new Invocation<decimal>("IPrimitiveDependencyService.InvokeWithParameter({0})", prefix: "ref");
-			_mock._invokeWithParameterInvocation3.Register(InvocationIndex.CounterValue, parameter);
+			_mock._invokeWithParameterInvocation3.Register(_mock._invocationIndex, parameter);
 			_mock._invokeWithParameter3?.Invoke(ref parameter);
 		}
 
@@ -1057,14 +1059,14 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		{
 			_mock._invokeWithParameterInvocation4 ??= new InvocationDictionary();
 			var invokeWithParameterInvocation4 = (Invocation<T>)_mock._invokeWithParameterInvocation4.GetOrAdd(typeof(T), static type => new Invocation<T>($"IPrimitiveDependencyService.InvokeWithParameter<{type.Name}>({{0}})"));
-			invokeWithParameterInvocation4.Register(InvocationIndex.CounterValue, parameter);
+			invokeWithParameterInvocation4.Register(_mock._invocationIndex, parameter);
 			((SetupWithParameter<T>?)_mock._invokeWithParameter4?.GetValueOrDefault(typeof(T)))?.Invoke(parameter);
 		}
 
 		public Task InvokeWithParameterAsync(int parameter)
 		{
 			_mock._invokeWithParameterAsyncInvocation ??= new Invocation<int>("IPrimitiveDependencyService.InvokeWithParameterAsync({0})");
-			_mock._invokeWithParameterAsyncInvocation.Register(InvocationIndex.CounterValue, parameter);
+			_mock._invokeWithParameterAsyncInvocation.Register(_mock._invocationIndex, parameter);
 			_mock._invokeWithParameterAsync?.Invoke(parameter);
 			return Task.CompletedTask;
 		}
@@ -1072,28 +1074,28 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		public void InvokeWithSeveralParameters(int parameter1, int parameter2)
 		{
 			_mock._invokeWithSeveralParametersInvocation1 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters({0}, {1})");
-			_mock._invokeWithSeveralParametersInvocation1.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			_mock._invokeWithSeveralParametersInvocation1.Register(_mock._invocationIndex, parameter1, parameter2);
 			_mock._invokeWithSeveralParameters1?.Invoke(parameter1, parameter2);
 		}
 
 		public void InvokeWithSeveralParameters(ref int parameter1, int parameter2)
 		{
 			_mock._invokeWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters({0}, {1})", prefix1: "ref");
-			_mock._invokeWithSeveralParametersInvocation2.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			_mock._invokeWithSeveralParametersInvocation2.Register(_mock._invocationIndex, parameter1, parameter2);
 			_mock._invokeWithSeveralParameters2?.Invoke(ref parameter1, parameter2);
 		}
 
 		public void InvokeWithSeveralParameters(int parameter1, ref int parameter2)
 		{
 			_mock._invokeWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters({0}, {1})", prefix2: "ref");
-			_mock._invokeWithSeveralParametersInvocation3.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			_mock._invokeWithSeveralParametersInvocation3.Register(_mock._invocationIndex, parameter1, parameter2);
 			_mock._invokeWithSeveralParameters3?.Invoke(parameter1, ref parameter2);
 		}
 
 		public void InvokeWithSeveralParameters(ref int parameter1, ref int parameter2)
 		{
 			_mock._invokeWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParameters({0}, {1})", prefix1: "ref", prefix2: "ref");
-			_mock._invokeWithSeveralParametersInvocation4.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			_mock._invokeWithSeveralParametersInvocation4.Register(_mock._invocationIndex, parameter1, parameter2);
 			_mock._invokeWithSeveralParameters4?.Invoke(ref parameter1, ref parameter2);
 		}
 
@@ -1101,14 +1103,14 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		{
 			_mock._invokeWithSeveralParametersInvocation5 ??= new InvocationDictionary();
 			var invokeWithSeveralParametersInvocation5 = (InvocationT1Int<T>)_mock._invokeWithSeveralParametersInvocation5.GetOrAdd(typeof(T), static type => new InvocationT1Int<T>($"IPrimitiveDependencyService.InvokeWithSeveralParameters<{type.Name}>({{0}}, {{1}})"));
-			invokeWithSeveralParametersInvocation5.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			invokeWithSeveralParametersInvocation5.Register(_mock._invocationIndex, parameter1, parameter2);
 			((SetupT1Int<T>?)_mock._invokeWithSeveralParameters5?.GetValueOrDefault(typeof(T)))?.Invoke(parameter1, parameter2);
 		}
 
 		public Task InvokeWithSeveralParametersAsync(int parameter1, int parameter2)
 		{
 			_mock._invokeWithSeveralParametersAsyncInvocation ??= new InvocationIntInt("IPrimitiveDependencyService.InvokeWithSeveralParametersAsync({0}, {1})");
-			_mock._invokeWithSeveralParametersAsyncInvocation.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			_mock._invokeWithSeveralParametersAsyncInvocation.Register(_mock._invocationIndex, parameter1, parameter2);
 			_mock._invokeWithSeveralParametersAsync?.Invoke(parameter1, parameter2);
 			return Task.CompletedTask;
 		}
@@ -1116,14 +1118,14 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		public int Return()
 		{
 			_mock._returnInvocation1 ??= new Invocation("IPrimitiveDependencyService.Return()");
-			_mock._returnInvocation1.Register(InvocationIndex.CounterValue);
+			_mock._returnInvocation1.Register(_mock._invocationIndex);
 			return _mock._return1?.Execute(out var returnValue) == true ? returnValue : 0;
 		}
 
 		public bool Return(out string result)
 		{
 			_mock._returnInvocation2 ??= new Invocation<string>("IPrimitiveDependencyService.Return({0})", prefix: "out");
-			_mock._returnInvocation2.Register(InvocationIndex.CounterValue, null!);
+			_mock._returnInvocation2.Register(_mock._invocationIndex, null!);
 			if (_mock._return2 is not null)
 				return _mock._return2.Execute(out result!, out var returnValue) ? returnValue : false;
 
@@ -1135,28 +1137,28 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		{
 			_mock._returnInvocation3 ??= new InvocationDictionary();
 			var returnInvocation3 = (Invocation)_mock._returnInvocation3.GetOrAdd(typeof(T), static type => new Invocation($"IPrimitiveDependencyService.Return<{type.Name}>()"));
-			returnInvocation3.Register(InvocationIndex.CounterValue);
+			returnInvocation3.Register(_mock._invocationIndex);
 			return ((Setup<T>?)_mock._return3?.GetValueOrDefault(typeof(T)))?.Execute(out var returnValue) == true ? returnValue! : default!;
 		}
 
 		public ValueTask<bool> ReturnAsync()
 		{
 			_mock._returnAsyncInvocation ??= new Invocation("IPrimitiveDependencyService.ReturnAsync()");
-			_mock._returnAsyncInvocation.Register(InvocationIndex.CounterValue);
+			_mock._returnAsyncInvocation.Register(_mock._invocationIndex);
 			return _mock._returnAsync?.Execute(out var returnValue) == true ? ValueTask.FromResult(returnValue) : ValueTask.FromResult(false);
 		}
 
 		public string ReturnWithParameter(in string parameter)
 		{
 			_mock._returnWithParameterInvocation1 ??= new Invocation<string>("IPrimitiveDependencyService.ReturnWithParameter({0})");
-			_mock._returnWithParameterInvocation1.Register(InvocationIndex.CounterValue, parameter);
+			_mock._returnWithParameterInvocation1.Register(_mock._invocationIndex, parameter);
 			return _mock._returnWithParameter1?.Execute(parameter, out var returnValue) == true ? returnValue! : string.Empty;
 		}
 
 		public int ReturnWithParameter(ref double parameter)
 		{
 			_mock._returnWithParameterInvocation2 ??= new Invocation<double>("IPrimitiveDependencyService.ReturnWithParameter({0})", prefix: "ref");
-			_mock._returnWithParameterInvocation2.Register(InvocationIndex.CounterValue, parameter);
+			_mock._returnWithParameterInvocation2.Register(_mock._invocationIndex, parameter);
 			return _mock._returnWithParameter2?.Execute(ref parameter, out var returnValue) == true ? returnValue! : 0;
 		}
 
@@ -1165,42 +1167,42 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 			var key = (typeof(TParameter), typeof(TReturn));
 			_mock._returnWithParameterInvocation3 ??= new InvocationDictionary<(Type, Type)>();
 			var returnWithParameterInvocation3 = (Invocation<TParameter>)_mock._returnWithParameterInvocation3.GetOrAdd(key, static x => new Invocation<TParameter>($"IPrimitiveDependencyService.ReturnWithParameter<{x.Item1.Name}, {x.Item2.Name}>({{0}})"));
-			returnWithParameterInvocation3.Register(InvocationIndex.CounterValue, parameter);
+			returnWithParameterInvocation3.Register(_mock._invocationIndex, parameter);
 			return ((SetupWithParameter<TParameter, TReturn>?)_mock._returnWithParameter3?.GetValueOrDefault(key))?.Execute(parameter, out var returnValue) == true ? returnValue! : default!;
 		}
 
 		public ValueTask<int> ReturnWithParameterAsync(string parameter)
 		{
 			_mock._returnWithParameterAsyncInvocation ??= new Invocation<string>("IPrimitiveDependencyService.ReturnWithParameterAsync({0})");
-			_mock._returnWithParameterAsyncInvocation.Register(InvocationIndex.CounterValue, parameter);
+			_mock._returnWithParameterAsyncInvocation.Register(_mock._invocationIndex, parameter);
 			return _mock._returnWithParameterAsync?.Execute(parameter, out var returnValue) == true ? ValueTask.FromResult(returnValue) : ValueTask.FromResult(0);
 		}
 
 		public decimal ReturnWithSeveralParameters(int parameter1, int parameter2)
 		{
 			_mock._returnWithSeveralParametersInvocation1 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters({0}, {1})");
-			_mock._returnWithSeveralParametersInvocation1.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			_mock._returnWithSeveralParametersInvocation1.Register(_mock._invocationIndex, parameter1, parameter2);
 			return _mock._returnWithSeveralParameters1?.Execute(parameter1, parameter2, out var returnValue) == true ? returnValue : 0m;
 		}
 
 		public decimal ReturnWithSeveralParameters(ref int parameter1, int parameter2)
 		{
 			_mock._returnWithSeveralParametersInvocation2 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters({0}, {1})", prefix1: "ref");
-			_mock._returnWithSeveralParametersInvocation2.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			_mock._returnWithSeveralParametersInvocation2.Register(_mock._invocationIndex, parameter1, parameter2);
 			return _mock._returnWithSeveralParameters2?.Execute(ref parameter1, parameter2, out var returnValue) == true ? returnValue : 0m;
 		}
 
 		public decimal ReturnWithSeveralParameters(int parameter1, ref int parameter2)
 		{
 			_mock._returnWithSeveralParametersInvocation3 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters({0}, {1})", prefix2: "ref");
-			_mock._returnWithSeveralParametersInvocation3.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			_mock._returnWithSeveralParametersInvocation3.Register(_mock._invocationIndex, parameter1, parameter2);
 			return _mock._returnWithSeveralParameters3?.Execute(parameter1, ref parameter2, out var returnValue) == true ? returnValue : 0m;
 		}
 
 		public decimal ReturnWithSeveralParameters(ref int parameter1, ref int parameter2)
 		{
 			_mock._returnWithSeveralParametersInvocation4 ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParameters({0}, {1})", prefix1: "ref", prefix2: "ref");
-			_mock._returnWithSeveralParametersInvocation4.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			_mock._returnWithSeveralParametersInvocation4.Register(_mock._invocationIndex, parameter1, parameter2);
 			return _mock._returnWithSeveralParameters4?.Execute(ref parameter1, ref parameter2, out var returnValue) == true ? returnValue : 0m;
 		}
 
@@ -1209,14 +1211,14 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 			var key = (typeof(TParameter1), typeof(TParameter2), typeof(TReturn));
 			_mock._returnWithSeveralParametersInvocation5 ??= new InvocationDictionary<(Type, Type, Type)>();
 			var returnWithParameterInvocation5 = (InvocationT1T2<TParameter1, TParameter2>)_mock._returnWithSeveralParametersInvocation5.GetOrAdd(key, static x => new InvocationT1T2<TParameter1, TParameter2>($"IPrimitiveDependencyService.ReturnWithSeveralParameters<{x.Item1.Name}, {x.Item2.Name}, {x.Item3.Name}>({{0}}, {{1}})", prefix1: "ref"));
-			returnWithParameterInvocation5.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			returnWithParameterInvocation5.Register(_mock._invocationIndex, parameter1, parameter2);
 			return ((SetupRefT1T2<TParameter1, TParameter2, TReturn>?)_mock._returnWithSeveralParameters5?.GetValueOrDefault(key))?.Execute(ref parameter1, parameter2, out var returnValue) == true ? returnValue! : default!;
 		}
 
 		public ValueTask<decimal> ReturnWithSeveralParametersAsync(int parameter1, int parameter2)
 		{
 			_mock._returnWithSeveralParametersAsyncInvocation ??= new InvocationIntInt("IPrimitiveDependencyService.ReturnWithSeveralParametersAsync({0}, {1})");
-			_mock._returnWithSeveralParametersAsyncInvocation.Register(InvocationIndex.CounterValue, parameter1, parameter2);
+			_mock._returnWithSeveralParametersAsyncInvocation.Register(_mock._invocationIndex, parameter1, parameter2);
 			return _mock._returnWithSeveralParametersAsync?.Execute(parameter1, parameter2, out var returnValue) == true ? ValueTask.FromResult(returnValue) : ValueTask.FromResult(0m);
 		}
 	}

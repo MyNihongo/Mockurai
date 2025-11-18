@@ -15,7 +15,7 @@ public abstract partial class PrimitiveTypeServiceTestsBase
 
 public partial class PrimitiveTypeServiceTestsBase
 {
-	private readonly PrimitiveDependencyServiceMock _dependencyServiceMock = new();
+	private readonly PrimitiveDependencyServiceMock _dependencyServiceMock = new(InvocationIndex.CounterValue);
 
 	protected partial IMock<IPrimitiveDependencyService> DependencyServiceMock => _dependencyServiceMock;
 
