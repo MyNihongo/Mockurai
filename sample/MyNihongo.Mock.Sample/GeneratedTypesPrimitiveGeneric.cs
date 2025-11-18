@@ -77,11 +77,35 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 		return _getSetSetInvocation.Verify(value, index, _invocationProviders);
 	}
 
+	// InvokeWithParameter
+	private SetupWithParameter<T>? _invokeWithParameter;
+	private Invocation<T>? _invokeWithParameterInvocation;
+
+	public SetupWithParameter<T> SetupInvokeWithParameter(in It<T> parameter)
+	{
+		_invokeWithParameter ??= new SetupWithParameter<T>();
+		_invokeWithParameter.SetupParameter(parameter);
+		return _invokeWithParameter;
+	}
+
+	public void VerifyInvokeWithParameter(in It<T> parameter, in Times times)
+	{
+		_invokeWithParameterInvocation ??= new Invocation<T>($"IPrimitiveDependencyService.InvokeWithParameter<{typeof(T).Name}>({{0}})");
+		_invokeWithParameterInvocation.Verify(parameter, times, _invocationProviders);
+	}
+
+	public long VerifyInvokeWithParameter(in It<T> parameter, in long index)
+	{
+		_invokeWithParameterInvocation ??= new Invocation<T>($"IPrimitiveDependencyService.InvokeWithParameter<{typeof(T).Name}>({{0}})");
+		return _invokeWithParameterInvocation.Verify(parameter, index, _invocationProviders);
+	}
+
 	public void VerifyNoOtherCalls()
 	{
 		_getOnlyGetInvocation?.VerifyNoOtherCalls(_invocationProviders);
 		_getSetGetInvocation?.VerifyNoOtherCalls(_invocationProviders);
 		_getSetSetInvocation?.VerifyNoOtherCalls(_invocationProviders);
+		_invokeWithParameterInvocation?.VerifyNoOtherCalls(_invocationProviders);
 	}
 
 	private IEnumerable<IInvocationProvider?> GetInvocations()
@@ -89,6 +113,7 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 		yield return _getOnlyGetInvocation;
 		yield return _getSetGetInvocation;
 		yield return _getSetSetInvocation;
+		yield return _invokeWithParameterInvocation;
 	}
 
 	private sealed class Proxy : IPrimitiveDependencyService<T>
@@ -128,7 +153,9 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 
 		public void InvokeWithParameter(T parameter)
 		{
-			throw new NotImplementedException();
+			_mock._invokeWithParameterInvocation ??= new Invocation<T>($"IPrimitiveDependencyService.InvokeWithParameter<{typeof(T).Name}>({{0}})");
+			_mock._invokeWithParameterInvocation.Register(_mock._invocationIndex, parameter);
+			_mock._invokeWithParameter?.Invoke(parameter);
 		}
 
 		public void InvokeWithSeveralParameters<TParameter>(TParameter param1, T param2)
