@@ -3,10 +3,15 @@ namespace MyNihongo.Mock.Sample;
 internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 {
 	private readonly IPrimitiveDependencyService _primitiveDependencyService;
+	private readonly IPrimitiveDependencyService<string> _primitiveDependencyGenericService;
 
-	public PrimitiveTypeService(IPrimitiveDependencyService primitiveDependencyService, bool subscribeToHandler)
+	public PrimitiveTypeService(
+		IPrimitiveDependencyService primitiveDependencyService,
+		IPrimitiveDependencyService<string> primitiveDependencyGenericService,
+		bool subscribeToHandler)
 	{
 		_primitiveDependencyService = primitiveDependencyService;
+		_primitiveDependencyGenericService = primitiveDependencyGenericService;
 
 		if (subscribeToHandler)
 			primitiveDependencyService.Handler += PrimitiveDependencyServiceOnHandler;
