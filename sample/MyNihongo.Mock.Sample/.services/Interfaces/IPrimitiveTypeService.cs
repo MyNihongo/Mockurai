@@ -18,6 +18,8 @@ public interface IPrimitiveTypeService : IDisposable
 
 	void Invoke<T>();
 
+	Task InvokeAsync();
+
 	void InvokeWithParameter(in string parameter);
 
 	void InvokeWithParameter(in int parameter);
@@ -25,6 +27,8 @@ public interface IPrimitiveTypeService : IDisposable
 	void InvokeWithParameter(ref decimal parameter);
 
 	void InvokeWithParameter<T>(T parameter);
+
+	Task InvokeWithParameterAsync(int parameter);
 
 	void InvokeWithSeveralParameters(int parameter1, int parameter2);
 
@@ -36,17 +40,23 @@ public interface IPrimitiveTypeService : IDisposable
 
 	void InvokeWithSeveralParameters<T>(T parameter1, int parameter2);
 
+	Task InvokeWithSeveralParametersAsync(int parameter1, int parameter2);
+
 	decimal Return();
 
 	bool Return(out string result);
 
 	T Return<T>();
 
+	ValueTask<bool> ReturnAsync();
+
 	string ReturnWithParameter(in string parameter);
 
 	int ReturnWithParameter(ref double parameter);
 
 	TReturn ReturnWithParameter<TParameter, TReturn>(TParameter parameter);
+
+	ValueTask<int> ReturnWithParameterAsync(string parameter);
 
 	double ReturnWithSeveralParameters(int parameter1, int parameter2);
 
@@ -57,4 +67,6 @@ public interface IPrimitiveTypeService : IDisposable
 	double ReturnWithSeveralParameters(ref int parameter1, ref int parameter2);
 
 	TReturn ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref TParameter1 parameter1, TParameter2 parameter2);
+
+	ValueTask<decimal> ReturnWithSeveralParametersAsync(int parameter1, int parameter2);
 }
