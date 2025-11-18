@@ -80,11 +80,15 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 	public void VerifyNoOtherCalls()
 	{
 		_getOnlyGetInvocation?.VerifyNoOtherCalls(_invocationProviders);
+		_getSetGetInvocation?.VerifyNoOtherCalls(_invocationProviders);
+		_getSetSetInvocation?.VerifyNoOtherCalls(_invocationProviders);
 	}
 
 	private IEnumerable<IInvocationProvider?> GetInvocations()
 	{
 		yield return _getOnlyGetInvocation;
+		yield return _getSetGetInvocation;
+		yield return _getSetSetInvocation;
 	}
 
 	private sealed class Proxy : IPrimitiveDependencyService<T>
