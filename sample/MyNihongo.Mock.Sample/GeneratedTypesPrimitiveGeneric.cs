@@ -152,6 +152,32 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 		return returnInvocation.Verify(index, _invocationProviders);
 	}
 
+	// ReturnWithParameter
+	private ConcurrentDictionary<Type, object>? _returnWithParameter;
+	private InvocationDictionary<Type>? _returnWithParameterInvocation;
+
+	public SetupWithParameter<T, TReturn> SetupReturnWithParameter<TReturn>(in It<T> parameter)
+	{
+		_returnWithParameter ??= new ConcurrentDictionary<Type, object>();
+		var returnWithParameter = (SetupWithParameter<T, TReturn>)_returnWithParameter.GetOrAdd(typeof(TReturn), static _ => new SetupWithParameter<T, TReturn>());
+		returnWithParameter.SetupParameter(parameter);
+		return returnWithParameter;
+	}
+
+	public void VerifyReturnWithParameter<TReturn>(in It<T> parameter, in Times times)
+	{
+		_returnWithParameterInvocation ??= new InvocationDictionary<Type>();
+		var returnWithParameterInvocation = (Invocation<T>)_returnWithParameterInvocation.GetOrAdd(typeof(TReturn), static x => new Invocation<T>($"IPrimitiveDependencyService<{typeof(T).Name}>.ReturnWithParameter<{x.Name}>({{0}})"));
+		returnWithParameterInvocation.Verify(parameter, times, _invocationProviders);
+	}
+
+	public long VerifyReturnWithParameter<TReturn>(in It<T> parameter, in long index)
+	{
+		_returnWithParameterInvocation ??= new InvocationDictionary<Type>();
+		var returnWithParameterInvocation = (Invocation<T>)_returnWithParameterInvocation.GetOrAdd(typeof(TReturn), static x => new Invocation<T>($"IPrimitiveDependencyService<{typeof(T).Name}>.ReturnWithParameter<{x.Name}>({{0}})"));
+		return returnWithParameterInvocation.Verify(parameter, index, _invocationProviders);
+	}
+
 	public void VerifyNoOtherCalls()
 	{
 		_getOnlyGetInvocation?.VerifyNoOtherCalls(_invocationProviders);
@@ -160,6 +186,7 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 		_invokeWithParameterInvocation?.VerifyNoOtherCalls(_invocationProviders);
 		_invokeWithSeveralParametersInvocation?.VerifyNoOtherCalls(_invocationProviders);
 		_returnInvocation?.VerifyNoOtherCalls(_invocationProviders);
+		_returnWithParameterInvocation?.VerifyNoOtherCalls(_invocationProviders);
 	}
 
 	private IEnumerable<IInvocationProvider?> GetInvocations()
@@ -170,6 +197,7 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 		yield return _invokeWithParameterInvocation;
 		yield return _invokeWithSeveralParametersInvocation;
 		yield return _returnInvocation;
+		yield return _returnWithParameterInvocation;
 	}
 
 	private sealed class Proxy : IPrimitiveDependencyService<T>
@@ -225,14 +253,17 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 		public TReturn Return<TReturn>()
 		{
 			_mock._returnInvocation ??= new InvocationDictionary();
-			var returnInvocation = (Invocation)_mock._returnInvocation.GetOrAdd(typeof(TReturn), static type => new Invocation($"IPrimitiveDependencyService.Return<{type.Name}>()"));
+			var returnInvocation = (Invocation)_mock._returnInvocation.GetOrAdd(typeof(TReturn), static type => new Invocation($"IPrimitiveDependencyService<{typeof(T).Name}>.Return<{type.Name}>()"));
 			returnInvocation.Register(_mock._invocationIndex);
 			return ((Setup<TReturn>?)_mock._return?.GetValueOrDefault(typeof(TReturn)))?.Execute(out var returnValue) == true ? returnValue! : default!;
 		}
 
 		public TReturn ReturnWithParameter<TReturn>(T parameter)
 		{
-			throw new NotImplementedException();
+			_mock._returnWithParameterInvocation ??= new InvocationDictionary();
+			var returnWithParameterInvocation = (Invocation<T>)_mock._returnWithParameterInvocation.GetOrAdd(typeof(TReturn), static type => new Invocation<T>($"IPrimitiveDependencyService<{typeof(T).Name}>.Return<{type.Name}>({{0}})"));
+			returnWithParameterInvocation.Register(_mock._invocationIndex, parameter);
+			return ((Setup<TReturn>?)_mock._return?.GetValueOrDefault(typeof(TReturn)))?.Execute(out var returnValue) == true ? returnValue! : default!;
 		}
 
 		public T ReturnWithSeveralParameters<TParameter1, TParameter2>(TParameter1 param1, TParameter2 param2)
