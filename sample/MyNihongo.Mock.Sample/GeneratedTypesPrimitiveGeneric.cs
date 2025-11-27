@@ -128,6 +128,30 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 		return invokeWithSeveralParametersInvocation.Verify(param1, param2, index, _invocationProviders);
 	}
 
+	// Return
+	private ConcurrentDictionary<Type, object>? _return;
+	private InvocationDictionary? _returnInvocation;
+
+	public Setup<TReturn> SetupReturn<TReturn>()
+	{
+		_return ??= new ConcurrentDictionary<Type, object>();
+		return (Setup<TReturn>)_return.GetOrAdd(typeof(TReturn), static _ => new Setup<TReturn>());
+	}
+
+	public void VerifyReturn<TReturn>(in Times times)
+	{
+		_returnInvocation ??= new InvocationDictionary();
+		var returnInvocation = (Invocation)_returnInvocation.GetOrAdd(typeof(TReturn), static type => new Invocation($"IPrimitiveDependencyService.Return<{type.Name}>()"));
+		returnInvocation.Verify(times, _invocationProviders);
+	}
+
+	public long VerifyReturn<TReturn>(in long index)
+	{
+		_returnInvocation ??= new InvocationDictionary();
+		var returnInvocation = (Invocation)_returnInvocation.GetOrAdd(typeof(TReturn), static type => new Invocation($"IPrimitiveDependencyService.Return<{type.Name}>()"));
+		return returnInvocation.Verify(index, _invocationProviders);
+	}
+
 	public void VerifyNoOtherCalls()
 	{
 		_getOnlyGetInvocation?.VerifyNoOtherCalls(_invocationProviders);
@@ -135,6 +159,7 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 		_getSetSetInvocation?.VerifyNoOtherCalls(_invocationProviders);
 		_invokeWithParameterInvocation?.VerifyNoOtherCalls(_invocationProviders);
 		_invokeWithSeveralParametersInvocation?.VerifyNoOtherCalls(_invocationProviders);
+		_returnInvocation?.VerifyNoOtherCalls(_invocationProviders);
 	}
 
 	private IEnumerable<IInvocationProvider?> GetInvocations()
@@ -144,6 +169,7 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 		yield return _getSetSetInvocation;
 		yield return _invokeWithParameterInvocation;
 		yield return _invokeWithSeveralParametersInvocation;
+		yield return _returnInvocation;
 	}
 
 	private sealed class Proxy : IPrimitiveDependencyService<T>
@@ -198,7 +224,10 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 
 		public TReturn Return<TReturn>()
 		{
-			throw new NotImplementedException();
+			_mock._returnInvocation ??= new InvocationDictionary();
+			var returnInvocation = (Invocation)_mock._returnInvocation.GetOrAdd(typeof(TReturn), static type => new Invocation($"IPrimitiveDependencyService.Return<{type.Name}>()"));
+			returnInvocation.Register(_mock._invocationIndex);
+			return ((Setup<TReturn>?)_mock._return?.GetValueOrDefault(typeof(TReturn)))?.Execute(out var returnValue) == true ? returnValue! : default!;
 		}
 
 		public TReturn ReturnWithParameter<TReturn>(T parameter)
