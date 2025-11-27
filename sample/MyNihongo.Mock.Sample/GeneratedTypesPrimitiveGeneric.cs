@@ -178,6 +178,35 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 		return returnWithParameterInvocation.Verify(parameter, index, _invocationProviders);
 	}
 
+	// ReturnWithSeveralParameters
+	private ConcurrentDictionary<(Type, Type), object>? _returnWithSeveralParameters;
+	private InvocationDictionary<(Type, Type)>? _returnWithSeveralParametersInvocation;
+
+	public SetupT1T2<TParameter1, TParameter2, T> SetupReturnWithSeveralParameters<TParameter1, TParameter2>(in It<TParameter1> param1, in It<TParameter2> param2)
+	{
+		var key = (typeof(TParameter1), typeof(TParameter2));
+		_returnWithSeveralParameters ??= new ConcurrentDictionary<(Type, Type), object>();
+		var returnWithSeveralParameters = (SetupT1T2<TParameter1, TParameter2, T>)_returnWithSeveralParameters.GetOrAdd(key, static _ => new SetupT1T2<TParameter1, TParameter2, T>());
+		returnWithSeveralParameters.SetupParameters(param1, param2);
+		return returnWithSeveralParameters;
+	}
+
+	public void VerifyReturnWithSeveralParameters<TParameter1, TParameter2>(in It<TParameter1> param1, in It<TParameter2> param2, in Times times)
+	{
+		var key = (typeof(TParameter1), typeof(TParameter2));
+		_returnWithSeveralParametersInvocation ??= new InvocationDictionary<(Type, Type)>();
+		var returnWithSeveralParametersInvocation = (InvocationT1T2<TParameter1, TParameter2>)_returnWithSeveralParametersInvocation.GetOrAdd(key, static x => new InvocationT1T2<TParameter1, TParameter2>($"IPrimitiveDependencyService<{typeof(T).Name}>.ReturnWithSeveralParameters<{x.Item1.Name}, {x.Item2.Name}>({{0}}, {{1}})"));
+		returnWithSeveralParametersInvocation.Verify(param1, param2, times, _invocationProviders);
+	}
+
+	public long VerifyReturnWithSeveralParameters<TParameter1, TParameter2>(in ItRef<TParameter1> parameter1, in It<TParameter2> parameter2, in long index)
+	{
+		var key = (typeof(TParameter1), typeof(TParameter2));
+		_returnWithSeveralParametersInvocation ??= new InvocationDictionary<(Type, Type)>();
+		var returnWithSeveralParametersInvocation = (InvocationT1T2<TParameter1, TParameter2>)_returnWithSeveralParametersInvocation.GetOrAdd(key, static x => new InvocationT1T2<TParameter1, TParameter2>($"IPrimitiveDependencyService<{typeof(T).Name}>.ReturnWithSeveralParameters<{x.Item1.Name}, {x.Item2.Name}>({{0}}, {{1}})"));
+		return returnWithSeveralParametersInvocation.Verify(parameter1, parameter2, index, _invocationProviders);
+	}
+
 	public void VerifyNoOtherCalls()
 	{
 		_getOnlyGetInvocation?.VerifyNoOtherCalls(_invocationProviders);
@@ -187,6 +216,7 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 		_invokeWithSeveralParametersInvocation?.VerifyNoOtherCalls(_invocationProviders);
 		_returnInvocation?.VerifyNoOtherCalls(_invocationProviders);
 		_returnWithParameterInvocation?.VerifyNoOtherCalls(_invocationProviders);
+		_returnWithSeveralParametersInvocation?.VerifyNoOtherCalls(_invocationProviders);
 	}
 
 	private IEnumerable<IInvocationProvider?> GetInvocations()
@@ -198,6 +228,7 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 		yield return _invokeWithSeveralParametersInvocation;
 		yield return _returnInvocation;
 		yield return _returnWithParameterInvocation;
+		yield return _returnWithSeveralParametersInvocation;
 	}
 
 	private sealed class Proxy : IPrimitiveDependencyService<T>
@@ -268,7 +299,11 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 
 		public T ReturnWithSeveralParameters<TParameter1, TParameter2>(TParameter1 param1, TParameter2 param2)
 		{
-			throw new NotImplementedException();
+			var key = (typeof(TParameter1), typeof(TParameter2));
+			_mock._returnWithSeveralParametersInvocation ??= new InvocationDictionary<(Type, Type)>();
+			var returnWithParameterInvocation = (InvocationT1T2<TParameter1, TParameter2>)_mock._returnWithSeveralParametersInvocation.GetOrAdd(key, static x => new InvocationT1T2<TParameter1, TParameter2>($"IPrimitiveDependencyService<{typeof(T).Name}>.ReturnWithSeveralParameters<{x.Item1.Name}, {x.Item2.Name}>({{0}}, {{1}})"));
+			returnWithParameterInvocation.Register(_mock._invocationIndex, param1, param2);
+			return ((SetupT1T2<TParameter1, TParameter2, T>?)_mock._returnWithSeveralParameters?.GetValueOrDefault(key))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 		}
 	}
 }
