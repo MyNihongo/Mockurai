@@ -199,7 +199,7 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 		returnWithSeveralParametersInvocation.Verify(param1, param2, times, _invocationProviders);
 	}
 
-	public long VerifyReturnWithSeveralParameters<TParameter1, TParameter2>(in ItRef<TParameter1> parameter1, in It<TParameter2> parameter2, in long index)
+	public long VerifyReturnWithSeveralParameters<TParameter1, TParameter2>(in It<TParameter1> parameter1, in It<TParameter2> parameter2, in long index)
 	{
 		var key = (typeof(TParameter1), typeof(TParameter2));
 		_returnWithSeveralParametersInvocation ??= new InvocationDictionary<(Type, Type)>();
@@ -389,4 +389,63 @@ public static class PrimitiveDependencyServiceMockTEx
 
 	public static void VerifyReturnWithSeveralParameters<T, TParameter1, TParameter2>(this IMock<IPrimitiveDependencyService<T>> @this, in It<TParameter1> parameter1, in It<TParameter2> parameter2, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock<T>)@this).VerifyReturnWithSeveralParameters(parameter1, parameter2, times());
+}
+
+[Obsolete("Will be generated")]
+public static class PrimitiveDependencyServiceMockSequenceTEx
+{
+	// GetOnly
+	public static void GetGetOnly<T>(this IMockSequence<IPrimitiveDependencyService<T>> @this)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyGetGetOnly(@this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	// GetSet
+	public static void GetGetSet<T>(this IMockSequence<IPrimitiveDependencyService<T>> @this)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyGetGetSet(@this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	public static void SetGetSet<T>(this IMockSequence<IPrimitiveDependencyService<T>> @this, in It<T> value)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifySetGetSet(value, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	// InvokeWithParameter
+	public static void InvokeWithParameter<T>(this IMockSequence<IPrimitiveDependencyService<T>> @this, in It<T> parameter)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyInvokeWithParameter(parameter, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	// InvokeWithSeveralParameters
+	public static void InvokeWithSeveralParameters<T, TParameter>(this IMockSequence<IPrimitiveDependencyService<T>> @this, in It<TParameter> parameter1, in It<T> parameter2)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyInvokeWithSeveralParameters(parameter1, parameter2, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	// Return
+	public static void Return<T, TReturn>(this IMockSequence<IPrimitiveDependencyService<T>> @this)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyReturn<TReturn>(@this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	// ReturnWithParameter
+	public static void ReturnWithParameter<T, TReturn>(this IMockSequence<IPrimitiveDependencyService<T>> @this, in It<T> parameter)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyReturnWithParameter<TReturn>(parameter, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
+
+	// ReturnWithSeveralParameters
+	public static void ReturnWithSeveralParameters<T, TParameter1, TParameter2>(this IMockSequence<IPrimitiveDependencyService<T>> @this, in It<TParameter1> parameter1, in It<TParameter2> parameter2)
+	{
+		var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyReturnWithSeveralParameters<TParameter1, TParameter2>(parameter1, parameter2, @this.VerifyIndex);
+		@this.VerifyIndex.Set(nextIndex);
+	}
 }
