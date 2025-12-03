@@ -254,7 +254,7 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 		{
 			get
 			{
-				_mock._getSetGetInvocation ??= new Invocation($"PrimitiveDependencyServiceMock<{typeof(T).Name}>.GetSet.get");
+				_mock._getSetGetInvocation ??= new Invocation($"IPrimitiveDependencyService<{typeof(T).Name}>.GetSet.get");
 				_mock._getSetGetInvocation.Register(_mock._invocationIndex);
 				return _mock._getSetGet?.Execute(out var returnValue) == true ? returnValue! : default!;
 			}

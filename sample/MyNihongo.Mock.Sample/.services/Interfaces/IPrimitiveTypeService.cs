@@ -14,6 +14,8 @@ public interface IPrimitiveTypeService : IDisposable
 
 	string GetInit { get; set; }
 
+	string GetSetGeneric { get; set; }
+
 	void Invoke();
 
 	void Invoke(out int result);
@@ -31,6 +33,8 @@ public interface IPrimitiveTypeService : IDisposable
 	void InvokeWithParameter<T>(T parameter);
 
 	Task InvokeWithParameterAsync(int parameter);
+
+	void InvokeWithParameterGeneric(string parameter);
 
 	void InvokeWithSeveralParameters(int parameter1, int parameter2);
 

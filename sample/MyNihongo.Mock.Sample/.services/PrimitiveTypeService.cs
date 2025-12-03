@@ -40,6 +40,12 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		set => _primitiveDependencyService.GetInit = value;
 	}
 
+	public string GetSetGeneric
+	{
+		get => _primitiveDependencyGenericService.GetSet;
+		set => _primitiveDependencyGenericService.GetSet = value;
+	}
+
 	public void Invoke()
 	{
 		_primitiveDependencyService.Invoke();
@@ -83,6 +89,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 	public async Task InvokeWithParameterAsync(int parameter)
 	{
 		await _primitiveDependencyService.InvokeWithParameterAsync(parameter);
+	}
+
+	public void InvokeWithParameterGeneric(string parameter)
+	{
+		_primitiveDependencyGenericService.InvokeWithParameter(parameter);
 	}
 
 	public void InvokeWithSeveralParameters(int parameter1, int parameter2)
