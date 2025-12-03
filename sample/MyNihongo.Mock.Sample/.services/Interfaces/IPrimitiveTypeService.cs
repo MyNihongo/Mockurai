@@ -8,6 +8,8 @@ public interface IPrimitiveTypeService : IDisposable
 
 	int GetOnly { get; }
 
+	string GetOnlyGeneric { get; }
+
 	decimal SetOnly { set; }
 
 	string GetInit { get; set; }
@@ -58,6 +60,8 @@ public interface IPrimitiveTypeService : IDisposable
 
 	ValueTask<int> ReturnWithParameterAsync(string parameter);
 
+	TReturn ReturnWithParameterGeneric<TReturn>(string parameter);
+
 	double ReturnWithSeveralParameters(int parameter1, int parameter2);
 
 	double ReturnWithSeveralParameters(ref int parameter1, int parameter2);
@@ -66,7 +70,8 @@ public interface IPrimitiveTypeService : IDisposable
 
 	double ReturnWithSeveralParameters(ref int parameter1, ref int parameter2);
 
-	TReturn ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref TParameter1 parameter1, TParameter2 parameter2);
+	TReturn ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref TParameter1 parameter1,
+		TParameter2 parameter2);
 
 	ValueTask<decimal> ReturnWithSeveralParametersAsync(int parameter1, int parameter2);
 }

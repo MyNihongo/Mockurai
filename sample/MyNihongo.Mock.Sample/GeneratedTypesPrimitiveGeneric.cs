@@ -27,13 +27,13 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 
 	public void VerifyGetGetOnly(in Times times)
 	{
-		_getOnlyGetInvocation ??= new Invocation($"PrimitiveDependencyServiceMock<{typeof(T).Name}>.GetOnly.get");
+		_getOnlyGetInvocation ??= new Invocation($"IPrimitiveDependencyService<{typeof(T).Name}>.GetOnly.get");
 		_getOnlyGetInvocation.Verify(times, _invocationProviders);
 	}
 
 	public long VerifyGetGetOnly(in long index)
 	{
-		_getOnlyGetInvocation ??= new Invocation($"PrimitiveDependencyServiceMock<{typeof(T).Name}>.GetOnly.get");
+		_getOnlyGetInvocation ??= new Invocation($"IPrimitiveDependencyService<{typeof(T).Name}>.GetOnly.get");
 		return _getOnlyGetInvocation.Verify(index, _invocationProviders);
 	}
 
@@ -50,13 +50,13 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 
 	public void VerifyGetGetSet(in Times times)
 	{
-		_getSetGetInvocation ??= new Invocation($"PrimitiveDependencyServiceMock<{typeof(T).Name}>.GetSet.get");
+		_getSetGetInvocation ??= new Invocation($"IPrimitiveDependencyService<{typeof(T).Name}>.GetSet.get");
 		_getSetGetInvocation.Verify(times, _invocationProviders);
 	}
 
 	public long VerifyGetGetSet(in long index)
 	{
-		_getSetGetInvocation ??= new Invocation($"PrimitiveDependencyServiceMock<{typeof(T).Name}>.GetSet.get");
+		_getSetGetInvocation ??= new Invocation($"IPrimitiveDependencyService<{typeof(T).Name}>.GetSet.get");
 		return _getSetGetInvocation.Verify(index, _invocationProviders);
 	}
 
@@ -69,13 +69,13 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 
 	public void VerifySetGetSet(in It<T> value, in Times times)
 	{
-		_getSetSetInvocation ??= new Invocation<T>($"PrimitiveDependencyServiceMock<{typeof(T).Name}>.GetSet.set = {{0}}");
+		_getSetSetInvocation ??= new Invocation<T>($"IPrimitiveDependencyService<{typeof(T).Name}>.GetSet.set = {{0}}");
 		_getSetSetInvocation.Verify(value, times, _invocationProviders);
 	}
 
 	public long VerifySetGetSet(in It<T> value, in long index)
 	{
-		_getSetSetInvocation ??= new Invocation<T>($"PrimitiveDependencyServiceMock<{typeof(T).Name}>.GetSet.set = {{0}}");
+		_getSetSetInvocation ??= new Invocation<T>($"IPrimitiveDependencyService<{typeof(T).Name}>.GetSet.set = {{0}}");
 		return _getSetSetInvocation.Verify(value, index, _invocationProviders);
 	}
 
@@ -244,7 +244,7 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 		{
 			get
 			{
-				_mock._getOnlyGetInvocation ??= new Invocation($"PrimitiveDependencyServiceMock<{typeof(T).Name}>.GetOnly.get");
+				_mock._getOnlyGetInvocation ??= new Invocation($"IPrimitiveDependencyService<{typeof(T).Name}>.GetOnly.get");
 				_mock._getOnlyGetInvocation.Register(_mock._invocationIndex);
 				return _mock._getOnlyGet?.Execute(out var returnValue) == true ? returnValue! : default!;
 			}
@@ -260,7 +260,7 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 			}
 			set
 			{
-				_mock._getSetSetInvocation ??= new Invocation<T>($"PrimitiveDependencyServiceMock<{typeof(T).Name}>.GetSet.set = {{0}}");
+				_mock._getSetSetInvocation ??= new Invocation<T>($"IPrimitiveDependencyService<{typeof(T).Name}>.GetSet.set = {{0}}");
 				_mock._getSetSetInvocation.Register(_mock._invocationIndex, value);
 				_mock._getSetSet?.Invoke(value);
 			}
@@ -292,7 +292,7 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 		public TReturn ReturnWithParameter<TReturn>(T parameter)
 		{
 			_mock._returnWithParameterInvocation ??= new InvocationDictionary();
-			var returnWithParameterInvocation = (Invocation<T>)_mock._returnWithParameterInvocation.GetOrAdd(typeof(TReturn), static type => new Invocation<T>($"IPrimitiveDependencyService<{typeof(T).Name}>.Return<{type.Name}>({{0}})"));
+			var returnWithParameterInvocation = (Invocation<T>)_mock._returnWithParameterInvocation.GetOrAdd(typeof(TReturn), static type => new Invocation<T>($"IPrimitiveDependencyService<{typeof(T).Name}>.ReturnWithParameter<{type.Name}>({{0}})"));
 			returnWithParameterInvocation.Register(_mock._invocationIndex, parameter);
 			return ((Setup<TReturn>?)_mock._return?.GetValueOrDefault(typeof(TReturn)))?.Execute(out var returnValue) == true ? returnValue! : default!;
 		}
@@ -389,6 +389,9 @@ public static class PrimitiveDependencyServiceMockTEx
 
 	public static void VerifyReturnWithSeveralParameters<T, TParameter1, TParameter2>(this IMock<IPrimitiveDependencyService<T>> @this, in It<TParameter1> parameter1, in It<TParameter2> parameter2, in Func<Times> times) =>
 		((PrimitiveDependencyServiceMock<T>)@this).VerifyReturnWithSeveralParameters(parameter1, parameter2, times());
+	
+	public static void VerifyNoOtherCalls<T>(this IMock<IPrimitiveDependencyService<T>> @this) =>
+		((PrimitiveDependencyServiceMock<T>)@this).VerifyNoOtherCalls();
 }
 
 [Obsolete("Will be generated")]
@@ -445,7 +448,7 @@ public static class PrimitiveDependencyServiceMockSequenceTEx
 	// ReturnWithSeveralParameters
 	public static void ReturnWithSeveralParameters<T, TParameter1, TParameter2>(this IMockSequence<IPrimitiveDependencyService<T>> @this, in It<TParameter1> parameter1, in It<TParameter2> parameter2)
 	{
-		var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyReturnWithSeveralParameters<TParameter1, TParameter2>(parameter1, parameter2, @this.VerifyIndex);
+		var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyReturnWithSeveralParameters(parameter1, parameter2, @this.VerifyIndex);
 		@this.VerifyIndex.Set(nextIndex);
 	}
 }

@@ -27,6 +27,8 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 
 	public int GetOnly => _primitiveDependencyService.GetOnly;
 
+	public string GetOnlyGeneric => _primitiveDependencyGenericService.GetOnly;
+
 	public decimal SetOnly
 	{
 		set => _primitiveDependencyService.SetOnly = value;
@@ -154,6 +156,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 	public async ValueTask<int> ReturnWithParameterAsync(string parameter)
 	{
 		return await _primitiveDependencyService.ReturnWithParameterAsync(parameter);
+	}
+
+	public TReturn ReturnWithParameterGeneric<TReturn>(string parameter)
+	{
+		return _primitiveDependencyGenericService.ReturnWithParameter<TReturn>(parameter);
 	}
 
 	public double ReturnWithSeveralParameters(int parameter1, int parameter2)

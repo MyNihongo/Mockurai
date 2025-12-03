@@ -37,6 +37,7 @@ public partial class PrimitiveTypeServiceTestsBase
 	protected void VerifyNoOtherCalls()
 	{
 		_dependencyServiceMock.VerifyNoOtherCalls();
+		_dependencyServiceGenericMock.VerifyNoOtherCalls();
 	}
 
 	protected sealed class VerifySequenceContext

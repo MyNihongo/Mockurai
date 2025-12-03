@@ -393,6 +393,7 @@ file static class PrimitiveTypeServiceEx
 
 		fixture.HandlerEvent += (_, _) => { };
 		_ = fixture.GetOnly;
+		_ = fixture.GetOnlyGeneric;
 		fixture.SetOnly = 123m;
 		fixture.GetInit = "value";
 		fixture.Invoke();
