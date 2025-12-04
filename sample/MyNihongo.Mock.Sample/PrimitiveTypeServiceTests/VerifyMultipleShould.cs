@@ -396,6 +396,7 @@ file static class PrimitiveTypeServiceEx
 		_ = fixture.GetOnlyGeneric;
 		fixture.SetOnly = 123m;
 		fixture.GetInit = "value";
+		fixture.GetSetGeneric = "new value";
 		fixture.Invoke();
 		fixture.Invoke(out _);
 		fixture.Invoke<double>();
@@ -405,12 +406,14 @@ file static class PrimitiveTypeServiceEx
 		fixture.InvokeWithParameter(ref value);
 		fixture.InvokeWithParameter<float>(123);
 		await fixture.InvokeWithParameterAsync(valueInt);
+		fixture.InvokeWithParameterGeneric("generic value");
 		fixture.InvokeWithSeveralParameters(1, 2);
 		fixture.InvokeWithSeveralParameters(ref valueInt, 2);
 		fixture.InvokeWithSeveralParameters(1, ref valueInt);
 		fixture.InvokeWithSeveralParameters(ref valueInt, ref valueInt);
 		fixture.InvokeWithSeveralParameters(83256m, valueInt);
 		await fixture.InvokeWithSeveralParametersAsync(valueInt, valueInt + 1);
+		fixture.InvokeWithSeveralParametersGeneric(123f, "another value");
 		fixture.Return();
 		fixture.Return(out _);
 		fixture.Return<decimal>();
@@ -419,6 +422,7 @@ file static class PrimitiveTypeServiceEx
 		fixture.ReturnWithParameter(ref valueDouble);
 		fixture.ReturnWithParameter<float, string>(123f);
 		await fixture.ReturnWithParameterAsync("async value");
+		fixture.ReturnWithParameterGeneric<decimal>("generic value");
 		fixture.ReturnWithSeveralParameters(1, 2);
 		fixture.ReturnWithSeveralParameters(ref valueInt, 2);
 		fixture.ReturnWithSeveralParameters(1, ref valueInt);

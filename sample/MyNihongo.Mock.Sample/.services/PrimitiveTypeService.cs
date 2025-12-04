@@ -126,6 +126,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		await _primitiveDependencyService.InvokeWithSeveralParametersAsync(parameter1, parameter2);
 	}
 
+	public void InvokeWithSeveralParametersGeneric<TParameter>(TParameter parameter1, string parameter2)
+	{
+		_primitiveDependencyGenericService.InvokeWithSeveralParameters(parameter1, parameter2);
+	}
+
 	public decimal Return()
 	{
 		var shopCount = _primitiveDependencyService.Return();
@@ -206,9 +211,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		return Math.Pow(spendingDouble, 2d);
 	}
 
-	public TReturn ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref TParameter1 parameter1, TParameter2 parameter2)
+	public TReturn ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref TParameter1 parameter1,
+		TParameter2 parameter2)
 	{
-		return _primitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref parameter1, parameter2);
+		return _primitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(
+			ref parameter1, parameter2);
 	}
 
 	public async ValueTask<decimal> ReturnWithSeveralParametersAsync(int parameter1, int parameter2)

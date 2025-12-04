@@ -48,6 +48,8 @@ public interface IPrimitiveTypeService : IDisposable
 
 	Task InvokeWithSeveralParametersAsync(int parameter1, int parameter2);
 
+	void InvokeWithSeveralParametersGeneric<TParameter>(TParameter parameter1, string parameter2);
+
 	decimal Return();
 
 	bool Return(out string result);
