@@ -228,6 +228,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		return await _primitiveDependencyService.ReturnWithSeveralParametersAsync(parameter1, parameter2);
 	}
 
+	public string ReturnWithSeveralParametersGeneric<TParameter1, TParameter2>(TParameter1 parameter1, TParameter2 parameter2)
+	{
+		return _primitiveDependencyGenericService.ReturnWithSeveralParameters(parameter1, parameter2);
+	}
+
 	public void Dispose()
 	{
 		_primitiveDependencyService.Handler -= PrimitiveDependencyServiceOnHandler;
