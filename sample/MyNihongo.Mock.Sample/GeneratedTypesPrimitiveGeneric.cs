@@ -294,7 +294,7 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 			_mock._returnWithParameterInvocation ??= new InvocationDictionary();
 			var returnWithParameterInvocation = (Invocation<T>)_mock._returnWithParameterInvocation.GetOrAdd(typeof(TReturn), static type => new Invocation<T>($"IPrimitiveDependencyService<{typeof(T).Name}>.ReturnWithParameter<{type.Name}>({{0}})"));
 			returnWithParameterInvocation.Register(_mock._invocationIndex, parameter);
-			return ((Setup<TReturn>?)_mock._return?.GetValueOrDefault(typeof(TReturn)))?.Execute(out var returnValue) == true ? returnValue! : default!;
+			return ((SetupWithParameter<T, TReturn>?)_mock._returnWithParameter?.GetValueOrDefault(typeof(TReturn)))?.Execute(parameter, out var returnValue) == true ? returnValue! : default!;
 		}
 
 		public T ReturnWithSeveralParameters<TParameter1, TParameter2>(TParameter1 param1, TParameter2 param2)
