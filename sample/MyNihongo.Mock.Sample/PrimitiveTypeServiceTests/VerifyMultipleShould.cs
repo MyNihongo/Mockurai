@@ -17,37 +17,37 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.HandlerEvent.add
 			- 2: IPrimitiveDependencyService.GetOnly.get
-			- 3: IPrimitiveDependencyService.SetOnly.set = 123
-			- 4: IPrimitiveDependencyService.GetInit.set = "value"
-			- 5: IPrimitiveDependencyService.Invoke()
-			- 6: IPrimitiveDependencyService.Invoke(out 0)
-			- 7: IPrimitiveDependencyService.Invoke<Double>()
-			- 8: IPrimitiveDependencyService.InvokeAsync()
-			- 9: IPrimitiveDependencyService.InvokeWithParameter(345)
-			- 10: IPrimitiveDependencyService.InvokeWithParameter("another value")
-			- 11: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
-			- 12: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
-			- 13: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
-			- 14: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
-			- 15: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
-			- 16: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
-			- 17: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
-			- 18: IPrimitiveDependencyService.InvokeWithSeveralParameters<Decimal>(83256, 98)
-			- 19: IPrimitiveDependencyService.InvokeWithSeveralParametersAsync(98, 99)
-			- 20: IPrimitiveDependencyService.Return()
-			- 21: IPrimitiveDependencyService.Return(out null)
-			- 22: IPrimitiveDependencyService.Return<Decimal>()
-			- 23: IPrimitiveDependencyService.ReturnAsync()
-			- 24: IPrimitiveDependencyService.ReturnWithParameter("ret val")
-			- 25: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
-			- 26: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
-			- 27: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")
-			- 28: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
-			- 29: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
-			- 30: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
-			- 31: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
-			- 32: IPrimitiveDependencyService.ReturnWithSeveralParameters<Int32, Single, Int16>(ref 98, 541)
-			- 33: IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(100, 101)
+			- 4: IPrimitiveDependencyService.SetOnly.set = 123
+			- 5: IPrimitiveDependencyService.GetInit.set = "value"
+			- 7: IPrimitiveDependencyService.Invoke()
+			- 8: IPrimitiveDependencyService.Invoke(out 0)
+			- 9: IPrimitiveDependencyService.Invoke<Double>()
+			- 10: IPrimitiveDependencyService.InvokeAsync()
+			- 11: IPrimitiveDependencyService.InvokeWithParameter(345)
+			- 12: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 13: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
+			- 14: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
+			- 15: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
+			- 17: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
+			- 18: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
+			- 19: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
+			- 20: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
+			- 21: IPrimitiveDependencyService.InvokeWithSeveralParameters<Decimal>(83256, 98)
+			- 22: IPrimitiveDependencyService.InvokeWithSeveralParametersAsync(98, 99)
+			- 24: IPrimitiveDependencyService.Return()
+			- 25: IPrimitiveDependencyService.Return(out null)
+			- 26: IPrimitiveDependencyService.Return<Decimal>()
+			- 27: IPrimitiveDependencyService.ReturnAsync()
+			- 29: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 30: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
+			- 31: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
+			- 32: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")
+			- 34: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
+			- 35: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
+			- 36: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
+			- 37: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
+			- 38: IPrimitiveDependencyService.ReturnWithSeveralParameters<Int32, Single, Int16>(ref 98, 541)
+			- 39: IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(100, 101)
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -68,37 +68,37 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.HandlerEvent.add
 			- 2: IPrimitiveDependencyService.GetOnly.get
-			- 3: IPrimitiveDependencyService.SetOnly.set = 123
-			- 4: IPrimitiveDependencyService.GetInit.set = "value"
-			- 5: IPrimitiveDependencyService.Invoke()
-			- 6: IPrimitiveDependencyService.Invoke(out 0)
-			- 7: IPrimitiveDependencyService.Invoke<Double>()
-			- 8: IPrimitiveDependencyService.InvokeAsync()
-			- 9: IPrimitiveDependencyService.InvokeWithParameter(345)
-			- 10: IPrimitiveDependencyService.InvokeWithParameter("another value")
-			- 11: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
-			- 12: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
-			- 13: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
-			- 14: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
-			- 15: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
-			- 16: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
-			- 17: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
-			- 18: IPrimitiveDependencyService.InvokeWithSeveralParameters<Decimal>(83256, 98)
-			- 19: IPrimitiveDependencyService.InvokeWithSeveralParametersAsync(98, 99)
-			- 20: IPrimitiveDependencyService.Return()
-			- 21: IPrimitiveDependencyService.Return(out null)
-			- 22: IPrimitiveDependencyService.Return<Decimal>()
-			- 23: IPrimitiveDependencyService.ReturnAsync()
-			- 24: IPrimitiveDependencyService.ReturnWithParameter("ret val")
-			- 25: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
-			- 26: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
-			- 27: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")
-			- 28: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
-			- 29: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
-			- 30: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
-			- 31: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
-			- 32: IPrimitiveDependencyService.ReturnWithSeveralParameters<Int32, Single, Int16>(ref 98, 541)
-			- 33: IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(100, 101)
+			- 4: IPrimitiveDependencyService.SetOnly.set = 123
+			- 5: IPrimitiveDependencyService.GetInit.set = "value"
+			- 7: IPrimitiveDependencyService.Invoke()
+			- 8: IPrimitiveDependencyService.Invoke(out 0)
+			- 9: IPrimitiveDependencyService.Invoke<Double>()
+			- 10: IPrimitiveDependencyService.InvokeAsync()
+			- 11: IPrimitiveDependencyService.InvokeWithParameter(345)
+			- 12: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 13: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
+			- 14: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
+			- 15: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
+			- 17: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
+			- 18: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
+			- 19: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
+			- 20: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
+			- 21: IPrimitiveDependencyService.InvokeWithSeveralParameters<Decimal>(83256, 98)
+			- 22: IPrimitiveDependencyService.InvokeWithSeveralParametersAsync(98, 99)
+			- 24: IPrimitiveDependencyService.Return()
+			- 25: IPrimitiveDependencyService.Return(out null)
+			- 26: IPrimitiveDependencyService.Return<Decimal>()
+			- 27: IPrimitiveDependencyService.ReturnAsync()
+			- 29: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 30: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
+			- 31: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
+			- 32: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")
+			- 34: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
+			- 35: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
+			- 36: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
+			- 37: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
+			- 38: IPrimitiveDependencyService.ReturnWithSeveralParameters<Int32, Single, Int16>(ref 98, 541)
+			- 39: IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(100, 101)
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -119,37 +119,37 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.HandlerEvent.add
 			- 2: IPrimitiveDependencyService.GetOnly.get
-			- 3: IPrimitiveDependencyService.SetOnly.set = 123
-			- 4: IPrimitiveDependencyService.GetInit.set = "value"
-			- 5: IPrimitiveDependencyService.Invoke()
-			- 6: IPrimitiveDependencyService.Invoke(out 0)
-			- 7: IPrimitiveDependencyService.Invoke<Double>()
-			- 8: IPrimitiveDependencyService.InvokeAsync()
-			- 9: IPrimitiveDependencyService.InvokeWithParameter(345)
-			- 10: IPrimitiveDependencyService.InvokeWithParameter("another value")
-			- 11: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
-			- 12: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
-			- 13: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
-			- 14: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
-			- 15: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
-			- 16: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
-			- 17: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
-			- 18: IPrimitiveDependencyService.InvokeWithSeveralParameters<Decimal>(83256, 98)
-			- 19: IPrimitiveDependencyService.InvokeWithSeveralParametersAsync(98, 99)
-			- 20: IPrimitiveDependencyService.Return()
-			- 21: IPrimitiveDependencyService.Return(out null)
-			- 22: IPrimitiveDependencyService.Return<Decimal>()
-			- 23: IPrimitiveDependencyService.ReturnAsync()
-			- 24: IPrimitiveDependencyService.ReturnWithParameter("ret val")
-			- 25: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
-			- 26: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
-			- 27: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")
-			- 28: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
-			- 29: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
-			- 30: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
-			- 31: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
-			- 32: IPrimitiveDependencyService.ReturnWithSeveralParameters<Int32, Single, Int16>(ref 98, 541)
-			- 33: IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(100, 101)
+			- 4: IPrimitiveDependencyService.SetOnly.set = 123
+			- 5: IPrimitiveDependencyService.GetInit.set = "value"
+			- 7: IPrimitiveDependencyService.Invoke()
+			- 8: IPrimitiveDependencyService.Invoke(out 0)
+			- 9: IPrimitiveDependencyService.Invoke<Double>()
+			- 10: IPrimitiveDependencyService.InvokeAsync()
+			- 11: IPrimitiveDependencyService.InvokeWithParameter(345)
+			- 12: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 13: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
+			- 14: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
+			- 15: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
+			- 17: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
+			- 18: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
+			- 19: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
+			- 20: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
+			- 21: IPrimitiveDependencyService.InvokeWithSeveralParameters<Decimal>(83256, 98)
+			- 22: IPrimitiveDependencyService.InvokeWithSeveralParametersAsync(98, 99)
+			- 24: IPrimitiveDependencyService.Return()
+			- 25: IPrimitiveDependencyService.Return(out null)
+			- 26: IPrimitiveDependencyService.Return<Decimal>()
+			- 27: IPrimitiveDependencyService.ReturnAsync()
+			- 29: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 30: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
+			- 31: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
+			- 32: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")
+			- 34: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
+			- 35: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
+			- 36: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
+			- 37: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
+			- 38: IPrimitiveDependencyService.ReturnWithSeveralParameters<Int32, Single, Int16>(ref 98, 541)
+			- 39: IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(100, 101)
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -169,41 +169,41 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.Invoke() to be invoked at index 16, but it has not been called.
+			Expected IPrimitiveDependencyService.Invoke() to be invoked at index 19, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.HandlerEvent.add
 			- 2: IPrimitiveDependencyService.GetOnly.get
-			- 3: IPrimitiveDependencyService.SetOnly.set = 123
-			- 4: IPrimitiveDependencyService.GetInit.set = "value"
-			- 5: IPrimitiveDependencyService.Invoke()
-			- 6: IPrimitiveDependencyService.Invoke(out 0)
-			- 7: IPrimitiveDependencyService.Invoke<Double>()
-			- 8: IPrimitiveDependencyService.InvokeAsync()
-			- 9: IPrimitiveDependencyService.InvokeWithParameter(345)
-			- 10: IPrimitiveDependencyService.InvokeWithParameter("another value")
-			- 11: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
-			- 12: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
-			- 13: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
-			- 14: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
-			- 15: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
-			- 16: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
-			- 17: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
-			- 18: IPrimitiveDependencyService.InvokeWithSeveralParameters<Decimal>(83256, 98)
-			- 19: IPrimitiveDependencyService.InvokeWithSeveralParametersAsync(98, 99)
-			- 20: IPrimitiveDependencyService.Return()
-			- 21: IPrimitiveDependencyService.Return(out null)
-			- 22: IPrimitiveDependencyService.Return<Decimal>()
-			- 23: IPrimitiveDependencyService.ReturnAsync()
-			- 24: IPrimitiveDependencyService.ReturnWithParameter("ret val")
-			- 25: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
-			- 26: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
-			- 27: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")
-			- 28: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
-			- 29: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
-			- 30: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
-			- 31: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
-			- 32: IPrimitiveDependencyService.ReturnWithSeveralParameters<Int32, Single, Int16>(ref 98, 541)
-			- 33: IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(100, 101)
+			- 4: IPrimitiveDependencyService.SetOnly.set = 123
+			- 5: IPrimitiveDependencyService.GetInit.set = "value"
+			- 7: IPrimitiveDependencyService.Invoke()
+			- 8: IPrimitiveDependencyService.Invoke(out 0)
+			- 9: IPrimitiveDependencyService.Invoke<Double>()
+			- 10: IPrimitiveDependencyService.InvokeAsync()
+			- 11: IPrimitiveDependencyService.InvokeWithParameter(345)
+			- 12: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 13: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
+			- 14: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
+			- 15: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
+			- 17: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
+			- 18: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
+			- 19: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
+			- 20: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
+			- 21: IPrimitiveDependencyService.InvokeWithSeveralParameters<Decimal>(83256, 98)
+			- 22: IPrimitiveDependencyService.InvokeWithSeveralParametersAsync(98, 99)
+			- 24: IPrimitiveDependencyService.Return()
+			- 25: IPrimitiveDependencyService.Return(out null)
+			- 26: IPrimitiveDependencyService.Return<Decimal>()
+			- 27: IPrimitiveDependencyService.ReturnAsync()
+			- 29: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 30: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
+			- 31: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
+			- 32: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")
+			- 34: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
+			- 35: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
+			- 36: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
+			- 37: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
+			- 38: IPrimitiveDependencyService.ReturnWithSeveralParameters<Int32, Single, Int16>(ref 98, 541)
+			- 39: IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(100, 101)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -223,41 +223,41 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(8374646) to be invoked at index 6, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameter(8374646) to be invoked at index 8, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.HandlerEvent.add
 			- 2: IPrimitiveDependencyService.GetOnly.get
-			- 3: IPrimitiveDependencyService.SetOnly.set = 123
-			- 4: IPrimitiveDependencyService.GetInit.set = "value"
-			- 5: IPrimitiveDependencyService.Invoke()
-			- 6: IPrimitiveDependencyService.Invoke(out 0)
-			- 7: IPrimitiveDependencyService.Invoke<Double>()
-			- 8: IPrimitiveDependencyService.InvokeAsync()
-			- 9: IPrimitiveDependencyService.InvokeWithParameter(345)
-			- 10: IPrimitiveDependencyService.InvokeWithParameter("another value")
-			- 11: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
-			- 12: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
-			- 13: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
-			- 14: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
-			- 15: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
-			- 16: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
-			- 17: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
-			- 18: IPrimitiveDependencyService.InvokeWithSeveralParameters<Decimal>(83256, 98)
-			- 19: IPrimitiveDependencyService.InvokeWithSeveralParametersAsync(98, 99)
-			- 20: IPrimitiveDependencyService.Return()
-			- 21: IPrimitiveDependencyService.Return(out null)
-			- 22: IPrimitiveDependencyService.Return<Decimal>()
-			- 23: IPrimitiveDependencyService.ReturnAsync()
-			- 24: IPrimitiveDependencyService.ReturnWithParameter("ret val")
-			- 25: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
-			- 26: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
-			- 27: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")
-			- 28: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
-			- 29: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
-			- 30: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
-			- 31: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
-			- 32: IPrimitiveDependencyService.ReturnWithSeveralParameters<Int32, Single, Int16>(ref 98, 541)
-			- 33: IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(100, 101)
+			- 4: IPrimitiveDependencyService.SetOnly.set = 123
+			- 5: IPrimitiveDependencyService.GetInit.set = "value"
+			- 7: IPrimitiveDependencyService.Invoke()
+			- 8: IPrimitiveDependencyService.Invoke(out 0)
+			- 9: IPrimitiveDependencyService.Invoke<Double>()
+			- 10: IPrimitiveDependencyService.InvokeAsync()
+			- 11: IPrimitiveDependencyService.InvokeWithParameter(345)
+			- 12: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 13: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
+			- 14: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
+			- 15: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
+			- 17: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
+			- 18: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
+			- 19: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
+			- 20: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
+			- 21: IPrimitiveDependencyService.InvokeWithSeveralParameters<Decimal>(83256, 98)
+			- 22: IPrimitiveDependencyService.InvokeWithSeveralParametersAsync(98, 99)
+			- 24: IPrimitiveDependencyService.Return()
+			- 25: IPrimitiveDependencyService.Return(out null)
+			- 26: IPrimitiveDependencyService.Return<Decimal>()
+			- 27: IPrimitiveDependencyService.ReturnAsync()
+			- 29: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 30: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
+			- 31: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
+			- 32: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")
+			- 34: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
+			- 35: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
+			- 36: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
+			- 37: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
+			- 38: IPrimitiveDependencyService.ReturnWithSeveralParameters<Int32, Single, Int16>(ref 98, 541)
+			- 39: IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(100, 101)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -277,41 +277,41 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(8374646, 2843253) to be invoked at index 6, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(8374646, 2843253) to be invoked at index 8, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.HandlerEvent.add
 			- 2: IPrimitiveDependencyService.GetOnly.get
-			- 3: IPrimitiveDependencyService.SetOnly.set = 123
-			- 4: IPrimitiveDependencyService.GetInit.set = "value"
-			- 5: IPrimitiveDependencyService.Invoke()
-			- 6: IPrimitiveDependencyService.Invoke(out 0)
-			- 7: IPrimitiveDependencyService.Invoke<Double>()
-			- 8: IPrimitiveDependencyService.InvokeAsync()
-			- 9: IPrimitiveDependencyService.InvokeWithParameter(345)
-			- 10: IPrimitiveDependencyService.InvokeWithParameter("another value")
-			- 11: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
-			- 12: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
-			- 13: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
-			- 14: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
-			- 15: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
-			- 16: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
-			- 17: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
-			- 18: IPrimitiveDependencyService.InvokeWithSeveralParameters<Decimal>(83256, 98)
-			- 19: IPrimitiveDependencyService.InvokeWithSeveralParametersAsync(98, 99)
-			- 20: IPrimitiveDependencyService.Return()
-			- 21: IPrimitiveDependencyService.Return(out null)
-			- 22: IPrimitiveDependencyService.Return<Decimal>()
-			- 23: IPrimitiveDependencyService.ReturnAsync()
-			- 24: IPrimitiveDependencyService.ReturnWithParameter("ret val")
-			- 25: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
-			- 26: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
-			- 27: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")
-			- 28: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
-			- 29: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
-			- 30: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
-			- 31: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
-			- 32: IPrimitiveDependencyService.ReturnWithSeveralParameters<Int32, Single, Int16>(ref 98, 541)
-			- 33: IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(100, 101)
+			- 4: IPrimitiveDependencyService.SetOnly.set = 123
+			- 5: IPrimitiveDependencyService.GetInit.set = "value"
+			- 7: IPrimitiveDependencyService.Invoke()
+			- 8: IPrimitiveDependencyService.Invoke(out 0)
+			- 9: IPrimitiveDependencyService.Invoke<Double>()
+			- 10: IPrimitiveDependencyService.InvokeAsync()
+			- 11: IPrimitiveDependencyService.InvokeWithParameter(345)
+			- 12: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 13: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
+			- 14: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
+			- 15: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
+			- 17: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
+			- 18: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
+			- 19: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
+			- 20: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
+			- 21: IPrimitiveDependencyService.InvokeWithSeveralParameters<Decimal>(83256, 98)
+			- 22: IPrimitiveDependencyService.InvokeWithSeveralParametersAsync(98, 99)
+			- 24: IPrimitiveDependencyService.Return()
+			- 25: IPrimitiveDependencyService.Return(out null)
+			- 26: IPrimitiveDependencyService.Return<Decimal>()
+			- 27: IPrimitiveDependencyService.ReturnAsync()
+			- 29: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 30: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
+			- 31: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
+			- 32: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")
+			- 34: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
+			- 35: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
+			- 36: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
+			- 37: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
+			- 38: IPrimitiveDependencyService.ReturnWithSeveralParameters<Int32, Single, Int16>(ref 98, 541)
+			- 39: IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(100, 101)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -430,5 +430,6 @@ file static class PrimitiveTypeServiceEx
 		fixture.ReturnWithSeveralParameters(ref valueInt, ref valueInt);
 		fixture.ReturnWithSeveralParameters<int, float, short>(ref valueInt, 541f);
 		await fixture.ReturnWithSeveralParametersAsync(valueInt + 2, valueInt + 3);
+		fixture.ReturnWithSeveralParametersGeneric(123m, 321);
 	}
 }
