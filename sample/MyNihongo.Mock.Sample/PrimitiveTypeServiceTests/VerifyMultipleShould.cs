@@ -381,6 +381,138 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public async Task ThrowInvalidInvocationGeneric()
+	{
+		await CreateFixture()
+			.InvokeAllAsync();
+
+		var actual = () => DependencyGenericServiceMock
+			.VerifyInvokeWithParameter(It<string>.Any(), Times.Exactly(100));
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService<String>.InvokeWithParameter(any) to be called 100 times, but instead it was called 1 time.
+			Performed invocations:
+			- 3: IPrimitiveDependencyService<String>.GetOnly.get
+			- 6: IPrimitiveDependencyService<String>.GetSet.set = "new value"
+			- 16: IPrimitiveDependencyService<String>.InvokeWithParameter("generic value")
+			- 23: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<Single>(123, "another value")
+			- 28: IPrimitiveDependencyService<String>.Return<Int16>()
+			- 33: IPrimitiveDependencyService<String>.ReturnWithParameter<Decimal>("generic value")
+			- 40: IPrimitiveDependencyService<String>.ReturnWithSeveralParameters<Decimal, Int32>(123, 321)
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public async Task ThrowInvalidSequenceGeneric()
+	{
+		await CreateFixture()
+			.InvokeAllAsync();
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyGenericServiceMock.SetGetSet("new value");
+			ctx.DependencyServiceMock.Invoke();
+			ctx.DependencyGenericServiceMock.InvokeWithParameter(It<string>.Any());
+			ctx.DependencyGenericServiceMock.GetGetOnly();
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService<String>.GetOnly.get to be invoked at index 17, but it has not been called.
+			Performed invocations:
+			- 3: IPrimitiveDependencyService<String>.GetOnly.get
+			- 6: IPrimitiveDependencyService<String>.GetSet.set = "new value"
+			- 16: IPrimitiveDependencyService<String>.InvokeWithParameter("generic value")
+			- 23: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<Single>(123, "another value")
+			- 28: IPrimitiveDependencyService<String>.Return<Int16>()
+			- 33: IPrimitiveDependencyService<String>.ReturnWithParameter<Decimal>("generic value")
+			- 40: IPrimitiveDependencyService<String>.ReturnWithSeveralParameters<Decimal, Int32>(123, 321)
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowVerifyNoOtherCallsGeneric()
+	{
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameterGeneric("some value");
+		fixture.ReturnGeneric<decimal>();
+		fixture.GetSetGeneric = "new value";
+		fixture.ReturnWithSeveralParametersGeneric(12, "fix");
+
+		var actual = VerifyNoOtherCalls;
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService<String>.GetSet.set = String to be verified, but the following invocations have not been verified:
+			- 1: IPrimitiveDependencyService<String>.InvokeWithParameter("some value")
+			- 2: IPrimitiveDependencyService<String>.Return<Decimal>()
+			- 3: IPrimitiveDependencyService<String>.GetSet.set = "new value"
+			- 4: IPrimitiveDependencyService<String>.ReturnWithSeveralParameters<Int32, String>(12, "fix")
+			""";
+		var exception = Assert.Throws<MockUnverifiedException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public async Task ThrowInvalidSequenceMultipleDependencies()
+	{
+		await CreateFixture()
+			.InvokeAllAsync();
+
+		var actual = () => VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyGenericServiceMock.SetGetSet("new value");
+			ctx.DependencyServiceMock.GetGetOnly();
+		});
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService.GetOnly.get to be invoked at index 7, but it has not been called.
+			Performed invocations:
+			- 1: IPrimitiveDependencyService.HandlerEvent.add
+			- 2: IPrimitiveDependencyService.GetOnly.get
+			- 4: IPrimitiveDependencyService.SetOnly.set = 123
+			- 5: IPrimitiveDependencyService.GetInit.set = "value"
+			- 7: IPrimitiveDependencyService.Invoke()
+			- 8: IPrimitiveDependencyService.Invoke(out 0)
+			- 9: IPrimitiveDependencyService.Invoke<Double>()
+			- 10: IPrimitiveDependencyService.InvokeAsync()
+			- 11: IPrimitiveDependencyService.InvokeWithParameter(345)
+			- 12: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 13: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
+			- 14: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
+			- 15: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
+			- 17: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, 2)
+			- 18: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, 2)
+			- 19: IPrimitiveDependencyService.InvokeWithSeveralParameters(1, ref 98)
+			- 20: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 98, ref 98)
+			- 21: IPrimitiveDependencyService.InvokeWithSeveralParameters<Decimal>(83256, 98)
+			- 22: IPrimitiveDependencyService.InvokeWithSeveralParametersAsync(98, 99)
+			- 24: IPrimitiveDependencyService.Return()
+			- 25: IPrimitiveDependencyService.Return(out null)
+			- 26: IPrimitiveDependencyService.Return<Decimal>()
+			- 27: IPrimitiveDependencyService.ReturnAsync()
+			- 29: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 30: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
+			- 31: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
+			- 32: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")
+			- 34: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, 2)
+			- 35: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, 2)
+			- 36: IPrimitiveDependencyService.ReturnWithSeveralParameters(1, ref 98)
+			- 37: IPrimitiveDependencyService.ReturnWithSeveralParameters(ref 98, ref 98)
+			- 38: IPrimitiveDependencyService.ReturnWithSeveralParameters<Int32, Single, Int16>(ref 98, 541)
+			- 39: IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(100, 101)
+			""";
+		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
 }
 
 file static class PrimitiveTypeServiceEx
