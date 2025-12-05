@@ -309,7 +309,7 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 }
 
 [Obsolete("Will be generated")]
-public static class PrimitiveDependencyServiceMockTEx
+public static partial class MockExtensions
 {
 	// GetOnly
 	public static ISetup<Action, T, Func<T?>> SetupGetGetOnly<T>(this IMock<IPrimitiveDependencyService<T>> @this) =>
@@ -395,7 +395,7 @@ public static class PrimitiveDependencyServiceMockTEx
 }
 
 [Obsolete("Will be generated")]
-public static class PrimitiveDependencyServiceMockSequenceTEx
+public static partial class MockSequenceExtensions
 {
 	// GetOnly
 	public static void GetGetOnly<T>(this IMockSequence<IPrimitiveDependencyService<T>> @this)

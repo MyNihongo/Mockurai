@@ -1224,8 +1224,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	}
 }
 
-[Obsolete("Will be generated")]
-public static class PrimitiveDependencyServiceMockEx
+public static partial class MockExtensions
 {
 	// Handler
 	public static void RaiseHandler(this IMock<IPrimitiveDependencyService> @this, in int value) =>
@@ -1661,8 +1660,7 @@ public static class PrimitiveDependencyServiceMockEx
 		((PrimitiveDependencyServiceMock)@this).VerifyNoOtherCalls();
 }
 
-[Obsolete("Will be generated")]
-public static class PrimitiveDependencyServiceMockSequenceEx
+public static partial class MockSequenceExtensions
 {
 	// Handler
 	public static void AddHandler(this IMockSequence<IPrimitiveDependencyService> @this, PrimitiveHandler value)
