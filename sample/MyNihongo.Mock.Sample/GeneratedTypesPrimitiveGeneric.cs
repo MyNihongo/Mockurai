@@ -311,144 +311,150 @@ public sealed class PrimitiveDependencyServiceMock<T> : IMock<IPrimitiveDependen
 [Obsolete("Will be generated")]
 public static partial class MockExtensions
 {
-	// GetOnly
-	public static ISetup<Action, T, Func<T?>> SetupGetGetOnly<T>(this IMock<IPrimitiveDependencyService<T>> @this) =>
-		((PrimitiveDependencyServiceMock<T>)@this).SetupGetGetOnly();
+	extension<T>(IMock<IPrimitiveDependencyService<T>> @this)
+	{
+		// GetOnly
+		public ISetup<Action, T, Func<T?>> SetupGetGetOnly() =>
+			((PrimitiveDependencyServiceMock<T>)@this).SetupGetGetOnly();
 
-	public static void VerifyGetGetOnly<T>(this IMock<IPrimitiveDependencyService<T>> @this, in Times times) =>
-		((PrimitiveDependencyServiceMock<T>)@this).VerifyGetGetOnly(times);
+		public void VerifyGetGetOnly(in Times times) =>
+			((PrimitiveDependencyServiceMock<T>)@this).VerifyGetGetOnly(times);
 
-	public static void VerifyGetGetOnly<T>(this IMock<IPrimitiveDependencyService<T>> @this, in Func<Times> times) =>
-		((PrimitiveDependencyServiceMock<T>)@this).VerifyGetGetOnly(times());
+		public void VerifyGetGetOnly(in Func<Times> times) =>
+			((PrimitiveDependencyServiceMock<T>)@this).VerifyGetGetOnly(times());
 
-	// GetSet
-	public static ISetup<Action, T, Func<T?>> SetupGetGetSet<T>(this IMock<IPrimitiveDependencyService<T>> @this) =>
-		((PrimitiveDependencyServiceMock<T>)@this).SetupGetGetSet();
+		// GetSet
+		public ISetup<Action, T, Func<T?>> SetupGetGetSet() =>
+			((PrimitiveDependencyServiceMock<T>)@this).SetupGetGetSet();
 
-	public static void VerifyGetGetSet<T>(this IMock<IPrimitiveDependencyService<T>> @this, in Times times) =>
-		((PrimitiveDependencyServiceMock<T>)@this).VerifyGetGetSet(times);
+		public void VerifyGetGetSet(in Times times) =>
+			((PrimitiveDependencyServiceMock<T>)@this).VerifyGetGetSet(times);
 
-	public static void VerifyGetGetSet<T>(this IMock<IPrimitiveDependencyService<T>> @this, in Func<Times> times) =>
-		((PrimitiveDependencyServiceMock<T>)@this).VerifyGetGetSet(times());
+		public void VerifyGetGetSet(in Func<Times> times) =>
+			((PrimitiveDependencyServiceMock<T>)@this).VerifyGetGetSet(times());
 
-	public static ISetup<Action<T>> SetupSetGetSet<T>(this IMock<IPrimitiveDependencyService<T>> @this, in It<T> value = default) =>
-		((PrimitiveDependencyServiceMock<T>)@this).SetupSetGetSet(value);
+		public ISetup<Action<T>> SetupSetGetSet(in It<T> value = default) =>
+			((PrimitiveDependencyServiceMock<T>)@this).SetupSetGetSet(value);
 
-	public static void VerifySetGetSet<T>(this IMock<IPrimitiveDependencyService<T>> @this, in It<T> value, in Times times) =>
-		((PrimitiveDependencyServiceMock<T>)@this).VerifySetGetSet(value, times);
+		public void VerifySetGetSet(in It<T> value, in Times times) =>
+			((PrimitiveDependencyServiceMock<T>)@this).VerifySetGetSet(value, times);
 
-	public static void VerifySetGetSet<T>(this IMock<IPrimitiveDependencyService<T>> @this, in It<T> value, in Func<Times> times) =>
-		((PrimitiveDependencyServiceMock<T>)@this).VerifySetGetSet(value, times());
+		public void VerifySetGetSet(in It<T> value, in Func<Times> times) =>
+			((PrimitiveDependencyServiceMock<T>)@this).VerifySetGetSet(value, times());
 
-	// InvokeWithParameter
-	public static ISetup<Action<T>> SetupInvokeWithParameter<T>(this IMock<IPrimitiveDependencyService<T>> @this, in It<T> parameter = default) =>
-		((PrimitiveDependencyServiceMock<T>)@this).SetupInvokeWithParameter(parameter);
+		// InvokeWithParameter
+		public ISetup<Action<T>> SetupInvokeWithParameter(in It<T> parameter = default) =>
+			((PrimitiveDependencyServiceMock<T>)@this).SetupInvokeWithParameter(parameter);
 
-	public static void VerifyInvokeWithParameter<T>(this IMock<IPrimitiveDependencyService<T>> @this, in It<T> parameter, in Times times) =>
-		((PrimitiveDependencyServiceMock<T>)@this).VerifyInvokeWithParameter(parameter, times);
+		public void VerifyInvokeWithParameter(in It<T> parameter, in Times times) =>
+			((PrimitiveDependencyServiceMock<T>)@this).VerifyInvokeWithParameter(parameter, times);
 
-	public static void VerifyInvokeWithParameter<T>(this IMock<IPrimitiveDependencyService<T>> @this, in It<T> parameter, in Func<Times> times) =>
-		((PrimitiveDependencyServiceMock<T>)@this).VerifyInvokeWithParameter(parameter, times());
+		public void VerifyInvokeWithParameter(in It<T> parameter, in Func<Times> times) =>
+			((PrimitiveDependencyServiceMock<T>)@this).VerifyInvokeWithParameter(parameter, times());
 
-	// InvokeWithSeveralParameters
-	public static ISetup<Action<TParameter, T>> SetupInvokeWithSeveralParameters<T, TParameter>(this IMock<IPrimitiveDependencyService<T>> @this, in It<TParameter> parameter1 = default, in It<T> parameter2 = default) =>
-		((PrimitiveDependencyServiceMock<T>)@this).SetupInvokeWithSeveralParameters(parameter1, parameter2);
+		// InvokeWithSeveralParameters
+		public ISetup<Action<TParameter, T>> SetupInvokeWithSeveralParameters<TParameter>(in It<TParameter> parameter1 = default, in It<T> parameter2 = default) =>
+			((PrimitiveDependencyServiceMock<T>)@this).SetupInvokeWithSeveralParameters(parameter1, parameter2);
 
-	public static void VerifyInvokeWithSeveralParameters<T, TParameter>(this IMock<IPrimitiveDependencyService<T>> @this, in It<TParameter> parameter1, in It<T> parameter2, in Times times) =>
-		((PrimitiveDependencyServiceMock<T>)@this).VerifyInvokeWithSeveralParameters(parameter1, parameter2, times);
+		public void VerifyInvokeWithSeveralParameters<TParameter>(in It<TParameter> parameter1, in It<T> parameter2, in Times times) =>
+			((PrimitiveDependencyServiceMock<T>)@this).VerifyInvokeWithSeveralParameters(parameter1, parameter2, times);
 
-	public static void VerifyInvokeWithSeveralParameters<T, TParameter>(this IMock<IPrimitiveDependencyService<T>> @this, in It<TParameter> parameter1, in It<T> parameter2, in Func<Times> times) =>
-		((PrimitiveDependencyServiceMock<T>)@this).VerifyInvokeWithSeveralParameters(parameter1, parameter2, times());
+		public void VerifyInvokeWithSeveralParameters<TParameter>(in It<TParameter> parameter1, in It<T> parameter2, in Func<Times> times) =>
+			((PrimitiveDependencyServiceMock<T>)@this).VerifyInvokeWithSeveralParameters(parameter1, parameter2, times());
 
-	// Return
-	public static ISetup<Action, TReturn, Func<TReturn?>> SetupReturn<T, TReturn>(this IMock<IPrimitiveDependencyService<T>> @this) =>
-		((PrimitiveDependencyServiceMock<T>)@this).SetupReturn<TReturn>();
+		// Return
+		public ISetup<Action, TReturn, Func<TReturn?>> SetupReturn<TReturn>() =>
+			((PrimitiveDependencyServiceMock<T>)@this).SetupReturn<TReturn>();
 
-	public static void VerifyReturn<T, TReturn>(this IMock<IPrimitiveDependencyService<T>> @this, in Times times) =>
-		((PrimitiveDependencyServiceMock<T>)@this).VerifyReturn<TReturn>(times);
+		public void VerifyReturn<TReturn>(in Times times) =>
+			((PrimitiveDependencyServiceMock<T>)@this).VerifyReturn<TReturn>(times);
 
-	public static void VerifyReturn<T, TReturn>(this IMock<IPrimitiveDependencyService<T>> @this, in Func<Times> times) =>
-		((PrimitiveDependencyServiceMock<T>)@this).VerifyReturn<TReturn>(times());
+		public void VerifyReturn<TReturn>(in Func<Times> times) =>
+			((PrimitiveDependencyServiceMock<T>)@this).VerifyReturn<TReturn>(times());
 
-	// ReturnWithParameter
-	public static ISetup<Action<T>, TReturn, Func<T, TReturn?>> SetupReturnWithParameter<T, TReturn>(this IMock<IPrimitiveDependencyService<T>> @this, in It<T> parameter = default) =>
-		((PrimitiveDependencyServiceMock<T>)@this).SetupReturnWithParameter<TReturn>(parameter);
+		// ReturnWithParameter
+		public ISetup<Action<T>, TReturn, Func<T, TReturn?>> SetupReturnWithParameter<TReturn>(in It<T> parameter = default) =>
+			((PrimitiveDependencyServiceMock<T>)@this).SetupReturnWithParameter<TReturn>(parameter);
 
-	public static void VerifyReturnWithParameter<T, TReturn>(this IMock<IPrimitiveDependencyService<T>> @this, in It<T> parameter, in Times times) =>
-		((PrimitiveDependencyServiceMock<T>)@this).VerifyReturnWithParameter<TReturn>(parameter, times);
+		public void VerifyReturnWithParameter<TReturn>(in It<T> parameter, in Times times) =>
+			((PrimitiveDependencyServiceMock<T>)@this).VerifyReturnWithParameter<TReturn>(parameter, times);
 
-	public static void VerifyReturnWithParameter<T, TReturn>(this IMock<IPrimitiveDependencyService<T>> @this, in It<T> parameter, in Func<Times> times) =>
-		((PrimitiveDependencyServiceMock<T>)@this).VerifyReturnWithParameter<TReturn>(parameter, times());
+		public void VerifyReturnWithParameter<TReturn>(in It<T> parameter, in Func<Times> times) =>
+			((PrimitiveDependencyServiceMock<T>)@this).VerifyReturnWithParameter<TReturn>(parameter, times());
 
-	// ReturnWithSeveralParameters
-	public static ISetup<SetupT1T2<TParameter1, TParameter2, T>.CallbackDelegate, T, SetupT1T2<TParameter1, TParameter2, T>.ReturnsCallbackDelegate> SetupReturnWithSeveralParameters<T, TParameter1, TParameter2>(this IMock<IPrimitiveDependencyService<T>> @this, in It<TParameter1> parameter1 = default, in It<TParameter2> parameter2 = default) =>
-		((PrimitiveDependencyServiceMock<T>)@this).SetupReturnWithSeveralParameters(parameter1, parameter2);
+		// ReturnWithSeveralParameters
+		public ISetup<SetupT1T2<TParameter1, TParameter2, T>.CallbackDelegate, T, SetupT1T2<TParameter1, TParameter2, T>.ReturnsCallbackDelegate> SetupReturnWithSeveralParameters<TParameter1, TParameter2>(in It<TParameter1> parameter1 = default, in It<TParameter2> parameter2 = default) =>
+			((PrimitiveDependencyServiceMock<T>)@this).SetupReturnWithSeveralParameters(parameter1, parameter2);
 
-	public static void VerifyReturnWithSeveralParameters<T, TParameter1, TParameter2>(this IMock<IPrimitiveDependencyService<T>> @this, in It<TParameter1> parameter1, in It<TParameter2> parameter2, in Times times) =>
-		((PrimitiveDependencyServiceMock<T>)@this).VerifyReturnWithSeveralParameters(parameter1, parameter2, times);
+		public void VerifyReturnWithSeveralParameters<TParameter1, TParameter2>(in It<TParameter1> parameter1, in It<TParameter2> parameter2, in Times times) =>
+			((PrimitiveDependencyServiceMock<T>)@this).VerifyReturnWithSeveralParameters(parameter1, parameter2, times);
 
-	public static void VerifyReturnWithSeveralParameters<T, TParameter1, TParameter2>(this IMock<IPrimitiveDependencyService<T>> @this, in It<TParameter1> parameter1, in It<TParameter2> parameter2, in Func<Times> times) =>
-		((PrimitiveDependencyServiceMock<T>)@this).VerifyReturnWithSeveralParameters(parameter1, parameter2, times());
+		public void VerifyReturnWithSeveralParameters<TParameter1, TParameter2>(in It<TParameter1> parameter1, in It<TParameter2> parameter2, in Func<Times> times) =>
+			((PrimitiveDependencyServiceMock<T>)@this).VerifyReturnWithSeveralParameters(parameter1, parameter2, times());
 
-	public static void VerifyNoOtherCalls<T>(this IMock<IPrimitiveDependencyService<T>> @this) =>
-		((PrimitiveDependencyServiceMock<T>)@this).VerifyNoOtherCalls();
+		public void VerifyNoOtherCalls() =>
+			((PrimitiveDependencyServiceMock<T>)@this).VerifyNoOtherCalls();
+	}
 }
 
 [Obsolete("Will be generated")]
 public static partial class MockSequenceExtensions
 {
-	// GetOnly
-	public static void GetGetOnly<T>(this IMockSequence<IPrimitiveDependencyService<T>> @this)
+	extension<T>(IMockSequence<IPrimitiveDependencyService<T>> @this)
 	{
-		var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyGetGetOnly(@this.VerifyIndex);
-		@this.VerifyIndex.Set(nextIndex);
-	}
+		// GetOnly
+		public void GetGetOnly()
+		{
+			var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyGetGetOnly(@this.VerifyIndex);
+			@this.VerifyIndex.Set(nextIndex);
+		}
 
-	// GetSet
-	public static void GetGetSet<T>(this IMockSequence<IPrimitiveDependencyService<T>> @this)
-	{
-		var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyGetGetSet(@this.VerifyIndex);
-		@this.VerifyIndex.Set(nextIndex);
-	}
+		// GetSet
+		public void GetGetSet()
+		{
+			var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyGetGetSet(@this.VerifyIndex);
+			@this.VerifyIndex.Set(nextIndex);
+		}
 
-	public static void SetGetSet<T>(this IMockSequence<IPrimitiveDependencyService<T>> @this, in It<T> value)
-	{
-		var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifySetGetSet(value, @this.VerifyIndex);
-		@this.VerifyIndex.Set(nextIndex);
-	}
+		public void SetGetSet(in It<T> value)
+		{
+			var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifySetGetSet(value, @this.VerifyIndex);
+			@this.VerifyIndex.Set(nextIndex);
+		}
 
-	// InvokeWithParameter
-	public static void InvokeWithParameter<T>(this IMockSequence<IPrimitiveDependencyService<T>> @this, in It<T> parameter)
-	{
-		var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyInvokeWithParameter(parameter, @this.VerifyIndex);
-		@this.VerifyIndex.Set(nextIndex);
-	}
+		// InvokeWithParameter
+		public void InvokeWithParameter(in It<T> parameter)
+		{
+			var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyInvokeWithParameter(parameter, @this.VerifyIndex);
+			@this.VerifyIndex.Set(nextIndex);
+		}
 
-	// InvokeWithSeveralParameters
-	public static void InvokeWithSeveralParameters<T, TParameter>(this IMockSequence<IPrimitiveDependencyService<T>> @this, in It<TParameter> parameter1, in It<T> parameter2)
-	{
-		var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyInvokeWithSeveralParameters(parameter1, parameter2, @this.VerifyIndex);
-		@this.VerifyIndex.Set(nextIndex);
-	}
+		// InvokeWithSeveralParameters
+		public void InvokeWithSeveralParameters<TParameter>(in It<TParameter> parameter1, in It<T> parameter2)
+		{
+			var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyInvokeWithSeveralParameters(parameter1, parameter2, @this.VerifyIndex);
+			@this.VerifyIndex.Set(nextIndex);
+		}
 
-	// Return
-	public static void Return<T, TReturn>(this IMockSequence<IPrimitiveDependencyService<T>> @this)
-	{
-		var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyReturn<TReturn>(@this.VerifyIndex);
-		@this.VerifyIndex.Set(nextIndex);
-	}
+		// Return
+		public void Return<TReturn>()
+		{
+			var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyReturn<TReturn>(@this.VerifyIndex);
+			@this.VerifyIndex.Set(nextIndex);
+		}
 
-	// ReturnWithParameter
-	public static void ReturnWithParameter<T, TReturn>(this IMockSequence<IPrimitiveDependencyService<T>> @this, in It<T> parameter)
-	{
-		var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyReturnWithParameter<TReturn>(parameter, @this.VerifyIndex);
-		@this.VerifyIndex.Set(nextIndex);
-	}
+		// ReturnWithParameter
+		public void ReturnWithParameter<TReturn>(in It<T> parameter)
+		{
+			var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyReturnWithParameter<TReturn>(parameter, @this.VerifyIndex);
+			@this.VerifyIndex.Set(nextIndex);
+		}
 
-	// ReturnWithSeveralParameters
-	public static void ReturnWithSeveralParameters<T, TParameter1, TParameter2>(this IMockSequence<IPrimitiveDependencyService<T>> @this, in It<TParameter1> parameter1, in It<TParameter2> parameter2)
-	{
-		var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyReturnWithSeveralParameters(parameter1, parameter2, @this.VerifyIndex);
-		@this.VerifyIndex.Set(nextIndex);
+		// ReturnWithSeveralParameters
+		public void ReturnWithSeveralParameters<TParameter1, TParameter2>(in It<TParameter1> parameter1, in It<TParameter2> parameter2)
+		{
+			var nextIndex = ((PrimitiveDependencyServiceMock<T>)@this.Mock).VerifyReturnWithSeveralParameters(parameter1, parameter2, @this.VerifyIndex);
+			@this.VerifyIndex.Set(nextIndex);
+		}
 	}
 }
