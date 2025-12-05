@@ -2132,3 +2132,429 @@ public sealed class SetupT1Int<T1>
 		}
 	}
 }
+
+[Obsolete("Will be generated")]
+public sealed class SetupT1T2<T1, T2>
+	: ISetupCallbackJoin<Action<T1, T2>>, ISetupCallbackReset<Action<T1, T2>>,
+		ISetupThrowsJoin<Action<T1, T2>>, ISetupThrowsReset<Action<T1, T2>>
+{
+	private static readonly Comparer SortComparer = new();
+	private SetupContainer<Item>? _setups;
+	private Item? _currentSetup;
+
+	public void Invoke(in T1 parameter1, in T2 parameter2)
+	{
+		if (_setups is null)
+			return;
+
+		foreach (var setup in _setups)
+		{
+			if (setup.Parameter1.HasValue && !setup.Parameter1.Value.Check(parameter1))
+				continue;
+			if (setup.Parameter2.HasValue && !setup.Parameter2.Value.Check(parameter2))
+				continue;
+
+			var x = setup.GetSetup();
+			x.Callback?.Invoke(parameter1, parameter2);
+
+			if (x.Exception is not null)
+				throw x.Exception;
+		}
+	}
+
+	public void SetupParameters(in It<T1> setup1, in It<T2> setup2)
+	{
+		_currentSetup = new Item(setup1.ValueSetup, setup2.ValueSetup);
+
+		_setups ??= new SetupContainer<Item>(SortComparer);
+		_setups.Add(_currentSetup);
+	}
+
+	public void Callback(in Action<T1, T2> callback)
+	{
+		if (_currentSetup is null)
+			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
+
+		_currentSetup.Add(callback);
+	}
+
+	public void Throws(in Exception exception)
+	{
+		if (_currentSetup is null)
+			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
+
+		_currentSetup.Add(exception);
+	}
+
+	ISetupCallbackJoin<Action<T1, T2>> ISetupCallbackStart<Action<T1, T2>>.Callback(in Action<T1, T2> callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetup<Action<T1, T2>> ISetupCallbackReset<Action<T1, T2>>.Callback(in Action<T1, T2> callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetupThrowsJoin<Action<T1, T2>> ISetupThrowsStart<Action<T1, T2>>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetup<Action<T1, T2>> ISetupThrowsReset<Action<T1, T2>>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetupThrowsReset<Action<T1, T2>> ISetupCallbackJoin<Action<T1, T2>>.And()
+	{
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
+
+		return this;
+	}
+
+	ISetupCallbackReset<Action<T1, T2>> ISetupThrowsJoin<Action<T1, T2>>.And()
+	{
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
+
+		return this;
+	}
+
+	private sealed class Item(in It<T1>.Setup? parameter1, in It<T2>.Setup? parameter2)
+	{
+		private readonly Queue<ItemSetup> _queue = [];
+		public readonly It<T1>.Setup? Parameter1 = parameter1;
+		public readonly It<T2>.Setup? Parameter2 = parameter2;
+		private ItemSetup? _currentSetup;
+		public bool AndContinue;
+
+		public void Add(in Action<T1, T2> callback)
+		{
+			if (AndContinue && _currentSetup is not null)
+			{
+				_currentSetup.Callback = callback;
+				AndContinue = false;
+				_currentSetup = null;
+			}
+			else
+			{
+				_currentSetup = new ItemSetup(callback);
+				_queue.Enqueue(_currentSetup);
+			}
+		}
+
+		public void Add(in Exception exception)
+		{
+			if (AndContinue && _currentSetup is not null)
+			{
+				_currentSetup.Exception = exception;
+				AndContinue = false;
+				_currentSetup = null;
+			}
+			else
+			{
+				_currentSetup = new ItemSetup(exception: exception);
+				_queue.Enqueue(_currentSetup);
+			}
+		}
+
+		public ItemSetup GetSetup()
+		{
+			return _queue.Count switch
+			{
+				0 => ItemSetup.Default,
+				1 => _queue.Peek(),
+				_ => _queue.Dequeue(),
+			};
+		}
+	}
+
+	private sealed class ItemSetup(in Action<T1, T2>? callback = null, in Exception? exception = null)
+	{
+		public static readonly ItemSetup Default = new();
+
+		public Action<T1, T2>? Callback = callback;
+		public Exception? Exception = exception;
+	}
+
+	private sealed class Comparer : IComparer<Item>
+	{
+		public int Compare(Item? x, Item? y)
+		{
+			var xSort = 0;
+			var ySort = 0;
+
+			if (x is not null)
+			{
+				if (x.Parameter1.HasValue)
+					xSort += x.Parameter1.Value.Sort;
+				if (x.Parameter2.HasValue)
+					xSort += x.Parameter2.Value.Sort;
+			}
+
+			if (y is not null)
+			{
+				if (y.Parameter1.HasValue)
+					ySort += y.Parameter1.Value.Sort;
+				if (y.Parameter2.HasValue)
+					ySort += y.Parameter2.Value.Sort;
+			}
+
+			return xSort.CompareTo(ySort);
+		}
+	}
+}
+
+[Obsolete("Will be generated")]
+public sealed class SetupT1T2<T1, T2, TReturns>
+	: ISetupCallbackJoin<SetupT1T2<T1, T2, TReturns>.CallbackDelegate, TReturns, SetupT1T2<T1, T2, TReturns>.ReturnsCallbackDelegate>, ISetupCallbackReset<SetupT1T2<T1, T2, TReturns>.CallbackDelegate, TReturns, SetupT1T2<T1, T2, TReturns>.ReturnsCallbackDelegate>,
+		ISetupReturnsThrowsJoin<SetupT1T2<T1, T2, TReturns>.CallbackDelegate, TReturns, SetupT1T2<T1, T2, TReturns>.ReturnsCallbackDelegate>, ISetupReturnsThrowsReset<SetupT1T2<T1, T2, TReturns>.CallbackDelegate, TReturns, SetupT1T2<T1, T2, TReturns>.ReturnsCallbackDelegate>
+{
+	private static readonly Comparer SortComparer = new();
+	private SetupContainer<Item>? _setups;
+	private Item? _currentSetup;
+
+	public delegate void CallbackDelegate(T1 parameter1, T2 parameter2);
+
+	public delegate TReturns? ReturnsCallbackDelegate(T1 parameter1, T2 parameter2);
+
+	public bool Execute(T1 parameter1, in T2 parameter2, out TReturns? returnValue)
+	{
+		if (_setups is null)
+			goto Default;
+
+		foreach (var setup in _setups)
+		{
+			if (setup.Parameter1.HasValue && !setup.Parameter1.Value.Check(parameter1))
+				continue;
+			if (setup.Parameter2.HasValue && !setup.Parameter2.Value.Check(parameter2))
+				continue;
+
+			var x = setup.GetSetup();
+			x.Callback?.Invoke(parameter1, parameter2);
+
+			if (x.Exception is not null)
+				throw x.Exception;
+
+			if (x.Returns is not null)
+			{
+				returnValue = x.Returns(parameter1, parameter2);
+				return true;
+			}
+
+			returnValue = default;
+			return false;
+		}
+
+		Default:
+		returnValue = default;
+		return false;
+	}
+
+	public void SetupParameters(in It<T1> setup1, in It<T2> setup2)
+	{
+		_currentSetup = new Item(setup1.ValueSetup, setup2.ValueSetup);
+
+		_setups ??= new SetupContainer<Item>(SortComparer);
+		_setups.Add(_currentSetup);
+	}
+
+	public void Callback(in CallbackDelegate callback)
+	{
+		if (_currentSetup is null)
+			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
+
+		_currentSetup.Add(callback);
+	}
+
+	public void Returns(TReturns? returns)
+	{
+		Returns((_, _) => returns);
+	}
+
+	public void Returns(in ReturnsCallbackDelegate returns)
+	{
+		if (_currentSetup is null)
+			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
+
+		_currentSetup.Add(returns);
+	}
+
+	public void Throws(in Exception exception)
+	{
+		if (_currentSetup is null)
+			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
+
+		_currentSetup.Add(exception);
+	}
+
+	ISetupCallbackJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupCallbackStart<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Callback(in CallbackDelegate callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupCallbackReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Callback(in CallbackDelegate callback)
+	{
+		Callback(callback);
+		return this;
+	}
+
+	ISetupReturnsThrowsJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsStart<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in TReturns returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in ReturnsCallbackDelegate returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetupReturnsThrowsJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsStart<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in ReturnsCallbackDelegate returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in TReturns returns)
+	{
+		Returns(returns);
+		return this;
+	}
+
+	ISetupReturnsThrowsJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsStart<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Throws(in Exception exception)
+	{
+		Throws(exception);
+		return this;
+	}
+
+	ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupCallbackJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.And()
+	{
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
+
+		return this;
+	}
+
+	ISetupCallbackReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.And()
+	{
+		if (_currentSetup is not null)
+			_currentSetup.AndContinue = true;
+
+		return this;
+	}
+
+	private sealed class Item(in It<T1>.Setup? parameter1, in It<T2>.Setup? parameter2)
+	{
+		public readonly It<T1>.Setup? Parameter1 = parameter1;
+		public readonly It<T2>.Setup? Parameter2 = parameter2;
+		private readonly Queue<ItemSetup> _queue = [];
+		private ItemSetup? _currentSetup;
+		public bool AndContinue;
+
+		public void Add(in CallbackDelegate callback)
+		{
+			if (AndContinue && _currentSetup is not null)
+			{
+				_currentSetup.Callback = callback;
+				AndContinue = false;
+				_currentSetup = null;
+			}
+			else
+			{
+				_currentSetup = new ItemSetup(callback);
+				_queue.Enqueue(_currentSetup);
+			}
+		}
+
+		public void Add(in ReturnsCallbackDelegate returns)
+		{
+			if (AndContinue && _currentSetup is not null)
+			{
+				_currentSetup.Returns = returns;
+				AndContinue = false;
+				_currentSetup = null;
+			}
+			else
+			{
+				_currentSetup = new ItemSetup(returns: returns);
+				_queue.Enqueue(_currentSetup);
+			}
+		}
+
+		public void Add(in Exception exception)
+		{
+			if (AndContinue && _currentSetup is not null)
+			{
+				_currentSetup.Exception = exception;
+				AndContinue = false;
+				_currentSetup = null;
+			}
+			else
+			{
+				_currentSetup = new ItemSetup(exception: exception);
+				_queue.Enqueue(_currentSetup);
+			}
+		}
+
+		public ItemSetup GetSetup()
+		{
+			return _queue.Count switch
+			{
+				0 => ItemSetup.Default,
+				1 => _queue.Peek(),
+				_ => _queue.Dequeue(),
+			};
+		}
+	}
+
+	private sealed class ItemSetup(in CallbackDelegate? callback = null, in ReturnsCallbackDelegate? returns = null, in Exception? exception = null)
+	{
+		public static readonly ItemSetup Default = new();
+
+		public CallbackDelegate? Callback = callback;
+		public ReturnsCallbackDelegate? Returns = returns;
+		public Exception? Exception = exception;
+	}
+
+	private sealed class Comparer : IComparer<Item>
+	{
+		public int Compare(Item? x, Item? y)
+		{
+			var xSort = 0;
+			var ySort = 0;
+
+			if (x is not null)
+			{
+				if (x.Parameter1.HasValue)
+					xSort += x.Parameter1.Value.Sort;
+				if (x.Parameter2.HasValue)
+					xSort += x.Parameter2.Value.Sort;
+			}
+
+			if (y is not null)
+			{
+				if (y.Parameter1.HasValue)
+					ySort += y.Parameter1.Value.Sort;
+				if (y.Parameter2.HasValue)
+					ySort += y.Parameter2.Value.Sort;
+			}
+
+			return xSort.CompareTo(ySort);
+		}
+	}
+}

@@ -1,14 +1,14 @@
 namespace MyNihongo.Mock.Sample.PrimitiveTypeServiceTests;
 
-public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
+public sealed class ReturnTShould : PrimitiveTypeServiceTestsBase
 {
 	[Fact]
 	public void ReturnValueWithoutSetup()
 	{
-		const int expected = 0;
+		const float expected = 0f;
 
 		var actual = CreateFixture()
-			.GetOnly;
+			.Return<float>();
 
 		Assert.Equal(expected, actual);
 	}
@@ -16,15 +16,16 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 	[Fact]
 	public void VerifyIfNotCalled()
 	{
-		DependencyServiceMock.VerifyGetGetOnly(Times.Never);
+		DependencyServiceMock.VerifyReturn<float>(Times.Never);
+		DependencyServiceMock.VerifyReturn<string>(Times.Never);
 	}
 
 	[Fact]
 	public void ThrowIfNotCalled()
 	{
-		var actual = () => DependencyServiceMock.VerifyGetGetOnly(Times.Once);
+		var actual = () => DependencyServiceMock.VerifyReturn<float>(Times.Once);
 
-		const string errorMessage = "Expected IPrimitiveDependencyService.GetOnly.get to be called 1 time, but instead it was called 0 times.";
+		const string errorMessage = "Expected IPrimitiveDependencyService.Return<Single>() to be called 1 time, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 	}
@@ -32,16 +33,16 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 	[Fact]
 	public void ReturnValueWithSetup()
 	{
-		const int setupValue = 5;
+		const float setupCount = 5f;
 
 		DependencyServiceMock
-			.SetupGetGetOnly()
-			.Returns(setupValue);
+			.SetupReturn<float>()
+			.Returns(setupCount);
 
 		var actual = CreateFixture()
-			.GetOnly;
+			.Return<float>();
 
-		Assert.Equal(setupValue, actual);
+		Assert.Equal(setupCount, actual);
 	}
 
 	[Fact]
@@ -50,10 +51,11 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 		const string errorMessage = nameof(errorMessage);
 
 		DependencyServiceMock
-			.SetupGetGetOnly()
+			.SetupReturn<float>()
 			.Throws(new InvalidOperationException(errorMessage));
 
-		var actual = () => { _ = CreateFixture().GetOnly; };
+		Action actual = () => CreateFixture()
+			.Return<float>();
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
@@ -63,10 +65,10 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 	public void VerifyTimes()
 	{
 		var fixture = CreateFixture();
-		_ = fixture.GetOnly;
-		_ = fixture.GetOnly;
+		fixture.Return<float>();
+		fixture.Return<float>();
 
-		DependencyServiceMock.VerifyGetGetOnly(Times.Exactly(2));
+		DependencyServiceMock.VerifyReturn<float>(Times.Exactly(2));
 		DependencyServiceMock.VerifyNoOtherCalls();
 	}
 
@@ -74,17 +76,17 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 	public void ThrowVerifyTimes()
 	{
 		var fixture = CreateFixture();
-		_ = fixture.GetOnly;
-		_ = fixture.GetOnly;
+		fixture.Return<float>();
+		fixture.Return<float>();
 
-		var actual = () => DependencyServiceMock.VerifyGetGetOnly(Times.Once);
+		var actual = () => DependencyServiceMock.VerifyReturn<float>(Times.Once);
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.GetOnly.get to be called 1 time, but instead it was called 2 times.
+			Expected IPrimitiveDependencyService.Return<Single>() to be called 1 time, but instead it was called 2 times.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.GetOnly.get
-			- 2: IPrimitiveDependencyService.GetOnly.get
+			- 1: IPrimitiveDependencyService.Return<Single>()
+			- 2: IPrimitiveDependencyService.Return<Single>()
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -94,10 +96,10 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 	public void ThrowVerifyNoOtherCalls()
 	{
 		var fixture = CreateFixture();
-		_ = fixture.GetOnly;
+		fixture.Return<float>();
 		fixture.ReturnWithParameter("value");
 
-		DependencyServiceMock.VerifyGetGetOnly(Times.Once);
+		DependencyServiceMock.VerifyReturn<float>(Times.Once);
 
 		var actual = () => DependencyServiceMock.VerifyNoOtherCalls();
 
@@ -114,13 +116,13 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 	public void VerifyValidSequence()
 	{
 		var fixture = CreateFixture();
-		_ = fixture.GetOnly;
-		_ = fixture.GetOnly;
+		fixture.Return<float>();
+		fixture.Return<float>();
 
 		VerifyInSequence(static ctx =>
 		{
-			ctx.DependencyServiceMock.GetGetOnly();
-			ctx.DependencyServiceMock.GetGetOnly();
+			ctx.DependencyServiceMock.Return<float>();
+			ctx.DependencyServiceMock.Return<float>();
 		});
 		VerifyNoOtherCalls();
 	}
@@ -129,22 +131,22 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 	public void ThrowInvalidSequence()
 	{
 		var fixture = CreateFixture();
-		_ = fixture.GetOnly;
-		_ = fixture.GetOnly;
+		fixture.Return<float>();
+		fixture.Return<float>();
 
 		var actual = () => VerifyInSequence(static ctx =>
 		{
-			ctx.DependencyServiceMock.GetGetOnly();
-			ctx.DependencyServiceMock.GetGetOnly();
-			ctx.DependencyServiceMock.GetGetOnly();
+			ctx.DependencyServiceMock.Return<float>();
+			ctx.DependencyServiceMock.Return<float>();
+			ctx.DependencyServiceMock.Return<float>();
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.GetOnly.get to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.Return<Single>() to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.GetOnly.get
-			- 2: IPrimitiveDependencyService.GetOnly.get
+			- 1: IPrimitiveDependencyService.Return<Single>()
+			- 2: IPrimitiveDependencyService.Return<Single>()
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -154,22 +156,22 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 	public void ThrowInvalidMethodInSequence()
 	{
 		var fixture = CreateFixture();
-		_ = fixture.GetOnly;
-		_ = fixture.GetOnly;
+		fixture.Return<float>();
+		fixture.Return<float>();
 
 		var actual = () => VerifyInSequence(static ctx =>
 		{
-			ctx.DependencyServiceMock.GetGetOnly();
-			ctx.DependencyServiceMock.GetGetOnly();
+			ctx.DependencyServiceMock.Return<float>();
 			ctx.DependencyServiceMock.InvokeWithSeveralParameters(123, 321);
+			ctx.DependencyServiceMock.Return<float>();
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321) to be invoked at index 2, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.GetOnly.get
-			- 2: IPrimitiveDependencyService.GetOnly.get
+			- 1: IPrimitiveDependencyService.Return<Single>()
+			- 2: IPrimitiveDependencyService.Return<Single>()
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -181,17 +183,17 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 		const int setupValue1 = 123, setupValue2 = 321;
 
 		DependencyServiceMock
-			.SetupGetGetOnly()
+			.SetupReturn<float>()
 			.Returns(setupValue1)
 			.Returns(setupValue2);
 
 		var fixture = CreateFixture();
 
-		Assert.Equal(setupValue1, fixture.GetOnly);
-		Assert.Equal(setupValue2, fixture.GetOnly);
-		Assert.Equal(setupValue2, fixture.GetOnly);
+		Assert.Equal(setupValue1, fixture.Return<float>());
+		Assert.Equal(setupValue2, fixture.Return<float>());
+		Assert.Equal(setupValue2, fixture.Return<float>());
 
-		DependencyServiceMock.VerifyGetGetOnly(Times.Exactly(3));
+		DependencyServiceMock.VerifyReturn<float>(Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -202,20 +204,20 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupGetGetOnly()
+			.SetupReturn<float>()
 			.Callback(() => callback++)
 			.Returns(setupValue1)
 			.Returns(setupValue2);
 
 		var fixture = CreateFixture();
 
-		Assert.Equal(0, fixture.GetOnly);
-		Assert.Equal(setupValue1, fixture.GetOnly);
-		Assert.Equal(setupValue2, fixture.GetOnly);
-		Assert.Equal(setupValue2, fixture.GetOnly);
+		Assert.Equal(0, fixture.Return<float>());
+		Assert.Equal(setupValue1, fixture.Return<float>());
+		Assert.Equal(setupValue2, fixture.Return<float>());
+		Assert.Equal(setupValue2, fixture.Return<float>());
 		Assert.Equal(1, callback);
 
-		DependencyServiceMock.VerifyGetGetOnly(Times.Exactly(4));
+		DependencyServiceMock.VerifyReturn<float>(Times.Exactly(4));
 		VerifyNoOtherCalls();
 	}
 
@@ -226,18 +228,18 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupGetGetOnly()
+			.SetupReturn<float>()
 			.Callback(() => callback++).And().Returns(setupValue1)
 			.Returns(setupValue2);
 
 		var fixture = CreateFixture();
 
-		Assert.Equal(setupValue1, fixture.GetOnly);
-		Assert.Equal(setupValue2, fixture.GetOnly);
-		Assert.Equal(setupValue2, fixture.GetOnly);
+		Assert.Equal(setupValue1, fixture.Return<float>());
+		Assert.Equal(setupValue2, fixture.Return<float>());
+		Assert.Equal(setupValue2, fixture.Return<float>());
 		Assert.Equal(1, callback);
 
-		DependencyServiceMock.VerifyGetGetOnly(Times.Exactly(3));
+		DependencyServiceMock.VerifyReturn<float>(Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -248,18 +250,18 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupGetGetOnly()
+			.SetupReturn<float>()
 			.Returns(setupValue1)
 			.Returns(setupValue2).And().Callback(() => callback++);
 
 		var fixture = CreateFixture();
 
-		Assert.Equal(setupValue1, fixture.GetOnly);
-		Assert.Equal(setupValue2, fixture.GetOnly);
-		Assert.Equal(setupValue2, fixture.GetOnly);
+		Assert.Equal(setupValue1, fixture.Return<float>());
+		Assert.Equal(setupValue2, fixture.Return<float>());
+		Assert.Equal(setupValue2, fixture.Return<float>());
 		Assert.Equal(2, callback);
 
-		DependencyServiceMock.VerifyGetGetOnly(Times.Exactly(3));
+		DependencyServiceMock.VerifyReturn<float>(Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -270,18 +272,18 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupGetGetOnly()
+			.SetupReturn<float>()
 			.Callback(() => callback++).And().Returns(setupValue1)
 			.Returns(setupValue2).And().Callback(() => callback++);
 
 		var fixture = CreateFixture();
 
-		Assert.Equal(setupValue1, fixture.GetOnly);
-		Assert.Equal(setupValue2, fixture.GetOnly);
-		Assert.Equal(setupValue2, fixture.GetOnly);
+		Assert.Equal(setupValue1, fixture.Return<float>());
+		Assert.Equal(setupValue2, fixture.Return<float>());
+		Assert.Equal(setupValue2, fixture.Return<float>());
 		Assert.Equal(3, callback);
 
-		DependencyServiceMock.VerifyGetGetOnly(Times.Exactly(3));
+		DependencyServiceMock.VerifyReturn<float>(Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -291,25 +293,25 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
 
 		DependencyServiceMock
-			.SetupGetGetOnly()
+			.SetupReturn<float>()
 			.Throws(new COMException(errorMessage1))
 			.Throws(new NullReferenceException(errorMessage2));
 
 		var fixture = CreateFixture();
 
-		var actual1 = () => { _ = fixture.GetOnly; };
+		var actual1 = () => { _ = fixture.Return<float>(); };
 		var exception1 = Assert.Throws<COMException>(actual1);
 		Assert.Equal(errorMessage1, exception1.Message);
 
-		var actual2 = () => { _ = fixture.GetOnly; };
+		var actual2 = () => { _ = fixture.Return<float>(); };
 		var exception2 = Assert.Throws<NullReferenceException>(actual2);
 		Assert.Equal(errorMessage2, exception2.Message);
 
-		var actual3 = () => { _ = fixture.GetOnly; };
+		var actual3 = () => { _ = fixture.Return<float>(); };
 		var exception3 = Assert.Throws<NullReferenceException>(actual3);
 		Assert.Equal(errorMessage2, exception3.Message);
 
-		DependencyServiceMock.VerifyGetGetOnly(Times.Exactly(3));
+		DependencyServiceMock.VerifyReturn<float>(Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -320,30 +322,30 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupGetGetOnly()
+			.SetupReturn<float>()
 			.Callback(() => callback++)
 			.Throws(new COMException(errorMessage1))
 			.Throws(new NullReferenceException(errorMessage2));
 
 		var fixture = CreateFixture();
 
-		Assert.Equal(0, fixture.GetOnly);
+		Assert.Equal(0, fixture.Return<float>());
 
-		var actual2 = () => { _ = fixture.GetOnly; };
+		var actual2 = () => { _ = fixture.Return<float>(); };
 		var exception2 = Assert.Throws<COMException>(actual2);
 		Assert.Equal(errorMessage1, exception2.Message);
 
-		var actual3 = () => { _ = fixture.GetOnly; };
+		var actual3 = () => { _ = fixture.Return<float>(); };
 		var exception3 = Assert.Throws<NullReferenceException>(actual3);
 		Assert.Equal(errorMessage2, exception3.Message);
 
-		var actual4 = () => { _ = fixture.GetOnly; };
+		var actual4 = () => { _ = fixture.Return<float>(); };
 		var exception4 = Assert.Throws<NullReferenceException>(actual4);
 		Assert.Equal(errorMessage2, exception4.Message);
 
 		Assert.Equal(1, callback);
 
-		DependencyServiceMock.VerifyGetGetOnly(Times.Exactly(4));
+		DependencyServiceMock.VerifyReturn<float>(Times.Exactly(4));
 		VerifyNoOtherCalls();
 	}
 
@@ -354,27 +356,27 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupGetGetOnly()
+			.SetupReturn<float>()
 			.Callback(() => callback++).And().Throws(new COMException(errorMessage1))
 			.Throws(new NullReferenceException(errorMessage2));
 
 		var fixture = CreateFixture();
 
-		var actual1 = () => { _ = fixture.GetOnly; };
+		var actual1 = () => { _ = fixture.Return<float>(); };
 		var exception1 = Assert.Throws<COMException>(actual1);
 		Assert.Equal(errorMessage1, exception1.Message);
 
-		var actual2 = () => { _ = fixture.GetOnly; };
+		var actual2 = () => { _ = fixture.Return<float>(); };
 		var exception2 = Assert.Throws<NullReferenceException>(actual2);
 		Assert.Equal(errorMessage2, exception2.Message);
 
-		var actual3 = () => { _ = fixture.GetOnly; };
+		var actual3 = () => { _ = fixture.Return<float>(); };
 		var exception3 = Assert.Throws<NullReferenceException>(actual3);
 		Assert.Equal(errorMessage2, exception3.Message);
 
 		Assert.Equal(1, callback);
 
-		DependencyServiceMock.VerifyGetGetOnly(Times.Exactly(3));
+		DependencyServiceMock.VerifyReturn<float>(Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -385,27 +387,27 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupGetGetOnly()
+			.SetupReturn<float>()
 			.Throws(new COMException(errorMessage1))
 			.Throws(new NullReferenceException(errorMessage2)).And().Callback(() => callback++);
 
 		var fixture = CreateFixture();
 
-		var actual1 = () => { _ = fixture.GetOnly; };
+		var actual1 = () => { _ = fixture.Return<float>(); };
 		var exception1 = Assert.Throws<COMException>(actual1);
 		Assert.Equal(errorMessage1, exception1.Message);
 
-		var actual2 = () => { _ = fixture.GetOnly; };
+		var actual2 = () => { _ = fixture.Return<float>(); };
 		var exception2 = Assert.Throws<NullReferenceException>(actual2);
 		Assert.Equal(errorMessage2, exception2.Message);
 
-		var actual3 = () => { _ = fixture.GetOnly; };
+		var actual3 = () => { _ = fixture.Return<float>(); };
 		var exception3 = Assert.Throws<NullReferenceException>(actual3);
 		Assert.Equal(errorMessage2, exception3.Message);
 
 		Assert.Equal(2, callback);
 
-		DependencyServiceMock.VerifyGetGetOnly(Times.Exactly(3));
+		DependencyServiceMock.VerifyReturn<float>(Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -416,27 +418,27 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupGetGetOnly()
+			.SetupReturn<float>()
 			.Callback(() => callback++).And().Throws(new COMException(errorMessage1))
 			.Throws(new NullReferenceException(errorMessage2)).And().Callback(() => callback++);
 
 		var fixture = CreateFixture();
 
-		var actual1 = () => { _ = fixture.GetOnly; };
+		var actual1 = () => { _ = fixture.Return<float>(); };
 		var exception1 = Assert.Throws<COMException>(actual1);
 		Assert.Equal(errorMessage1, exception1.Message);
 
-		var actual2 = () => { _ = fixture.GetOnly; };
+		var actual2 = () => { _ = fixture.Return<float>(); };
 		var exception2 = Assert.Throws<NullReferenceException>(actual2);
 		Assert.Equal(errorMessage2, exception2.Message);
 
-		var actual3 = () => { _ = fixture.GetOnly; };
+		var actual3 = () => { _ = fixture.Return<float>(); };
 		var exception3 = Assert.Throws<NullReferenceException>(actual3);
 		Assert.Equal(errorMessage2, exception3.Message);
 
 		Assert.Equal(3, callback);
 
-		DependencyServiceMock.VerifyGetGetOnly(Times.Exactly(3));
+		DependencyServiceMock.VerifyReturn<float>(Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -447,20 +449,20 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 		const int setupValue = 123;
 
 		DependencyServiceMock
-			.SetupGetGetOnly()
+			.SetupReturn<float>()
 			.Throws(new COMException(errorMessage))
 			.Returns(setupValue);
 
 		var fixture = CreateFixture();
 
-		var actual1 = () => { _ = fixture.GetOnly; };
+		var actual1 = () => { _ = fixture.Return<float>(); };
 		var exception1 = Assert.Throws<COMException>(actual1);
 		Assert.Equal(errorMessage, exception1.Message);
 
-		Assert.Equal(setupValue, fixture.GetOnly);
-		Assert.Equal(setupValue, fixture.GetOnly);
+		Assert.Equal(setupValue, fixture.Return<float>());
+		Assert.Equal(setupValue, fixture.Return<float>());
 
-		DependencyServiceMock.VerifyGetGetOnly(Times.Exactly(3));
+		DependencyServiceMock.VerifyReturn<float>(Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -471,23 +473,88 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 		const int setupValue = 123;
 
 		DependencyServiceMock
-			.SetupGetGetOnly()
+			.SetupReturn<float>()
 			.Returns(setupValue)
 			.Throws(new COMException(errorMessage));
 
 		var fixture = CreateFixture();
 
-		Assert.Equal(setupValue, fixture.GetOnly);
+		Assert.Equal(setupValue, fixture.Return<float>());
 
-		var actual2 = () => { _ = fixture.GetOnly; };
+		var actual2 = () => { _ = fixture.Return<float>(); };
 		var exception1 = Assert.Throws<COMException>(actual2);
 		Assert.Equal(errorMessage, exception1.Message);
 
-		var actual3 = () => { _ = fixture.GetOnly; };
+		var actual3 = () => { _ = fixture.Return<float>(); };
 		var exception3 = Assert.Throws<COMException>(actual3);
 		Assert.Equal(errorMessage, exception3.Message);
 
-		DependencyServiceMock.VerifyGetGetOnly(Times.Exactly(3));
+		DependencyServiceMock.VerifyReturn<float>(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+	
+	[Fact]
+	public void SetupDifferentTypes()
+	{
+		const string errorMessage = nameof(errorMessage);
+		const float setupValue = 123f;
+		var callback = 0;
+
+		DependencyServiceMock
+			.SetupReturn<float>()
+			.Returns(setupValue);
+
+		DependencyServiceMock
+			.SetupReturn<string>()
+			.Throws(new OutOfMemoryException(errorMessage));
+
+		DependencyServiceMock
+			.SetupReturn<short>()
+			.Callback(() => callback++);
+
+		var fixture = CreateFixture();
+
+		var actual1 = fixture.Return<float>();
+		Assert.Equal(setupValue, actual1);
+
+		var actual2 = () => fixture.Return<string>();
+		var exception = Assert.Throws<OutOfMemoryException>(actual2);
+		Assert.Equal(errorMessage, exception.Message);
+
+		fixture.Return<short>();
+		const int expectedCallback = 1;
+		Assert.Equal(expectedCallback, callback);
+	}
+	
+	[Fact]
+	public void VerifyDifferentTypes()
+	{
+		var fixture = CreateFixture();
+		fixture.Return<string>();
+		fixture.Return<decimal>();
+		fixture.Return<float>();
+		fixture.Return<string>();
+
+		DependencyServiceMock.VerifyReturn<string>(Times.Exactly(2));
+		DependencyServiceMock.VerifyReturn<decimal>(Times.Once);
+		DependencyServiceMock.VerifyReturn<float>(Times.Once);
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void VerifyDifferentTypesInSequence()
+	{
+		var fixture = CreateFixture();
+		fixture.Return<string>();
+		fixture.Return<decimal>();
+		fixture.Return<float>();
+
+		VerifyInSequence(static ctx =>
+		{
+			ctx.DependencyServiceMock.Return<string>();
+			ctx.DependencyServiceMock.Return<decimal>();
+			ctx.DependencyServiceMock.Return<float>();
+		});
 		VerifyNoOtherCalls();
 	}
 }

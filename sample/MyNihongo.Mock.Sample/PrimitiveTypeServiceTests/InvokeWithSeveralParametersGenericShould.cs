@@ -1,4 +1,4 @@
-namespace MyNihongo.Mock.Sample.PrimitiveTypeServiceTests;
+﻿namespace MyNihongo.Mock.Sample.PrimitiveTypeServiceTests;
 
 public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServiceTestsBase
 {
@@ -6,25 +6,25 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	public void ExecuteWithoutSetup()
 	{
 		const float parameter1 = 2025f;
-		const int parameter2 = 6;
+		const string parameter2 = nameof(parameter2);
 
 		CreateFixture()
-			.InvokeWithSeveralParameters(parameter1, parameter2);
+			.InvokeWithSeveralParametersGeneric(parameter1, parameter2);
 	}
 
 	[Fact]
 	public void VerifyIfNotCalled()
 	{
-		DependencyServiceMock.VerifyInvokeWithSeveralParameters(It<float>.Any(), default, Times.Never);
-		DependencyServiceMock.VerifyInvokeWithSeveralParameters(It<string>.Any(), default, Times.Never);
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters(It<float>.Any(), default, Times.Never);
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters(It<string>.Any(), default, Times.Never);
 	}
 
 	[Fact]
 	public void ThrowIfNotCalled()
 	{
-		var actual = () => DependencyServiceMock.VerifyInvokeWithSeveralParameters(It<float>.Any(), It<int>.Any(), Times.Once);
+		var actual = () => DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters(It<float>.Any(), It<string>.Any(), Times.Once);
 
-		const string errorMessage = "Expected IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(any, any) to be called 1 time, but instead it was called 0 times.";
+		const string errorMessage = "Expected IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<Single>(any, any) to be called 1 time, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 	}
@@ -34,14 +34,14 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	{
 		const string errorMessage = nameof(errorMessage);
 		const float parameter1 = 2025f;
-		const int parameter2 = 6;
+		const string parameter2 = nameof(parameter2);
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters<float>(parameter1, parameter2)
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters<string, float>(parameter1, parameter2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = () => CreateFixture()
-			.InvokeWithSeveralParameters(parameter1, parameter2);
+			.InvokeWithSeveralParametersGeneric(parameter1, parameter2);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
@@ -50,89 +50,93 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	[Fact]
 	public void ExecuteWithInvalidSequence1()
 	{
-		const int parameter1 = 2025, parameter2 = 6;
+		const string parameter1 = nameof(parameter1);
+		const string parameter2 = nameof(parameter2);
 		const string errorMessage = nameof(errorMessage);
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters<float>(parameter1, parameter2)
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters<string, string>(parameter1, parameter2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		CreateFixture()
-			.InvokeWithSeveralParameters<float>(parameter1, parameter1);
+			.InvokeWithSeveralParametersGeneric<string>(parameter1, parameter1);
 	}
 
 	[Fact]
 	public void ExecuteWithInvalidSequence2()
 	{
-		const int parameter1 = 2025, parameter2 = 6;
+		const string parameter1 = nameof(parameter1);
+		const string parameter2 = nameof(parameter2);
 		const string errorMessage = nameof(errorMessage);
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters<float>(parameter1, parameter2)
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters<string, string>(parameter1, parameter2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		CreateFixture()
-			.InvokeWithSeveralParameters<float>(parameter2, parameter1);
+			.InvokeWithSeveralParametersGeneric<string>(parameter2, parameter1);
 	}
 
 	[Fact]
 	public void ExecuteWithInvalidSequence3()
 	{
-		const int parameter1 = 2025, parameter2 = 6;
+		const string parameter1 = nameof(parameter1);
+		const string parameter2 = nameof(parameter2);
 		const string errorMessage = nameof(errorMessage);
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters<float>(parameter1, parameter2)
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters<string, string>(parameter1, parameter2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		CreateFixture()
-			.InvokeWithSeveralParameters<float>(parameter2, parameter2);
+			.InvokeWithSeveralParametersGeneric<string>(parameter2, parameter2);
 	}
 
 	[Fact]
 	public void NotTreatZeroAsAny()
 	{
 		const string errorMessage = nameof(errorMessage);
-		const int parameter = 0, anotherParameter = 1;
+		const float parameter1 = 0f, anotherParameter2 = 1f;
+		const string parameter2 = nameof(parameter2);
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters<float>(parameter, parameter)
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters<string, float>(parameter1, parameter2)
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = () => CreateFixture()
-			.InvokeWithSeveralParameters<float>(parameter, parameter);
+			.InvokeWithSeveralParametersGeneric(parameter1, parameter2);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 
 		CreateFixture()
-			.InvokeWithSeveralParameters<float>(anotherParameter, anotherParameter);
+			.InvokeWithSeveralParametersGeneric(anotherParameter2, parameter2);
 	}
 
 	[Fact]
 	public void TreatExactMatchesWithMorePriority1()
 	{
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2), errorMessage3 = nameof(errorMessage3), errorMessage4 = nameof(errorMessage4);
-		const int input1 = 123, input2 = 234;
+		const string input1 = nameof(input1), input2 = nameof(input2);
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(It<float>.Any(), It<int>.Any())
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters(It<string>.Any(), It<string>.Any())
 			.Throws(new InvalidOperationException(errorMessage1));
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters<float>(input1, It<int>.Any())
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters<string, string>(input1, It<string>.Any())
 			.Throws(new ArgumentException(errorMessage2));
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(It<float>.Any(), parameter2: input2)
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters(It<string>.Any(), parameter2: input2)
 			.Throws(new OutOfMemoryException(errorMessage3));
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters<float>(input1, input2)
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters<string, string>(input1, input2)
 			.Throws(new IndexOutOfRangeException(errorMessage4));
 
 		var actual = () => CreateFixture()
-			.InvokeWithSeveralParameters<float>(input1, input2);
+			.InvokeWithSeveralParametersGeneric<string>(input1, input2);
 
 		var exception = Assert.Throws<IndexOutOfRangeException>(actual);
 		Assert.Equal(errorMessage4, exception.Message);
@@ -142,26 +146,26 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	public void TreatExactMatchesWithMorePriority2()
 	{
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2), errorMessage3 = nameof(errorMessage3), errorMessage4 = nameof(errorMessage4);
-		const int input1 = 123, input2 = 234, anotherParameter = 987654;
+		const string input1 = nameof(input1), input2 = nameof(input2), anotherParameter = nameof(anotherParameter);
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(It<float>.Any(), It<int>.Any())
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters(It<string>.Any(), It<string>.Any())
 			.Throws(new InvalidOperationException(errorMessage1));
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters<float>(input1, It<int>.Any())
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters<string, string>(input1, It<string>.Any())
 			.Throws(new ArgumentException(errorMessage2));
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(It<float>.Any(), parameter2: input2)
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters(It<string>.Any(), parameter2: input2)
 			.Throws(new OutOfMemoryException(errorMessage3));
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters<float>(input1, input2)
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters<string, string>(input1, input2)
 			.Throws(new ArgumentOutOfRangeException(errorMessage4));
 
 		var actual = () => CreateFixture()
-			.InvokeWithSeveralParameters<float>(input1, anotherParameter);
+			.InvokeWithSeveralParametersGeneric<string>(input1, anotherParameter);
 
 		var exception = Assert.Throws<ArgumentException>(actual);
 		Assert.Equal(errorMessage2, exception.Message);
@@ -171,26 +175,26 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	public void TreatExactMatchesWithMorePriority3()
 	{
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2), errorMessage3 = nameof(errorMessage3), errorMessage4 = nameof(errorMessage4);
-		const int input1 = 123, input2 = 234, anotherParameter = 987654;
+		const string input1 = nameof(input1), input2 = nameof(input2), anotherParameter = nameof(anotherParameter);
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(It<float>.Any(), It<int>.Any())
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters(It<string>.Any(), It<string>.Any())
 			.Throws(new InvalidOperationException(errorMessage1));
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters<float>(input1, It<int>.Any())
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters<string, string>(input1, It<string>.Any())
 			.Throws(new ArgumentException(errorMessage2));
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(It<float>.Any(), parameter2: input2)
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters(It<string>.Any(), parameter2: input2)
 			.Throws(new OutOfMemoryException(errorMessage3));
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters<float>(input1, input2)
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters<string, string>(input1, input2)
 			.Throws(new ArgumentOutOfRangeException(errorMessage4));
 
 		var actual = () => CreateFixture()
-			.InvokeWithSeveralParameters<float>(anotherParameter, input2);
+			.InvokeWithSeveralParametersGeneric<string>(anotherParameter, input2);
 
 		var exception = Assert.Throws<OutOfMemoryException>(actual);
 		Assert.Equal(errorMessage3, exception.Message);
@@ -200,26 +204,26 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	public void TreatExactMatchesWithMorePriority4()
 	{
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2), errorMessage3 = nameof(errorMessage3), errorMessage4 = nameof(errorMessage4);
-		const int input1 = 123, input2 = 234, anotherParameter = 987654;
+		const string input1 = nameof(input1), input2 = nameof(input2), anotherParameter = nameof(anotherParameter);
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(It<float>.Any(), It<int>.Any())
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters(It<string>.Any(), It<string>.Any())
 			.Throws(new InvalidOperationException(errorMessage1));
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters<float>(input1, It<int>.Any())
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters<string, string>(input1, It<string>.Any())
 			.Throws(new ArgumentException(errorMessage2));
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(It<float>.Any(), parameter2: input2)
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters(It<string>.Any(), parameter2: input2)
 			.Throws(new OutOfMemoryException(errorMessage3));
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters<float>(input1, input2)
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters<string, string>(input1, input2)
 			.Throws(new ArgumentOutOfRangeException(errorMessage4));
 
 		var actual = () => CreateFixture()
-			.InvokeWithSeveralParameters<float>(anotherParameter, anotherParameter);
+			.InvokeWithSeveralParametersGeneric(anotherParameter, anotherParameter);
 
 		var exception = Assert.Throws<InvalidOperationException>(actual);
 		Assert.Equal(errorMessage1, exception.Message);
@@ -228,66 +232,70 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	[Fact]
 	public void VerifyTimes()
 	{
-		const int parameterValue1 = 123, parameterValue2 = 234;
+		const float parameterValue1 = 123f;
+		const string parameterValue2 = nameof(parameterValue2);
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithSeveralParameters<float>(parameterValue1, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric(parameterValue1, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue2);
 
-		DependencyServiceMock.VerifyInvokeWithSeveralParameters<float>(parameterValue1, parameterValue2, Times.Once);
-		DependencyServiceMock.VerifyInvokeWithSeveralParameters<float>(parameterValue2, parameterValue2, Times.Once);
-		DependencyServiceMock.VerifyNoOtherCalls();
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters<string, float>(parameterValue1, parameterValue2, Times.Once);
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters<string, string>(parameterValue2, parameterValue2, Times.Once);
+		DependencyGenericServiceMock.VerifyNoOtherCalls();
 	}
 
 	[Fact]
 	public void VerifyTimesWhere()
 	{
-		const int parameterValue1 = 123, parameterValue2 = 234;
-		var verify1 = It<float>.Where(x => x > 0);
+		const string parameterValue1 = nameof(parameterValue1);
+		const string parameterValue2 = nameof(parameterValue2);
+		var verify1 = It<string>.Where(x => x.Length > 2);
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithSeveralParameters<float>(parameterValue1, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric(parameterValue1, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric(parameterValue2, parameterValue2);
 
-		DependencyServiceMock.VerifyInvokeWithSeveralParameters(verify1, parameterValue2, Times.Exactly(2));
-		DependencyServiceMock.VerifyNoOtherCalls();
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters(verify1, parameterValue2, Times.Exactly(2));
+		DependencyGenericServiceMock.VerifyNoOtherCalls();
 	}
 
 	[Fact]
 	public void VerifyTimesAny()
 	{
-		const int parameterValue1 = 123, parameterValue2 = 234;
-		var verify1 = It<float>.Any();
+		const string parameterValue1 = nameof(parameterValue1);
+		const string parameterValue2 = nameof(parameterValue2);
+		var verify1 = It<string>.Any();
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithSeveralParameters<float>(parameterValue1, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue1, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue2);
 
-		DependencyServiceMock.VerifyInvokeWithSeveralParameters(verify1, parameterValue2, Times.Exactly(2));
-		DependencyServiceMock.VerifyNoOtherCalls();
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters(verify1, parameterValue2, Times.Exactly(2));
+		DependencyGenericServiceMock.VerifyNoOtherCalls();
 	}
 
 	[Fact]
 	public void ThrowVerifyTimes()
 	{
-		const int parameterValue1 = 123, parameterValue2 = 234;
+		const string parameterValue1 = nameof(parameterValue1);
+		const string parameterValue2 = nameof(parameterValue2);
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithSeveralParameters<float>(parameterValue1, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue1, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue2);
 
 		var actual = () =>
 		{
-			var verify1 = It<float>.Any();
-			DependencyServiceMock.VerifyInvokeWithSeveralParameters(verify1, parameterValue2, Times.Exactly(3));
+			var verify1 = It<string>.Any();
+			DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters(verify1, parameterValue2, Times.Exactly(3));
 		};
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(any, 234) to be called 3 times, but instead it was called 2 times.
+			Expected IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>(any, "parameterValue2") to be called 3 times, but instead it was called 2 times.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(123, 234)
-			- 2: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(234, 234)
+			- 1: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue1", "parameterValue2")
+			- 2: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue2", "parameterValue2")
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -296,24 +304,25 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	[Fact]
 	public void ThrowVerifyNoOtherCalls()
 	{
-		const int parameterValue1 = 123, parameterValue2 = 234;
+		const string parameterValue1 = nameof(parameterValue1);
+		const string parameterValue2 = nameof(parameterValue2);
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithSeveralParameters<float>(parameterValue1, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue1);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue1, parameterValue1);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue1, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue1);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue1, parameterValue1);
 
-		DependencyServiceMock.VerifyInvokeWithSeveralParameters<float>(parameterValue1, parameterValue1, Times.Once);
-		DependencyServiceMock.VerifyInvokeWithSeveralParameters<float>(parameterValue2, parameterValue2, Times.Once);
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters<string, string>(parameterValue1, parameterValue1, Times.Once);
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters<string, string>(parameterValue2, parameterValue2, Times.Once);
 
-		var actual = () => DependencyServiceMock.VerifyNoOtherCalls();
+		var actual = () => DependencyGenericServiceMock.VerifyNoOtherCalls();
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(Single, Int32) to be verified, but the following invocations have not been verified:
-			- 1: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(123, 234)
-			- 3: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(234, 123)
+			Expected IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>(String, String) to be verified, but the following invocations have not been verified:
+			- 1: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue1", "parameterValue2")
+			- 3: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue2", "parameterValue1")
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -322,18 +331,19 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	[Fact]
 	public void VerifyValidSequence()
 	{
-		const int parameterValue1 = 123, parameterValue2 = 234;
+		const string parameterValue1 = nameof(parameterValue1);
+		const string parameterValue2 = nameof(parameterValue2);
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithSeveralParameters<float>(parameterValue1, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue1);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue1, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue1);
 
 		VerifyInSequence(static ctx =>
 		{
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters<float>(parameterValue1, parameterValue2);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue2);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue1);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters<string, string>(parameterValue1, parameterValue2);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters<string, string>(parameterValue2, parameterValue2);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters<string, string>(parameterValue2, parameterValue1);
 		});
 		VerifyNoOtherCalls();
 	}
@@ -341,20 +351,20 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	[Fact]
 	public void VerifyValidSequenceWhere()
 	{
-		const int parameterValue1 = 123, parameterValue2 = 234;
+		const string parameterValue1 = nameof(parameterValue1);
+		const string parameterValue2 = nameof(parameterValue2);
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithSeveralParameters<float>(parameterValue1, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue1);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue1, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue1);
 
 		VerifyInSequence(static ctx =>
 		{
-			It<int> verifyInt1 = It<int>.Where(x => x < 200), verifyInt2 = It<int>.Where(x => x > 200);
-			It<float> verifyFloat1 = It<float>.Where(x => x < 200), verifyFloat2 = It<float>.Where(x => x > 200);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters(verifyFloat1, verifyInt2);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters(verifyFloat2, verifyInt2);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters(verifyFloat2, verifyInt1);
+			It<string> verify1 = It<string>.Where(x => x.EndsWith('1')), verify2 = It<string>.Where(x => x.EndsWith('2'));
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters(verify1, verify2);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters(verify2, verify2);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters(verify2, verify1);
 		});
 		VerifyNoOtherCalls();
 	}
@@ -362,20 +372,20 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	[Fact]
 	public void VerifyValidSequenceEquivalent()
 	{
-		const int parameterValue1 = 123, parameterValue2 = 234;
+		const string parameterValue1 = nameof(parameterValue1);
+		const string parameterValue2 = nameof(parameterValue2);
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithSeveralParameters<float>(parameterValue1, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue1);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue1, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue1);
 
 		VerifyInSequence(static ctx =>
 		{
-			It<int> verifyInt1 = It<int>.Equivalent(parameterValue1), verifyInt2 = It<int>.Equivalent(parameterValue2);
-			It<float> verifyFloat1 = It<float>.Equivalent(parameterValue1), verifyFloat2 = It<float>.Equivalent(parameterValue2);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters(verifyFloat1, verifyInt2);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters(verifyFloat2, verifyInt2);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters(verifyFloat2, verifyInt1);
+			It<string> verify1 = It<string>.Equivalent(parameterValue1), verify2 = It<string>.Equivalent(parameterValue2);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters(verify1, verify2);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters(verify2, verify2);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters(verify2, verify1);
 		});
 		VerifyNoOtherCalls();
 	}
@@ -383,20 +393,20 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	[Fact]
 	public void VerifyValidSequenceAny()
 	{
-		const int parameterValue1 = 123, parameterValue2 = 234;
+		const string parameterValue1 = nameof(parameterValue1);
+		const string parameterValue2 = nameof(parameterValue2);
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithSeveralParameters<float>(parameterValue1, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue1);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue1, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue1);
 
 		VerifyInSequence(static ctx =>
 		{
-			var verifyInt = It<int>.Any();
-			var verifyFloat = It<float>.Any();
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters(verifyFloat, verifyInt);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters(verifyFloat, verifyInt);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters(verifyFloat, verifyInt);
+			var verify = It<string>.Any();
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters(verify, verify);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters(verify, verify);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters(verify, verify);
 		});
 		VerifyNoOtherCalls();
 	}
@@ -404,27 +414,28 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	[Fact]
 	public void ThrowInvalidSequence()
 	{
-		const int parameterValue1 = 123, parameterValue2 = 234;
+		const string parameterValue1 = nameof(parameterValue1);
+		const string parameterValue2 = nameof(parameterValue2);
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithSeveralParameters<float>(parameterValue1, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue1);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue1, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue1);
 
 		var actual = () => VerifyInSequence(static ctx =>
 		{
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters<float>(parameterValue1, parameterValue2);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue1);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue2);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters<string, string>(parameterValue1, parameterValue2);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters<string, string>(parameterValue2, parameterValue1);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters<string, string>(parameterValue2, parameterValue2);
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(234, 234) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue2", "parameterValue2") to be invoked at index 4, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(123, 234)
-			- 2: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(234, 234)
-			- 3: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(234, 123)
+			- 1: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue1", "parameterValue2")
+			- 2: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue2", "parameterValue2")
+			- 3: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue2", "parameterValue1")
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -433,29 +444,29 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	[Fact]
 	public void ThrowInvalidSequenceWhere()
 	{
-		const int parameterValue1 = 123, parameterValue2 = 234;
+		const string parameterValue1 = nameof(parameterValue1);
+		const string parameterValue2 = nameof(parameterValue2);
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithSeveralParameters<float>(parameterValue1, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue1);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue1, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue1);
 
 		var actual = () => VerifyInSequence(static ctx =>
 		{
-			It<int> verifyInt1 = It<int>.Where(x => x < 200), verifyInt2 = It<int>.Where(x => x > 200);
-			It<float> verifyFloat1 = It<float>.Where(x => x < 200), verifyFloat2 = It<float>.Where(x => x > 200);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters(verifyFloat2, verifyInt2);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters(verifyFloat2, verifyInt1);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters(verifyFloat1, verifyInt2);
+			It<string> verify1 = It<string>.Where(x => x.EndsWith('1')), verify2 = It<string>.Where(x => x.EndsWith('2'));
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters(verify2, verify2);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters(verify2, verify1);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters(verify1, verify2);
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(where(predicate), where(predicate)) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>(where(predicate), where(predicate)) to be invoked at index 4, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(123, 234)
-			- 2: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(234, 234)
-			- 3: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(234, 123)
+			- 1: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue1", "parameterValue2")
+			- 2: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue2", "parameterValue2")
+			- 3: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue2", "parameterValue1")
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -464,35 +475,35 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	[Fact]
 	public void ThrowInvalidSequenceEquivalent()
 	{
-		const int parameterValue1 = 123, parameterValue2 = 234;
+		const string parameterValue1 = nameof(parameterValue1);
+		const string parameterValue2 = nameof(parameterValue2);
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithSeveralParameters<float>(parameterValue1, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue1);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue1, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue1);
 
 		var actual = () => VerifyInSequence(static ctx =>
 		{
-			It<int> verifyInt1 = It<int>.Equivalent(parameterValue1), verifyInt2 = It<int>.Equivalent(parameterValue2);
-			It<float> verifyFloat1 = It<float>.Equivalent(parameterValue1), verifyFloat2 = It<float>.Equivalent(parameterValue2);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters(verifyFloat2, verifyInt2);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters(verifyFloat1, verifyInt2);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters(verifyFloat2, verifyInt1);
+			It<string> verify1 = It<string>.Equivalent(parameterValue1), verify2 = It<string>.Equivalent(parameterValue2);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters(verify2, verify2);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters(verify1, verify2);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters(verify2, verify1);
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(123, 234) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue1", "parameterValue2") to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(123, 234)
-			- 2: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(234, 234)
-			- 3: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(234, 123)
+			- 1: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue1", "parameterValue2")
+			- 2: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue2", "parameterValue2")
+			- 3: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue2", "parameterValue1")
 			  - parameter1:
-			    expected: 123
-			    actual: 234
+			    expected: parameterValue1
+			    actual: parameterValue2
 			  - parameter2:
-			    expected: 234
-			    actual: 123
+			    expected: parameterValue2
+			    actual: parameterValue1
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -501,30 +512,30 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	[Fact]
 	public void ThrowInvalidSequenceAny()
 	{
-		const int parameterValue1 = 123, parameterValue2 = 234;
+		const string parameterValue1 = nameof(parameterValue1);
+		const string parameterValue2 = nameof(parameterValue2);
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithSeveralParameters<float>(parameterValue1, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue1);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue1, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue1);
 
 		var actual = () => VerifyInSequence(static ctx =>
 		{
-			var verifyInt = It<int>.Any();
-			var verifyFloat = It<float>.Any();
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters(verifyFloat, verifyInt);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters(verifyFloat, verifyInt);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters(verifyFloat, verifyInt);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters(verifyFloat, verifyInt);
+			var verify = It<string>.Any();
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters(verify, verify);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters(verify, verify);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters(verify, verify);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters(verify, verify);
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(any, any) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>(any, any) to be invoked at index 4, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(123, 234)
-			- 2: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(234, 234)
-			- 3: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(234, 123)
+			- 1: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue1", "parameterValue2")
+			- 2: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue2", "parameterValue2")
+			- 3: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue2", "parameterValue1")
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -533,28 +544,29 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	[Fact]
 	public void ThrowInvalidMethodInSequence()
 	{
-		const int parameterValue1 = 123, parameterValue2 = 234;
+		const string parameterValue1 = nameof(parameterValue1);
+		const string parameterValue2 = nameof(parameterValue2);
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithSeveralParameters<float>(parameterValue1, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue2);
-		fixture.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue1);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue1, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue2);
+		fixture.InvokeWithSeveralParametersGeneric<string>(parameterValue2, parameterValue1);
 
 		var actual = () => VerifyInSequence(static ctx =>
 		{
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters<float>(parameterValue1, parameterValue2);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue2);
-			ctx.DependencyServiceMock.Return();
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters<float>(parameterValue2, parameterValue1);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters<string, string>(parameterValue1, parameterValue2);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters<string, string>(parameterValue2, parameterValue2);
+			ctx.DependencyGenericServiceMock.Return<string, decimal>();
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters<string, string>(parameterValue2, parameterValue1);
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.Return() to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService<String>.Return<Decimal>() to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(123, 234)
-			- 2: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(234, 234)
-			- 3: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(234, 123)
+			- 1: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue1", "parameterValue2")
+			- 2: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue2", "parameterValue2")
+			- 3: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue2", "parameterValue1")
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -564,28 +576,29 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	public void ThrowDifferentExceptions()
 	{
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
-		const int setValue1 = 2, setValue2 = 3;
+		const float setValue1 = 3f;
+		const string setValue2 = nameof(setValue2);
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(It<float>.Any(), It<int>.Any())
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters(It<float>.Any(), It<string>.Any())
 			.Throws(new COMException(errorMessage1))
 			.Throws(new NullReferenceException(errorMessage2));
 
 		var fixture = CreateFixture();
 
-		var actual1 = () => fixture.InvokeWithSeveralParameters<float>(setValue1, setValue2);
+		var actual1 = () => fixture.InvokeWithSeveralParametersGeneric(setValue1, setValue2);
 		var exception1 = Assert.Throws<COMException>(actual1);
 		Assert.Equal(errorMessage1, exception1.Message);
 
-		var actual2 = () => fixture.InvokeWithSeveralParameters<float>(setValue1, setValue2);
+		var actual2 = () => fixture.InvokeWithSeveralParametersGeneric(setValue1, setValue2);
 		var exception2 = Assert.Throws<NullReferenceException>(actual2);
 		Assert.Equal(errorMessage2, exception2.Message);
 
-		var actual3 = () => fixture.InvokeWithSeveralParameters<float>(setValue1, setValue2);
+		var actual3 = () => fixture.InvokeWithSeveralParametersGeneric(setValue1, setValue2);
 		var exception3 = Assert.Throws<NullReferenceException>(actual3);
 		Assert.Equal(errorMessage2, exception3.Message);
 
-		DependencyServiceMock.VerifyInvokeWithSeveralParameters<float>(setValue1, setValue2, Times.Exactly(3));
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters<string, float>(setValue1, setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -593,34 +606,35 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	public void ThrowDifferentExceptionsWithCallback1()
 	{
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
-		const int setValue1 = 2, setValue2 = 3;
+		const float setValue1 = 3f;
+		const string setValue2 = nameof(setValue2);
 		var callback = 0f;
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(It<float>.Any(), It<int>.Any())
-			.Callback((x, y) => callback += x + y)
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters(It<float>.Any(), It<string>.Any())
+			.Callback((x, y) => callback += x + y.Length)
 			.Throws(new COMException(errorMessage1))
 			.Throws(new NullReferenceException(errorMessage2));
 
 		var fixture = CreateFixture();
 
-		fixture.InvokeWithSeveralParameters<float>(setValue1, setValue2);
+		fixture.InvokeWithSeveralParametersGeneric(setValue1, setValue2);
 
-		var actual2 = () => fixture.InvokeWithSeveralParameters<float>(setValue1, setValue2);
+		var actual2 = () => fixture.InvokeWithSeveralParametersGeneric(setValue1, setValue2);
 		var exception2 = Assert.Throws<COMException>(actual2);
 		Assert.Equal(errorMessage1, exception2.Message);
 
-		var actual3 = () => fixture.InvokeWithSeveralParameters<float>(setValue1, setValue2);
+		var actual3 = () => fixture.InvokeWithSeveralParametersGeneric(setValue1, setValue2);
 		var exception3 = Assert.Throws<NullReferenceException>(actual3);
 		Assert.Equal(errorMessage2, exception3.Message);
 
-		var actual4 = () => fixture.InvokeWithSeveralParameters<float>(setValue1, setValue2);
+		var actual4 = () => fixture.InvokeWithSeveralParametersGeneric(setValue1, setValue2);
 		var exception4 = Assert.Throws<NullReferenceException>(actual4);
 		Assert.Equal(errorMessage2, exception4.Message);
 
-		Assert.Equal(setValue1 + setValue2, callback);
+		Assert.Equal(setValue1 + setValue2.Length, callback);
 
-		DependencyServiceMock.VerifyInvokeWithSeveralParameters<float>(setValue1, setValue2, Times.Exactly(4));
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters<string, float>(setValue1, setValue2, Times.Exactly(4));
 		VerifyNoOtherCalls();
 	}
 
@@ -628,31 +642,32 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	public void ThrowDifferentExceptionsWithCallback2()
 	{
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
-		const int setValue1 = 2, setValue2 = 3;
+		const float setValue1 = 3f;
+		const string setValue2 = nameof(setValue2);
 		var callback = 0f;
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(It<float>.Any(), It<int>.Any())
-			.Callback((x, y) => callback += x + y).And().Throws(new COMException(errorMessage1))
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters(It<float>.Any(), It<string>.Any())
+			.Callback((x, y) => callback += x + y.Length).And().Throws(new COMException(errorMessage1))
 			.Throws(new NullReferenceException(errorMessage2));
 
 		var fixture = CreateFixture();
 
-		var actual1 = () => fixture.InvokeWithSeveralParameters<float>(setValue1, setValue2);
+		var actual1 = () => fixture.InvokeWithSeveralParametersGeneric(setValue1, setValue2);
 		var exception1 = Assert.Throws<COMException>(actual1);
 		Assert.Equal(errorMessage1, exception1.Message);
 
-		var actual2 = () => fixture.InvokeWithSeveralParameters<float>(setValue1, setValue2);
+		var actual2 = () => fixture.InvokeWithSeveralParametersGeneric(setValue1, setValue2);
 		var exception2 = Assert.Throws<NullReferenceException>(actual2);
 		Assert.Equal(errorMessage2, exception2.Message);
 
-		var actual3 = () => fixture.InvokeWithSeveralParameters<float>(setValue1, setValue2);
+		var actual3 = () => fixture.InvokeWithSeveralParametersGeneric(setValue1, setValue2);
 		var exception3 = Assert.Throws<NullReferenceException>(actual3);
 		Assert.Equal(errorMessage2, exception3.Message);
 
-		Assert.Equal(setValue1 + setValue2, callback);
+		Assert.Equal(setValue1 + setValue2.Length, callback);
 
-		DependencyServiceMock.VerifyInvokeWithSeveralParameters<float>(setValue1, setValue2, Times.Exactly(3));
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters<string, float>(setValue1, setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -660,31 +675,32 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	public void ThrowDifferentExceptionsWithCallback3()
 	{
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
-		const int setValue1 = 2, setValue2 = 3;
+		const float setValue1 = 3f;
+		const string setValue2 = nameof(setValue2);
 		var callback = 0f;
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(It<float>.Any(), It<int>.Any())
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters(It<float>.Any(), It<string>.Any())
 			.Throws(new COMException(errorMessage1))
-			.Throws(new NullReferenceException(errorMessage2)).And().Callback((x, y) => callback += x + y);
+			.Throws(new NullReferenceException(errorMessage2)).And().Callback((x, y) => callback += x + y.Length);
 
 		var fixture = CreateFixture();
 
-		var actual1 = () => fixture.InvokeWithSeveralParameters<float>(setValue1, setValue2);
+		var actual1 = () => fixture.InvokeWithSeveralParametersGeneric(setValue1, setValue2);
 		var exception1 = Assert.Throws<COMException>(actual1);
 		Assert.Equal(errorMessage1, exception1.Message);
 
-		var actual2 = () => fixture.InvokeWithSeveralParameters<float>(setValue1, setValue2);
+		var actual2 = () => fixture.InvokeWithSeveralParametersGeneric(setValue1, setValue2);
 		var exception2 = Assert.Throws<NullReferenceException>(actual2);
 		Assert.Equal(errorMessage2, exception2.Message);
 
-		var actual3 = () => fixture.InvokeWithSeveralParameters<float>(setValue1, setValue2);
+		var actual3 = () => fixture.InvokeWithSeveralParametersGeneric(setValue1, setValue2);
 		var exception3 = Assert.Throws<NullReferenceException>(actual3);
 		Assert.Equal(errorMessage2, exception3.Message);
 
-		Assert.Equal(2 * (setValue1 + setValue2), callback);
+		Assert.Equal(2 * (setValue1 + setValue2.Length), callback);
 
-		DependencyServiceMock.VerifyInvokeWithSeveralParameters<float>(setValue1, setValue2, Times.Exactly(3));
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters<string, float>(setValue1, setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -692,31 +708,32 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	public void ThrowDifferentExceptionsWithCallback4()
 	{
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
-		const int setValue1 = 2, setValue2 = 3;
+		const float setValue1 = 3f;
+		const string setValue2 = nameof(setValue2);
 		var callback = 0f;
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters(It<float>.Any(), It<int>.Any())
-			.Callback((x, y) => callback += x + y).And().Throws(new COMException(errorMessage1))
-			.Throws(new NullReferenceException(errorMessage2)).And().Callback((x, y) => callback += x + y);
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters(It<float>.Any(), It<string>.Any())
+			.Callback((x, y) => callback += x + y.Length).And().Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2)).And().Callback((x, y) => callback += x + y.Length);
 
 		var fixture = CreateFixture();
 
-		var actual1 = () => fixture.InvokeWithSeveralParameters<float>(setValue1, setValue2);
+		var actual1 = () => fixture.InvokeWithSeveralParametersGeneric(setValue1, setValue2);
 		var exception1 = Assert.Throws<COMException>(actual1);
 		Assert.Equal(errorMessage1, exception1.Message);
 
-		var actual2 = () => fixture.InvokeWithSeveralParameters<float>(setValue1, setValue2);
+		var actual2 = () => fixture.InvokeWithSeveralParametersGeneric(setValue1, setValue2);
 		var exception2 = Assert.Throws<NullReferenceException>(actual2);
 		Assert.Equal(errorMessage2, exception2.Message);
 
-		var actual3 = () => fixture.InvokeWithSeveralParameters<float>(setValue1, setValue2);
+		var actual3 = () => fixture.InvokeWithSeveralParametersGeneric(setValue1, setValue2);
 		var exception3 = Assert.Throws<NullReferenceException>(actual3);
 		Assert.Equal(errorMessage2, exception3.Message);
 
-		Assert.Equal(3 * (setValue1 + setValue2), callback);
+		Assert.Equal(3 * (setValue1 + setValue2.Length), callback);
 
-		DependencyServiceMock.VerifyInvokeWithSeveralParameters<float>(setValue1, setValue2, Times.Exactly(3));
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters<string, float>(setValue1, setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -726,21 +743,20 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 		const string errorMessage = nameof(errorMessage);
 		const string stringValue = nameof(stringValue);
 		const float floatValue = 123f;
-		const int intValue = 456;
 		var callback = 0;
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters<float>()
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters<string, float>()
 			.Throws(new NullReferenceException(errorMessage));
 
-		DependencyServiceMock
-			.SetupInvokeWithSeveralParameters<string>()
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters<string, string>()
 			.Callback((x, _) => callback += x.Length);
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithSeveralParameters<string>(stringValue, intValue);
+		fixture.InvokeWithSeveralParametersGeneric<string>(stringValue, stringValue);
 
-		var actual = () => fixture.InvokeWithSeveralParameters(floatValue, intValue);
+		var actual = () => fixture.InvokeWithSeveralParametersGeneric(floatValue, stringValue);
 		var exception = Assert.Throws<NullReferenceException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 
@@ -752,18 +768,17 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	{
 		const float floatParam = 123f;
 		const string stringParam = nameof(stringParam);
-		const decimal decimalParam = 123m;
 		const int intParam = 456;
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithSeveralParameters<string>(stringParam, intParam);
-		fixture.InvokeWithSeveralParameters(decimalParam, intParam);
-		fixture.InvokeWithSeveralParameters(floatParam, intParam);
-		fixture.InvokeWithSeveralParameters<string>(stringParam, intParam);
+		fixture.InvokeWithSeveralParametersGeneric<string>(stringParam, stringParam);
+		fixture.InvokeWithSeveralParametersGeneric(intParam, stringParam);
+		fixture.InvokeWithSeveralParametersGeneric(floatParam, stringParam);
+		fixture.InvokeWithSeveralParametersGeneric<string>(stringParam, stringParam);
 
-		DependencyServiceMock.VerifyInvokeWithSeveralParameters<string>(stringParam, intParam, Times.Exactly(2));
-		DependencyServiceMock.VerifyInvokeWithSeveralParameters<decimal>(decimalParam, intParam, Times.Once);
-		DependencyServiceMock.VerifyInvokeWithSeveralParameters<float>(floatParam, intParam, Times.Once);
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters<string, string>(stringParam, stringParam, Times.Exactly(2));
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters<string, int>(intParam, stringParam, Times.Once);
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters<string, float>(floatParam, stringParam, Times.Once);
 		VerifyNoOtherCalls();
 	}
 
@@ -772,19 +787,18 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 	{
 		const float floatParam = 123f;
 		const string stringParam = nameof(stringParam);
-		const decimal decimalParam = 123m;
 		const int intParam = 456;
 
 		var fixture = CreateFixture();
-		fixture.InvokeWithSeveralParameters<string>(stringParam, intParam);
-		fixture.InvokeWithSeveralParameters(decimalParam, intParam);
-		fixture.InvokeWithSeveralParameters(floatParam, intParam);
+		fixture.InvokeWithSeveralParametersGeneric<string>(stringParam, stringParam);
+		fixture.InvokeWithSeveralParametersGeneric(intParam, stringParam);
+		fixture.InvokeWithSeveralParametersGeneric(floatParam, stringParam);
 
 		VerifyInSequence(static ctx =>
 		{
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters<string>(stringParam, intParam);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters<decimal>(decimalParam, intParam);
-			ctx.DependencyServiceMock.InvokeWithSeveralParameters<float>(floatParam, intParam);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters<string, string>(stringParam, stringParam);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters<string, int>(intParam, stringParam);
+			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters<string, float>(floatParam, stringParam);
 		});
 		VerifyNoOtherCalls();
 	}

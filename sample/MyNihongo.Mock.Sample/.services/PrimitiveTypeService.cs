@@ -3,10 +3,15 @@ namespace MyNihongo.Mock.Sample;
 internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 {
 	private readonly IPrimitiveDependencyService _primitiveDependencyService;
+	private readonly IPrimitiveDependencyService<string> _primitiveDependencyGenericService;
 
-	public PrimitiveTypeService(IPrimitiveDependencyService primitiveDependencyService, bool subscribeToHandler)
+	public PrimitiveTypeService(
+		IPrimitiveDependencyService primitiveDependencyService,
+		IPrimitiveDependencyService<string> primitiveDependencyGenericService,
+		bool subscribeToHandler)
 	{
 		_primitiveDependencyService = primitiveDependencyService;
+		_primitiveDependencyGenericService = primitiveDependencyGenericService;
 
 		if (subscribeToHandler)
 			primitiveDependencyService.Handler += PrimitiveDependencyServiceOnHandler;
@@ -22,6 +27,8 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 
 	public int GetOnly => _primitiveDependencyService.GetOnly;
 
+	public string GetOnlyGeneric => _primitiveDependencyGenericService.GetOnly;
+
 	public decimal SetOnly
 	{
 		set => _primitiveDependencyService.SetOnly = value;
@@ -31,6 +38,12 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 	{
 		get => _primitiveDependencyService.GetInit;
 		set => _primitiveDependencyService.GetInit = value;
+	}
+
+	public string GetSetGeneric
+	{
+		get => _primitiveDependencyGenericService.GetSet;
+		set => _primitiveDependencyGenericService.GetSet = value;
 	}
 
 	public void Invoke()
@@ -78,6 +91,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		await _primitiveDependencyService.InvokeWithParameterAsync(parameter);
 	}
 
+	public void InvokeWithParameterGeneric(string parameter)
+	{
+		_primitiveDependencyGenericService.InvokeWithParameter(parameter);
+	}
+
 	public void InvokeWithSeveralParameters(int parameter1, int parameter2)
 	{
 		_primitiveDependencyService.InvokeWithSeveralParameters(parameter1, parameter2);
@@ -108,6 +126,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		await _primitiveDependencyService.InvokeWithSeveralParametersAsync(parameter1, parameter2);
 	}
 
+	public void InvokeWithSeveralParametersGeneric<TParameter>(TParameter parameter1, string parameter2)
+	{
+		_primitiveDependencyGenericService.InvokeWithSeveralParameters(parameter1, parameter2);
+	}
+
 	public decimal Return()
 	{
 		var shopCount = _primitiveDependencyService.Return();
@@ -127,6 +150,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 	public async ValueTask<bool> ReturnAsync()
 	{
 		return await _primitiveDependencyService.ReturnAsync();
+	}
+
+	public T ReturnGeneric<T>()
+	{
+		return _primitiveDependencyGenericService.Return<T>();
 	}
 
 	public string ReturnWithParameter(in string parameter)
@@ -149,6 +177,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 	public async ValueTask<int> ReturnWithParameterAsync(string parameter)
 	{
 		return await _primitiveDependencyService.ReturnWithParameterAsync(parameter);
+	}
+
+	public TReturn ReturnWithParameterGeneric<TReturn>(string parameter)
+	{
+		return _primitiveDependencyGenericService.ReturnWithParameter<TReturn>(parameter);
 	}
 
 	public double ReturnWithSeveralParameters(int parameter1, int parameter2)
@@ -183,14 +216,21 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		return Math.Pow(spendingDouble, 2d);
 	}
 
-	public TReturn ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref TParameter1 parameter1, TParameter2 parameter2)
+	public TReturn ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref TParameter1 parameter1,
+		TParameter2 parameter2)
 	{
-		return _primitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref parameter1, parameter2);
+		return _primitiveDependencyService.ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(
+			ref parameter1, parameter2);
 	}
 
 	public async ValueTask<decimal> ReturnWithSeveralParametersAsync(int parameter1, int parameter2)
 	{
 		return await _primitiveDependencyService.ReturnWithSeveralParametersAsync(parameter1, parameter2);
+	}
+
+	public string ReturnWithSeveralParametersGeneric<TParameter1, TParameter2>(TParameter1 parameter1, TParameter2 parameter2)
+	{
+		return _primitiveDependencyGenericService.ReturnWithSeveralParameters(parameter1, parameter2);
 	}
 
 	public void Dispose()
