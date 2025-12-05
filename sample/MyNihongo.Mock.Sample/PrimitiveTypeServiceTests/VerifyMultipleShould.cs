@@ -418,6 +418,7 @@ file static class PrimitiveTypeServiceEx
 		fixture.Return(out _);
 		fixture.Return<decimal>();
 		await fixture.ReturnAsync();
+		fixture.ReturnGeneric<short>();
 		fixture.ReturnWithParameter("ret val");
 		fixture.ReturnWithParameter(ref valueDouble);
 		fixture.ReturnWithParameter<float, string>(123f);

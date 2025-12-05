@@ -58,6 +58,8 @@ public interface IPrimitiveTypeService : IDisposable
 
 	ValueTask<bool> ReturnAsync();
 
+	T ReturnGeneric<T>();
+
 	string ReturnWithParameter(in string parameter);
 
 	int ReturnWithParameter(ref double parameter);

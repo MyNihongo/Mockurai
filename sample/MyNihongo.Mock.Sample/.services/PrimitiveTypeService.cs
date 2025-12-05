@@ -152,6 +152,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		return await _primitiveDependencyService.ReturnAsync();
 	}
 
+	public T ReturnGeneric<T>()
+	{
+		return _primitiveDependencyGenericService.Return<T>();
+	}
+
 	public string ReturnWithParameter(in string parameter)
 	{
 		var name = _primitiveDependencyService.ReturnWithParameter(parameter);
