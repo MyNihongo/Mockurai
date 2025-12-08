@@ -38,7 +38,9 @@ public partial class PrimitiveTypeServiceTestsBase
 	{
 		var ctx = new VerifySequenceContext(
 			dependencyServiceMock: _dependencyServiceMock,
-			dependencyGenericServiceMock: _dependencyServiceGenericMock
+			dependencyGenericServiceMock: _dependencyServiceGenericMock,
+			primitiveDependencyMock: _primitiveDependencyMock,
+			primitiveDependencyBaseMock: _primitiveDependencyBaseMock
 		);
 
 		verify(ctx);
