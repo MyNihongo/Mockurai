@@ -4,14 +4,20 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 {
 	private readonly IPrimitiveDependencyService _primitiveDependencyService;
 	private readonly IPrimitiveDependencyService<string> _primitiveDependencyGenericService;
+	private readonly PrimitiveDependency _primitiveDependency;
+	private readonly PrimitiveDependencyBase _primitiveDependencyBase;
 
 	public PrimitiveTypeService(
 		IPrimitiveDependencyService primitiveDependencyService,
 		IPrimitiveDependencyService<string> primitiveDependencyGenericService,
+		PrimitiveDependency primitiveDependency,
+		PrimitiveDependencyBase primitiveDependencyBase,
 		bool subscribeToHandler)
 	{
 		_primitiveDependencyService = primitiveDependencyService;
 		_primitiveDependencyGenericService = primitiveDependencyGenericService;
+		_primitiveDependency = primitiveDependency;
+		_primitiveDependencyBase = primitiveDependencyBase;
 
 		if (subscribeToHandler)
 			primitiveDependencyService.Handler += PrimitiveDependencyServiceOnHandler;
@@ -66,6 +72,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		await _primitiveDependencyService.InvokeAsync();
 	}
 
+	public void InvokeClass()
+	{
+		_primitiveDependencyBase.Invoke();
+	}
+
 	public void InvokeWithParameter(in string parameter)
 	{
 		_primitiveDependencyService.InvokeWithParameter(parameter);
@@ -94,6 +105,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 	public void InvokeWithParameterGeneric(string parameter)
 	{
 		_primitiveDependencyGenericService.InvokeWithParameter(parameter);
+	}
+
+	public void InvokeWithParameterClass(float parameter)
+	{
+		_primitiveDependencyBase.InvokeWithParameter(parameter);
 	}
 
 	public void InvokeWithSeveralParameters(int parameter1, int parameter2)
@@ -155,6 +171,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 	public T ReturnGeneric<T>()
 	{
 		return _primitiveDependencyGenericService.Return<T>();
+	}
+
+	public int ReturnClass()
+	{
+		return _primitiveDependency.Return();
 	}
 
 	public string ReturnWithParameter(in string parameter)
