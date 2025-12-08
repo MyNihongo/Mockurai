@@ -26,6 +26,8 @@ public interface IPrimitiveTypeService : IDisposable
 
 	void InvokeClass();
 
+	Task InvokeWhenAllAsync();
+
 	void InvokeWithParameter(in string parameter);
 
 	void InvokeWithParameter(in int parameter);
