@@ -85,6 +85,12 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		await Task.WhenAll(tasks);
 	}
 
+	public async Task InvokeRunAsync()
+	{
+		await Task.Run(() => _primitiveDependencyService.Invoke());
+		await Task.Run(() => _primitiveDependencyService.InvokeWithParameter(123));
+	}
+
 	public void InvokeWithParameter(in string parameter)
 	{
 		_primitiveDependencyService.InvokeWithParameter(parameter);
