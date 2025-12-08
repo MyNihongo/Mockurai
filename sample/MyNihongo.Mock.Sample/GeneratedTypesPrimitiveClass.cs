@@ -63,3 +63,32 @@ public sealed class PrimitiveDependencyMock : IMock<PrimitiveDependency>
 		}
 	}
 }
+
+public static partial class MockExtensions
+{
+	extension(IMock<PrimitiveDependency> @this)
+	{
+		// Return
+		public ISetup<Action, int, Func<int>> SetupReturn() =>
+			((PrimitiveDependencyMock)@this).SetupReturn();
+
+		public void VerifyReturn(in Times times) =>
+			((PrimitiveDependencyMock)@this).VerifyReturn(times);
+
+		public void VerifyReturn(in Func<Times> times) =>
+			((PrimitiveDependencyMock)@this).VerifyReturn(times());
+	}
+}
+
+public static partial class MockSequenceExtensions
+{
+	extension(IMockSequence<PrimitiveDependency> @this)
+	{
+		// Return
+		public void Return()
+		{
+			var nextIndex = ((PrimitiveDependencyMock)@this.Mock).VerifyReturn(@this.VerifyIndex);
+			@this.VerifyIndex.Set(nextIndex);
+		}
+	}
+}

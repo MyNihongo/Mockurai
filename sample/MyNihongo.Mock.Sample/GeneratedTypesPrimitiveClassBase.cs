@@ -14,7 +14,7 @@ public sealed class PrimitiveDependencyBaseMock : IMock<PrimitiveDependencyBase>
 	}
 
 	public PrimitiveDependencyBase Object => _proxy ??= new Proxy(this);
-	
+
 	// Invoke
 	private Setup? _invoke;
 	private Invocation? _invokeInvocation;
@@ -35,7 +35,7 @@ public sealed class PrimitiveDependencyBaseMock : IMock<PrimitiveDependencyBase>
 		_invokeInvocation ??= new Invocation("PrimitiveDependencyBase.Invoke()");
 		return _invokeInvocation.Verify(index, _invocationProviders);
 	}
-	
+
 	// InvokeWithParameter
 	private SetupWithParameter<float>? _invokeWithParameter;
 	private Invocation<float>? _invokeWithParameterInvocation;
@@ -58,19 +58,19 @@ public sealed class PrimitiveDependencyBaseMock : IMock<PrimitiveDependencyBase>
 		_invokeWithParameterInvocation ??= new Invocation<float>("PrimitiveDependencyBase.InvokeWithParameter({0})");
 		return _invokeWithParameterInvocation.Verify(parameter, index, _invocationProviders);
 	}
-	
+
 	public void VerifyNoOtherCalls()
 	{
 		_invokeInvocation?.VerifyNoOtherCalls();
 		_invokeWithParameterInvocation?.VerifyNoOtherCalls();
 	}
-	
+
 	private IEnumerable<IInvocationProvider?> GetInvocations()
 	{
 		yield return _invokeInvocation;
 		yield return _invokeWithParameterInvocation;
 	}
-	
+
 	private sealed class Proxy : PrimitiveDependencyBase
 	{
 		private readonly PrimitiveDependencyBaseMock _mock;
@@ -79,7 +79,7 @@ public sealed class PrimitiveDependencyBaseMock : IMock<PrimitiveDependencyBase>
 		{
 			_mock = mock;
 		}
-		
+
 		public override void Invoke()
 		{
 			_mock._invokeInvocation ??= new Invocation("PrimitiveDependencyBase.Invoke()");
@@ -92,6 +92,52 @@ public sealed class PrimitiveDependencyBaseMock : IMock<PrimitiveDependencyBase>
 			_mock._invokeWithParameterInvocation ??= new Invocation<float>("PrimitiveDependencyBase.InvokeWithParameter({0})");
 			_mock._invokeWithParameterInvocation.Register(_mock._invocationIndex, parameter);
 			_mock._invokeWithParameter?.Invoke(parameter);
+		}
+	}
+}
+
+public static partial class MockExtensions
+{
+	extension(IMock<PrimitiveDependencyBase> @this)
+	{
+		// Invoke
+		public ISetup<Action> SetupInvoke() =>
+			((PrimitiveDependencyBaseMock)@this).SetupInvoke();
+
+		public void VerifyInvoke(in Times times) =>
+			((PrimitiveDependencyBaseMock)@this).VerifyInvoke(times);
+
+		public void VerifyInvoke(in Func<Times> times) =>
+			((PrimitiveDependencyBaseMock)@this).VerifyInvoke(times());
+
+		// InvokeWithParameter
+		public ISetup<Action<float>> SetupInvokeWithParameter(in It<float> parameter = default) =>
+			((PrimitiveDependencyBaseMock)@this).SetupInvokeWithParameter(parameter);
+
+		public void VerifyInvokeWithParameter(in It<float> parameter, in Times times) =>
+			((PrimitiveDependencyBaseMock)@this).VerifyInvokeWithParameter(parameter, times);
+
+		public void VerifyInvokeWithParameter(in It<float> parameter, in Func<Times> times) =>
+			((PrimitiveDependencyBaseMock)@this).VerifyInvokeWithParameter(parameter, times());
+	}
+}
+
+public static partial class MockSequenceExtensions
+{
+	extension(IMockSequence<PrimitiveDependencyBase> @this)
+	{
+		// Invoke
+		public void Invoke()
+		{
+			var nextIndex = ((PrimitiveDependencyBaseMock)@this.Mock).VerifyInvoke(@this.VerifyIndex);
+			@this.VerifyIndex.Set(nextIndex);
+		}
+
+		// InvokeWithParameter
+		public void InvokeWithParameter(in It<float> parameter)
+		{
+			var nextIndex = ((PrimitiveDependencyBaseMock)@this.Mock).VerifyInvokeWithParameter(parameter, @this.VerifyIndex);
+			@this.VerifyIndex.Set(nextIndex);
 		}
 	}
 }
