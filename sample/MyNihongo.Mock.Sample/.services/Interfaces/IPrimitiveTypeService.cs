@@ -24,6 +24,8 @@ public interface IPrimitiveTypeService : IDisposable
 
 	Task InvokeAsync();
 
+	void InvokeClass();
+
 	void InvokeWithParameter(in string parameter);
 
 	void InvokeWithParameter(in int parameter);
@@ -35,6 +37,8 @@ public interface IPrimitiveTypeService : IDisposable
 	Task InvokeWithParameterAsync(int parameter);
 
 	void InvokeWithParameterGeneric(string parameter);
+
+	void InvokeWithParameterClass(float parameter);
 
 	void InvokeWithSeveralParameters(int parameter1, int parameter2);
 
@@ -59,6 +63,8 @@ public interface IPrimitiveTypeService : IDisposable
 	ValueTask<bool> ReturnAsync();
 
 	T ReturnGeneric<T>();
+
+	int ReturnClass();
 
 	string ReturnWithParameter(in string parameter);
 
