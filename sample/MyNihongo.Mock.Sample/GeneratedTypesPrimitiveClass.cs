@@ -77,6 +77,9 @@ public static partial class MockExtensions
 
 		public void VerifyReturn(in Func<Times> times) =>
 			((PrimitiveDependencyMock)@this).VerifyReturn(times());
+		
+		public void VerifyNoOtherCalls() =>
+			((PrimitiveDependencyMock)@this).VerifyNoOtherCalls();
 	}
 }
 

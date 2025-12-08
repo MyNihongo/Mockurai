@@ -119,6 +119,9 @@ public static partial class MockExtensions
 
 		public void VerifyInvokeWithParameter(in It<float> parameter, in Func<Times> times) =>
 			((PrimitiveDependencyBaseMock)@this).VerifyInvokeWithParameter(parameter, times());
+
+		public void VerifyNoOtherCalls() =>
+			((PrimitiveDependencyBaseMock)@this).VerifyNoOtherCalls();
 	}
 }
 
