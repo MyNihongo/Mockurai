@@ -1,13 +1,14 @@
 namespace MyNihongo.Mock.Sample.PrimitiveTypeServiceTests;
 
+[MockuraiGenerate]
 public abstract partial class PrimitiveTypeServiceTestsBase
 {
 	protected partial IMock<IPrimitiveDependencyService> DependencyServiceMock { get; }
-	
+
 	protected partial IMock<IPrimitiveDependencyService<string>> DependencyGenericServiceMock { get; }
-	
+
 	protected partial IMock<PrimitiveDependency> PrimitiveDependencyMock { get; }
-	
+
 	protected partial IMock<PrimitiveDependencyBase> PrimitiveDependencyBaseMock { get; }
 
 	protected IPrimitiveTypeService CreateFixture(bool subscribeToHandler = false)

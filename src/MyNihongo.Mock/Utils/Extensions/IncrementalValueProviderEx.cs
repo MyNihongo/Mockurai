@@ -10,7 +10,7 @@ internal static class IncrementalValueProviderEx
 			.Select(static (x, _) =>
 			{
 				if (!x.GlobalOptions.TryGetValue("build_property.RootNamespace", out var rootNamespace))
-					rootNamespace = "MyNihongo.Mock";
+					rootNamespace = MockGeneratorConst.Namespace;
 
 				return new ConfigurationOptions(rootNamespace);
 			});
