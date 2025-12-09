@@ -25,14 +25,6 @@ public abstract partial class PrimitiveTypeServiceTestsBase
 
 public partial class PrimitiveTypeServiceTestsBase
 {
-	protected void VerifyNoOtherCalls()
-	{
-		_dependencyServiceMock.VerifyNoOtherCalls();
-		_dependencyGenericServiceMock.VerifyNoOtherCalls();
-		_primitiveDependencyMock.VerifyNoOtherCalls();
-		_primitiveDependencyBaseMock.VerifyNoOtherCalls();
-	}
-
 	protected sealed class VerifySequenceContext
 	{
 		private readonly VerifyIndex _verifyIndex = new();

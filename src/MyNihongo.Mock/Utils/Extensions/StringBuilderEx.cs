@@ -30,9 +30,11 @@ internal static class StringBuilderEx
 			if (string.IsNullOrEmpty(propertyName))
 				return @this;
 
+			var startIndex = propertyName[0] == '_' ? 1 : 0;
+
 			return @this
-				.Append(char.ToLower(propertyName[0]))
-				.Append(propertyName.Substring(1));
+				.Append(char.ToLower(propertyName[startIndex]))
+				.Append(propertyName.Substring(startIndex + 1));
 		}
 	}
 }

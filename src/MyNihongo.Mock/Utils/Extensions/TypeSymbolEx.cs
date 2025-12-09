@@ -4,6 +4,31 @@ namespace MyNihongo.Mock.Utils;
 
 internal static class TypeSymbolEx
 {
+	extension(ISymbol? typeSymbol)
+	{
+		public T? GetAttributeValue<T>(string attributeName, string propertyName, T defaultValue)
+		{
+			if (typeSymbol is null)
+				return defaultValue;
+
+			foreach (var attribute in typeSymbol.GetAttributes())
+			{
+				if (attribute.AttributeClass?.Name != attributeName)
+					continue;
+
+				foreach (var namedArgument in attribute.NamedArguments)
+				{
+					if (namedArgument.Key != propertyName)
+						continue;
+
+					return (T?)namedArgument.Value.Value;
+				}
+			}
+
+			return defaultValue;
+		}
+	}
+
 	extension(StringBuilder @this)
 	{
 		public StringBuilder AppendMockClassName(ITypeSymbol typeSymbol)
