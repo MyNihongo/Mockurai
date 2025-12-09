@@ -28,7 +28,15 @@ public sealed class SourceGenerator : IIncrementalGenerator
 					var namedTypeSymbol = source.Compilation
 						.TryGetNamedTypeSymbol(result?.MockContainerClass);
 
-					var a = namedTypeSymbol.CollectMocks();
+					if (namedTypeSymbol is null)
+						continue;
+
+					var mocks = namedTypeSymbol.CollectMocks();
+					if (mocks.Count == 0)
+						continue;
+
+					var sourceCode = source.GenerateMockClass(namedTypeSymbol, mocks);
+					context.AddSource($"{namedTypeSymbol.Name}.g.cs", sourceCode);
 				}
 
 				var sample =

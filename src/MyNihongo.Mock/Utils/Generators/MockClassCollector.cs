@@ -2,12 +2,9 @@
 
 internal static class MockClassCollector
 {
-	public static HashSet<ITypeSymbol>? CollectMocks(this INamedTypeSymbol? @this)
+	public static List<MockClassDeclaration> CollectMocks(this INamedTypeSymbol @this)
 	{
-		if (@this is null)
-			return null;
-
-		var output = new HashSet<ITypeSymbol>(SymbolEqualityComparer.Default);
+		var output = new List<MockClassDeclaration>();
 		foreach (var member in @this.GetMembers())
 		{
 			var mockedType = member switch
@@ -24,18 +21,24 @@ internal static class MockClassCollector
 		return output;
 	}
 
-	private static ITypeSymbol? TryGetMockedType(this IFieldSymbol @this)
+	private static MockClassDeclaration? TryGetMockedType(this IFieldSymbol @this)
 	{
 		// Here we skip backing fields for auto properties
-		return !@this.IsImplicitlyDeclared
+		var type = !@this.IsImplicitlyDeclared
 			? @this.Type.TryGetMockedType()
+			: null;
+
+		return type is not null
+			? new MockClassDeclaration(type, @this)
 			: null;
 	}
 
-	private static ITypeSymbol? TryGetMockedType(this IPropertySymbol @this)
+	private static MockClassDeclaration? TryGetMockedType(this IPropertySymbol @this)
 	{
-		return !@this.IsPartialDefinition
-			? @this.Type.TryGetMockedType()
+		var type = @this.Type.TryGetMockedType();
+
+		return type is not null
+			? new MockClassDeclaration(type, @this)
 			: null;
 	}
 
