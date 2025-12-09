@@ -25,18 +25,6 @@ public abstract partial class PrimitiveTypeServiceTestsBase
 
 public partial class PrimitiveTypeServiceTestsBase
 {
-	protected void VerifyInSequence(Action<VerifySequenceContext> verify)
-	{
-		var ctx = new VerifySequenceContext(
-			dependencyServiceMock: _dependencyServiceMock,
-			dependencyGenericServiceMock: _dependencyGenericServiceMock,
-			primitiveDependencyMock: _primitiveDependencyMock,
-			primitiveDependencyBaseMock: _primitiveDependencyBaseMock
-		);
-
-		verify(ctx);
-	}
-
 	protected void VerifyNoOtherCalls()
 	{
 		_dependencyServiceMock.VerifyNoOtherCalls();

@@ -6,7 +6,7 @@ internal static class StringBuilderEx
 {
 	extension(StringBuilder @this)
 	{
-		public StringBuilder Indent(in int times)
+		public StringBuilder Indent(int times)
 		{
 			for (var i = 0; i < times; ++i)
 				@this.Append('\t');
@@ -21,6 +21,16 @@ internal static class StringBuilderEx
 
 			return @this
 				.Append('_')
+				.Append(char.ToLower(propertyName[0]))
+				.Append(propertyName.Substring(1));
+		}
+
+		public StringBuilder AppendParameterName(string propertyName)
+		{
+			if (string.IsNullOrEmpty(propertyName))
+				return @this;
+
+			return @this
 				.Append(char.ToLower(propertyName[0]))
 				.Append(propertyName.Substring(1));
 		}

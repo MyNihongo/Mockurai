@@ -15,6 +15,8 @@ internal static class MockClassGenerator
 			  {{classSymbol.DeclaredAccessibility.GetString()}} partial class {{classSymbol.Name}}
 			  {
 			  {{CreateProperties(stringBuilder, mocks)}}
+
+			  {{CreateVerifyInSequence(stringBuilder, mocks)}}
 			  }
 			  """;
 	}
@@ -24,8 +26,9 @@ internal static class MockClassGenerator
 		const int indent = 1;
 		stringBuilder.Clear();
 
-		foreach (var mock in mocks)
+		for (int i = 0, lastIndex = mocks.Count - 1; i < mocks.Count; i++)
 		{
+			var mock = mocks[i];
 			if (mock.Property is null)
 				continue;
 
@@ -54,9 +57,48 @@ internal static class MockClassGenerator
 				.Append(propertyName)
 				.Append(" => ")
 				.AppendFieldName(propertyName)
-				.Append(';').AppendLine().AppendLine();
+				.Append(';');
+
+			if (i < lastIndex)
+				stringBuilder.AppendLine().AppendLine();
 		}
 
 		return stringBuilder.ToString();
+	}
+
+	private static string CreateVerifyInSequence(StringBuilder stringBuilder, List<MockClassDeclaration> mocks)
+	{
+		stringBuilder.Clear();
+		var indent = 1;
+
+		stringBuilder
+			.Indent(indent).AppendLine("protected void VerifyInSequence(Action<VerifySequenceContext> verify)")
+			.Indent(indent++).AppendLine("{")
+			.Indent(indent++).AppendLine("var ctx = new VerifySequenceContext(");
+
+		for (int i = 0, lastIndex = mocks.Count - 1; i < mocks.Count; i++)
+		{
+			var mock = mocks[i];
+			if (mock.Property is null)
+				continue;
+
+			var propertyName = mock.Property.Name;
+
+			stringBuilder
+				.Indent(indent)
+				.AppendParameterName(propertyName)
+				.Append(": ")
+				.AppendFieldName(propertyName);
+
+			if (i < lastIndex)
+				stringBuilder.Append(',');
+
+			stringBuilder.AppendLine();
+		}
+
+		return stringBuilder.AppendLine()
+			.Indent(--indent).AppendLine("verify(ctx);")
+			.Indent(--indent).AppendLine("}")
+			.ToString();
 	}
 }
