@@ -2,9 +2,9 @@
 
 internal static class NamedTypeSymbolEx
 {
-	public static string GetAccessibilityString(this INamedTypeSymbol @this)
+	public static string GetString(this Accessibility @this)
 	{
-		return @this.DeclaredAccessibility switch
+		return @this switch
 		{
 			Accessibility.Private => "private",
 			Accessibility.ProtectedAndInternal => "private internal",
