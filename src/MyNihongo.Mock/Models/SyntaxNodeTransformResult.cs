@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock.Models;
 
-internal readonly struct SyntaxNodeTransformResult(FieldDeclarationSyntax? fieldDeclarationSyntax)
+internal readonly struct SyntaxNodeTransformResult(ClassDeclarationSyntax? mockContainerClass)
 {
-	public readonly FieldDeclarationSyntax? FieldDeclarationSyntax = fieldDeclarationSyntax;
+	public readonly ClassDeclarationSyntax? MockContainerClass = mockContainerClass;
 }
