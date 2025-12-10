@@ -4,7 +4,7 @@ namespace MyNihongo.Mock.Utils;
 
 internal static class MockClassGenerator
 {
-	public static string GenerateMockClass(this CompilationCombinedResult @this, INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks)
+	public static string GenerateMockClass(this INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks)
 	{
 		var stringBuilder = new StringBuilder();
 		const int indent = 1;
