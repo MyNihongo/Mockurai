@@ -22,39 +22,3 @@ public abstract partial class PrimitiveTypeServiceTestsBase
 		);
 	}
 }
-
-public partial class PrimitiveTypeServiceTestsBase
-{
-	protected sealed class VerifySequenceContext
-	{
-		private readonly VerifyIndex _verifyIndex = new();
-		public readonly IMockSequence<IPrimitiveDependencyService> DependencyServiceMock;
-		public readonly IMockSequence<IPrimitiveDependencyService<string>> DependencyGenericServiceMock;
-		public readonly IMockSequence<PrimitiveDependency> PrimitiveDependencyMock;
-		public readonly IMockSequence<PrimitiveDependencyBase> PrimitiveDependencyBaseMock;
-
-		public VerifySequenceContext(in PrimitiveDependencyServiceMock dependencyServiceMock, in PrimitiveDependencyServiceMock<string> dependencyGenericServiceMock, in PrimitiveDependencyMock primitiveDependencyMock, in PrimitiveDependencyBaseMock primitiveDependencyBaseMock)
-		{
-			DependencyServiceMock = new MockSequence<IPrimitiveDependencyService>
-			{
-				VerifyIndex = _verifyIndex,
-				Mock = dependencyServiceMock,
-			};
-			DependencyGenericServiceMock = new MockSequence<IPrimitiveDependencyService<string>>
-			{
-				VerifyIndex = _verifyIndex,
-				Mock = dependencyGenericServiceMock,
-			};
-			PrimitiveDependencyMock = new MockSequence<PrimitiveDependency>
-			{
-				VerifyIndex = _verifyIndex,
-				Mock = primitiveDependencyMock,
-			};
-			PrimitiveDependencyBaseMock = new MockSequence<PrimitiveDependencyBase>
-			{
-				VerifyIndex = _verifyIndex,
-				Mock = primitiveDependencyBaseMock,
-			};
-		}
-	}
-}

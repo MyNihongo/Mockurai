@@ -126,8 +126,9 @@ internal static class MockClassGenerator
 			stringBuilder.AppendLine();
 		}
 
-		return stringBuilder.AppendLine()
-			.Indent(--indent).AppendLine("verify(ctx);")
+		return stringBuilder
+			.Indent(--indent).AppendLine(");").AppendLine()
+			.Indent(indent).AppendLine("verify(ctx);")
 			.Indent(--indent).AppendLine("}")
 			.ToString();
 	}
@@ -141,9 +142,10 @@ internal static class MockClassGenerator
 			.Indent(indent++).AppendLine("{")
 			.Indent(indent).AppendLine("private readonly VerifyIndex _verifyIndex = new();");
 
+		// Generate properties
 		foreach (var mock in mocks)
 		{
-			var symbolName = ((ISymbol?)mock.Property ?? mock.Field)?.Name;
+			var symbolName = mock.PropertyOrField?.Name;
 
 			stringBuilder
 				.Indent(indent)
@@ -153,6 +155,70 @@ internal static class MockClassGenerator
 				.AppendPropertyName(symbolName)
 				.AppendLine(";");
 		}
+
+		// Generate constructor
+		stringBuilder
+			.AppendLine()
+			.Indent(indent).Append("public VerifySequenceContext(");
+
+		for (int i = 0, lastIndex = mocks.Count - 1; i < mocks.Count; i++)
+		{
+			var mock = mocks[i];
+
+			if (mock.Property is not null)
+			{
+				stringBuilder
+					.Append(mock.Property.Type)
+					.Append(' ')
+					.AppendParameterName(mock.Property.Name);
+			}
+			else if (mock.Field is not null)
+			{
+				stringBuilder
+					.Append(mock.Field.Type)
+					.Append(' ')
+					.AppendParameterName(mock.Field.Name);
+			}
+
+			if (i < lastIndex)
+				stringBuilder.Append(", ");
+		}
+
+		stringBuilder
+			.AppendLine(")")
+			.Indent(indent++)
+			.AppendLine("{");
+
+		foreach (var mock in mocks)
+		{
+			var symbolName = mock.PropertyOrField?.Name;
+
+			stringBuilder
+				.Indent(indent)
+				.AppendPropertyName(symbolName)
+				.Append(" = new MockSequence<")
+				.Append(mock.Type)
+				.AppendLine(">");
+
+			stringBuilder
+				.Indent(indent++)
+				.AppendLine("{");
+
+			stringBuilder
+				.Indent(indent)
+				.AppendLine("VerifyIndex = _verifyIndex,")
+				.Indent(indent)
+				.Append("Mock = ").AppendParameterName(symbolName)
+				.AppendLine(",");
+
+			stringBuilder
+				.Indent(--indent)
+				.AppendLine("};");
+		}
+
+		stringBuilder
+			.Indent(--indent)
+			.AppendLine("}");
 
 		return stringBuilder
 			.Indent(--indent).Append('}')
