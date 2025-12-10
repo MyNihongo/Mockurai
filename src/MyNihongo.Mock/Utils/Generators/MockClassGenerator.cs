@@ -7,6 +7,7 @@ internal static class MockClassGenerator
 	public static string GenerateMockClass(this CompilationCombinedResult @this, INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks)
 	{
 		var stringBuilder = new StringBuilder();
+		const int indent = 1;
 
 		return
 			$$"""
@@ -14,16 +15,16 @@ internal static class MockClassGenerator
 
 			  {{classSymbol.DeclaredAccessibility.GetString()}} partial class {{classSymbol.Name}}
 			  {
-			  {{CreateProperties(stringBuilder, mocks)}}
-			  {{CreateVerifyNoOtherCalls(stringBuilder, mocks)}}
-			  {{CreateVerifyInSequence(stringBuilder, mocks)}}
+			  {{CreateProperties(stringBuilder, mocks, indent)}}
+			  {{CreateVerifyNoOtherCalls(stringBuilder, mocks, indent)}}
+			  {{CreateVerifyInSequence(stringBuilder, mocks, indent)}}
+			  {{CreateVerifySequenceContext(stringBuilder, mocks, indent)}}
 			  }
 			  """;
 	}
 
-	private static string CreateProperties(StringBuilder stringBuilder, List<MockClassDeclaration> mocks)
+	private static string CreateProperties(StringBuilder stringBuilder, List<MockClassDeclaration> mocks, int indent)
 	{
-		const int indent = 1;
 		stringBuilder.Clear();
 
 		for (int i = 0, lastIndex = mocks.Count - 1; i < mocks.Count; i++)
@@ -68,10 +69,41 @@ internal static class MockClassGenerator
 			.ToString();
 	}
 
-	private static string CreateVerifyInSequence(StringBuilder stringBuilder, List<MockClassDeclaration> mocks)
+	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, List<MockClassDeclaration> mocks, int indent)
 	{
 		stringBuilder.Clear();
-		var indent = 1;
+
+		stringBuilder
+			.Indent(indent).AppendLine("protected void VerifyNoOtherCalls()")
+			.Indent(indent++).AppendLine("{");
+
+		foreach (var mock in mocks)
+		{
+			var symbol = mock.PropertyOrField;
+
+			var skipVerifyNoOtherCalls = symbol.GetAttributeValue(
+				MockGeneratorConst.BehavriorAttribute,
+				MockGeneratorConst.SkipVerifyNoOtherCallsPropertyName,
+				defaultValue: false
+			);
+
+			if (skipVerifyNoOtherCalls)
+				continue;
+
+			stringBuilder
+				.Indent(indent)
+				.AppendFieldName(symbol?.Name)
+				.AppendLine(".VerifyNoOtherCalls();");
+		}
+
+		return stringBuilder
+			.Indent(--indent).AppendLine("}")
+			.ToString();
+	}
+
+	private static string CreateVerifyInSequence(StringBuilder stringBuilder, List<MockClassDeclaration> mocks, int indent)
+	{
+		stringBuilder.Clear();
 
 		stringBuilder
 			.Indent(indent).AppendLine("protected void VerifyInSequence(Action<VerifySequenceContext> verify)")
@@ -80,25 +112,13 @@ internal static class MockClassGenerator
 
 		for (int i = 0, lastIndex = mocks.Count - 1; i < mocks.Count; i++)
 		{
-			var mock = mocks[i];
-			stringBuilder.Indent(indent);
+			var symbolName = mocks[i].PropertyOrField?.Name;
 
-			if (mock.Property is not null)
-			{
-				var propertyName = mock.Property.Name;
-				stringBuilder
-					.AppendParameterName(propertyName)
-					.Append(": ")
-					.AppendFieldName(propertyName);
-			}
-			else if (mock.Field is not null)
-			{
-				var fieldName = mock.Field.Name;
-				stringBuilder
-					.AppendParameterName(fieldName)
-					.Append(": ")
-					.Append(fieldName);
-			}
+			stringBuilder
+				.Indent(indent)
+				.AppendParameterName(symbolName)
+				.Append(": ")
+				.AppendFieldName(symbolName);
 
 			if (i < lastIndex)
 				stringBuilder.Append(',');
@@ -112,38 +132,30 @@ internal static class MockClassGenerator
 			.ToString();
 	}
 
-	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, List<MockClassDeclaration> mocks)
+	private static string CreateVerifySequenceContext(StringBuilder stringBuilder, List<MockClassDeclaration> mocks, int indent)
 	{
 		stringBuilder.Clear();
-		var indent = 1;
 
 		stringBuilder
-			.Indent(indent).AppendLine("protected void VerifyNoOtherCalls()")
-			.Indent(indent++).AppendLine("{");
+			.Indent(indent).AppendLine("protected sealed class VerifySequenceContext")
+			.Indent(indent++).AppendLine("{")
+			.Indent(indent).AppendLine("private readonly VerifyIndex _verifyIndex = new();");
 
 		foreach (var mock in mocks)
 		{
-			var skipVerifyNoOtherCalls = ((ISymbol?)mock.Property ?? mock.Field)
-				.GetAttributeValue(MockGeneratorConst.BehavriorAttribute, MockGeneratorConst.SkipVerifyNoOtherCallsPropertyName, false);
+			var symbolName = ((ISymbol?)mock.Property ?? mock.Field)?.Name;
 
-			if (skipVerifyNoOtherCalls)
-				continue;
-
-			stringBuilder.Indent(indent);
-			if (mock.Property is not null)
-			{
-				stringBuilder.AppendFieldName(mock.Property.Name);
-			}
-			else if (mock.Field is not null)
-			{
-				stringBuilder.AppendFieldName(mock.Field.Name);
-			}
-
-			stringBuilder.AppendLine(".VerifyNoOtherCalls();");
+			stringBuilder
+				.Indent(indent)
+				.Append("public readonly IMockSequence<")
+				.Append(mock.Type)
+				.Append("> ")
+				.AppendPropertyName(symbolName)
+				.AppendLine(";");
 		}
 
 		return stringBuilder
-			.Indent(--indent).AppendLine("}")
+			.Indent(--indent).Append('}')
 			.ToString();
 	}
 }

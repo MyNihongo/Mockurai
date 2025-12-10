@@ -14,27 +14,59 @@ internal static class StringBuilderEx
 			return @this;
 		}
 
-		public StringBuilder AppendFieldName(string propertyName)
+		public StringBuilder AppendFieldName(string? name)
 		{
-			if (string.IsNullOrEmpty(propertyName))
+			if (string.IsNullOrEmpty(name))
 				return @this;
 
-			return @this
+			if (name![0] == '_')
+				return @this.Append(name);
+
+			@this
 				.Append('_')
-				.Append(char.ToLower(propertyName[0]))
-				.Append(propertyName.Substring(1));
+				.Append(char.ToLower(name[0]));
+
+			return name.Length > 1
+				? @this.Append(name.Substring(1))
+				: @this;
 		}
 
-		public StringBuilder AppendParameterName(string propertyName)
+		public StringBuilder AppendParameterName(string? name)
 		{
-			if (string.IsNullOrEmpty(propertyName))
+			if (string.IsNullOrEmpty(name))
 				return @this;
 
-			var startIndex = propertyName[0] == '_' ? 1 : 0;
+			var startIndex = 0;
+			if (name![startIndex] == '_')
+			{
+				if (name.Length <= ++startIndex)
+					return @this;
+			}
 
-			return @this
-				.Append(char.ToLower(propertyName[startIndex]))
-				.Append(propertyName.Substring(startIndex + 1));
+			@this.Append(char.ToLower(name[startIndex]));
+
+			return startIndex + 1 < name.Length
+				? @this.Append(name.Substring(startIndex + 1))
+				: @this;
+		}
+
+		public StringBuilder AppendPropertyName(string? name)
+		{
+			if (string.IsNullOrEmpty(name))
+				return @this;
+
+			var startIndex = 0;
+			if (name![startIndex] == '_')
+			{
+				if (name.Length <= ++startIndex)
+					return @this;
+			}
+
+			@this.Append(char.ToUpper(name[startIndex]));
+
+			return startIndex + 1 < name.Length
+				? @this.Append(name.Substring(startIndex + 1))
+				: @this;
 		}
 	}
 }

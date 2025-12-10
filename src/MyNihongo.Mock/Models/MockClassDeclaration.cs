@@ -18,6 +18,8 @@ public sealed class MockClassDeclaration
 		Property = property;
 	}
 
+	public ISymbol? PropertyOrField => (ISymbol?)Property ?? Field;
+
 	public override string ToString()
 	{
 		if (Field is not null)
