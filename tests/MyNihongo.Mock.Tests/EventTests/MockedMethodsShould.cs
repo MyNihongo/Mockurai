@@ -1,7 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Testing;
-using Microsoft.CodeAnalysis.Testing;
-
-namespace MyNihongo.Mock.Tests.EventTests;
+﻿namespace MyNihongo.Mock.Tests.EventTests;
 
 public sealed class MockedMethodsShould : EventTestsBase
 {
@@ -145,45 +142,23 @@ public sealed class MockedMethodsShould : EventTestsBase
 			}
 			""";
 
-		var ctx = new CSharpSourceGeneratorTest<SourceGenerator, DefaultVerifier>
-		{
-			ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
-			TestBehaviors = TestBehaviors.SkipGeneratedCodeCheck | TestBehaviors.SkipSuppressionCheck | TestBehaviors.SkipGeneratedSourcesCheck,
-			TestCode =
-				"""
-				namespace MyNihongo.Mock.Tests;
+		var testCode =
+			"""
+			namespace MyNihongo.Mock.Tests;
 
-				public interface IInterface
-				{
-					event System.EventHandler<string>? HandlerEvent;
-				}
-
-				[MockuraiGenerate]
-				public abstract partial class TestsBase
-				{
-					protected partial IMock<IInterface> InterfaceMock { get; }
-				}
-				""",
-			TestState =
+			public interface IInterface
 			{
-				AdditionalReferences = { typeof(MockuraiGenerateAttribute).Assembly },
-				GeneratedSources =
-				{
-					(typeof(SourceGenerator), "TestsBase.g.cs", expected1),
-					(typeof(SourceGenerator), "InterfaceMock.g.cs", expected2),
-					(typeof(SourceGenerator), "_Usings.g.cs", "global using MyNihongo.Mock;"),
-				},
-			},
-		};
+				event System.EventHandler<string>? HandlerEvent;
+			}
 
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<IInterface> InterfaceMock { get; }
+			}
+			""";
+
+		var ctx = CreateFixture(testCode, [("TestsBase.g.cs", expected1), ("InterfaceMock.g.cs", expected2)]);
 		await ctx.RunAsync();
 	}
 }
-
-// public sealed class Fuck : CSharpSourceGeneratorTest<SourceGenerator, DefaultVerifier>
-// {
-// 	public Fuck()
-// 	{
-// 		this.VerifyDiagnosticsAsync()
-// 	}
-// }
