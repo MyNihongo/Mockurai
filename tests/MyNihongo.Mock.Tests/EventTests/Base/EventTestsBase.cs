@@ -7,9 +7,6 @@ public abstract class EventTestsBase : TestsBase
 		return
 			$$"""
 			  namespace MyNihongo.Mock.Tests;
-			  
-			  public delegate void SampleHandler1(object sender, int value);
-			  public delegate void SampleHandler2<T1, T2>(object sender, T2 value);
 
 			  public interface IInterface
 			  {
@@ -24,7 +21,7 @@ public abstract class EventTestsBase : TestsBase
 			  """;
 	}
 
-	protected static GeneratedSources CreateGeneratedSources(string expected)
+	protected static GeneratedSources CreateGeneratedSources(string methods)
 	{
 		const string testsBase =
 			"""
@@ -67,10 +64,75 @@ public abstract class EventTestsBase : TestsBase
 			}
 			""";
 
+		var mock =
+			$$"""
+			  namespace MyNihongo.Mock;
+
+			  public sealed class InterfaceMock : IMock<MyNihongo.Mock.Tests.IInterface>
+			  {
+			  	private readonly InvocationIndex.Counter _invocationIndex;
+			  	private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
+			  	private Proxy? _proxy;
+
+			  	public InterfaceMock(InvocationIndex.Counter invocationIndex)
+			  	{
+			  		_invocationIndex = invocationIndex;
+			  		_invocationProviders = GetInvocations;
+			  	}
+
+			  	public MyNihongo.Mock.Tests.IInterface Object => _proxy ??= new Proxy(this);
+
+			  	// HandlerEvent
+			  {{methods.Indent(1)}}
+
+			  	public void VerifyNoOtherCalls()
+			  	{
+
+			  	}
+
+			  	private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
+			  	{
+			  		yield break;
+			  	}
+
+			  	private sealed class Proxy : MyNihongo.Mock.Tests.IInterface
+			  	{
+			  		private readonly InterfaceMock _mock;
+
+			  		public Proxy(InterfaceMock mock)
+			  		{
+			  			_mock = mock;
+			  		}
+
+			  		public event System.EventHandler<string>? HandlerEvent;
+
+			  	}
+			  }
+
+			  public static partial class MockExtensions
+			  {
+			  	extension(IMock<MyNihongo.Mock.Tests.IInterface> @this)
+			  	{
+			  		public void VerifyNoOtherCalls() =>
+			  			((InterfaceMock)@this).VerifyNoOtherCalls();
+
+			  		
+			  	}
+			  }
+
+			  public static partial class MockSequenceExtensions
+			  {
+			  	extension(IMockSequence<MyNihongo.Mock.Tests.IInterface> @this)
+			  	{
+			  	
+			  	}
+			  }
+			  """;
+
 		return
 		[
 			("TestsBase.g.cs", testsBase),
-			("InterfaceMock.g.cs", expected),
+			("InterfaceMock.g.cs", mock),
 		];
 	}
 }
