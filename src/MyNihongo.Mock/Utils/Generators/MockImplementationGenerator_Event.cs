@@ -65,6 +65,7 @@ internal static class MockImplementationEventGenerator
 
 		stringBuilder
 			.AppendVerifyMethods(mockedTypeSymbol, member, type: "add", eventTypeString, indent)
+			.AppendLine()
 			.AppendVerifyMethods(mockedTypeSymbol, member, type: "remove", eventTypeString, indent);
 	}
 
@@ -111,7 +112,7 @@ internal static class MockImplementationEventGenerator
 				.AppendFieldName(member.MemberName)
 				.AppendPropertyName(type)
 				.AppendLine("Invocation.Verify(handler, index, _invocationProviders);")
-				.Indent(--indent).AppendLine("}");
+				.Indent(--indent).Append('}');
 		}
 
 		private StringBuilder AppendInvocationDeclaration(ITypeSymbol mockedTypeSymbol, MemberSymbol member, string type, string eventTypeString)

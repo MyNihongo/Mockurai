@@ -33,12 +33,12 @@ internal static class MockImplementationGenerator
 
 			  	public void VerifyNoOtherCalls()
 			  	{
-			  	{{CreateVerifyNoOtherCalls(stringBuilder, mockableMembers, indent: 2)}}
+			  {{CreateVerifyNoOtherCalls(stringBuilder, mockableMembers, indent: 2)}}
 			  	}
 
 			  	private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
 			  	{
-			  	{{CreateGetInvocations(stringBuilder, mockableMembers, indent: 2)}}
+			  {{CreateGetInvocations(stringBuilder, mockableMembers, indent: 2)}}
 			  	}
 
 			  	private sealed class Proxy : {{typeString}}

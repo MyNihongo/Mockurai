@@ -5,47 +5,6 @@ public sealed class MockedMethodsShould : EventTestsBase
 	[Fact]
 	public async Task GenerateNonGenericEvent()
 	{
-		var expected1 =
-			"""
-			namespace MyNihongo.Mock.Tests;
-
-			public partial class TestsBase
-			{
-				// InterfaceMock
-				private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-				protected partial MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.IInterface> InterfaceMock => _interfaceMock;
-
-				protected void VerifyNoOtherCalls()
-				{
-					_interfaceMock.VerifyNoOtherCalls();
-				}
-
-				protected void VerifyInSequence(Action<VerifySequenceContext> verify)
-				{
-					var ctx = new VerifySequenceContext(
-						interfaceMock: _interfaceMock
-					);
-
-					verify(ctx);
-				}
-
-				protected sealed class VerifySequenceContext
-				{
-					private readonly VerifyIndex _verifyIndex = new();
-					public readonly IMockSequence<MyNihongo.Mock.Tests.IInterface> InterfaceMock;
-
-					public VerifySequenceContext(MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.IInterface> interfaceMock)
-					{
-						InterfaceMock = new MockSequence<MyNihongo.Mock.Tests.IInterface>
-						{
-							VerifyIndex = _verifyIndex,
-							Mock = interfaceMock,
-						};
-					}
-				}
-			}
-			""";
-
 		var expected2 =
 			"""
 			namespace MyNihongo.Mock;
@@ -53,7 +12,7 @@ public sealed class MockedMethodsShould : EventTestsBase
 			public sealed class InterfaceMock : IMock<MyNihongo.Mock.Tests.IInterface>
 			{
 				private readonly InvocationIndex.Counter _invocationIndex;
-				private readonly Func<IEnumerable<IInvocationProvider?>> _invocationProviders;
+				private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
 				private Proxy? _proxy;
 
 				public InterfaceMock(InvocationIndex.Counter invocationIndex)
@@ -62,7 +21,7 @@ public sealed class MockedMethodsShould : EventTestsBase
 					_invocationProviders = GetInvocations;
 				}
 
-				public IPrimitiveDependencyService Object => _proxy ??= new Proxy(this);
+				public MyNihongo.Mock.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
 				// HandlerEvent
 				private System.EventHandler<string>? _handlerEvent0;
@@ -98,15 +57,14 @@ public sealed class MockedMethodsShould : EventTestsBase
 					return _handlerEvent0RemoveInvocation.Verify(handler, index, _invocationProviders);
 				}
 
-
 				public void VerifyNoOtherCalls()
 				{
-				
+			
 				}
 
-				private IEnumerable<IInvocationProvider?> GetInvocations()
+				private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
 				{
-				
+					yield break;
 				}
 
 				private sealed class Proxy : MyNihongo.Mock.Tests.IInterface
@@ -118,6 +76,7 @@ public sealed class MockedMethodsShould : EventTestsBase
 						_mock = mock;
 					}
 
+					public event System.EventHandler<string>? HandlerEvent;
 
 				}
 			}
@@ -143,8 +102,9 @@ public sealed class MockedMethodsShould : EventTestsBase
 			""";
 
 		var testCode = CreateTestCode("event System.EventHandler<string>? HandlerEvent;");
+		var generatedSources = CreateGeneratedSources(expected2);
 
-		var ctx = CreateFixture(testCode, [("TestsBase.g.cs", expected1), ("InterfaceMock.g.cs", expected2)]);
+		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
 	}
 }
