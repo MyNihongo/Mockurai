@@ -106,7 +106,7 @@ internal static class MockClassGenerator
 		stringBuilder.Clear();
 
 		stringBuilder
-			.Indent(indent).AppendLine("protected void VerifyInSequence(Action<VerifySequenceContext> verify)")
+			.Indent(indent).AppendLine("protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)")
 			.Indent(indent++).AppendLine("{")
 			.Indent(indent++).AppendLine("var ctx = new VerifySequenceContext(");
 

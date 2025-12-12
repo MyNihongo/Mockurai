@@ -42,8 +42,8 @@ public sealed class SourceGenerator : IIncrementalGenerator
 
 				foreach (var mockType in mockTypes)
 				{
-					var sourceCode = mockType.GenerateMockImplementation(source);
-					var a = "";
+					var sourceCodeResult = mockType.GenerateMockImplementation(source);
+					context.AddSource($"{sourceCodeResult.Name}.g.cs", sourceCodeResult.Source);
 				}
 
 				const string globalUsings = $"global using {MockGeneratorConst.Namespace};";

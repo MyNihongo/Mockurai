@@ -4,21 +4,21 @@ namespace MyNihongo.Mock.Utils;
 
 internal static class MockImplementationGenerator
 {
-	public static string GenerateMockImplementation(this ITypeSymbol typeSymbol, CompilationCombinedResult result)
+	public static MockImplementationResult GenerateMockImplementation(this ITypeSymbol typeSymbol, CompilationCombinedResult result)
 	{
 		var stringBuilder = new StringBuilder();
 		var typeString = typeSymbol.ToString();
 		var mockClassName = CreateMockClassName(stringBuilder, typeSymbol);
 		var mockableMembers = GetMockableMembers(typeSymbol);
 
-		return
+		var source =
 			$$"""
 			  namespace {{result.Options.RootNamespace}};
 
 			  public sealed class {{mockClassName}} : IMock<{{typeString}}>
 			  {
 			  	private readonly InvocationIndex.Counter _invocationIndex;
-			  	private readonly Func<IEnumerable<IInvocationProvider?>> _invocationProviders;
+			  	private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
 			  	private Proxy? _proxy;
 
 			  	public {{mockClassName}}(InvocationIndex.Counter invocationIndex)
@@ -27,7 +27,7 @@ internal static class MockImplementationGenerator
 			  		_invocationProviders = GetInvocations;
 			  	}
 
-			  	public IPrimitiveDependencyService Object => _proxy ??= new Proxy(this);
+			  	public {{typeString}} Object => _proxy ??= new Proxy(this);
 
 			  {{CreateMockMethods(stringBuilder, typeSymbol, mockableMembers, indent: 1)}}
 
@@ -36,7 +36,7 @@ internal static class MockImplementationGenerator
 			  	{{CreateVerifyNoOtherCalls(stringBuilder, mockableMembers, indent: 2)}}
 			  	}
 
-			  	private IEnumerable<IInvocationProvider?> GetInvocations()
+			  	private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
 			  	{
 			  	{{CreateGetInvocations(stringBuilder, mockableMembers, indent: 2)}}
 			  	}
@@ -73,6 +73,11 @@ internal static class MockImplementationGenerator
 			  	}
 			  }
 			  """;
+
+		return new MockImplementationResult(
+			name: mockClassName,
+			source: source
+		);
 	}
 
 	private static string CreateMockClassName(StringBuilder stringBuilder, ITypeSymbol typeSymbol)
@@ -142,12 +147,33 @@ internal static class MockImplementationGenerator
 			return stringBuilder.ToString();
 		}
 
-		return stringBuilder.ToString();
+		// TODO: implement
+		return stringBuilder
+			.Indent(indent)
+			.Append("yield break;")
+			.ToString();
 	}
 
 	private static string CreateProxyMethods(StringBuilder stringBuilder, IReadOnlyList<MemberSymbol> members, int indent)
 	{
 		stringBuilder.Clear();
+
+		// TODO: implement
+		foreach (var member in members)
+		{
+			switch (member.Symbol.Kind)
+			{
+				case SymbolKind.Event:
+					stringBuilder.Indent(indent)
+						.Append("public event ")
+						.Append(((IEventSymbol)member.Symbol).Type)
+						.Append(' ')
+						.Append(member.Symbol.Name)
+						.AppendLine(";");
+					break;
+			}
+		}
+
 		return stringBuilder.ToString();
 	}
 
