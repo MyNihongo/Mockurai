@@ -46,7 +46,7 @@ public sealed class SourceGenerator : IIncrementalGenerator
 					var a = "";
 				}
 
-				var globalUsings = $"global using {source.Options.RootNamespace};";
+				const string globalUsings = $"global using {MockGeneratorConst.Namespace};";
 				context.AddSource("_Usings.g.cs", globalUsings);
 			});
 	}

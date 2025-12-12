@@ -106,7 +106,7 @@ internal static class MockImplementationGenerator
 			var member = members[i];
 			Action<StringBuilder, MemberSymbol, int>? handler = member.Symbol.Kind switch
 			{
-				SymbolKind.Event => AppendEventMockMethod,
+				SymbolKind.Event => MockImplementationEventGenerator.AppendEventMockMethod,
 				_ => null,
 			};
 
@@ -121,64 +121,6 @@ internal static class MockImplementationGenerator
 		}
 
 		return stringBuilder.ToString();
-	}
-
-	private static void AppendEventMockMethod(StringBuilder stringBuilder, MemberSymbol member, int indent)
-	{
-		var eventSymbol = (IEventSymbol)member.Symbol;
-		var eventTypeString = eventSymbol.Type.ToString();
-		var parameterSymbol = eventSymbol.GetDelegateParameter();
-
-		stringBuilder
-			.Indent(indent)
-			.Append("// ")
-			.AppendLine(member.Symbol.Name);
-
-		// Fields
-		stringBuilder
-			.Indent(indent)
-			.Append("private ")
-			.Append(eventTypeString)
-			.Append(' ')
-			.AppendFieldName(member.MemberName)
-			.AppendLine(";");
-
-		stringBuilder
-			.Indent(indent)
-			.Append("private Invocation<")
-			.Append(eventTypeString)
-			.Append(">? ")
-			.AppendFieldName(member.MemberName)
-			.AppendLine("AddInvocation;");
-
-		stringBuilder
-			.Indent(indent)
-			.Append("private Invocation<")
-			.Append(eventTypeString)
-			.Append(">? ")
-			.AppendFieldName(member.MemberName)
-			.AppendLine("RemoveInvocation;");
-
-		// Raise method
-		stringBuilder
-			.AppendLine()
-			.Indent(indent)
-			.Append("public void Raise")
-			.AppendPropertyName(member.Symbol.Name)
-			.Append('(')
-			.AppendParameter(parameterSymbol)
-			.AppendLine(")");
-
-		stringBuilder
-			.Indent(indent++).AppendLine("{")
-			.Indent(indent)
-			.AppendFieldName(member.MemberName)
-			.Append("?.Invoke(Object, ")
-			.Append(parameterSymbol?.Name)
-			.AppendLine(");");
-
-		stringBuilder
-			.Indent(--indent).AppendLine("}");
 	}
 
 	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, IReadOnlyList<MemberSymbol> members, int indent)
@@ -219,11 +161,5 @@ internal static class MockImplementationGenerator
 	{
 		stringBuilder.Clear();
 		return stringBuilder.ToString();
-	}
-
-	private sealed class MemberSymbol(string name, ISymbol symbol)
-	{
-		public readonly string MemberName = name;
-		public readonly ISymbol Symbol = symbol;
 	}
 }
