@@ -43,11 +43,11 @@ public sealed class SourceGenerator : IIncrementalGenerator
 				foreach (var mockType in mockTypes)
 				{
 					var sourceCodeResult = mockType.GenerateMockImplementation(source);
-					context.AddSource($"{sourceCodeResult.Name}.g.cs", sourceCodeResult.Source);
+					context.AddSanitisedSource($"{sourceCodeResult.Name}.g.cs", sourceCodeResult.Source);
 				}
 
 				const string globalUsings = $"global using {MockGeneratorConst.Namespace};";
-				context.AddSource("_Usings.g.cs", globalUsings);
+				context.AddSanitisedSource("_Usings.g.cs", globalUsings);
 			});
 	}
 

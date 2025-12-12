@@ -40,7 +40,7 @@ internal static class TypeSymbolEx
 
 	extension(StringBuilder @this)
 	{
-		public StringBuilder AppendMockClassName(ITypeSymbol typeSymbol)
+		public StringBuilder AppendMockClassName(ITypeSymbol typeSymbol, bool appendGenericTypes = true)
 		{
 			var name = typeSymbol.Name;
 			if (name.Length > 0 && name[0] == 'I')
@@ -50,6 +50,13 @@ internal static class TypeSymbolEx
 
 			@this.Append("Mock");
 
+			return appendGenericTypes
+				? @this.AppendGenericTypes(typeSymbol)
+				: @this;
+		}
+
+		public StringBuilder AppendGenericTypes(ITypeSymbol typeSymbol)
+		{
 			if (typeSymbol is INamedTypeSymbol { TypeArguments.Length: > 0 } namedTypeSymbol)
 			{
 				@this.Append('<');

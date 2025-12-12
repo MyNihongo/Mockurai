@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using MockClassName = (string Constructor, string Type, string GenericTypes);
 
 namespace MyNihongo.Mock.Utils;
 
@@ -8,7 +9,7 @@ internal static class MockImplementationGenerator
 	{
 		var stringBuilder = new StringBuilder();
 		var typeString = typeSymbol.ToString();
-		var mockClassName = CreateMockClassName(stringBuilder, typeSymbol);
+		var (constructor, mockClassName, genericTypes) = CreateMockClassName(stringBuilder, typeSymbol);
 		var mockableMembers = GetMockableMembers(typeSymbol);
 
 		var source =
@@ -21,7 +22,7 @@ internal static class MockImplementationGenerator
 			  	private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
 			  	private Proxy? _proxy;
 
-			  	public {{mockClassName}}(InvocationIndex.Counter invocationIndex)
+			  	public {{constructor}}(InvocationIndex.Counter invocationIndex)
 			  	{
 			  		_invocationIndex = invocationIndex;
 			  		_invocationProviders = GetInvocations;
@@ -56,7 +57,7 @@ internal static class MockImplementationGenerator
 
 			  public static partial class MockExtensions
 			  {
-			  	extension(IMock<{{typeString}}> @this)
+			  	extension{{genericTypes}}(IMock<{{typeString}}> @this)
 			  	{
 			  		public void VerifyNoOtherCalls() =>
 			  			(({{mockClassName}})@this).VerifyNoOtherCalls();
@@ -67,7 +68,7 @@ internal static class MockImplementationGenerator
 
 			  public static partial class MockSequenceExtensions
 			  {
-			  	extension(IMockSequence<{{typeString}}> @this)
+			  	extension{{genericTypes}}(IMockSequence<{{typeString}}> @this)
 			  	{
 			  	{{CreateMockSequenceExtensions(stringBuilder, mockableMembers, indent: 2)}}
 			  	}
@@ -80,12 +81,20 @@ internal static class MockImplementationGenerator
 		);
 	}
 
-	private static string CreateMockClassName(StringBuilder stringBuilder, ITypeSymbol typeSymbol)
+	private static MockClassName CreateMockClassName(StringBuilder stringBuilder, ITypeSymbol typeSymbol)
 	{
 		stringBuilder.Clear();
-		stringBuilder.AppendMockClassName(typeSymbol);
+		stringBuilder.AppendMockClassName(typeSymbol, appendGenericTypes: false);
+		var constructorName = stringBuilder.ToString();
 
-		return stringBuilder.ToString();
+		stringBuilder.Clear();
+		stringBuilder.AppendGenericTypes(typeSymbol);
+
+		if (stringBuilder.Length == 0)
+			return (constructorName, constructorName, string.Empty);
+
+		var genericTypes = stringBuilder.ToString();
+		return (constructorName, constructorName + genericTypes, genericTypes);
 	}
 
 	private static IReadOnlyList<MemberSymbol> GetMockableMembers(ITypeSymbol typeSymbol)

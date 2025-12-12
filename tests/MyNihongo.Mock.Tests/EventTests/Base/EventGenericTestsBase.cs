@@ -1,6 +1,6 @@
-﻿namespace MyNihongo.Mock.Tests.EventTests;
+namespace MyNihongo.Mock.Tests.EventTests;
 
-public abstract class EventTestsBase : TestsBase
+public abstract class EventGenericTestsBase : TestsBase
 {
 	protected static string CreateTestCode(string @event)
 	{
@@ -12,7 +12,7 @@ public abstract class EventTestsBase : TestsBase
 			  public delegate void SampleHandler2<T>(object sender, T value);
 			  public delegate void SampleHandler3<T1, T2>(object sender, T2 value);
 
-			  public interface IInterface
+			  public interface IInterface<T>
 			  {
 			  	{{@event}}
 			  }
@@ -20,11 +20,11 @@ public abstract class EventTestsBase : TestsBase
 			  [MockuraiGenerate]
 			  public abstract partial class TestsBase
 			  {
-			  	protected partial IMock<IInterface> InterfaceMock { get; }
+			  	protected partial IMock<IInterface<string>> InterfaceMock { get; }
 			  }
 			  """;
 	}
-
+	
 	protected static GeneratedSources CreateGeneratedSources(string methods, string @event)
 	{
 		const string testsBase =
@@ -34,8 +34,8 @@ public abstract class EventTestsBase : TestsBase
 			public partial class TestsBase
 			{
 				// InterfaceMock
-				private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-				protected partial MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.IInterface> InterfaceMock => _interfaceMock;
+				private readonly InterfaceMock<string> _interfaceMock = new(InvocationIndex.CounterValue);
+				protected partial MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.IInterface<string>> InterfaceMock => _interfaceMock;
 
 				protected void VerifyNoOtherCalls()
 				{
@@ -54,11 +54,11 @@ public abstract class EventTestsBase : TestsBase
 				protected sealed class VerifySequenceContext
 				{
 					private readonly VerifyIndex _verifyIndex = new();
-					public readonly IMockSequence<MyNihongo.Mock.Tests.IInterface> InterfaceMock;
+					public readonly IMockSequence<MyNihongo.Mock.Tests.IInterface<string>> InterfaceMock;
 
-					public VerifySequenceContext(MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.IInterface> interfaceMock)
+					public VerifySequenceContext(MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.IInterface<string>> interfaceMock)
 					{
-						InterfaceMock = new MockSequence<MyNihongo.Mock.Tests.IInterface>
+						InterfaceMock = new MockSequence<MyNihongo.Mock.Tests.IInterface<string>>
 						{
 							VerifyIndex = _verifyIndex,
 							Mock = interfaceMock,
@@ -72,7 +72,7 @@ public abstract class EventTestsBase : TestsBase
 			$$"""
 			  namespace MyNihongo.Mock;
 
-			  public sealed class InterfaceMock : IMock<MyNihongo.Mock.Tests.IInterface>
+			  public sealed class InterfaceMock<T> : IMock<MyNihongo.Mock.Tests.IInterface<T>>
 			  {
 			  	private readonly InvocationIndex.Counter _invocationIndex;
 			  	private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
@@ -84,7 +84,7 @@ public abstract class EventTestsBase : TestsBase
 			  		_invocationProviders = GetInvocations;
 			  	}
 
-			  	public MyNihongo.Mock.Tests.IInterface Object => _proxy ??= new Proxy(this);
+			  	public MyNihongo.Mock.Tests.IInterface<T> Object => _proxy ??= new Proxy(this);
 
 			  	// HandlerEvent
 			  {{methods.Indent(1)}}
@@ -99,11 +99,11 @@ public abstract class EventTestsBase : TestsBase
 			  		yield break;
 			  	}
 
-			  	private sealed class Proxy : MyNihongo.Mock.Tests.IInterface
+			  	private sealed class Proxy : MyNihongo.Mock.Tests.IInterface<T>
 			  	{
-			  		private readonly InterfaceMock _mock;
+			  		private readonly InterfaceMock<T> _mock;
 
-			  		public Proxy(InterfaceMock mock)
+			  		public Proxy(InterfaceMock<T> mock)
 			  		{
 			  			_mock = mock;
 			  		}
@@ -115,10 +115,10 @@ public abstract class EventTestsBase : TestsBase
 
 			  public static partial class MockExtensions
 			  {
-			  	extension(IMock<MyNihongo.Mock.Tests.IInterface> @this)
+			  	extension<T>(IMock<MyNihongo.Mock.Tests.IInterface<T>> @this)
 			  	{
 			  		public void VerifyNoOtherCalls() =>
-			  			((InterfaceMock)@this).VerifyNoOtherCalls();
+			  			((InterfaceMock<T>)@this).VerifyNoOtherCalls();
 
 			  		
 			  	}
@@ -126,7 +126,7 @@ public abstract class EventTestsBase : TestsBase
 
 			  public static partial class MockSequenceExtensions
 			  {
-			  	extension(IMockSequence<MyNihongo.Mock.Tests.IInterface> @this)
+			  	extension<T>(IMockSequence<MyNihongo.Mock.Tests.IInterface<T>> @this)
 			  	{
 			  	
 			  	}
@@ -136,7 +136,7 @@ public abstract class EventTestsBase : TestsBase
 		return
 		[
 			("TestsBase.g.cs", testsBase),
-			("InterfaceMock.g.cs", mock),
+			("InterfaceMock_T_.g.cs", mock),
 		];
 	}
 }
