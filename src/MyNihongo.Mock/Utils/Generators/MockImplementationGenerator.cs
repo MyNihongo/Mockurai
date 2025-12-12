@@ -29,7 +29,7 @@ internal static class MockImplementationGenerator
 
 			  	public IPrimitiveDependencyService Object => _proxy ??= new Proxy(this);
 
-			  {{CreateMockMethods(stringBuilder, mockableMembers, indent: 1)}}
+			  {{CreateMockMethods(stringBuilder, typeSymbol, mockableMembers, indent: 1)}}
 
 			  	public void VerifyNoOtherCalls()
 			  	{
@@ -97,14 +97,14 @@ internal static class MockImplementationGenerator
 			.ToArray();
 	}
 
-	private static string CreateMockMethods(StringBuilder stringBuilder, IReadOnlyList<MemberSymbol> members, int indent)
+	private static string CreateMockMethods(StringBuilder stringBuilder, ITypeSymbol typeSymbol, IReadOnlyList<MemberSymbol> members, int indent)
 	{
 		stringBuilder.Clear();
 
 		for (int i = 0, generateCount = 0; i < members.Count; i++)
 		{
 			var member = members[i];
-			Action<StringBuilder, MemberSymbol, int>? handler = member.Symbol.Kind switch
+			Action<StringBuilder, ITypeSymbol, MemberSymbol, int>? handler = member.Symbol.Kind switch
 			{
 				SymbolKind.Event => MockImplementationEventGenerator.AppendEventMockMethod,
 				_ => null,
@@ -116,7 +116,7 @@ internal static class MockImplementationGenerator
 			if (generateCount > 0)
 				stringBuilder.AppendLine();
 
-			handler(stringBuilder, member, indent);
+			handler(stringBuilder, typeSymbol, member, indent);
 			generateCount++;
 		}
 

@@ -4,7 +4,7 @@ namespace MyNihongo.Mock.Utils;
 
 internal static class MockImplementationEventGenerator
 {
-	public static void AppendEventMockMethod(StringBuilder stringBuilder, MemberSymbol member, int indent)
+	public static void AppendEventMockMethod(StringBuilder stringBuilder, ITypeSymbol mockedTypeSymbol, MemberSymbol member, int indent)
 	{
 		if (member.Symbol is not IEventSymbol eventSymbol)
 			return;
@@ -77,7 +77,7 @@ internal static class MockImplementationEventGenerator
 
 		stringBuilder
 			.Indent(indent++).AppendLine("{")
-			.Indent(indent).AppendInvocationDeclaration(member, type: addType, eventTypeString)
+			.Indent(indent).AppendInvocationDeclaration(mockedTypeSymbol, member, type: addType, eventTypeString)
 			.Indent(indent)
 			.AppendFieldName(member.MemberName)
 			.AppendLine("AddInvocation.Verify(handler, times, _invocationProviders);")
@@ -95,7 +95,7 @@ internal static class MockImplementationEventGenerator
 
 		stringBuilder
 			.Indent(indent++).AppendLine("{")
-			.Indent(indent).AppendInvocationDeclaration(member, type: addType, eventTypeString)
+			.Indent(indent).AppendInvocationDeclaration(mockedTypeSymbol, member, type: addType, eventTypeString)
 			.Indent(indent)
 			.Append("return ")
 			.AppendFieldName(member.MemberName)
@@ -103,14 +103,16 @@ internal static class MockImplementationEventGenerator
 			.Indent(--indent).AppendLine("}");
 	}
 
-	private static StringBuilder AppendInvocationDeclaration(this StringBuilder stringBuilder, MemberSymbol member, string type, string eventTypeString)
+	private static StringBuilder AppendInvocationDeclaration(this StringBuilder stringBuilder, ITypeSymbol mockedTypeSymbol, MemberSymbol member, string type, string eventTypeString)
 	{
 		return stringBuilder
 			.AppendFieldName(member.MemberName)
 			.AppendPropertyName(type)
 			.Append("Invocation ??= new Invocation<")
 			.Append(eventTypeString)
-			.Append(">(\"Aaaaa.")
+			.Append(">(\"")
+			.Append(mockedTypeSymbol.Name)
+			.Append('.')
 			.AppendPropertyName(member.Symbol.Name)
 			.Append('.')
 			.Append(type)
