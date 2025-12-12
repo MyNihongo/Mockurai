@@ -3,7 +3,7 @@
 public sealed class MockedMethodsShould : EventTestsBase
 {
 	[Fact]
-	public async Task GenerateNonGenericEvent()
+	public async Task GenerateNonGenericEvent1()
 	{
 		const string methods =
 			"""
@@ -50,7 +50,7 @@ public sealed class MockedMethodsShould : EventTestsBase
 	}
 
 	[Fact]
-	public async Task GenerateGenericEvent()
+	public async Task GenerateNonGenericEvent2()
 	{
 		const string methods =
 			"""
