@@ -10,7 +10,6 @@ public abstract class EventGenericTestsBase : TestsBase
 
 			  public delegate void SampleHandler1(object sender, int value);
 			  public delegate void SampleHandler2<T>(object sender, T value);
-			  public delegate void SampleHandler3<T1, T2>(object sender, T2 value);
 
 			  public interface IInterface<T>
 			  {

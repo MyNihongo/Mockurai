@@ -48,4 +48,98 @@ public sealed class MockedMethodsGenericShould : EventGenericTestsBase
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
 	}
+
+	[Fact]
+	public async Task GenerateNonGenericEvent2()
+	{
+		const string methods =
+			"""
+			private System.EventHandler<string>? _handlerEvent0;
+			private Invocation<System.EventHandler<string>?>? _handlerEvent0AddInvocation;
+			private Invocation<System.EventHandler<string>?>? _handlerEvent0RemoveInvocation;
+
+			public void RaiseHandlerEvent(string e)
+			{
+				_handlerEvent0?.Invoke(Object, e);
+			}
+
+			public void VerifyAddHandlerEvent(in System.EventHandler<string>? handler, in Times times)
+			{
+				_handlerEvent0AddInvocation ??= new Invocation<System.EventHandler<string>?>("IInterface.HandlerEvent.add");
+				_handlerEvent0AddInvocation.Verify(handler, times, _invocationProviders);
+			}
+
+			public long VerifyAddHandlerEvent(in System.EventHandler<string>? handler, long index)
+			{
+				_handlerEvent0AddInvocation ??= new Invocation<System.EventHandler<string>?>("IInterface.HandlerEvent.add");
+				return _handlerEvent0AddInvocation.Verify(handler, index, _invocationProviders);
+			}
+
+			public void VerifyRemoveHandlerEvent(in System.EventHandler<string>? handler, in Times times)
+			{
+				_handlerEvent0RemoveInvocation ??= new Invocation<System.EventHandler<string>?>("IInterface.HandlerEvent.remove");
+				_handlerEvent0RemoveInvocation.Verify(handler, times, _invocationProviders);
+			}
+
+			public long VerifyRemoveHandlerEvent(in System.EventHandler<string>? handler, long index)
+			{
+				_handlerEvent0RemoveInvocation ??= new Invocation<System.EventHandler<string>?>("IInterface.HandlerEvent.remove");
+				return _handlerEvent0RemoveInvocation.Verify(handler, index, _invocationProviders);
+			}
+			""";
+
+		const string @event = "event System.EventHandler<string>? HandlerEvent;";
+		var testCode = CreateTestCode(@event);
+		var generatedSources = CreateGeneratedSources(methods, @event);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+	
+	[Fact]
+	public async Task GenerateGenericEvent1()
+	{
+		const string methods =
+			"""
+			private System.EventHandler<T>? _handlerEvent0;
+			private Invocation<System.EventHandler<T>?>? _handlerEvent0AddInvocation;
+			private Invocation<System.EventHandler<T>?>? _handlerEvent0RemoveInvocation;
+
+			public void RaiseHandlerEvent(T e)
+			{
+				_handlerEvent0?.Invoke(Object, e);
+			}
+
+			public void VerifyAddHandlerEvent(in System.EventHandler<T>? handler, in Times times)
+			{
+				_handlerEvent0AddInvocation ??= new Invocation<System.EventHandler<T>?>("IInterface.HandlerEvent.add");
+				_handlerEvent0AddInvocation.Verify(handler, times, _invocationProviders);
+			}
+
+			public long VerifyAddHandlerEvent(in System.EventHandler<T>? handler, long index)
+			{
+				_handlerEvent0AddInvocation ??= new Invocation<System.EventHandler<T>?>("IInterface.HandlerEvent.add");
+				return _handlerEvent0AddInvocation.Verify(handler, index, _invocationProviders);
+			}
+
+			public void VerifyRemoveHandlerEvent(in System.EventHandler<T>? handler, in Times times)
+			{
+				_handlerEvent0RemoveInvocation ??= new Invocation<System.EventHandler<T>?>("IInterface.HandlerEvent.remove");
+				_handlerEvent0RemoveInvocation.Verify(handler, times, _invocationProviders);
+			}
+
+			public long VerifyRemoveHandlerEvent(in System.EventHandler<T>? handler, long index)
+			{
+				_handlerEvent0RemoveInvocation ??= new Invocation<System.EventHandler<T>?>("IInterface.HandlerEvent.remove");
+				return _handlerEvent0RemoveInvocation.Verify(handler, index, _invocationProviders);
+			}
+			""";
+
+		const string @event = "event System.EventHandler<T>? HandlerEvent;";
+		var testCode = CreateTestCode(@event);
+		var generatedSources = CreateGeneratedSources(methods, @event);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
 }

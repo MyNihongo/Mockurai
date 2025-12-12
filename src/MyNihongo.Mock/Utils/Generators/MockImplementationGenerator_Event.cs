@@ -124,6 +124,7 @@ internal static class MockImplementationEventGenerator
 				.Append(eventTypeString)
 				.Append(">(\"")
 				.Append(mockedTypeSymbol.Name)
+				.AppendGenericTypes(mockedTypeSymbol)
 				.Append('.')
 				.AppendPropertyName(member.Symbol.Name)
 				.Append('.')
