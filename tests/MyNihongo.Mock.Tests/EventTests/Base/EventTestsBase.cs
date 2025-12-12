@@ -83,15 +83,6 @@ public abstract class EventTestsBase : TestsBase
 			  	public MyNihongo.Mock.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
 			  	// HandlerEvent
-			  	private System.EventHandler<string>? _handlerEvent0;
-			  	private Invocation<System.EventHandler<string>?>? _handlerEvent0AddInvocation;
-			  	private Invocation<System.EventHandler<string>?>? _handlerEvent0RemoveInvocation;
-
-			  	public void RaiseHandlerEvent(string e)
-			  	{
-			  		_handlerEvent0?.Invoke(Object, e);
-			  	}
-
 			  {{methods.Indent(1)}}
 
 			  	public void VerifyNoOtherCalls()

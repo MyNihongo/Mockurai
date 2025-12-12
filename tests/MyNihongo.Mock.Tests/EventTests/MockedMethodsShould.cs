@@ -7,6 +7,15 @@ public sealed class MockedMethodsShould : EventTestsBase
 	{
 		const string methods =
 			"""
+			private System.EventHandler<string>? _handlerEvent0;
+			private Invocation<System.EventHandler<string>?>? _handlerEvent0AddInvocation;
+			private Invocation<System.EventHandler<string>?>? _handlerEvent0RemoveInvocation;
+
+			public void RaiseHandlerEvent(string e)
+			{
+				_handlerEvent0?.Invoke(Object, e);
+			}
+
 			public void VerifyAddHandlerEvent(in System.EventHandler<string>? handler, in Times times)
 			{
 				_handlerEvent0AddInvocation ??= new Invocation<System.EventHandler<string>?>("IInterface.HandlerEvent.add");
