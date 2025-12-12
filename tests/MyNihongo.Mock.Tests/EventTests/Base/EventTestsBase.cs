@@ -92,7 +92,7 @@ public abstract class EventTestsBase : TestsBase
 			  		_handlerEvent0?.Invoke(Object, e);
 			  	}
 
-			  {{methods}}
+			  {{methods.Indent(1)}}
 
 			  	public void VerifyNoOtherCalls()
 			  	{
