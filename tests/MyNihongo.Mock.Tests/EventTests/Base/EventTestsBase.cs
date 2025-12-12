@@ -8,6 +8,9 @@ public abstract class EventTestsBase : TestsBase
 			$$"""
 			  namespace MyNihongo.Mock.Tests;
 
+			  public delegate void SampleHandler1(object sender, int value);
+			  public delegate void SampleHandler2<T1, T2>(object sender, T2 value);
+
 			  public interface IInterface
 			  {
 			  	{{@event}}
@@ -21,7 +24,7 @@ public abstract class EventTestsBase : TestsBase
 			  """;
 	}
 
-	protected static GeneratedSources CreateGeneratedSources(string methods)
+	protected static GeneratedSources CreateGeneratedSources(string methods, string @event)
 	{
 		const string testsBase =
 			"""
@@ -104,7 +107,7 @@ public abstract class EventTestsBase : TestsBase
 			  			_mock = mock;
 			  		}
 
-			  		public event System.EventHandler<string>? HandlerEvent;
+			  		public {{@event}}
 
 			  	}
 			  }
