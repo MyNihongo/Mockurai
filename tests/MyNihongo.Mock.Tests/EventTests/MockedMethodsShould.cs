@@ -142,21 +142,7 @@ public sealed class MockedMethodsShould : EventTestsBase
 			}
 			""";
 
-		var testCode =
-			"""
-			namespace MyNihongo.Mock.Tests;
-
-			public interface IInterface
-			{
-				event System.EventHandler<string>? HandlerEvent;
-			}
-
-			[MockuraiGenerate]
-			public abstract partial class TestsBase
-			{
-				protected partial IMock<IInterface> InterfaceMock { get; }
-			}
-			""";
+		var testCode = CreateTestCode("event System.EventHandler<string>? HandlerEvent;");
 
 		var ctx = CreateFixture(testCode, [("TestsBase.g.cs", expected1), ("InterfaceMock.g.cs", expected2)]);
 		await ctx.RunAsync();
