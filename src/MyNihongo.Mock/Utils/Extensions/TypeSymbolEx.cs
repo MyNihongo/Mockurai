@@ -4,14 +4,14 @@ namespace MyNihongo.Mock.Utils;
 
 internal static class TypeSymbolEx
 {
-	extension(ISymbol? typeSymbol)
+	extension(ISymbol? @this)
 	{
 		public T? GetAttributeValue<T>(string attributeName, string propertyName, T defaultValue)
 		{
-			if (typeSymbol is null)
+			if (@this is null)
 				return defaultValue;
 
-			foreach (var attribute in typeSymbol.GetAttributes())
+			foreach (var attribute in @this.GetAttributes())
 			{
 				if (attribute.AttributeClass?.Name != attributeName)
 					continue;
@@ -29,9 +29,18 @@ internal static class TypeSymbolEx
 		}
 	}
 
+	extension(ITypeSymbol @this)
+	{
+		public IEnumerable<ISymbol> GetOverridableMembers()
+		{
+			return @this.GetMembers()
+				.Where(static x => !x.IsStatic && !x.IsSealed && (x.IsOverride || x.IsVirtual || x.IsAbstract));
+		}
+	}
+
 	extension(StringBuilder @this)
 	{
-		public StringBuilder AppendMockClassName(ITypeSymbol typeSymbol)
+		public StringBuilder AppendMockClassName(ITypeSymbol typeSymbol, bool appendGenericTypes = true)
 		{
 			var name = typeSymbol.Name;
 			if (name.Length > 0 && name[0] == 'I')
@@ -41,6 +50,13 @@ internal static class TypeSymbolEx
 
 			@this.Append("Mock");
 
+			return appendGenericTypes
+				? @this.AppendGenericTypes(typeSymbol)
+				: @this;
+		}
+
+		public StringBuilder AppendGenericTypes(ITypeSymbol typeSymbol)
+		{
 			if (typeSymbol is INamedTypeSymbol { TypeArguments.Length: > 0 } namedTypeSymbol)
 			{
 				@this.Append('<');
@@ -52,6 +68,13 @@ internal static class TypeSymbolEx
 			}
 
 			return @this;
+		}
+
+		public StringBuilder AppendParameter(IParameterSymbol? parameter)
+		{
+			return parameter is not null
+				? @this.Append(parameter)
+				: @this;
 		}
 	}
 }

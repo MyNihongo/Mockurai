@@ -35,20 +35,19 @@ public sealed class SourceGenerator : IIncrementalGenerator
 					if (mocks.Count == 0)
 						continue;
 
-					var sourceCode = source.GenerateMockClass(namedTypeSymbol, mocks);
+					var sourceCode = namedTypeSymbol.GenerateMockClass(mocks);
 					context.AddSource($"{namedTypeSymbol.Name}.g.cs", sourceCode);
+					mockTypes.AddAll(mocks);
 				}
 
-				var sample =
-					$$"""
-					  namespace {{source.Options.RootNamespace}};
+				foreach (var mockType in mockTypes)
+				{
+					var sourceCodeResult = mockType.GenerateMockImplementation(source);
+					context.AddSanitisedSource($"{sourceCodeResult.Name}.g.cs", sourceCodeResult.Source);
+				}
 
-					  public interface ITest
-					  {
-					  }
-					  """;
-
-				context.AddSource("Mock.g.cs", sample);
+				const string globalUsings = $"global using {MockGeneratorConst.Namespace};";
+				context.AddSanitisedSource("_Usings.g.cs", globalUsings);
 			});
 	}
 
