@@ -9,8 +9,6 @@ internal static class MockImplementationEventGenerator
 		if (member.Symbol is not IEventSymbol eventSymbol)
 			return;
 
-		const string addType = "add", removeType = "remove";
-
 		var eventTypeString = eventSymbol.Type.ToString();
 		var parameterSymbol = eventSymbol.GetDelegateParameter();
 
@@ -65,57 +63,71 @@ internal static class MockImplementationEventGenerator
 		stringBuilder
 			.Indent(--indent).AppendLine("}");
 
-		// VerifyAdd method - times
 		stringBuilder
-			.AppendLine()
-			.Indent(indent)
-			.Append("public void VerifyAdd")
-			.AppendPropertyName(member.Symbol.Name)
-			.Append("(in ")
-			.Append(eventTypeString)
-			.AppendLine(" handler, in Times times)");
-
-		stringBuilder
-			.Indent(indent++).AppendLine("{")
-			.Indent(indent).AppendInvocationDeclaration(mockedTypeSymbol, member, type: addType, eventTypeString)
-			.Indent(indent)
-			.AppendFieldName(member.MemberName)
-			.AppendLine("AddInvocation.Verify(handler, times, _invocationProviders);")
-			.Indent(--indent).AppendLine("}");
-
-		// VerifyAdd method - index
-		stringBuilder
-			.AppendLine()
-			.Indent(indent)
-			.Append("public long VerifyAdd")
-			.AppendPropertyName(member.Symbol.Name)
-			.Append("(in ")
-			.Append(eventTypeString)
-			.AppendLine(" handler, long index)");
-
-		stringBuilder
-			.Indent(indent++).AppendLine("{")
-			.Indent(indent).AppendInvocationDeclaration(mockedTypeSymbol, member, type: addType, eventTypeString)
-			.Indent(indent)
-			.Append("return ")
-			.AppendFieldName(member.MemberName)
-			.AppendLine("AddInvocation.Verify(handler, index, _invocationProviders);")
-			.Indent(--indent).AppendLine("}");
+			.AppendVerifyMethods(mockedTypeSymbol, member, type: "add", eventTypeString, indent)
+			.AppendVerifyMethods(mockedTypeSymbol, member, type: "remove", eventTypeString, indent);
 	}
 
-	private static StringBuilder AppendInvocationDeclaration(this StringBuilder stringBuilder, ITypeSymbol mockedTypeSymbol, MemberSymbol member, string type, string eventTypeString)
+	extension(StringBuilder stringBuilder)
 	{
-		return stringBuilder
-			.AppendFieldName(member.MemberName)
-			.AppendPropertyName(type)
-			.Append("Invocation ??= new Invocation<")
-			.Append(eventTypeString)
-			.Append(">(\"")
-			.Append(mockedTypeSymbol.Name)
-			.Append('.')
-			.AppendPropertyName(member.Symbol.Name)
-			.Append('.')
-			.Append(type)
-			.AppendLine("\");");
+		private StringBuilder AppendVerifyMethods(ITypeSymbol mockedTypeSymbol, MemberSymbol member, string type, string eventTypeString, int indent)
+		{
+			// Verify method - times
+			stringBuilder
+				.AppendLine()
+				.Indent(indent)
+				.Append("public void Verify")
+				.AppendPropertyName(type)
+				.AppendPropertyName(member.Symbol.Name)
+				.Append("(in ")
+				.Append(eventTypeString)
+				.AppendLine(" handler, in Times times)");
+
+			stringBuilder
+				.Indent(indent++).AppendLine("{")
+				.Indent(indent).AppendInvocationDeclaration(mockedTypeSymbol, member, type, eventTypeString)
+				.Indent(indent)
+				.AppendFieldName(member.MemberName)
+				.AppendPropertyName(type)
+				.AppendLine("Invocation.Verify(handler, times, _invocationProviders);")
+				.Indent(--indent).AppendLine("}");
+
+			// Verify method - index
+			stringBuilder
+				.AppendLine()
+				.Indent(indent)
+				.Append("public long Verify")
+				.AppendPropertyName(type)
+				.AppendPropertyName(member.Symbol.Name)
+				.Append("(in ")
+				.Append(eventTypeString)
+				.AppendLine(" handler, long index)");
+
+			return stringBuilder
+				.Indent(indent++).AppendLine("{")
+				.Indent(indent).AppendInvocationDeclaration(mockedTypeSymbol, member, type, eventTypeString)
+				.Indent(indent)
+				.Append("return ")
+				.AppendFieldName(member.MemberName)
+				.AppendPropertyName(type)
+				.AppendLine("Invocation.Verify(handler, index, _invocationProviders);")
+				.Indent(--indent).AppendLine("}");
+		}
+
+		private StringBuilder AppendInvocationDeclaration(ITypeSymbol mockedTypeSymbol, MemberSymbol member, string type, string eventTypeString)
+		{
+			return stringBuilder
+				.AppendFieldName(member.MemberName)
+				.AppendPropertyName(type)
+				.Append("Invocation ??= new Invocation<")
+				.Append(eventTypeString)
+				.Append(">(\"")
+				.Append(mockedTypeSymbol.Name)
+				.Append('.')
+				.AppendPropertyName(member.Symbol.Name)
+				.Append('.')
+				.Append(type)
+				.AppendLine("\");");
+		}
 	}
 }
