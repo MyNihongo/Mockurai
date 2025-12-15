@@ -2,123 +2,26 @@
 
 public abstract class EventTestsBase : TestsBase
 {
-	protected static string CreateTestCode(string @event)
+	private const string CustomCode = "public delegate void SampleHandler1(object sender, int value);";
+
+	protected static string CreateInterfaceTestCode(string @event)
 	{
-		const string customCode = "public delegate void SampleHandler1(object sender, int value);";
-		return CreateInterfaceTestCode(@event, customCode);
+		return CreateInterfaceTestCode(@event, CustomCode);
 	}
 
-	protected static GeneratedSources CreateGeneratedSources(string methods, string @event)
+	protected static string CreateClassTestCode(string @event)
 	{
-		const string testsBase =
-			"""
-			namespace MyNihongo.Mock.Tests;
+		return CreateClassTestCode(@event, CustomCode);
+	}
 
-			public partial class TestsBase
-			{
-				// InterfaceMock
-				private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-				protected partial MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.IInterface> InterfaceMock => _interfaceMock;
-
-				protected void VerifyNoOtherCalls()
-				{
-					_interfaceMock.VerifyNoOtherCalls();
-				}
-
-				protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
-				{
-					var ctx = new VerifySequenceContext(
-						interfaceMock: _interfaceMock
-					);
-
-					verify(ctx);
-				}
-
-				protected sealed class VerifySequenceContext
-				{
-					private readonly VerifyIndex _verifyIndex = new();
-					public readonly IMockSequence<MyNihongo.Mock.Tests.IInterface> InterfaceMock;
-
-					public VerifySequenceContext(MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.IInterface> interfaceMock)
-					{
-						InterfaceMock = new MockSequence<MyNihongo.Mock.Tests.IInterface>
-						{
-							VerifyIndex = _verifyIndex,
-							Mock = interfaceMock,
-						};
-					}
-				}
-			}
-			""";
-
-		var mock =
-			$$"""
-			  namespace MyNihongo.Mock;
-
-			  public sealed class InterfaceMock : IMock<MyNihongo.Mock.Tests.IInterface>
-			  {
-			  	private readonly InvocationIndex.Counter _invocationIndex;
-			  	private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
-			  	private Proxy? _proxy;
-
-			  	public InterfaceMock(InvocationIndex.Counter invocationIndex)
-			  	{
-			  		_invocationIndex = invocationIndex;
-			  		_invocationProviders = GetInvocations;
-			  	}
-
-			  	public MyNihongo.Mock.Tests.IInterface Object => _proxy ??= new Proxy(this);
-
-			  	// HandlerEvent
-			  {{methods.Indent(1)}}
-
-			  	public void VerifyNoOtherCalls()
-			  	{
-
-			  	}
-
-			  	private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
-			  	{
-			  		yield break;
-			  	}
-
-			  	private sealed class Proxy : MyNihongo.Mock.Tests.IInterface
-			  	{
-			  		private readonly InterfaceMock _mock;
-
-			  		public Proxy(InterfaceMock mock)
-			  		{
-			  			_mock = mock;
-			  		}
-
-			  		public {{@event}}
-
-			  	}
-			  }
-
-			  public static partial class MockExtensions
-			  {
-			  	extension(IMock<MyNihongo.Mock.Tests.IInterface> @this)
-			  	{
-			  		public void VerifyNoOtherCalls() =>
-			  			((InterfaceMock)@this).VerifyNoOtherCalls();
-
-			  		
-			  	}
-			  }
-
-			  public static partial class MockSequenceExtensions
-			  {
-			  	extension(IMockSequence<MyNihongo.Mock.Tests.IInterface> @this)
-			  	{
-			  	
-			  	}
-			  }
-			  """;
+	protected static GeneratedSources CreateInterfaceGeneratedSources(string methods, string @event)
+	{
+		var testsBase = GetInterfaceTestsBase();
+		var mock = GetInterfaceMock(methods, @event);
 
 		return
 		[
-			("TestsBase.g.cs", testsBase),
+			testsBase,
 			("InterfaceMock.g.cs", mock),
 		];
 	}
