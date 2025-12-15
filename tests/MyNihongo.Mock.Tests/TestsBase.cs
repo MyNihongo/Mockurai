@@ -61,6 +61,27 @@ public abstract class TestsBase
 			  }
 			  """;
 	}
+	
+	protected static string CreateClassTestCode(string members, string customCode)
+	{
+		return
+			$$"""
+			  namespace MyNihongo.Mock.Tests;
+
+			  {{customCode}}
+
+			  public class Class
+			  {
+			  	{{members}}
+			  }
+
+			  [MockuraiGenerate]
+			  public abstract partial class TestsBase
+			  {
+			  	protected partial IMock<Class> ClassMock { get; }
+			  }
+			  """;
+	}
 }
 
 file static class SourceFileCollectionEx

@@ -3,7 +3,7 @@ namespace MyNihongo.Mock.Tests.EventTests;
 public sealed class MockedMethodsGenericShould : EventGenericTestsBase
 {
 	[Fact]
-	public async Task GenerateNonGenericEvent1()
+	public async Task GenerateInterfaceEvent1()
 	{
 		const string methods =
 			"""
@@ -50,7 +50,7 @@ public sealed class MockedMethodsGenericShould : EventGenericTestsBase
 	}
 
 	[Fact]
-	public async Task GenerateNonGenericEvent2()
+	public async Task GenerateInterfaceEvent2()
 	{
 		const string methods =
 			"""
@@ -97,7 +97,7 @@ public sealed class MockedMethodsGenericShould : EventGenericTestsBase
 	}
 	
 	[Fact]
-	public async Task GenerateGenericEvent1()
+	public async Task GenerateInterfaceGenericEvent1()
 	{
 		const string methods =
 			"""
