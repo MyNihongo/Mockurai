@@ -4,6 +4,11 @@ namespace MyNihongo.Mock.Utils;
 
 internal static class TypeSymbolEx
 {
+	extension(ISymbol @this)
+	{
+		public bool IsPublic => @this.DeclaredAccessibility == Accessibility.Public;
+	}
+
 	extension(ISymbol? @this)
 	{
 		public T? GetAttributeValue<T>(string attributeName, string propertyName, T defaultValue)
@@ -34,7 +39,7 @@ internal static class TypeSymbolEx
 		public IEnumerable<ISymbol> GetOverridableMembers()
 		{
 			return @this.GetMembers()
-				.Where(static x => !x.IsStatic && !x.IsSealed && (x.IsOverride || x.IsVirtual || x.IsAbstract));
+				.Where(static x => x.IsPublic && x is { IsStatic: false, IsSealed: false } && (x.IsOverride || x.IsVirtual || x.IsAbstract));
 		}
 	}
 

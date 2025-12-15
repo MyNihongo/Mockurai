@@ -62,27 +62,6 @@ public abstract class TestsBase
 			  """;
 	}
 
-	protected static string CreateClassTestCode(string members, string customCode)
-	{
-		return
-			$$"""
-			  namespace MyNihongo.Mock.Tests;
-
-			  {{customCode}}
-
-			  public class Class
-			  {
-			  	{{members}}
-			  }
-
-			  [MockuraiGenerate]
-			  public abstract partial class TestsBase
-			  {
-			  	protected partial IMock<Class> ClassMock { get; }
-			  }
-			  """;
-	}
-
 	protected static GeneratedSource GetInterfaceTestsBase()
 	{
 		const string testsBase =
@@ -129,9 +108,9 @@ public abstract class TestsBase
 		return ("TestsBase.g.cs", testsBase);
 	}
 
-	protected static string GetInterfaceMock(string methods, string proxy)
+	protected static GeneratedSource GetInterfaceMock(string methods, string proxy)
 	{
-		return
+		var mock =
 			$$"""
 			  namespace MyNihongo.Mock;
 
@@ -195,6 +174,145 @@ public abstract class TestsBase
 			  	}
 			  }
 			  """;
+
+		return ("InterfaceMock.g.cs", mock);
+	}
+
+	protected static string CreateClassTestCode(string members, string customCode)
+	{
+		return
+			$$"""
+			  namespace MyNihongo.Mock.Tests;
+
+			  {{customCode}}
+
+			  public class Class
+			  {
+			  	{{members}}
+			  }
+
+			  [MockuraiGenerate]
+			  public abstract partial class TestsBase
+			  {
+			  	protected partial IMock<Class> ClassMock { get; }
+			  }
+			  """;
+	}
+
+	protected static GeneratedSource GetClassTestsBase()
+	{
+		const string testsBase =
+			"""
+			namespace MyNihongo.Mock.Tests;
+
+			public partial class TestsBase
+			{
+				// ClassMock
+				private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
+				protected partial MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.Class> ClassMock => _classMock;
+
+				protected void VerifyNoOtherCalls()
+				{
+					_classMock.VerifyNoOtherCalls();
+				}
+
+				protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
+				{
+					var ctx = new VerifySequenceContext(
+						classMock: _classMock
+					);
+
+					verify(ctx);
+				}
+
+				protected sealed class VerifySequenceContext
+				{
+					private readonly VerifyIndex _verifyIndex = new();
+					public readonly IMockSequence<MyNihongo.Mock.Tests.Class> ClassMock;
+
+					public VerifySequenceContext(MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.Class> classMock)
+					{
+						ClassMock = new MockSequence<MyNihongo.Mock.Tests.Class>
+						{
+							VerifyIndex = _verifyIndex,
+							Mock = classMock,
+						};
+					}
+				}
+			}
+			""";
+
+		return ("TestsBase.g.cs", testsBase);
+	}
+
+	protected static GeneratedSource GetClassMock(string methods, string proxy)
+	{
+		var mock =
+			$$"""
+			  namespace MyNihongo.Mock;
+
+			  public sealed class ClassMock : IMock<MyNihongo.Mock.Tests.Class>
+			  {
+			  	private readonly InvocationIndex.Counter _invocationIndex;
+			  	private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
+			  	private Proxy? _proxy;
+
+			  	public ClassMock(InvocationIndex.Counter invocationIndex)
+			  	{
+			  		_invocationIndex = invocationIndex;
+			  		_invocationProviders = GetInvocations;
+			  	}
+
+			  	public MyNihongo.Mock.Tests.Class Object => _proxy ??= new Proxy(this);
+
+			  	// HandlerEvent
+			  {{methods.Indent(1)}}
+
+			  	public void VerifyNoOtherCalls()
+			  	{
+
+			  	}
+
+			  	private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
+			  	{
+			  		yield break;
+			  	}
+
+			  	private sealed class Proxy : MyNihongo.Mock.Tests.Class
+			  	{
+			  		private readonly ClassMock _mock;
+
+			  		public Proxy(ClassMock mock)
+			  		{
+			  			_mock = mock;
+			  		}
+
+			  		public {{proxy}}
+
+			  	}
+			  }
+
+			  public static partial class MockExtensions
+			  {
+			  	extension(IMock<MyNihongo.Mock.Tests.Class> @this)
+			  	{
+			  		public void VerifyNoOtherCalls() =>
+			  			((ClassMock)@this).VerifyNoOtherCalls();
+
+			  		
+			  	}
+			  }
+
+			  public static partial class MockSequenceExtensions
+			  {
+			  	extension(IMockSequence<MyNihongo.Mock.Tests.Class> @this)
+			  	{
+			  	
+			  	}
+			  }
+			  """;
+
+		return ("ClassMock.g.cs", mock);
 	}
 }
 

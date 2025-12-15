@@ -22,7 +22,19 @@ public abstract class EventTestsBase : TestsBase
 		return
 		[
 			testsBase,
-			("InterfaceMock.g.cs", mock),
+			mock,
+		];
+	}
+
+	protected static GeneratedSources CreateClassGeneratedSources(string methods, string @event)
+	{
+		var testsBase = GetClassTestsBase();
+		var mock = GetClassMock(methods, @event);
+
+		return
+		[
+			testsBase,
+			mock,
 		];
 	}
 }
