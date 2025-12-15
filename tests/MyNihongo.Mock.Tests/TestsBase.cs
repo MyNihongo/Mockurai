@@ -19,6 +19,48 @@ public abstract class TestsBase
 			},
 		};
 	}
+
+	protected static string CreateInterfaceTestCode(string members, string customCode)
+	{
+		return
+			$$"""
+			  namespace MyNihongo.Mock.Tests;
+
+			  {{customCode}}
+
+			  public interface IInterface
+			  {
+			  	{{members}}
+			  }
+
+			  [MockuraiGenerate]
+			  public abstract partial class TestsBase
+			  {
+			  	protected partial IMock<IInterface> InterfaceMock { get; }
+			  }
+			  """;
+	}
+
+	protected static string CreateInterfaceGenericTestCode(string members, string customCode)
+	{
+		return
+			$$"""
+			  namespace MyNihongo.Mock.Tests;
+
+			  {{customCode}}
+
+			  public interface IInterface<T>
+			  {
+			  	{{members}}
+			  }
+
+			  [MockuraiGenerate]
+			  public abstract partial class TestsBase
+			  {
+			  	protected partial IMock<IInterface<string>> InterfaceMock { get; }
+			  }
+			  """;
+	}
 }
 
 file static class SourceFileCollectionEx

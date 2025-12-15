@@ -4,23 +4,8 @@ public abstract class EventTestsBase : TestsBase
 {
 	protected static string CreateTestCode(string @event)
 	{
-		return
-			$$"""
-			  namespace MyNihongo.Mock.Tests;
-
-			  public delegate void SampleHandler1(object sender, int value);
-
-			  public interface IInterface
-			  {
-			  	{{@event}}
-			  }
-
-			  [MockuraiGenerate]
-			  public abstract partial class TestsBase
-			  {
-			  	protected partial IMock<IInterface> InterfaceMock { get; }
-			  }
-			  """;
+		const string customCode = "public delegate void SampleHandler1(object sender, int value);";
+		return CreateInterfaceTestCode(@event, customCode);
 	}
 
 	protected static GeneratedSources CreateGeneratedSources(string methods, string @event)
