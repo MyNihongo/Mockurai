@@ -81,5 +81,12 @@ internal static class TypeSymbolEx
 				? @this.Append(parameter)
 				: @this;
 		}
+
+		public StringBuilder TryAppendOverride(ISymbol symbol)
+		{
+			return symbol.ContainingType.TypeKind == TypeKind.Class && (symbol.IsAbstract || symbol.IsVirtual)
+				? @this.Append("override ")
+				: @this;
+		}
 	}
 }

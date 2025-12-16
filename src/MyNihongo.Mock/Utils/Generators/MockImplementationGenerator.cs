@@ -176,7 +176,9 @@ internal static class MockImplementationGenerator
 			{
 				case SymbolKind.Event:
 					stringBuilder.Indent(indent)
-						.Append("public event ")
+						.Append("public ")
+						.TryAppendOverride(member.Symbol)
+						.Append("event ")
 						.Append(((IEventSymbol)member.Symbol).Type)
 						.Append(' ')
 						.Append(member.Symbol.Name)

@@ -9,9 +9,9 @@ public abstract class EventTestsBase : TestsBase
 		return CreateInterfaceTestCode(@event, CustomCode);
 	}
 
-	protected static string CreateClassTestCode(string @event)
+	protected static string CreateClassTestCode(string @event, bool isAbstract = false)
 	{
-		return CreateClassTestCode(@event, CustomCode);
+		return CreateClassTestCode(@event, CustomCode, isAbstract);
 	}
 
 	protected static GeneratedSources CreateInterfaceGeneratedSources(string methods, string proxy)
@@ -26,10 +26,10 @@ public abstract class EventTestsBase : TestsBase
 		];
 	}
 
-	protected static GeneratedSources CreateClassGeneratedSources(string methods, string @event)
+	protected static GeneratedSources CreateClassGeneratedSources(string methods, string proxy)
 	{
 		var testsBase = GetClassTestsBase();
-		var mock = GetClassMock(methods, @event);
+		var mock = GetClassMock(methods, proxy);
 
 		return
 		[

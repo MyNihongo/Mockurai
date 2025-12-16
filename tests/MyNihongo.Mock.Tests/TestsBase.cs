@@ -177,7 +177,7 @@ public abstract class TestsBase
 		return ("InterfaceMock.g.cs", mock);
 	}
 
-	protected static string CreateClassTestCode(string members, string customCode)
+	protected static string CreateClassTestCode(string members, string customCode, bool isAbstract)
 	{
 		return
 			$$"""
@@ -185,7 +185,7 @@ public abstract class TestsBase
 
 			  {{customCode}}
 
-			  public class Class
+			  public {{(isAbstract ? "abstract " : "")}}class Class
 			  {
 			  	{{members}}
 			  }
@@ -285,7 +285,7 @@ public abstract class TestsBase
 			  			_mock = mock;
 			  		}
 
-			  		{{proxy}}
+			  {{proxy.Indent(2)}}
 
 			  	}
 			  }
