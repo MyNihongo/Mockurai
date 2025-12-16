@@ -1,6 +1,6 @@
 ﻿namespace MyNihongo.Mock.Tests.EventTests;
 
-public abstract class EventTestsBase : TestsBase
+public abstract class EventTestsBase : TestsNonGenericBase
 {
 	private const string CustomCode = "public delegate void SampleHandler1(object sender, int value);";
 

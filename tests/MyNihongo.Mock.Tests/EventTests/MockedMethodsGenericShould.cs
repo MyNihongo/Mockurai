@@ -5,6 +5,8 @@ public sealed class MockedMethodsGenericShould : EventGenericTestsBase
 	[Fact]
 	public async Task GenerateInterfaceEvent1()
 	{
+		const string @event = "event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent;";
+
 		const string methods =
 			"""
 			// HandlerEvent
@@ -42,9 +44,10 @@ public sealed class MockedMethodsGenericShould : EventGenericTestsBase
 			}
 			""";
 
-		const string @event = "event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent;";
-		var testCode = CreateTestCode(@event);
-		var generatedSources = CreateGeneratedSources(methods, @event);
+		const string proxy = $"public {@event}";
+
+		var testCode = CreateInterfaceTestCode(@event);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -53,6 +56,8 @@ public sealed class MockedMethodsGenericShould : EventGenericTestsBase
 	[Fact]
 	public async Task GenerateInterfaceEvent2()
 	{
+		const string @event = "event System.EventHandler<string>? HandlerEvent;";
+
 		const string methods =
 			"""
 			// HandlerEvent
@@ -90,17 +95,20 @@ public sealed class MockedMethodsGenericShould : EventGenericTestsBase
 			}
 			""";
 
-		const string @event = "event System.EventHandler<string>? HandlerEvent;";
-		var testCode = CreateTestCode(@event);
-		var generatedSources = CreateGeneratedSources(methods, @event);
+		const string proxy = $"public {@event}";
+
+		var testCode = CreateInterfaceTestCode(@event);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
 	}
-	
+
 	[Fact]
 	public async Task GenerateInterfaceGenericEvent1()
 	{
+		const string @event = "event System.EventHandler<T>? HandlerEvent;";
+
 		const string methods =
 			"""
 			// HandlerEvent
@@ -138,9 +146,10 @@ public sealed class MockedMethodsGenericShould : EventGenericTestsBase
 			}
 			""";
 
-		const string @event = "event System.EventHandler<T>? HandlerEvent;";
-		var testCode = CreateTestCode(@event);
-		var generatedSources = CreateGeneratedSources(methods, @event);
+		const string proxy = $"public {@event}";
+
+		var testCode = CreateInterfaceTestCode(@event);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
