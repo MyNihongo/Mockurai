@@ -154,4 +154,120 @@ public sealed class MockedMethodsGenericShould : EventGenericTestsBase
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
 	}
+
+	[Fact]
+	public async Task GenerateClassEvent1()
+	{
+		const string @event =
+			"""
+			public virtual event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent;
+			protected virtual event MyNihongo.Mock.Tests.SampleHandler1? ProtectedNotOverriden;
+			public event MyNihongo.Mock.Tests.SampleHandler1? NotOverriden;
+			""";
+
+		const string methods =
+			"""
+			// HandlerEvent
+			private MyNihongo.Mock.Tests.SampleHandler1? _handlerEvent0;
+			private Invocation<MyNihongo.Mock.Tests.SampleHandler1?>? _handlerEvent0AddInvocation;
+			private Invocation<MyNihongo.Mock.Tests.SampleHandler1?>? _handlerEvent0RemoveInvocation;
+
+			public void RaiseHandlerEvent(int value)
+			{
+				_handlerEvent0?.Invoke(Object, value);
+			}
+
+			public void VerifyAddHandlerEvent(in MyNihongo.Mock.Tests.SampleHandler1? handler, in Times times)
+			{
+				_handlerEvent0AddInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class<T>.HandlerEvent.add");
+				_handlerEvent0AddInvocation.Verify(handler, times, _invocationProviders);
+			}
+
+			public long VerifyAddHandlerEvent(in MyNihongo.Mock.Tests.SampleHandler1? handler, long index)
+			{
+				_handlerEvent0AddInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class<T>.HandlerEvent.add");
+				return _handlerEvent0AddInvocation.Verify(handler, index, _invocationProviders);
+			}
+
+			public void VerifyRemoveHandlerEvent(in MyNihongo.Mock.Tests.SampleHandler1? handler, in Times times)
+			{
+				_handlerEvent0RemoveInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class<T>.HandlerEvent.remove");
+				_handlerEvent0RemoveInvocation.Verify(handler, times, _invocationProviders);
+			}
+
+			public long VerifyRemoveHandlerEvent(in MyNihongo.Mock.Tests.SampleHandler1? handler, long index)
+			{
+				_handlerEvent0RemoveInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class<T>.HandlerEvent.remove");
+				return _handlerEvent0RemoveInvocation.Verify(handler, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy = "public override event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent;";
+
+		var testCode = CreateClassTestCode(@event);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateClassGenericEvent1()
+	{
+		const string @event =
+			"""
+			public abstract event System.EventHandler<T>? HandlerEvent;
+			protected abstract event System.EventHandler<T>? ProtectedNotOverriden;
+			public event System.EventHandler<T>? NotOverriden;
+			""";
+
+		const string methods =
+			"""
+			// HandlerEvent
+			private System.EventHandler<T>? _handlerEvent0;
+			private Invocation<System.EventHandler<T>?>? _handlerEvent0AddInvocation;
+			private Invocation<System.EventHandler<T>?>? _handlerEvent0RemoveInvocation;
+
+			public void RaiseHandlerEvent(T e)
+			{
+				_handlerEvent0?.Invoke(Object, e);
+			}
+
+			public void VerifyAddHandlerEvent(in System.EventHandler<T>? handler, in Times times)
+			{
+				_handlerEvent0AddInvocation ??= new Invocation<System.EventHandler<T>?>("Class<T>.HandlerEvent.add");
+				_handlerEvent0AddInvocation.Verify(handler, times, _invocationProviders);
+			}
+
+			public long VerifyAddHandlerEvent(in System.EventHandler<T>? handler, long index)
+			{
+				_handlerEvent0AddInvocation ??= new Invocation<System.EventHandler<T>?>("Class<T>.HandlerEvent.add");
+				return _handlerEvent0AddInvocation.Verify(handler, index, _invocationProviders);
+			}
+
+			public void VerifyRemoveHandlerEvent(in System.EventHandler<T>? handler, in Times times)
+			{
+				_handlerEvent0RemoveInvocation ??= new Invocation<System.EventHandler<T>?>("Class<T>.HandlerEvent.remove");
+				_handlerEvent0RemoveInvocation.Verify(handler, times, _invocationProviders);
+			}
+
+			public long VerifyRemoveHandlerEvent(in System.EventHandler<T>? handler, long index)
+			{
+				_handlerEvent0RemoveInvocation ??= new Invocation<System.EventHandler<T>?>("Class<T>.HandlerEvent.remove");
+				return _handlerEvent0RemoveInvocation.Verify(handler, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public override event System.EventHandler<T>? HandlerEvent;
+			protected override event System.EventHandler<T>? ProtectedNotOverriden;
+			""";
+
+		var testCode = CreateClassTestCode(@event, isAbstract: true);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
 }

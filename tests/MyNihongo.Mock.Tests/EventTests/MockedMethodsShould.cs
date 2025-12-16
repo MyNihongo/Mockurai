@@ -200,6 +200,13 @@ public sealed class MockedMethodsShould : EventTestsBase
 	[Fact]
 	public async Task GenerateClassEvent1()
 	{
+		const string @event =
+			"""
+			public virtual event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent;
+			protected virtual event MyNihongo.Mock.Tests.SampleHandler1? ProtectedNotOverriden;
+			public event MyNihongo.Mock.Tests.SampleHandler1? NotOverriden;
+			""";
+
 		const string methods =
 			"""
 			// HandlerEvent
@@ -237,13 +244,6 @@ public sealed class MockedMethodsShould : EventTestsBase
 			}
 			""";
 
-		const string @event =
-			"""
-			public virtual event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent;
-			protected virtual event MyNihongo.Mock.Tests.SampleHandler1? ProtectedNotOverriden;
-			public event MyNihongo.Mock.Tests.SampleHandler1? NotOverriden;
-			""";
-
 		const string proxy = "public override event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent;";
 
 		var testCode = CreateClassTestCode(@event);
@@ -256,6 +256,12 @@ public sealed class MockedMethodsShould : EventTestsBase
 	[Fact]
 	public async Task GenerateClassMultipleEvents()
 	{
+		const string @event =
+			"""
+			public virtual event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent;
+			public abstract event System.EventHandler<string>? HandlerAnotherEvent;
+			""";
+
 		const string methods =
 			"""
 			// HandlerEvent
@@ -325,12 +331,6 @@ public sealed class MockedMethodsShould : EventTestsBase
 				_handlerAnotherEvent0RemoveInvocation ??= new Invocation<System.EventHandler<string>?>("Class.HandlerAnotherEvent.remove");
 				return _handlerAnotherEvent0RemoveInvocation.Verify(handler, index, _invocationProviders);
 			}
-			""";
-
-		const string @event =
-			"""
-			public virtual event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent;
-			public abstract event System.EventHandler<string>? HandlerAnotherEvent;
 			""";
 
 		const string proxy =

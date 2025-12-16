@@ -168,8 +168,8 @@ public abstract class TestsGenericBase : TestsBase
 			public partial class TestsBase
 			{
 				// ClassMock
-				private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
-				protected partial MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.Class> ClassMock => _classMock;
+				private readonly ClassMock<string> _classMock = new(InvocationIndex.CounterValue);
+				protected partial MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.Class<string>> ClassMock => _classMock;
 
 				protected void VerifyNoOtherCalls()
 				{
@@ -188,11 +188,11 @@ public abstract class TestsGenericBase : TestsBase
 				protected sealed class VerifySequenceContext
 				{
 					private readonly VerifyIndex _verifyIndex = new();
-					public readonly IMockSequence<MyNihongo.Mock.Tests.Class> ClassMock;
+					public readonly IMockSequence<MyNihongo.Mock.Tests.Class<string>> ClassMock;
 
-					public VerifySequenceContext(MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.Class> classMock)
+					public VerifySequenceContext(MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.Class<string>> classMock)
 					{
-						ClassMock = new MockSequence<MyNihongo.Mock.Tests.Class>
+						ClassMock = new MockSequence<MyNihongo.Mock.Tests.Class<string>>
 						{
 							VerifyIndex = _verifyIndex,
 							Mock = classMock,
@@ -211,7 +211,7 @@ public abstract class TestsGenericBase : TestsBase
 			$$"""
 			  namespace MyNihongo.Mock;
 
-			  public sealed class ClassMock : IMock<MyNihongo.Mock.Tests.Class>
+			  public sealed class ClassMock<T> : IMock<MyNihongo.Mock.Tests.Class<T>>
 			  {
 			  	private readonly InvocationIndex.Counter _invocationIndex;
 			  	private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
@@ -223,7 +223,7 @@ public abstract class TestsGenericBase : TestsBase
 			  		_invocationProviders = GetInvocations;
 			  	}
 
-			  	public MyNihongo.Mock.Tests.Class Object => _proxy ??= new Proxy(this);
+			  	public MyNihongo.Mock.Tests.Class<T> Object => _proxy ??= new Proxy(this);
 
 			  {{methods.Indent(1)}}
 
@@ -237,11 +237,11 @@ public abstract class TestsGenericBase : TestsBase
 			  		yield break;
 			  	}
 
-			  	private sealed class Proxy : MyNihongo.Mock.Tests.Class
+			  	private sealed class Proxy : MyNihongo.Mock.Tests.Class<T>
 			  	{
-			  		private readonly ClassMock _mock;
+			  		private readonly ClassMock<T> _mock;
 
-			  		public Proxy(ClassMock mock)
+			  		public Proxy(ClassMock<T> mock)
 			  		{
 			  			_mock = mock;
 			  		}
@@ -253,10 +253,10 @@ public abstract class TestsGenericBase : TestsBase
 
 			  public static partial class MockExtensions
 			  {
-			  	extension(IMock<MyNihongo.Mock.Tests.Class> @this)
+			  	extension<T>(IMock<MyNihongo.Mock.Tests.Class<T>> @this)
 			  	{
 			  		public void VerifyNoOtherCalls() =>
-			  			((ClassMock)@this).VerifyNoOtherCalls();
+			  			((ClassMock<T>)@this).VerifyNoOtherCalls();
 
 			  		
 			  	}
@@ -264,7 +264,7 @@ public abstract class TestsGenericBase : TestsBase
 
 			  public static partial class MockSequenceExtensions
 			  {
-			  	extension(IMockSequence<MyNihongo.Mock.Tests.Class> @this)
+			  	extension<T>(IMockSequence<MyNihongo.Mock.Tests.Class<T>> @this)
 			  	{
 			  	
 			  	}

@@ -41,6 +41,19 @@ internal static class TypeSymbolEx
 			return @this.GetMembers()
 				.Where(static x => x.IsPublic && x is { IsStatic: false, IsSealed: false } && (x.IsOverride || x.IsVirtual || x.IsAbstract));
 		}
+
+		/// <summary>
+		/// Returns members that prevent compilation, but are not revelant to mocking (e.g. abstract members of parent classes).
+		/// </summary>
+		/// <returns>Enumeration of irrelevant members that must be overriden.</returns>
+		public IEnumerable<ISymbol> GetIrrelevantOverridableMembers()
+		{
+			if (@this.TypeKind != TypeKind.Class)
+				return [];
+
+			return @this.GetMembers()
+				.Where(static x => !x.IsPublic && x.IsAbstract);
+		}
 	}
 
 	extension(StringBuilder @this)
