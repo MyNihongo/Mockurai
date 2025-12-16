@@ -74,7 +74,6 @@ public abstract class EventGenericTestsBase : TestsBase
 
 			  	public MyNihongo.Mock.Tests.IInterface<T> Object => _proxy ??= new Proxy(this);
 
-			  	// HandlerEvent
 			  {{methods.Indent(1)}}
 
 			  	public void VerifyNoOtherCalls()
