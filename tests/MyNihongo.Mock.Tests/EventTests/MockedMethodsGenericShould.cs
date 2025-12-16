@@ -7,6 +7,7 @@ public sealed class MockedMethodsGenericShould : EventGenericTestsBase
 	{
 		const string methods =
 			"""
+			// HandlerEvent
 			private MyNihongo.Mock.Tests.SampleHandler1? _handlerEvent0;
 			private Invocation<MyNihongo.Mock.Tests.SampleHandler1?>? _handlerEvent0AddInvocation;
 			private Invocation<MyNihongo.Mock.Tests.SampleHandler1?>? _handlerEvent0RemoveInvocation;
@@ -54,6 +55,7 @@ public sealed class MockedMethodsGenericShould : EventGenericTestsBase
 	{
 		const string methods =
 			"""
+			// HandlerEvent
 			private System.EventHandler<string>? _handlerEvent0;
 			private Invocation<System.EventHandler<string>?>? _handlerEvent0AddInvocation;
 			private Invocation<System.EventHandler<string>?>? _handlerEvent0RemoveInvocation;
@@ -101,6 +103,7 @@ public sealed class MockedMethodsGenericShould : EventGenericTestsBase
 	{
 		const string methods =
 			"""
+			// HandlerEvent
 			private System.EventHandler<T>? _handlerEvent0;
 			private Invocation<System.EventHandler<T>?>? _handlerEvent0AddInvocation;
 			private Invocation<System.EventHandler<T>?>? _handlerEvent0RemoveInvocation;

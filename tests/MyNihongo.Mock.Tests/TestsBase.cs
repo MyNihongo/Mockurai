@@ -128,7 +128,6 @@ public abstract class TestsBase
 
 			  	public MyNihongo.Mock.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
-			  	// HandlerEvent
 			  {{methods.Indent(1)}}
 
 			  	public void VerifyNoOtherCalls()
@@ -150,7 +149,7 @@ public abstract class TestsBase
 			  			_mock = mock;
 			  		}
 
-			  		public {{proxy}}
+			  {{proxy.Indent(2)}}
 
 			  	}
 			  }
@@ -265,7 +264,6 @@ public abstract class TestsBase
 
 			  	public MyNihongo.Mock.Tests.Class Object => _proxy ??= new Proxy(this);
 
-			  	// HandlerEvent
 			  {{methods.Indent(1)}}
 
 			  	public void VerifyNoOtherCalls()
@@ -287,7 +285,7 @@ public abstract class TestsBase
 			  			_mock = mock;
 			  		}
 
-			  		public {{proxy}}
+			  		{{proxy}}
 
 			  	}
 			  }

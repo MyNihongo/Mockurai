@@ -128,7 +128,9 @@ internal static class MockImplementationGenerator
 				continue;
 
 			if (generateCount > 0)
-				stringBuilder.AppendLine();
+				stringBuilder
+					.AppendLine()
+					.AppendLine();
 
 			handler(stringBuilder, typeSymbol, member, indent);
 			generateCount++;

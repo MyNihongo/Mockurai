@@ -14,10 +14,10 @@ public abstract class EventTestsBase : TestsBase
 		return CreateClassTestCode(@event, CustomCode);
 	}
 
-	protected static GeneratedSources CreateInterfaceGeneratedSources(string methods, string @event)
+	protected static GeneratedSources CreateInterfaceGeneratedSources(string methods, string proxy)
 	{
 		var testsBase = GetInterfaceTestsBase();
-		var mock = GetInterfaceMock(methods, @event);
+		var mock = GetInterfaceMock(methods, proxy);
 
 		return
 		[
