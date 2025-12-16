@@ -51,7 +51,7 @@ internal static class MockImplementationGenerator
 			  			_mock = mock;
 			  		}
 
-			  {{CreateProxyMethods(stringBuilder, mockableMembers, indent: 2)}}
+			  {{CreateProxyMethods(stringBuilder, typeSymbol, mockableMembers, indent: 2)}}
 			  	}
 			  }
 
@@ -128,7 +128,9 @@ internal static class MockImplementationGenerator
 				continue;
 
 			if (generateCount > 0)
-				stringBuilder.AppendLine();
+				stringBuilder
+					.AppendLine()
+					.AppendLine();
 
 			handler(stringBuilder, typeSymbol, member, indent);
 			generateCount++;
@@ -163,7 +165,7 @@ internal static class MockImplementationGenerator
 			.ToString();
 	}
 
-	private static string CreateProxyMethods(StringBuilder stringBuilder, IReadOnlyList<MemberSymbol> members, int indent)
+	private static string CreateProxyMethods(StringBuilder stringBuilder, ITypeSymbol typeSymbol, IReadOnlyList<MemberSymbol> members, int indent)
 	{
 		stringBuilder.Clear();
 
@@ -174,10 +176,30 @@ internal static class MockImplementationGenerator
 			{
 				case SymbolKind.Event:
 					stringBuilder.Indent(indent)
-						.Append("public event ")
+						.Append("public ")
+						.TryAppendOverride(member.Symbol)
+						.Append("event ")
 						.Append(((IEventSymbol)member.Symbol).Type)
 						.Append(' ')
 						.Append(member.Symbol.Name)
+						.AppendLine(";");
+					break;
+			}
+		}
+
+		// TODO: extract
+		foreach (var member in typeSymbol.GetIrrelevantOverridableMembers())
+		{
+			switch (member.Kind)
+			{
+				case SymbolKind.Event:
+					stringBuilder.Indent(indent)
+						.Append(member.DeclaredAccessibility.GetString()).Append(' ')
+						.TryAppendOverride(member)
+						.Append("event ")
+						.Append(((IEventSymbol)member).Type)
+						.Append(' ')
+						.Append(member.Name)
 						.AppendLine(";");
 					break;
 			}

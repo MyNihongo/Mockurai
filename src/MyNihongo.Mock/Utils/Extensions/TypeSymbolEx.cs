@@ -4,6 +4,11 @@ namespace MyNihongo.Mock.Utils;
 
 internal static class TypeSymbolEx
 {
+	extension(ISymbol @this)
+	{
+		public bool IsPublic => @this.DeclaredAccessibility == Accessibility.Public;
+	}
+
 	extension(ISymbol? @this)
 	{
 		public T? GetAttributeValue<T>(string attributeName, string propertyName, T defaultValue)
@@ -34,7 +39,20 @@ internal static class TypeSymbolEx
 		public IEnumerable<ISymbol> GetOverridableMembers()
 		{
 			return @this.GetMembers()
-				.Where(static x => !x.IsStatic && !x.IsSealed && (x.IsOverride || x.IsVirtual || x.IsAbstract));
+				.Where(static x => x.IsPublic && x is { IsStatic: false, IsSealed: false } && (x.IsOverride || x.IsVirtual || x.IsAbstract));
+		}
+
+		/// <summary>
+		/// Returns members that prevent compilation, but are not revelant to mocking (e.g. abstract members of parent classes).
+		/// </summary>
+		/// <returns>Enumeration of irrelevant members that must be overriden.</returns>
+		public IEnumerable<ISymbol> GetIrrelevantOverridableMembers()
+		{
+			if (@this.TypeKind != TypeKind.Class)
+				return [];
+
+			return @this.GetMembers()
+				.Where(static x => !x.IsPublic && x.IsAbstract);
 		}
 	}
 
@@ -74,6 +92,13 @@ internal static class TypeSymbolEx
 		{
 			return parameter is not null
 				? @this.Append(parameter)
+				: @this;
+		}
+
+		public StringBuilder TryAppendOverride(ISymbol symbol)
+		{
+			return symbol.ContainingType.TypeKind == TypeKind.Class && (symbol.IsAbstract || symbol.IsVirtual)
+				? @this.Append("override ")
 				: @this;
 		}
 	}
