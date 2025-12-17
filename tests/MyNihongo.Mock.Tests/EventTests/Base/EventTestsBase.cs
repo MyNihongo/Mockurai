@@ -9,11 +9,6 @@ public abstract class EventTestsBase : TestsNonGenericBase
 		return CreateInterfaceTestCode(@event, CustomCode);
 	}
 
-	protected static string CreateClassTestCode(string @event, bool isAbstract = false)
-	{
-		return CreateClassTestCode(@event, CustomCode, isAbstract);
-	}
-
 	protected static GeneratedSources CreateInterfaceGeneratedSources(string methods, string proxy)
 	{
 		var testsBase = GetInterfaceTestsBase();
@@ -24,6 +19,11 @@ public abstract class EventTestsBase : TestsNonGenericBase
 			testsBase,
 			mock,
 		];
+	}
+
+	protected static string CreateClassTestCode(string @event, bool isAbstract = false)
+	{
+		return CreateClassTestCode(@event, CustomCode, isAbstract);
 	}
 
 	protected static GeneratedSources CreateClassGeneratedSources(string methods, string proxy)

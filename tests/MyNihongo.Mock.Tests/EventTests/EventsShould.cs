@@ -1,6 +1,6 @@
 namespace MyNihongo.Mock.Tests.EventTests;
 
-public sealed class MockedMethodsGenericShould : EventGenericTestsBase
+public sealed class EventsShould : EventGenericTestsBase
 {
 	[Fact]
 	public async Task GenerateInterfaceEvent1()
