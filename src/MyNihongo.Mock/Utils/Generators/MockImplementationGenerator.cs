@@ -1,5 +1,4 @@
-﻿using System.Text;
-using MockClassName = (string Constructor, string Type, string GenericTypes);
+﻿using MockClassName = (string Constructor, string Type, string GenericTypes);
 
 namespace MyNihongo.Mock.Utils;
 
@@ -121,6 +120,7 @@ internal static class MockImplementationGenerator
 			Action<StringBuilder, ITypeSymbol, MemberSymbol, int>? handler = member.Symbol.Kind switch
 			{
 				SymbolKind.Event => MockImplementationEventGenerator.AppendEventMockMethod,
+				SymbolKind.Property => MockImplementationPropertyGenerator.AppendPropertyMockMethod,
 				_ => null,
 			};
 

@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace MyNihongo.Mock.Utils;
+﻿namespace MyNihongo.Mock.Utils;
 
 internal static class MockImplementationEventGenerator
 {
@@ -12,10 +10,7 @@ internal static class MockImplementationEventGenerator
 		var eventTypeString = eventSymbol.Type.ToString();
 		var parameterSymbol = eventSymbol.GetDelegateParameter();
 
-		stringBuilder
-			.Indent(indent)
-			.Append("// ")
-			.AppendLine(member.Symbol.Name);
+		stringBuilder.AppendNameComment(member, indent);
 
 		// Fields
 		stringBuilder
@@ -49,7 +44,7 @@ internal static class MockImplementationEventGenerator
 			.Append("public void Raise")
 			.AppendPropertyName(member.Symbol.Name)
 			.Append('(')
-			.AppendParameter(parameterSymbol)
+			.TryAppendParameter(parameterSymbol)
 			.AppendLine(")");
 
 		stringBuilder

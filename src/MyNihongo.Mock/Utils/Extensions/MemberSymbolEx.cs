@@ -1,0 +1,15 @@
+﻿namespace MyNihongo.Mock.Utils;
+
+internal static class MemberSymbolEx
+{
+	extension(StringBuilder @this)
+	{
+		public void AppendNameComment(MemberSymbol member, int indent)
+		{
+			@this
+				.Indent(indent)
+				.Append("// ")
+				.AppendLine(member.Symbol.Name);
+		}
+	}
+}

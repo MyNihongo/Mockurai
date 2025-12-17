@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace MyNihongo.Mock.Utils;
+﻿namespace MyNihongo.Mock.Utils;
 
 internal static class TypeSymbolEx
 {
@@ -56,6 +54,7 @@ internal static class TypeSymbolEx
 		}
 	}
 
+	// TODO: when there is more time try to optimize appending instead of appending strings of ITypeSymbol, IPropertySymbol, etc
 	extension(StringBuilder @this)
 	{
 		public StringBuilder AppendMockClassName(ITypeSymbol typeSymbol, bool appendGenericTypes = true)
@@ -88,11 +87,29 @@ internal static class TypeSymbolEx
 			return @this;
 		}
 
-		public StringBuilder AppendParameter(IParameterSymbol? parameter)
+		public StringBuilder AppendParameters(ImmutableArray<IParameterSymbol> parameters)
+		{
+			for (var i = 0; i < parameters.Length; i++)
+			{
+				if (i > 0)
+					@this.Append(", ");
+
+				@this.AppendParameter(parameters[i]);
+			}
+
+			return @this;
+		}
+
+		public StringBuilder TryAppendParameter(IParameterSymbol? parameter)
 		{
 			return parameter is not null
-				? @this.Append(parameter)
+				? @this.AppendParameter(parameter)
 				: @this;
+		}
+
+		public StringBuilder AppendParameter(IParameterSymbol parameter)
+		{
+			return @this.Append(parameter);
 		}
 
 		public StringBuilder TryAppendOverride(ISymbol symbol)
@@ -100,6 +117,11 @@ internal static class TypeSymbolEx
 			return symbol.ContainingType.TypeKind == TypeKind.Class && (symbol.IsAbstract || symbol.IsVirtual)
 				? @this.Append("override ")
 				: @this;
+		}
+
+		public StringBuilder AppendType(ITypeSymbol typeSymbol)
+		{
+			return @this.Append(typeSymbol);
 		}
 	}
 }
