@@ -193,10 +193,7 @@ internal static class MockImplementationGenerator
 						.Append(((IPropertySymbol)member.Symbol).Type)
 						.Append(' ')
 						.Append(member.Symbol.Name)
-						.Append(" { ");
-
-					if (((IPropertySymbol)member.Symbol).GetMethod is not null)
-						stringBuilder.Append("get; ");
+						.Append(" { get; ");
 
 					if (((IPropertySymbol)member.Symbol).SetMethod is not null)
 					{
@@ -233,10 +230,7 @@ internal static class MockImplementationGenerator
 						.Append(((IPropertySymbol)member).Type)
 						.Append(' ')
 						.Append(member.Name)
-						.Append(" { ");
-
-					if (((IPropertySymbol)member).GetMethod is not null)
-						stringBuilder.Append("get; ");
+						.Append(" { get; ");
 
 					if (((IPropertySymbol)member).SetMethod is not null)
 					{
