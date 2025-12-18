@@ -1,6 +1,6 @@
 ﻿namespace MyNihongo.Mock.Utils;
 
-internal static class NamedTypeSymbolEx
+internal static class EnumValuesEx
 {
 	public static string GetString(this Accessibility @this)
 	{
@@ -12,6 +12,18 @@ internal static class NamedTypeSymbolEx
 			Accessibility.Internal => "internal",
 			Accessibility.ProtectedOrInternal => "protected internal",
 			Accessibility.Public => "public",
+			_ => string.Empty,
+		};
+	}
+
+	public static string GetString(this RefKind @this)
+	{
+		return @this switch
+		{
+			RefKind.Ref => "ref",
+			RefKind.Out => "out",
+			RefKind.In => "in",
+			RefKind.RefReadOnlyParameter => "RefReadOnly",
 			_ => string.Empty,
 		};
 	}

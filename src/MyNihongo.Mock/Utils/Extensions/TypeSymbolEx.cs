@@ -87,31 +87,6 @@ internal static class TypeSymbolEx
 			return @this;
 		}
 
-		public StringBuilder AppendParameters(ImmutableArray<IParameterSymbol> parameters)
-		{
-			for (var i = 0; i < parameters.Length; i++)
-			{
-				if (i > 0)
-					@this.Append(", ");
-
-				@this.AppendParameter(parameters[i]);
-			}
-
-			return @this;
-		}
-
-		public StringBuilder TryAppendParameter(IParameterSymbol? parameter)
-		{
-			return parameter is not null
-				? @this.AppendParameter(parameter)
-				: @this;
-		}
-
-		public StringBuilder AppendParameter(IParameterSymbol parameter)
-		{
-			return @this.Append(parameter);
-		}
-
 		public StringBuilder TryAppendOverride(ISymbol symbol)
 		{
 			return symbol.ContainingType.TypeKind == TypeKind.Class && (symbol.IsAbstract || symbol.IsVirtual)

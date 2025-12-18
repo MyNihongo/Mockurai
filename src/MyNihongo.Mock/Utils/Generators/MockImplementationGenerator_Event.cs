@@ -58,6 +58,7 @@ internal static class MockImplementationEventGenerator
 		stringBuilder
 			.Indent(--indent).AppendLine("}");
 
+		// Verify methods
 		stringBuilder
 			.AppendVerifyMethods(mockedTypeSymbol, member, type: "add", eventTypeString, indent)
 			.AppendLine()
