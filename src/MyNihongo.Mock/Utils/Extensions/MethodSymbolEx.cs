@@ -13,7 +13,7 @@ internal static class MethodSymbolEx
 				.Append(" Setup")
 				.AppendMethodName(method)
 				.Append('(')
-				.AppendParameters(method.Parameters)
+				.AppendItParameters(method.Parameters)
 				.AppendLine(")")
 				.Indent(indent++).AppendLine("{");
 
@@ -26,7 +26,18 @@ internal static class MethodSymbolEx
 
 			if (method.Parameters.Length > 0)
 			{
-				TODO
+				@this
+					.Indent(indent)
+					.AppendFieldName(memberSymbol.MemberName, method.MethodKind)
+					.Append(".SetupParameter");
+
+				if (method.Parameters.Length > 1)
+					@this.Append('s');
+
+				@this
+					.Append('(')
+					.AppendParameterNames(method.Parameters)
+					.AppendLine(");");
 			}
 
 			@this
@@ -80,6 +91,25 @@ internal static class MethodSymbolEx
 			return @this
 				.AppendMethodKind(method.MethodKind)
 				.AppendPropertyName(methodName);
+		}
+
+		private StringBuilder AppendItParameters(ImmutableArray<IParameterSymbol> parameters)
+		{
+			for (var i = 0; i < parameters.Length; i++)
+			{
+				if (i > 0)
+					@this.Append(", ");
+
+				@this
+					.Append("in It")
+					.AppendPropertyName(parameters[i].RefKind.GetString())
+					.Append('<')
+					.AppendType(parameters[i].Type)
+					.Append("> ")
+					.AppendParameterName(parameters[i].Name);
+			}
+
+			return @this;
 		}
 	}
 }

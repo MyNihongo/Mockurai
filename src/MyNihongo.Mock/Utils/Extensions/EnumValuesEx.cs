@@ -23,7 +23,7 @@ internal static class EnumValuesEx
 			RefKind.Ref => "ref",
 			RefKind.Out => "out",
 			RefKind.In => "in",
-			RefKind.RefReadOnlyParameter => "RefReadOnly",
+			RefKind.RefReadOnlyParameter => "refReadOnly",
 			_ => string.Empty,
 		};
 	}

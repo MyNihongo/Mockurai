@@ -30,6 +30,19 @@ internal static class ParameterSymbolEx
 			return @this.Append(parameter);
 		}
 
+		public StringBuilder AppendParameterNames(ImmutableArray<IParameterSymbol> parameters)
+		{
+			for (var i = 0; i < parameters.Length; i++)
+			{
+				if (i > 0)
+					@this.Append(", ");
+
+				@this.Append(parameters[i].Name);
+			}
+
+			return @this;
+		}
+
 		public StringBuilder AppendSetupClassName(ImmutableArray<IParameterSymbol> parameters, ITypeSymbol? returnTypeSymbol)
 		{
 			@this.Append("Setup");
