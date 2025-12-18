@@ -71,14 +71,14 @@ internal static class MethodSymbolEx
 
 		public void AppendVerifyMethods(IMethodSymbol methodSymbol, ITypeSymbol mockedTypeSymbol, MemberSymbol memberSymbol, int indent)
 		{
+			// Verify times
 			@this
 				.Indent(indent)
 				.Append("public void Verify")
 				.AppendMethodName(methodSymbol)
 				.Append('(')
 				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
-				.Append("in Times times")
-				.AppendLine(")")
+				.AppendLine("in Times times)")
 				.Indent(indent++).AppendLine("{");
 
 			@this
@@ -95,7 +95,34 @@ internal static class MethodSymbolEx
 
 			@this
 				.Indent(--indent)
-				.Append('}');
+				.AppendLine("}")
+				.AppendLine();
+
+			// Verify index
+			@this
+				.Indent(indent)
+				.Append("public void Verify")
+				.AppendMethodName(methodSymbol)
+				.Append('(')
+				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
+				.AppendLine("long index)")
+				.Indent(indent++).AppendLine("{");
+
+			@this
+				.Indent(indent)
+				.AppendInvocationDeclaration(methodSymbol, mockedTypeSymbol, memberSymbol)
+				.AppendLine();
+
+			@this
+				.Indent(indent)
+				.AppendInvocationFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
+				.Append(".Verify(")
+				.AppendParameterNames(methodSymbol.Parameters, appendComma: true)
+				.Append("index, _invocationProviders);").AppendLine();
+
+			@this
+				.Indent(--indent)
+				.Append(')');
 		}
 
 		private StringBuilder AppendSetupType(IMethodSymbol methodSymbol)
