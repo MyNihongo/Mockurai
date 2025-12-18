@@ -101,7 +101,7 @@ internal static class MethodSymbolEx
 			// Verify index
 			@this
 				.Indent(indent)
-				.Append("public void Verify")
+				.Append("public long Verify")
 				.AppendMethodName(methodSymbol)
 				.Append('(')
 				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
@@ -115,6 +115,7 @@ internal static class MethodSymbolEx
 
 			@this
 				.Indent(indent)
+				.Append("return ")
 				.AppendInvocationFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
 				.Append(".Verify(")
 				.AppendParameterNames(methodSymbol.Parameters, appendComma: true)
@@ -122,7 +123,7 @@ internal static class MethodSymbolEx
 
 			@this
 				.Indent(--indent)
-				.Append(')');
+				.Append('}');
 		}
 
 		private StringBuilder AppendSetupType(IMethodSymbol methodSymbol)
