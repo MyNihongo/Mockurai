@@ -45,16 +45,9 @@ internal static class ParameterSymbolEx
 
 		public StringBuilder AppendSetupClassName(ImmutableArray<IParameterSymbol> parameters, ITypeSymbol? returnTypeSymbol)
 		{
-			@this.Append("Setup");
-
-			foreach (var parameter in parameters)
-			{
-				var refType = parameter.RefKind.GetString();
-
-				@this
-					.AppendPropertyName(refType)
-					.Append(parameter.Type.Name);
-			}
+			@this
+				.Append("Setup")
+				.AppendParameterRefKinds(parameters);
 
 			if (returnTypeSymbol is not null)
 			{
@@ -62,6 +55,27 @@ internal static class ParameterSymbolEx
 					.Append('<')
 					.AppendType(returnTypeSymbol)
 					.Append('>');
+			}
+
+			return @this;
+		}
+
+		public StringBuilder AppendInvocationClassName(ImmutableArray<IParameterSymbol> parameters)
+		{
+			return @this
+				.Append("Invocation")
+				.AppendParameterRefKinds(parameters);
+		}
+
+		private StringBuilder AppendParameterRefKinds(ImmutableArray<IParameterSymbol> parameters)
+		{
+			foreach (var parameter in parameters)
+			{
+				var refType = parameter.RefKind.GetString();
+
+				@this
+					.AppendPropertyName(refType)
+					.Append(parameter.Type.Name);
 			}
 
 			return @this;

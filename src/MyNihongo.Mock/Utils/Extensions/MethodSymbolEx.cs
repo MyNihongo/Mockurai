@@ -4,6 +4,25 @@ internal static class MethodSymbolEx
 {
 	extension(StringBuilder @this)
 	{
+		public void AppendSetupInvocationFields(IMethodSymbol method, MemberSymbol memberSymbol, int indent)
+		{
+			@this
+				.Indent(indent)
+				.Append("private ")
+				.AppendSetupType(method)
+				.Append("? ")
+				.AppendFieldName(memberSymbol.MemberName, method.MethodKind)
+				.AppendLine(";");
+
+			@this
+				.Indent(indent)
+				.Append("private ")
+				.AppendInvocationType(method)
+				.Append("? ")
+				.AppendFieldName(memberSymbol.MemberName, method.MethodKind)
+				.AppendLine("Invocation;");
+		}
+
 		public StringBuilder AppendSetupMethod(IMethodSymbol method, MemberSymbol memberSymbol, int indent)
 		{
 			@this
@@ -50,37 +69,47 @@ internal static class MethodSymbolEx
 				.Indent(--indent).Append('}');
 		}
 
-		public StringBuilder AppendSetupType(IMethodSymbol method)
+		private StringBuilder AppendSetupType(IMethodSymbol methodSymbol)
 		{
-			if (method.ReturnsVoid)
+			if (methodSymbol.ReturnsVoid)
 			{
-				return method.Parameters.Length switch
+				return methodSymbol.Parameters.Length switch
 				{
 					0 => @this.Append("Setup"),
 					1 => @this
 						.Append("SetupWithParameter<")
-						.AppendType(method.Parameters[0].Type)
+						.AppendType(methodSymbol.Parameters[0].Type)
 						.Append('>'),
 
-					_ => @this.AppendSetupClassName(method.Parameters, returnTypeSymbol: null),
+					_ => @this.AppendSetupClassName(methodSymbol.Parameters, returnTypeSymbol: null),
 				};
 			}
 
-			return method.Parameters.Length switch
+			return methodSymbol.Parameters.Length switch
 			{
 				0 => @this
 					.Append("Setup<")
-					.AppendType(method.ReturnType)
+					.AppendType(methodSymbol.ReturnType)
 					.Append('>'),
 
 				1 => @this
 					.Append("SetupWithParameter<")
-					.AppendType(method.Parameters[0].Type)
+					.AppendType(methodSymbol.Parameters[0].Type)
 					.Append(", ")
-					.AppendType(method.ReturnType)
+					.AppendType(methodSymbol.ReturnType)
 					.Append('>'),
 
-				_ => @this.AppendSetupClassName(method.Parameters, method.ReturnType),
+				_ => @this.AppendSetupClassName(methodSymbol.Parameters, methodSymbol.ReturnType),
+			};
+		}
+
+		private StringBuilder AppendInvocationType(IMethodSymbol methodSymbol)
+		{
+			return methodSymbol.Parameters.Length switch
+			{
+				0 => @this.Append("Invocation"),
+				1 => @this.Append("Invocation<").AppendType(methodSymbol.Parameters[0].Type).Append('>'),
+				_ => @this.AppendInvocationClassName(methodSymbol.Parameters),
 			};
 		}
 

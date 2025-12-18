@@ -11,44 +11,10 @@ internal static class MockImplementationPropertyGenerator
 
 		// Fields
 		if (propertySymbol.GetMethod is not null)
-		{
-			var methodKind = propertySymbol.GetMethod.MethodKind;
-
-			stringBuilder
-				.Indent(indent)
-				.Append("private ")
-				.AppendSetupType(propertySymbol.GetMethod)
-				.Append("? ")
-				.AppendFieldName(member.MemberName, methodKind)
-				.AppendLine(";");
-
-			stringBuilder
-				.Indent(indent)
-				.Append("private Invocation? ")
-				.AppendFieldName(member.MemberName, methodKind)
-				.AppendLine("Invocation;");
-		}
+			stringBuilder.AppendSetupInvocationFields(propertySymbol.GetMethod, member, indent);
 
 		if (propertySymbol.SetMethod is not null)
-		{
-			var methodKind = propertySymbol.SetMethod.MethodKind;
-
-			stringBuilder
-				.Indent(indent)
-				.Append("private ")
-				.AppendSetupType(propertySymbol.SetMethod)
-				.Append("? ")
-				.AppendFieldName(member.MemberName, methodKind)
-				.AppendLine(";");
-
-			stringBuilder
-				.Indent(indent)
-				.Append("private Invocation<")
-				.AppendParameters(propertySymbol.SetMethod.Parameters)
-				.Append(">? ")
-				.AppendFieldName(member.MemberName, methodKind)
-				.AppendLine("Invocation;");
-		}
+			stringBuilder.AppendSetupInvocationFields(propertySymbol.SetMethod, member, indent);
 
 		// Setup method
 		if (propertySymbol.GetMethod is not null)
