@@ -111,6 +111,8 @@ internal static class MockImplementationEventGenerator
 				.Indent(--indent).Append('}');
 		}
 
+		// TODO: use from verify
+		[Obsolete("Use a generic implementation from ParameterSymbolEx")]
 		private StringBuilder AppendInvocationDeclaration(ITypeSymbol mockedTypeSymbol, MemberSymbol member, string type, string eventTypeString)
 		{
 			return stringBuilder

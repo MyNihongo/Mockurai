@@ -30,14 +30,17 @@ internal static class ParameterSymbolEx
 			return @this.Append(parameter);
 		}
 
-		public StringBuilder AppendParameterNames(ImmutableArray<IParameterSymbol> parameters)
+		public StringBuilder AppendParameterNames(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
-				if (i > 0)
+				if (!appendComma && i > 0)
 					@this.Append(", ");
 
 				@this.Append(parameters[i].Name);
+
+				if (appendComma)
+					@this.Append(", ");
 			}
 
 			return @this;

@@ -12,7 +12,12 @@ internal static class StringBuilderEx
 			return @this;
 		}
 
-		public StringBuilder AppendFieldName(string? name, MethodKind? methodKind = null)
+		public StringBuilder AppendInvocationFieldName(string? name, MethodKind? methodKind = null)
+		{
+			return @this.AppendFieldName(name, methodKind, suffix: "Invocation");
+		}
+
+		public StringBuilder AppendFieldName(string? name, MethodKind? methodKind = null, string? suffix = null)
 		{
 			if (string.IsNullOrEmpty(name))
 				return @this;
@@ -27,7 +32,9 @@ internal static class StringBuilderEx
 			if (name.Length > 1)
 				@this.Append(name.Substring(1));
 
-			return @this.AppendMethodKind(methodKind);
+			return @this
+				.AppendMethodKind(methodKind)
+				.Append(suffix);
 		}
 
 		public StringBuilder AppendParameterName(string? name)

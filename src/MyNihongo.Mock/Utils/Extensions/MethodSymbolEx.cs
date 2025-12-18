@@ -19,8 +19,8 @@ internal static class MethodSymbolEx
 				.Append("private ")
 				.AppendInvocationType(method)
 				.Append("? ")
-				.AppendFieldName(memberSymbol.MemberName, method.MethodKind)
-				.AppendLine("Invocation;");
+				.AppendInvocationFieldName(memberSymbol.MemberName, method.MethodKind)
+				.AppendLine(";");
 		}
 
 		public StringBuilder AppendSetupMethod(IMethodSymbol method, MemberSymbol memberSymbol, int indent)
@@ -67,6 +67,35 @@ internal static class MethodSymbolEx
 
 			return @this
 				.Indent(--indent).Append('}');
+		}
+
+		public void AppendVerifyMethods(IMethodSymbol methodSymbol, ITypeSymbol mockedTypeSymbol, MemberSymbol memberSymbol, int indent)
+		{
+			@this
+				.Indent(indent)
+				.Append("public void Verify")
+				.AppendMethodName(methodSymbol)
+				.Append('(')
+				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
+				.Append("in Times times")
+				.AppendLine(")")
+				.Indent(indent++).AppendLine("{");
+
+			@this
+				.Indent(indent)
+				.AppendInvocationDeclaration(methodSymbol, mockedTypeSymbol, memberSymbol)
+				.AppendLine();
+
+			@this
+				.Indent(indent)
+				.AppendInvocationFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
+				.Append(".Verify(")
+				.AppendParameterNames(methodSymbol.Parameters, appendComma: true)
+				.Append("times, _invocationProviders);").AppendLine();
+
+			@this
+				.Indent(--indent)
+				.Append('}');
 		}
 
 		private StringBuilder AppendSetupType(IMethodSymbol methodSymbol)
@@ -122,11 +151,11 @@ internal static class MethodSymbolEx
 				.AppendPropertyName(methodName);
 		}
 
-		private StringBuilder AppendItParameters(ImmutableArray<IParameterSymbol> parameters)
+		private StringBuilder AppendItParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
-				if (i > 0)
+				if (!appendComma && i > 0)
 					@this.Append(", ");
 
 				@this
@@ -136,9 +165,39 @@ internal static class MethodSymbolEx
 					.AppendType(parameters[i].Type)
 					.Append("> ")
 					.AppendParameterName(parameters[i].Name);
+
+				if (appendComma)
+					@this.Append(", ");
 			}
 
 			return @this;
+		}
+
+		private StringBuilder AppendInvocationDeclaration(IMethodSymbol methodSymbol, ITypeSymbol mockedTypeSymbol, MemberSymbol memberSymbol)
+		{
+			@this
+				.AppendInvocationFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
+				.Append(" ??= new ")
+				.AppendInvocationType(methodSymbol)
+				.Append("(\"")
+				.Append(mockedTypeSymbol.Name)
+				.AppendGenericTypes(mockedTypeSymbol)
+				.Append('.')
+				.AppendPropertyName(memberSymbol.Symbol.Name)
+				.Append('.');
+
+			switch (methodSymbol.MethodKind)
+			{
+				case MethodKind.PropertyGet:
+					@this.Append("get");
+					break;
+				case MethodKind.PropertySet:
+					@this.Append("set = {0}");
+					break;
+			}
+
+			return @this
+				.Append("\");");
 		}
 	}
 }
