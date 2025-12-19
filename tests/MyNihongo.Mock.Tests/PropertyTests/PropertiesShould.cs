@@ -124,12 +124,120 @@ public sealed class PropertiesShould : PropertyTestsBase
 	[Fact]
 	public async Task GenerateInterfacePropertyGetSet()
 	{
-		const string property = "";
+		const string property = "int Property { get; set; }";
+
+		const string methods =
+			"""
+			// Property
+			private Setup<int>? _property0Get;
+			private Invocation? _property0GetInvocation;
+			private SetupWithParameter<int>? _property0Set;
+			private Invocation<int>? _property0SetInvocation;
+
+			public Setup<int> SetupGetProperty()
+			{
+				_property0Get ??= new Setup<int>();
+				return _property0Get;
+			}
+
+			public void VerifyGetProperty(in Times times)
+			{
+				_property0GetInvocation ??= new Invocation("IInterface.Property.get");
+				_property0GetInvocation.Verify(times, _invocationProviders);
+			}
+
+			public long VerifyGetProperty(long index)
+			{
+				_property0GetInvocation ??= new Invocation("IInterface.Property.get");
+				return _property0GetInvocation.Verify(index, _invocationProviders);
+			}
+
+			public SetupWithParameter<int> SetupSetProperty(in It<int> value)
+			{
+				_property0Set ??= new SetupWithParameter<int>();
+				_property0Set.SetupParameter(value);
+				return _property0Set;
+			}
+
+			public void VerifySetProperty(in It<int> value, in Times times)
+			{
+				_property0SetInvocation ??= new Invocation<int>("IInterface.Property.set = {0}");
+				_property0SetInvocation.Verify(value, times, _invocationProviders);
+			}
+
+			public long VerifySetProperty(in It<int> value, long index)
+			{
+				_property0SetInvocation ??= new Invocation<int>("IInterface.Property.set = {0}");
+				return _property0SetInvocation.Verify(value, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy = "public int Property { get; set; }";
+
+		var testCode = CreateInterfaceTestCode(property);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
 	}
 
 	[Fact]
 	public async Task GenerateInterfacePropertyGetInit()
 	{
-		const string property = "";
+		const string property = "int Property { get; init; }";
+
+		const string methods =
+			"""
+			// Property
+			private Setup<int>? _property0Get;
+			private Invocation? _property0GetInvocation;
+			private SetupWithParameter<int>? _property0Set;
+			private Invocation<int>? _property0SetInvocation;
+
+			public Setup<int> SetupGetProperty()
+			{
+				_property0Get ??= new Setup<int>();
+				return _property0Get;
+			}
+
+			public void VerifyGetProperty(in Times times)
+			{
+				_property0GetInvocation ??= new Invocation("IInterface.Property.get");
+				_property0GetInvocation.Verify(times, _invocationProviders);
+			}
+
+			public long VerifyGetProperty(long index)
+			{
+				_property0GetInvocation ??= new Invocation("IInterface.Property.get");
+				return _property0GetInvocation.Verify(index, _invocationProviders);
+			}
+
+			public SetupWithParameter<int> SetupSetProperty(in It<int> value)
+			{
+				_property0Set ??= new SetupWithParameter<int>();
+				_property0Set.SetupParameter(value);
+				return _property0Set;
+			}
+
+			public void VerifySetProperty(in It<int> value, in Times times)
+			{
+				_property0SetInvocation ??= new Invocation<int>("IInterface.Property.set = {0}");
+				_property0SetInvocation.Verify(value, times, _invocationProviders);
+			}
+
+			public long VerifySetProperty(in It<int> value, long index)
+			{
+				_property0SetInvocation ??= new Invocation<int>("IInterface.Property.set = {0}");
+				return _property0SetInvocation.Verify(value, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy = "public int Property { get; init; }";
+
+		var testCode = CreateInterfaceTestCode(property);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
 	}
 }

@@ -21,7 +21,12 @@ internal static class MockImplementationPropertyGenerator
 			stringBuilder.AppendMethods(propertySymbol.GetMethod, mockedTypeSymbol, member, indent);
 
 		if (propertySymbol.SetMethod is not null)
+		{
+			if (propertySymbol.GetMethod is not null)
+				stringBuilder.AppendLine();
+
 			stringBuilder.AppendMethods(propertySymbol.SetMethod, mockedTypeSymbol, member, indent);
+		}
 	}
 
 	extension(StringBuilder stringBuilder)
