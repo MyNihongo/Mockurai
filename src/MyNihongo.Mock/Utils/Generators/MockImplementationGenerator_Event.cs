@@ -45,78 +45,22 @@ internal static class MockImplementationEventGenerator
 			.AppendLine(");");
 
 		stringBuilder
-			.Indent(--indent).AppendLine("}");
+			.Indent(--indent).Append("}");
 
 		// Verify methods
-		stringBuilder
-			.AppendVerifyMethods(mockedTypeSymbol, memberSymbol, type: "add", eventTypeString, indent)
-			.AppendLine()
-			.AppendVerifyMethods(mockedTypeSymbol, memberSymbol, type: "remove", eventTypeString, indent);
+		if (eventSymbol.AddMethod is not null)
+			stringBuilder.AppendMethod(eventSymbol.AddMethod, mockedTypeSymbol, memberSymbol, indent);
+		if (eventSymbol.RemoveMethod is not null)
+			stringBuilder.AppendMethod(eventSymbol.RemoveMethod, mockedTypeSymbol, memberSymbol, indent);
 	}
 
 	extension(StringBuilder stringBuilder)
 	{
-		private StringBuilder AppendVerifyMethods(ITypeSymbol mockedTypeSymbol, MemberSymbol member, string type, string eventTypeString, int indent)
+		private void AppendMethod(IMethodSymbol methodSymbol, ITypeSymbol mockedTypeSymbol, MemberSymbol member, int indent)
 		{
-			// Verify method - times
 			stringBuilder
-				.AppendLine()
-				.Indent(indent)
-				.Append("public void Verify")
-				.AppendPropertyName(type)
-				.AppendPropertyName(member.Symbol.Name)
-				.Append("(in ")
-				.Append(eventTypeString)
-				.AppendLine(" handler, in Times times)");
-
-			stringBuilder
-				.Indent(indent++).AppendLine("{")
-				.Indent(indent).AppendInvocationDeclaration(mockedTypeSymbol, member, type, eventTypeString)
-				.Indent(indent)
-				.AppendFieldName(member.MemberName)
-				.AppendPropertyName(type)
-				.AppendLine("Invocation.Verify(handler, times, _invocationProviders);")
-				.Indent(--indent).AppendLine("}");
-
-			// Verify method - index
-			stringBuilder
-				.AppendLine()
-				.Indent(indent)
-				.Append("public long Verify")
-				.AppendPropertyName(type)
-				.AppendPropertyName(member.Symbol.Name)
-				.Append("(in ")
-				.Append(eventTypeString)
-				.AppendLine(" handler, long index)");
-
-			return stringBuilder
-				.Indent(indent++).AppendLine("{")
-				.Indent(indent).AppendInvocationDeclaration(mockedTypeSymbol, member, type, eventTypeString)
-				.Indent(indent)
-				.Append("return ")
-				.AppendFieldName(member.MemberName)
-				.AppendPropertyName(type)
-				.AppendLine("Invocation.Verify(handler, index, _invocationProviders);")
-				.Indent(--indent).Append('}');
-		}
-
-		// TODO: use from verify
-		[Obsolete("Use a generic implementation from ParameterSymbolEx")]
-		private StringBuilder AppendInvocationDeclaration(ITypeSymbol mockedTypeSymbol, MemberSymbol member, string type, string eventTypeString)
-		{
-			return stringBuilder
-				.AppendFieldName(member.MemberName)
-				.AppendPropertyName(type)
-				.Append("Invocation ??= new Invocation<")
-				.Append(eventTypeString)
-				.Append(">(\"")
-				.Append(mockedTypeSymbol.Name)
-				.AppendGenericTypes(mockedTypeSymbol)
-				.Append('.')
-				.AppendPropertyName(member.Symbol.Name)
-				.Append('.')
-				.Append(type)
-				.AppendLine("\");");
+				.AppendLine().AppendLine()
+				.AppendVerifyMethods(methodSymbol, mockedTypeSymbol, member, indent);
 		}
 	}
 }

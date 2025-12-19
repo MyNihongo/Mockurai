@@ -227,6 +227,12 @@ internal static class MethodSymbolEx
 				case MethodKind.PropertySet:
 					@this.Append("set = {0}");
 					break;
+				case MethodKind.EventAdd:
+					@this.Append("add += {0}");
+					break;
+				case MethodKind.EventRemove:
+					@this.Append("remove -= {0}");
+					break;
 			}
 
 			return @this
