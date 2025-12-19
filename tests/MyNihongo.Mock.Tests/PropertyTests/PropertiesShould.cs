@@ -84,7 +84,41 @@ public sealed class PropertiesShould : PropertyTestsBase
 	[Fact]
 	public async Task GenerateInterfacePropertyInit()
 	{
-		const string property = "";
+		const string property = "int Property { init; }";
+
+		const string methods =
+			"""
+			// Property
+			private SetupWithParameter<int>? _property0Set;
+			private Invocation<int>? _property0SetInvocation;
+
+			public SetupWithParameter<int> SetupSetProperty(in It<int> value)
+			{
+				_property0Set ??= new SetupWithParameter<int>();
+				_property0Set.SetupParameter(value);
+				return _property0Set;
+			}
+
+			public void VerifySetProperty(in It<int> value, in Times times)
+			{
+				_property0SetInvocation ??= new Invocation<int>("IInterface.Property.set = {0}");
+				_property0SetInvocation.Verify(value, times, _invocationProviders);
+			}
+
+			public long VerifySetProperty(in It<int> value, long index)
+			{
+				_property0SetInvocation ??= new Invocation<int>("IInterface.Property.set = {0}");
+				return _property0SetInvocation.Verify(value, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy = "public int Property { get; init; }";
+
+		var testCode = CreateInterfaceTestCode(property);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
 	}
 
 	[Fact]
