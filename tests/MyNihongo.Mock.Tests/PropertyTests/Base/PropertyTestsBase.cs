@@ -1,12 +1,12 @@
-﻿namespace MyNihongo.Mock.Tests.EventTests;
+﻿namespace MyNihongo.Mock.Tests.PropertyTests;
 
-public abstract class EventTestsBase : TestsNonGenericBase
+public abstract class PropertyTestsBase : TestsNonGenericBase
 {
-	private const string CustomCode = "public delegate void SampleHandler1(object sender, int value);";
+	private const string CustomCode = "public sealed record Record(int age, string Name);";
 
-	protected static string CreateInterfaceTestCode(string @event)
+	protected static string CreateInterfaceTestCode(string property)
 	{
-		return CreateInterfaceTestCode(@event, CustomCode);
+		return CreateInterfaceTestCode(property, CustomCode);
 	}
 
 	protected static GeneratedSources CreateInterfaceGeneratedSources(string methods, string proxy)
@@ -21,9 +21,9 @@ public abstract class EventTestsBase : TestsNonGenericBase
 		];
 	}
 
-	protected static string CreateClassTestCode(string @event, bool isAbstract = false)
+	protected static string CreateClassTestCode(string property, bool isAbstract = false)
 	{
-		return CreateClassTestCode(@event, CustomCode, isAbstract);
+		return CreateClassTestCode(property, CustomCode, isAbstract);
 	}
 
 	protected static GeneratedSources CreateClassGeneratedSources(string methods, string proxy)

@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace MyNihongo.Mock.Utils;
+﻿namespace MyNihongo.Mock.Utils;
 
 internal static class StringBuilderEx
 {
@@ -14,7 +12,12 @@ internal static class StringBuilderEx
 			return @this;
 		}
 
-		public StringBuilder AppendFieldName(string? name)
+		public StringBuilder AppendInvocationFieldName(string? name, MethodKind? methodKind = null)
+		{
+			return @this.AppendFieldName(name, methodKind, suffix: "Invocation");
+		}
+
+		public StringBuilder AppendFieldName(string? name, MethodKind? methodKind = null, string? suffix = null)
 		{
 			if (string.IsNullOrEmpty(name))
 				return @this;
@@ -26,9 +29,12 @@ internal static class StringBuilderEx
 				.Append('_')
 				.Append(char.ToLower(name[0]));
 
-			return name.Length > 1
-				? @this.Append(name.Substring(1))
-				: @this;
+			if (name.Length > 1)
+				@this.Append(name.Substring(1));
+
+			return @this
+				.AppendMethodKind(methodKind)
+				.Append(suffix);
 		}
 
 		public StringBuilder AppendParameterName(string? name)
@@ -67,6 +73,27 @@ internal static class StringBuilderEx
 			return startIndex + 1 < name.Length
 				? @this.Append(name.Substring(startIndex + 1))
 				: @this;
+		}
+
+		public StringBuilder AppendMethodKind(MethodKind? methodKind)
+		{
+			switch (methodKind)
+			{
+				case MethodKind.PropertyGet:
+					@this.Append("Get");
+					break;
+				case MethodKind.PropertySet:
+					@this.Append("Set");
+					break;
+				case MethodKind.EventAdd:
+					@this.Append("Add");
+					break;
+				case MethodKind.EventRemove:
+					@this.Append("Remove");
+					break;
+			}
+
+			return @this;
 		}
 	}
 }

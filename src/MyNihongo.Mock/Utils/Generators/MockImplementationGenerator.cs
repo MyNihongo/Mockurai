@@ -1,5 +1,4 @@
-﻿using System.Text;
-using MockClassName = (string Constructor, string Type, string GenericTypes);
+﻿using MockClassName = (string Constructor, string Type, string GenericTypes);
 
 namespace MyNihongo.Mock.Utils;
 
@@ -121,6 +120,7 @@ internal static class MockImplementationGenerator
 			Action<StringBuilder, ITypeSymbol, MemberSymbol, int>? handler = member.Symbol.Kind switch
 			{
 				SymbolKind.Event => MockImplementationEventGenerator.AppendEventMockMethod,
+				SymbolKind.Property => MockImplementationPropertyGenerator.AppendPropertyMockMethod,
 				_ => null,
 			};
 
@@ -175,7 +175,8 @@ internal static class MockImplementationGenerator
 			switch (member.Symbol.Kind)
 			{
 				case SymbolKind.Event:
-					stringBuilder.Indent(indent)
+					stringBuilder
+						.Indent(indent)
 						.Append("public ")
 						.TryAppendOverride(member.Symbol)
 						.Append("event ")
@@ -183,6 +184,25 @@ internal static class MockImplementationGenerator
 						.Append(' ')
 						.Append(member.Symbol.Name)
 						.AppendLine(";");
+					break;
+				case SymbolKind.Property:
+					stringBuilder
+						.Indent(indent)
+						.Append("public ")
+						.TryAppendOverride(member.Symbol)
+						.Append(((IPropertySymbol)member.Symbol).Type)
+						.Append(' ')
+						.Append(member.Symbol.Name)
+						.Append(" { get; ");
+
+					if (((IPropertySymbol)member.Symbol).SetMethod is not null)
+					{
+						var name = ((IPropertySymbol)member.Symbol).SetMethod!.IsInitOnly ? "init; " : "set; ";
+						stringBuilder.Append(name);
+					}
+
+					stringBuilder
+						.AppendLine("}");
 					break;
 			}
 		}
@@ -201,6 +221,25 @@ internal static class MockImplementationGenerator
 						.Append(' ')
 						.Append(member.Name)
 						.AppendLine(";");
+					break;
+				case SymbolKind.Property:
+					stringBuilder
+						.Indent(indent)
+						.Append("public ")
+						.TryAppendOverride(member)
+						.Append(((IPropertySymbol)member).Type)
+						.Append(' ')
+						.Append(member.Name)
+						.Append(" { get; ");
+
+					if (((IPropertySymbol)member).SetMethod is not null)
+					{
+						var name = ((IPropertySymbol)member).SetMethod!.IsInitOnly ? "init; " : "set; ";
+						stringBuilder.Append(name);
+					}
+
+					stringBuilder
+						.AppendLine("}");
 					break;
 			}
 		}

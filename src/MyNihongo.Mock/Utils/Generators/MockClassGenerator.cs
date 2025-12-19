@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace MyNihongo.Mock.Utils;
+﻿namespace MyNihongo.Mock.Utils;
 
 internal static class MockClassGenerator
 {

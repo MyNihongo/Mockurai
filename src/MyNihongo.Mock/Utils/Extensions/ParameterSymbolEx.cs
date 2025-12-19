@@ -1,0 +1,87 @@
+﻿namespace MyNihongo.Mock.Utils;
+
+internal static class ParameterSymbolEx
+{
+	// TODO: when there is more time try to optimize appending instead of appending strings of ITypeSymbol, IPropertySymbol, etc
+	extension(StringBuilder @this)
+	{
+		public StringBuilder AppendParameters(ImmutableArray<IParameterSymbol> parameters)
+		{
+			for (var i = 0; i < parameters.Length; i++)
+			{
+				if (i > 0)
+					@this.Append(", ");
+
+				@this.AppendParameter(parameters[i]);
+			}
+
+			return @this;
+		}
+
+		public StringBuilder TryAppendParameter(IParameterSymbol? parameter)
+		{
+			return parameter is not null
+				? @this.AppendParameter(parameter)
+				: @this;
+		}
+
+		public StringBuilder AppendParameter(IParameterSymbol parameter)
+		{
+			return @this.Append(parameter);
+		}
+
+		public StringBuilder AppendParameterNames(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false)
+		{
+			for (var i = 0; i < parameters.Length; i++)
+			{
+				if (!appendComma && i > 0)
+					@this.Append(", ");
+
+				@this.Append(parameters[i].Name);
+
+				if (appendComma)
+					@this.Append(", ");
+			}
+
+			return @this;
+		}
+
+		public StringBuilder AppendSetupClassName(ImmutableArray<IParameterSymbol> parameters, ITypeSymbol? returnTypeSymbol)
+		{
+			@this
+				.Append("Setup")
+				.AppendParameterRefKinds(parameters);
+
+			if (returnTypeSymbol is not null)
+			{
+				@this
+					.Append('<')
+					.AppendType(returnTypeSymbol)
+					.Append('>');
+			}
+
+			return @this;
+		}
+
+		public StringBuilder AppendInvocationClassName(ImmutableArray<IParameterSymbol> parameters)
+		{
+			return @this
+				.Append("Invocation")
+				.AppendParameterRefKinds(parameters);
+		}
+
+		private StringBuilder AppendParameterRefKinds(ImmutableArray<IParameterSymbol> parameters)
+		{
+			foreach (var parameter in parameters)
+			{
+				var refType = parameter.RefKind.GetString();
+
+				@this
+					.AppendPropertyName(refType)
+					.Append(parameter.Type.Name);
+			}
+
+			return @this;
+		}
+	}
+}
