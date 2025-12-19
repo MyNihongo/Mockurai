@@ -20,4 +20,21 @@ public abstract class PropertyTestsBase : TestsNonGenericBase
 			mock,
 		];
 	}
+
+	protected static string CreateClassTestCode(string property, bool isAbstract = false)
+	{
+		return CreateClassTestCode(property, CustomCode, isAbstract);
+	}
+
+	protected static GeneratedSources CreateClassGeneratedSources(string methods, string proxy)
+	{
+		var testsBase = GetClassTestsBase();
+		var mock = GetClassMock(methods, proxy);
+
+		return
+		[
+			testsBase,
+			mock,
+		];
+	}
 }
