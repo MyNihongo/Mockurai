@@ -85,6 +85,12 @@ internal static class StringBuilderEx
 				case MethodKind.PropertySet:
 					@this.Append("Set");
 					break;
+				case MethodKind.EventAdd:
+					@this.Append("Add");
+					break;
+				case MethodKind.EventRemove:
+					@this.Append("Remove");
+					break;
 			}
 
 			return @this;

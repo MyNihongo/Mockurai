@@ -14,6 +14,11 @@ internal static class MethodSymbolEx
 				.AppendFieldName(memberSymbol.MemberName, method.MethodKind)
 				.AppendLine(";");
 
+			@this.AppendInvocationField(method, memberSymbol, indent);
+		}
+
+		public void AppendInvocationField(IMethodSymbol method, MemberSymbol memberSymbol, int indent)
+		{
 			@this
 				.Indent(indent)
 				.Append("private ")

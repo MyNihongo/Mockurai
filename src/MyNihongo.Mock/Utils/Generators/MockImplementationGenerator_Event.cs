@@ -2,15 +2,15 @@
 
 internal static class MockImplementationEventGenerator
 {
-	public static void AppendEventMockMethod(StringBuilder stringBuilder, ITypeSymbol mockedTypeSymbol, MemberSymbol member, int indent)
+	public static void AppendEventMockMethod(StringBuilder stringBuilder, ITypeSymbol mockedTypeSymbol, MemberSymbol memberSymbol, int indent)
 	{
-		if (member.Symbol is not IEventSymbol eventSymbol)
+		if (memberSymbol.Symbol is not IEventSymbol eventSymbol)
 			return;
 
 		var eventTypeString = eventSymbol.Type.ToString();
 		var parameterSymbol = eventSymbol.GetDelegateParameter();
 
-		stringBuilder.AppendNameComment(member, indent);
+		stringBuilder.AppendNameComment(memberSymbol, indent);
 
 		// Fields
 		stringBuilder
@@ -18,31 +18,20 @@ internal static class MockImplementationEventGenerator
 			.Append("private ")
 			.Append(eventTypeString)
 			.Append(' ')
-			.AppendFieldName(member.MemberName)
+			.AppendFieldName(memberSymbol.MemberName)
 			.AppendLine(";");
 
-		stringBuilder
-			.Indent(indent)
-			.Append("private Invocation<")
-			.Append(eventTypeString)
-			.Append(">? ")
-			.AppendFieldName(member.MemberName)
-			.AppendLine("AddInvocation;");
-
-		stringBuilder
-			.Indent(indent)
-			.Append("private Invocation<")
-			.Append(eventTypeString)
-			.Append(">? ")
-			.AppendFieldName(member.MemberName)
-			.AppendLine("RemoveInvocation;");
+		if (eventSymbol.AddMethod is not null)
+			stringBuilder.AppendInvocationField(eventSymbol.AddMethod, memberSymbol, indent);
+		if (eventSymbol.RemoveMethod is not null)
+			stringBuilder.AppendInvocationField(eventSymbol.RemoveMethod, memberSymbol, indent);
 
 		// Raise method
 		stringBuilder
 			.AppendLine()
 			.Indent(indent)
 			.Append("public void Raise")
-			.AppendPropertyName(member.Symbol.Name)
+			.AppendPropertyName(memberSymbol.Symbol.Name)
 			.Append('(')
 			.TryAppendParameter(parameterSymbol)
 			.AppendLine(")");
@@ -50,7 +39,7 @@ internal static class MockImplementationEventGenerator
 		stringBuilder
 			.Indent(indent++).AppendLine("{")
 			.Indent(indent)
-			.AppendFieldName(member.MemberName)
+			.AppendFieldName(memberSymbol.MemberName)
 			.Append("?.Invoke(Object, ")
 			.Append(parameterSymbol?.Name)
 			.AppendLine(");");
@@ -60,9 +49,9 @@ internal static class MockImplementationEventGenerator
 
 		// Verify methods
 		stringBuilder
-			.AppendVerifyMethods(mockedTypeSymbol, member, type: "add", eventTypeString, indent)
+			.AppendVerifyMethods(mockedTypeSymbol, memberSymbol, type: "add", eventTypeString, indent)
 			.AppendLine()
-			.AppendVerifyMethods(mockedTypeSymbol, member, type: "remove", eventTypeString, indent);
+			.AppendVerifyMethods(mockedTypeSymbol, memberSymbol, type: "remove", eventTypeString, indent);
 	}
 
 	extension(StringBuilder stringBuilder)
