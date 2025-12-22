@@ -2,33 +2,55 @@
 
 internal static class MethodSymbolEx
 {
+	extension(IMethodSymbol @this)
+	{
+		private bool TryGetGenericTypeCount(MockedTypeSymbol mockedTypeSymbol, out int count)
+		{
+			if (mockedTypeSymbol.GenericTypeParameterNames is null)
+			{
+				count = @this.TypeArguments.Length;
+			}
+			else
+			{
+				count = 0;
+				foreach (var genericType in @this.TypeArguments)
+				{
+					if (!mockedTypeSymbol.GenericTypeParameterNames.Contains(genericType.Name))
+						count++;
+				}
+			}
+
+			return count > 0;
+		}
+	}
+
 	extension(StringBuilder @this)
 	{
-		public void AppendSetupInvocationFields(IMethodSymbol method, MockedMemberSymbol memberSymbol, int indent)
+		public void AppendSetupInvocationFields(IMethodSymbol method, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 		{
 			@this
 				.Indent(indent)
 				.Append("private ")
-				.AppendSetupType(method)
+				.AppendSetupType(method, mockedTypeSymbol)
 				.Append("? ")
 				.AppendFieldName(memberSymbol.MemberName, method.MethodKind)
 				.AppendLine(";");
 
-			@this.AppendInvocationField(method, memberSymbol, indent);
+			@this.AppendInvocationField(method, mockedTypeSymbol, memberSymbol, indent);
 		}
 
-		public void AppendInvocationField(IMethodSymbol method, MockedMemberSymbol memberSymbol, int indent)
+		public void AppendInvocationField(IMethodSymbol method, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 		{
 			@this
 				.Indent(indent)
 				.Append("private ")
-				.AppendInvocationType(method)
+				.AppendInvocationType(method, mockedTypeSymbol)
 				.Append("? ")
 				.AppendInvocationFieldName(memberSymbol.MemberName, method.MethodKind)
 				.AppendLine(";");
 		}
 
-		public StringBuilder AppendSetupMethod(IMethodSymbol method, MockedMemberSymbol memberSymbol, int indent)
+		public StringBuilder AppendSetupMethod(IMethodSymbol method, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 		{
 			@this
 				.Indent(indent)
@@ -45,7 +67,7 @@ internal static class MethodSymbolEx
 				.Indent(indent)
 				.AppendFieldName(memberSymbol.MemberName, method.MethodKind)
 				.Append(" ??= new ")
-				.AppendSetupType(method)
+				.AppendSetupType(method, mockedTypeSymbol)
 				.AppendLine("();");
 
 			if (method.Parameters.TryGetInputParameters(out var parameters))
@@ -131,6 +153,13 @@ internal static class MethodSymbolEx
 				.Append('}');
 		}
 
+		private StringBuilder AppendSetupType(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol)
+		{
+			return methodSymbol.TryGetGenericTypeCount(mockedTypeSymbol, out var genericTypeCount)
+				? @this.AppendGenericSetupType(methodSymbol, genericTypeCount)
+				: @this.AppendSetupType(methodSymbol);
+		}
+
 		private StringBuilder AppendSetupType(IMethodSymbol methodSymbol)
 		{
 			if (methodSymbol.ReturnsVoid)
@@ -160,6 +189,17 @@ internal static class MethodSymbolEx
 			};
 		}
 
+		private StringBuilder AppendGenericSetupType(IMethodSymbol methodSymbol, int genericTypeCount)
+		{
+			@this
+				.Append("System.Collections.Concurrent.ConcurrentDictionary<")
+				.AppendTypesType(genericTypeCount)
+				.Append(", ");
+
+			var setupType = methodSymbol is { ReturnsVoid: true, Parameters.Length: 0 } ? "Setup" : "object";
+			return @this.Append(setupType).Append('>');
+		}
+
 		private StringBuilder AppendSetupWithParameter(IParameterSymbol parameterSymbol)
 		{
 			return @this
@@ -167,6 +207,13 @@ internal static class MethodSymbolEx
 				.AppendRefKind(parameterSymbol.RefKind)
 				.Append("Parameter<")
 				.AppendType(parameterSymbol.Type);
+		}
+
+		private StringBuilder AppendInvocationType(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol)
+		{
+			return methodSymbol.TryGetGenericTypeCount(mockedTypeSymbol, out var genericTypeCount)
+				? @this.AppendGenericInvocationType(genericTypeCount)
+				: @this.AppendInvocationType(methodSymbol);
 		}
 
 		private StringBuilder AppendInvocationType(IMethodSymbol methodSymbol)
@@ -177,6 +224,32 @@ internal static class MethodSymbolEx
 				1 => @this.Append("Invocation<").AppendType(methodSymbol.Parameters[0].Type).Append('>'),
 				_ => @this.AppendInvocationClassName(methodSymbol.Parameters),
 			};
+		}
+
+		private StringBuilder AppendGenericInvocationType(int genericTypeCount)
+		{
+			@this.Append("InvocationDictionary");
+
+			return genericTypeCount > 1
+				? @this.AppendTypesType(genericTypeCount)
+				: @this;
+		}
+
+		private StringBuilder AppendTypesType(int typesCount)
+		{
+			if (typesCount == 1)
+				return @this.Append("Type");
+
+			@this.Append('(');
+			for (var i = 0; i < typesCount; i++)
+			{
+				if (i < 0)
+					@this.Append(", ");
+
+				@this.Append("Type");
+			}
+
+			return @this.Append(')');
 		}
 
 		private StringBuilder AppendMethodName(IMethodSymbol method)
@@ -215,7 +288,7 @@ internal static class MethodSymbolEx
 			@this
 				.AppendInvocationFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
 				.Append(" ??= new ")
-				.AppendInvocationType(methodSymbol)
+				.AppendInvocationType(methodSymbol, mockedTypeSymbol)
 				.Append("(\"")
 				.Append(mockedTypeSymbol.TypeSymbol.Name)
 				.AppendGenericTypes(mockedTypeSymbol.TypeSymbol)

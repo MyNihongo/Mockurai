@@ -11,10 +11,10 @@ internal static class MockImplementationPropertyGenerator
 
 		// Fields
 		if (propertySymbol.GetMethod is not null)
-			stringBuilder.AppendSetupInvocationFields(propertySymbol.GetMethod, memberSymbol, indent);
+			stringBuilder.AppendSetupInvocationFields(propertySymbol.GetMethod, mockedTypeSymbol, memberSymbol, indent);
 
 		if (propertySymbol.SetMethod is not null)
-			stringBuilder.AppendSetupInvocationFields(propertySymbol.SetMethod, memberSymbol, indent);
+			stringBuilder.AppendSetupInvocationFields(propertySymbol.SetMethod, mockedTypeSymbol, memberSymbol, indent);
 
 		// Methods
 		if (propertySymbol.GetMethod is not null)
@@ -35,7 +35,7 @@ internal static class MockImplementationPropertyGenerator
 		{
 			stringBuilder
 				.AppendLine()
-				.AppendSetupMethod(methodSymbol, memberSymbol, indent)
+				.AppendSetupMethod(methodSymbol, mockedTypeSymbol, memberSymbol, indent)
 				.AppendLine().AppendLine()
 				.AppendVerifyMethods(methodSymbol, mockedTypeSymbol, memberSymbol, indent);
 		}

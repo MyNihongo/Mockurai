@@ -88,25 +88,27 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 		const string methods =
 			"""
 			// Invoke
-			private SetupWithOutParameter<int>? _invoke0;
-			private Invocation<int>? _invoke0Invocation;
+			private System.Collections.Concurrent.ConcurrentDictionary<Type, Setup>? _invoke0;
+			private InvocationDictionary? _invoke0Invocation;
 
-			public SetupWithOutParameter<int> SetupInvoke(in ItOut<int> result)
+			public Setup SetupInvoke<T>()
 			{
-				_invoke0 ??= new SetupWithOutParameter<int>();
-				return _invoke0;
+				_invoke0 ??= new ConcurrentDictionary<Type, Setup>();
+				return _invoke0.GetOrAdd(typeof(T), static _ => new Setup());
 			}
 
-			public void VerifyInvoke(in ItOut<int> result, in Times times)
+			public void VerifyInvoke<T>(in Times times)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
-				_invoke0Invocation.Verify(result, times, _invocationProviders);
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation)_invoke0Invocation.GetOrAdd(typeof(T), static type => new Invocation($"IInterface.Invoke<{type.Name}>()"));
+				invoke0Invocation.Verify(times, _invocationProviders);
 			}
 
-			public long VerifyInvoke(in ItOut<int> result, long index)
+			public long VerifyInvoke<T>(in long index)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
-				return _invoke0Invocation.Verify(result, index, _invocationProviders);
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation)_invoke0Invocation.GetOrAdd(typeof(T), static type => new Invocation($"IInterface.Invoke<{type.Name}>()"));
+				return invoke0Invocation.Verify(index, _invocationProviders);
 			}
 			""";
 
@@ -128,7 +130,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			"""
 			// Invoke
 			private SetupWithOutParameter<int>? _invoke0;
-			private Invocation<int>? _invoke0Invocation;
+			private InvocationDictionary? _invoke0Invocation;
 
 			public SetupWithOutParameter<int> SetupInvoke(in ItOut<int> result)
 			{

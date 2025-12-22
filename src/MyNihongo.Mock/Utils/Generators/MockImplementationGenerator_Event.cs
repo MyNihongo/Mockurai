@@ -22,9 +22,9 @@ internal static class MockImplementationEventGenerator
 			.AppendLine(";");
 
 		if (eventSymbol.AddMethod is not null)
-			stringBuilder.AppendInvocationField(eventSymbol.AddMethod, memberSymbol, indent);
+			stringBuilder.AppendInvocationField(eventSymbol.AddMethod, mockedTypeSymbol, memberSymbol, indent);
 		if (eventSymbol.RemoveMethod is not null)
-			stringBuilder.AppendInvocationField(eventSymbol.RemoveMethod, memberSymbol, indent);
+			stringBuilder.AppendInvocationField(eventSymbol.RemoveMethod, mockedTypeSymbol, memberSymbol, indent);
 
 		// Raise method
 		stringBuilder

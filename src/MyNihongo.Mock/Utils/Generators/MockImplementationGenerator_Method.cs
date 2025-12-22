@@ -8,7 +8,7 @@ internal static class MockImplementationMethodGenerator
 			return;
 
 		stringBuilder.AppendNameComment(memberSymbol, indent);
-		stringBuilder.AppendSetupInvocationFields(methodSymbol, memberSymbol, indent);
+		stringBuilder.AppendSetupInvocationFields(methodSymbol, mockedTypeSymbol, memberSymbol, indent);
 		stringBuilder.AppendMethods(methodSymbol, mockedTypeSymbol, memberSymbol, indent);
 	}
 
@@ -18,7 +18,7 @@ internal static class MockImplementationMethodGenerator
 		{
 			stringBuilder
 				.AppendLine()
-				.AppendSetupMethod(methodSymbol, memberSymbol, indent)
+				.AppendSetupMethod(methodSymbol, mockedTypeSymbol, memberSymbol, indent)
 				.AppendLine().AppendLine()
 				.AppendVerifyMethods(methodSymbol, mockedTypeSymbol, memberSymbol, indent);
 		}

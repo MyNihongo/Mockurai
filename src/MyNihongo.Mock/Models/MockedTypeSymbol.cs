@@ -3,10 +3,15 @@
 internal sealed class MockedTypeSymbol(ITypeSymbol typeSymbol)
 {
 	public readonly ITypeSymbol TypeSymbol = typeSymbol;
-	public readonly ISet<string>? GenericTypeParameterNames = GetGenericTypeParameterNames(typeSymbol);
+	public readonly ImmutableHashSet<string>? GenericTypeParameterNames = GetGenericTypeParameterNames(typeSymbol);
 
-	private static ISet<string>? GetGenericTypeParameterNames(ITypeSymbol typeSymbol)
+	private static ImmutableHashSet<string>? GetGenericTypeParameterNames(ITypeSymbol typeSymbol)
 	{
-		return null;
+		if (typeSymbol is not INamedTypeSymbol { TypeArguments.Length: > 0 } namedTypeSymbol)
+			return null;
+
+		return namedTypeSymbol.TypeArguments
+			.Select(static x => x.Name)
+			.ToImmutableHashSet();
 	}
 }
