@@ -2,36 +2,6 @@
 
 internal static class TypeSymbolEx
 {
-	extension(ISymbol @this)
-	{
-		public bool IsPublic => @this.DeclaredAccessibility == Accessibility.Public;
-	}
-
-	extension(ISymbol? @this)
-	{
-		public T? GetAttributeValue<T>(string attributeName, string propertyName, T defaultValue)
-		{
-			if (@this is null)
-				return defaultValue;
-
-			foreach (var attribute in @this.GetAttributes())
-			{
-				if (attribute.AttributeClass?.Name != attributeName)
-					continue;
-
-				foreach (var namedArgument in attribute.NamedArguments)
-				{
-					if (namedArgument.Key != propertyName)
-						continue;
-
-					return (T?)namedArgument.Value.Value;
-				}
-			}
-
-			return defaultValue;
-		}
-	}
-
 	extension(ITypeSymbol @this)
 	{
 		public IEnumerable<ISymbol> GetOverridableMembers()

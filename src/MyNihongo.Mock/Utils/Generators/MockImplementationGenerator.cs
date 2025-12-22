@@ -105,6 +105,7 @@ internal static class MockImplementationGenerator
 		};
 
 		return symbols
+			.FilterMockableSymbols()
 			.ToLookup(static x => x.Name)
 			.SelectMany(static x => x.Select((y, i) => new MemberSymbol($"{x.Key}{i}", y)))
 			.ToArray();
