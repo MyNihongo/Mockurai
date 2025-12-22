@@ -216,22 +216,24 @@ internal static class MethodSymbolEx
 				.Append(mockedTypeSymbol.Name)
 				.AppendGenericTypes(mockedTypeSymbol)
 				.Append('.')
-				.AppendPropertyName(memberSymbol.Symbol.Name)
-				.Append('.');
+				.AppendPropertyName(memberSymbol.Symbol.Name);
 
 			switch (methodSymbol.MethodKind)
 			{
 				case MethodKind.PropertyGet:
-					@this.Append("get");
+					@this.Append(".get");
 					break;
 				case MethodKind.PropertySet:
-					@this.Append("set = {0}");
+					@this.Append(".set = {0}");
 					break;
 				case MethodKind.EventAdd:
-					@this.Append("add += {0}");
+					@this.Append(".add += {0}");
 					break;
 				case MethodKind.EventRemove:
-					@this.Append("remove -= {0}");
+					@this.Append(".remove -= {0}");
+					break;
+				default:
+					@this.Append("()");
 					break;
 			}
 

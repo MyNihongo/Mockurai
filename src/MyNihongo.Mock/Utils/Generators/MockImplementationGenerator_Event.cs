@@ -56,11 +56,11 @@ internal static class MockImplementationEventGenerator
 
 	extension(StringBuilder stringBuilder)
 	{
-		private void AppendMethod(IMethodSymbol methodSymbol, ITypeSymbol mockedTypeSymbol, MemberSymbol member, int indent)
+		private void AppendMethod(IMethodSymbol methodSymbol, ITypeSymbol mockedTypeSymbol, MemberSymbol memberSymbol, int indent)
 		{
 			stringBuilder
 				.AppendLine().AppendLine()
-				.AppendVerifyMethods(methodSymbol, mockedTypeSymbol, member, indent);
+				.AppendVerifyMethods(methodSymbol, mockedTypeSymbol, memberSymbol, indent);
 		}
 	}
 }

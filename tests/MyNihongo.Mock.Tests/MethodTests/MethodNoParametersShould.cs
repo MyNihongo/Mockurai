@@ -15,18 +15,19 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 
 			public Setup SetupInvoke()
 			{
-				return _invoke0 ??= new Setup();
+				_invoke0 ??= new Setup();
+				return _invoke0;
 			}
 
 			public void VerifyInvoke(in Times times)
 			{
-				_invoke0Invocation ??= new Invocation("IPrimitiveDependencyService.Invoke()");
+				_invoke0Invocation ??= new Invocation("IInterface.Invoke()");
 				_invoke0Invocation.Verify(times, _invocationProviders);
 			}
 
-			public long VerifyInvoke(in long index)
+			public long VerifyInvoke(long index)
 			{
-				_invoke0Invocation ??= new Invocation("IPrimitiveDependencyService.Invoke()");
+				_invoke0Invocation ??= new Invocation("IInterface.Invoke()");
 				return _invoke0Invocation.Verify(index, _invocationProviders);
 			}
 			""";

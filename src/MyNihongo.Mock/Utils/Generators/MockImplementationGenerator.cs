@@ -122,6 +122,7 @@ internal static class MockImplementationGenerator
 			{
 				SymbolKind.Event => MockImplementationEventGenerator.AppendEventMockMethod,
 				SymbolKind.Property => MockImplementationPropertyGenerator.AppendPropertyMockMethod,
+				SymbolKind.Method => MockImplementationMethodGenerator.AppendPropertyMockMethod,
 				_ => null,
 			};
 
@@ -205,11 +206,23 @@ internal static class MockImplementationGenerator
 					stringBuilder
 						.AppendLine("}");
 					break;
+				case SymbolKind.Method:
+					stringBuilder
+						.Indent(indent)
+						.Append("public ")
+						.TryAppendOverride(member.Symbol)
+						.Append(((IMethodSymbol)member.Symbol).ReturnType)
+						.Append(' ')
+						.Append(member.Symbol.Name)
+						.Append("(")
+						.AppendParameters(((IMethodSymbol)member.Symbol).Parameters)
+						.AppendLine(") {}");
+					break;
 			}
 		}
 
 		// TODO: extract
-		foreach (var member in typeSymbol.GetIrrelevantOverridableMembers())
+		foreach (var member in typeSymbol.GetIrrelevantOverridableMembers().FilterMockableSymbols())
 		{
 			switch (member.Kind)
 			{
@@ -241,6 +254,18 @@ internal static class MockImplementationGenerator
 
 					stringBuilder
 						.AppendLine("}");
+					break;
+				case SymbolKind.Method:
+					stringBuilder
+						.Indent(indent)
+						.Append("public ")
+						.TryAppendOverride(member)
+						.Append(((IMethodSymbol)member).ReturnType)
+						.Append(' ')
+						.Append(member.Name)
+						.Append("(")
+						.AppendParameters(((IMethodSymbol)member).Parameters)
+						.AppendLine(") {}");
 					break;
 			}
 		}

@@ -11,7 +11,7 @@ internal static class TypeSymbolEx
 		}
 
 		/// <summary>
-		/// Returns members that prevent compilation, but are not revelant to mocking (e.g. abstract members of parent classes).
+		/// Returns members that prevent compilation, but are not relevant to mocking (e.g. abstract members of parent classes).
 		/// </summary>
 		/// <returns>Enumeration of irrelevant members that must be overriden.</returns>
 		public IEnumerable<ISymbol> GetIrrelevantOverridableMembers()
