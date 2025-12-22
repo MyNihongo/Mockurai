@@ -216,7 +216,20 @@ internal static class MockImplementationGenerator
 						.Append(member.Symbol.Name)
 						.Append("(")
 						.AppendParameters(((IMethodSymbol)member.Symbol).Parameters)
-						.AppendLine(") {}");
+						.Append(") {");
+
+					foreach (var parameter in ((IMethodSymbol)member.Symbol).Parameters)
+					{
+						if (parameter.RefKind != RefKind.Out)
+							continue;
+
+						stringBuilder
+							.Append(parameter.Name)
+							.Append(" = default;");
+					}
+
+					stringBuilder
+						.AppendLine("}");
 					break;
 			}
 		}
@@ -265,7 +278,20 @@ internal static class MockImplementationGenerator
 						.Append(member.Name)
 						.Append("(")
 						.AppendParameters(((IMethodSymbol)member).Parameters)
-						.AppendLine(") {}");
+						.Append(") {");
+
+					foreach (var parameter in ((IMethodSymbol)member).Parameters)
+					{
+						if (parameter.RefKind != RefKind.Out)
+							continue;
+
+						stringBuilder
+							.Append(parameter.Name)
+							.Append(" = default;");
+					}
+
+					stringBuilder
+						.AppendLine("}");
 					break;
 			}
 		}

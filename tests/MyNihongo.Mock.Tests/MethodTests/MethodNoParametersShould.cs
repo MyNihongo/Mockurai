@@ -71,7 +71,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke(out int result) {}";
+		const string proxy = "public void Invoke(out int result) {result = default;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
