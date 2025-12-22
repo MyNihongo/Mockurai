@@ -2,6 +2,23 @@
 
 internal static class ParameterSymbolEx
 {
+	extension(ImmutableArray<IParameterSymbol> @this)
+	{
+		public bool TryGetInputParameters(out ImmutableArray<IParameterSymbol> parameters)
+		{
+			var builder = ImmutableArray.CreateBuilder<IParameterSymbol>();
+
+			foreach (var parameter in @this)
+			{
+				if (parameter.RefKind != RefKind.Out)
+					builder.Add(parameter);
+			}
+
+			parameters = builder.ToImmutable();
+			return builder.Count > 0;
+		}
+	}
+
 	// TODO: when there is more time try to optimize appending instead of appending strings of ITypeSymbol, IPropertySymbol, etc
 	extension(StringBuilder @this)
 	{
@@ -25,7 +42,7 @@ internal static class ParameterSymbolEx
 				: @this;
 		}
 
-		public StringBuilder AppendParameter(IParameterSymbol parameter)
+		private StringBuilder AppendParameter(IParameterSymbol parameter)
 		{
 			return @this.Append(parameter);
 		}
@@ -74,10 +91,8 @@ internal static class ParameterSymbolEx
 		{
 			foreach (var parameter in parameters)
 			{
-				var refType = parameter.RefKind.GetString();
-
 				@this
-					.AppendPropertyName(refType)
+					.AppendRefKind(parameter.RefKind)
 					.Append(parameter.Type.Name);
 			}
 

@@ -48,19 +48,19 @@ internal static class MethodSymbolEx
 				.AppendSetupType(method)
 				.AppendLine("();");
 
-			if (method.Parameters.Length > 0)
+			if (method.Parameters.TryGetInputParameters(out var parameters))
 			{
 				@this
 					.Indent(indent)
 					.AppendFieldName(memberSymbol.MemberName, method.MethodKind)
 					.Append(".SetupParameter");
 
-				if (method.Parameters.Length > 1)
+				if (parameters.Length > 1)
 					@this.Append('s');
 
 				@this
 					.Append('(')
-					.AppendParameterNames(method.Parameters)
+					.AppendParameterNames(parameters)
 					.AppendLine(");");
 			}
 
@@ -138,11 +138,7 @@ internal static class MethodSymbolEx
 				return methodSymbol.Parameters.Length switch
 				{
 					0 => @this.Append("Setup"),
-					1 => @this
-						.Append("SetupWithParameter<")
-						.AppendType(methodSymbol.Parameters[0].Type)
-						.Append('>'),
-
+					1 => @this.AppendSetupWithParameter(methodSymbol.Parameters[0]).Append('>'),
 					_ => @this.AppendSetupClassName(methodSymbol.Parameters, returnTypeSymbol: null),
 				};
 			}
@@ -155,14 +151,22 @@ internal static class MethodSymbolEx
 					.Append('>'),
 
 				1 => @this
-					.Append("SetupWithParameter<")
-					.AppendType(methodSymbol.Parameters[0].Type)
+					.AppendSetupWithParameter(methodSymbol.Parameters[0])
 					.Append(", ")
 					.AppendType(methodSymbol.ReturnType)
 					.Append('>'),
 
 				_ => @this.AppendSetupClassName(methodSymbol.Parameters, methodSymbol.ReturnType),
 			};
+		}
+
+		private StringBuilder AppendSetupWithParameter(IParameterSymbol parameterSymbol)
+		{
+			return @this
+				.Append("SetupWith")
+				.AppendRefKind(parameterSymbol.RefKind)
+				.Append("Parameter<")
+				.AppendType(parameterSymbol.Type);
 		}
 
 		private StringBuilder AppendInvocationType(IMethodSymbol methodSymbol)
@@ -193,7 +197,7 @@ internal static class MethodSymbolEx
 
 				@this
 					.Append("in It")
-					.AppendPropertyName(parameters[i].RefKind.GetString())
+					.AppendRefKind(parameters[i].RefKind)
 					.Append('<')
 					.AppendType(parameters[i].Type)
 					.Append("> ")

@@ -95,5 +95,11 @@ internal static class StringBuilderEx
 
 			return @this;
 		}
+
+		public StringBuilder AppendRefKind(RefKind refKind)
+		{
+			var stringValue = refKind.GetString();
+			return @this.AppendPropertyName(stringValue);
+		}
 	}
 }
