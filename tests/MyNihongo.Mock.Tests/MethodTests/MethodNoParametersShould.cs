@@ -40,4 +40,43 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
 	}
+	
+	[Fact]
+	public async Task GenerateInterfaceWithOutParameter()
+	{
+		const string method = "void Invoke(out int result);";
+
+		const string methods =
+			"""
+			// Invoke
+			private SetupWithOutParameter<int>? _invoke0;
+			private Invocation<int>? _invoke0Invocation;
+			
+			public SetupWithOutParameter<int> SetupInvoke(in ItOut<int> result)
+			{
+				_invoke0 ??= new SetupWithOutParameter<int>();
+				return _invoke0;
+			}
+			
+			public void VerifyInvoke(in ItOut<int> result, in Times times)
+			{
+				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
+				_invoke0Invocation.Verify(result, times, _invocationProviders);
+			}
+			
+			public long VerifyInvoke(in ItOut<int> result, long index)
+			{
+				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
+				return _invoke0Invocation.Verify(result, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy = "public void Invoke(out int result) {}";
+
+		var testCode = CreateInterfaceTestCode(method);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
 }

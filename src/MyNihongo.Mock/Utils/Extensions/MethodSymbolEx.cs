@@ -237,12 +237,58 @@ internal static class MethodSymbolEx
 					@this.Append(".remove -= {0}");
 					break;
 				default:
-					@this.Append("()");
+					@this.AppendParameterPlaceholders(methodSymbol);
 					break;
 			}
 
 			return @this
-				.Append("\");");
+				.Append('"')
+				.TryAppendParameterPrefixes(methodSymbol)
+				.Append(");");
+		}
+
+		private void AppendParameterPlaceholders(IMethodSymbol methodSymbol)
+		{
+			@this.Append('(');
+
+			for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+			{
+				if (i > 0)
+					@this.Append(", ");
+
+				@this
+					.Append('{')
+					.Append(i)
+					.Append('}');
+			}
+
+			@this.Append(')');
+		}
+
+		private StringBuilder TryAppendParameterPrefixes(IMethodSymbol methodSymbol)
+		{
+			if (methodSymbol.Parameters.Length == 0)
+				return @this;
+
+			var appendParameterNumber = methodSymbol.Parameters.Length > 1;
+
+			for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+			{
+				var refKindString = methodSymbol.Parameters[i].RefKind.GetString(camelCase: false);
+				if (string.IsNullOrEmpty(refKindString))
+					continue;
+
+				@this.Append(", prefix");
+				if (appendParameterNumber)
+					@this.Append(i + 1);
+
+				@this
+					.Append(": \"")
+					.Append(refKindString)
+					.Append('"');
+			}
+
+			return @this;
 		}
 	}
 }
