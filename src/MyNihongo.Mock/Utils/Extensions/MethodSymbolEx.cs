@@ -4,7 +4,7 @@ internal static class MethodSymbolEx
 {
 	extension(StringBuilder @this)
 	{
-		public void AppendSetupInvocationFields(IMethodSymbol method, MemberSymbol memberSymbol, int indent)
+		public void AppendSetupInvocationFields(IMethodSymbol method, MockedMemberSymbol memberSymbol, int indent)
 		{
 			@this
 				.Indent(indent)
@@ -17,7 +17,7 @@ internal static class MethodSymbolEx
 			@this.AppendInvocationField(method, memberSymbol, indent);
 		}
 
-		public void AppendInvocationField(IMethodSymbol method, MemberSymbol memberSymbol, int indent)
+		public void AppendInvocationField(IMethodSymbol method, MockedMemberSymbol memberSymbol, int indent)
 		{
 			@this
 				.Indent(indent)
@@ -28,7 +28,7 @@ internal static class MethodSymbolEx
 				.AppendLine(";");
 		}
 
-		public StringBuilder AppendSetupMethod(IMethodSymbol method, MemberSymbol memberSymbol, int indent)
+		public StringBuilder AppendSetupMethod(IMethodSymbol method, MockedMemberSymbol memberSymbol, int indent)
 		{
 			@this
 				.Indent(indent)
@@ -74,7 +74,7 @@ internal static class MethodSymbolEx
 				.Indent(--indent).Append('}');
 		}
 
-		public void AppendVerifyMethods(IMethodSymbol methodSymbol, ITypeSymbol mockedTypeSymbol, MemberSymbol memberSymbol, int indent)
+		public void AppendVerifyMethods(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 		{
 			// Verify times
 			@this
@@ -210,15 +210,15 @@ internal static class MethodSymbolEx
 			return @this;
 		}
 
-		private StringBuilder AppendInvocationDeclaration(IMethodSymbol methodSymbol, ITypeSymbol mockedTypeSymbol, MemberSymbol memberSymbol)
+		private StringBuilder AppendInvocationDeclaration(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol)
 		{
 			@this
 				.AppendInvocationFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
 				.Append(" ??= new ")
 				.AppendInvocationType(methodSymbol)
 				.Append("(\"")
-				.Append(mockedTypeSymbol.Name)
-				.AppendGenericTypes(mockedTypeSymbol)
+				.Append(mockedTypeSymbol.TypeSymbol.Name)
+				.AppendGenericTypes(mockedTypeSymbol.TypeSymbol)
 				.Append('.')
 				.AppendPropertyName(memberSymbol.Symbol.Name);
 

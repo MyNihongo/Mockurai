@@ -9,6 +9,7 @@ internal static class MockImplementationGenerator
 		var stringBuilder = new StringBuilder();
 		var typeString = typeSymbol.ToString();
 		var (constructor, mockClassName, genericTypes) = CreateMockClassName(stringBuilder, typeSymbol);
+		var mockedTypeSymbol = new MockedTypeSymbol(typeSymbol);
 		var mockableMembers = GetMockableMembers(typeSymbol);
 
 		var source =
@@ -29,7 +30,7 @@ internal static class MockImplementationGenerator
 
 			  	public {{typeString}} Object => _proxy ??= new Proxy(this);
 
-			  {{CreateMockMethods(stringBuilder, typeSymbol, mockableMembers, indent: 1)}}
+			  {{CreateMockMethods(stringBuilder, mockedTypeSymbol, mockableMembers, indent: 1)}}
 
 			  	public void VerifyNoOtherCalls()
 			  	{
@@ -96,7 +97,7 @@ internal static class MockImplementationGenerator
 		return (constructorName, constructorName + genericTypes, genericTypes);
 	}
 
-	private static IReadOnlyList<MemberSymbol> GetMockableMembers(ITypeSymbol typeSymbol)
+	private static IReadOnlyList<MockedMemberSymbol> GetMockableMembers(ITypeSymbol typeSymbol)
 	{
 		var symbols = typeSymbol.TypeKind switch
 		{
@@ -107,18 +108,18 @@ internal static class MockImplementationGenerator
 		return symbols
 			.FilterMockableSymbols()
 			.ToLookup(static x => x.Name)
-			.SelectMany(static x => x.Select((y, i) => new MemberSymbol($"{x.Key}{i}", y)))
+			.SelectMany(static x => x.Select((y, i) => new MockedMemberSymbol($"{x.Key}{i}", y)))
 			.ToArray();
 	}
 
-	private static string CreateMockMethods(StringBuilder stringBuilder, ITypeSymbol typeSymbol, IReadOnlyList<MemberSymbol> members, int indent)
+	private static string CreateMockMethods(StringBuilder stringBuilder, MockedTypeSymbol typeSymbol, IReadOnlyList<MockedMemberSymbol> members, int indent)
 	{
 		stringBuilder.Clear();
 
 		for (int i = 0, generateCount = 0; i < members.Count; i++)
 		{
 			var member = members[i];
-			Action<StringBuilder, ITypeSymbol, MemberSymbol, int>? handler = member.Symbol.Kind switch
+			Action<StringBuilder, MockedTypeSymbol, MockedMemberSymbol, int>? handler = member.Symbol.Kind switch
 			{
 				SymbolKind.Event => MockImplementationEventGenerator.AppendEventMockMethod,
 				SymbolKind.Property => MockImplementationPropertyGenerator.AppendPropertyMockMethod,
@@ -141,13 +142,13 @@ internal static class MockImplementationGenerator
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, IReadOnlyList<MemberSymbol> members, int indent)
+	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, IReadOnlyList<MockedMemberSymbol> members, int indent)
 	{
 		stringBuilder.Clear();
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateGetInvocations(StringBuilder stringBuilder, IReadOnlyList<MemberSymbol> members, int indent)
+	private static string CreateGetInvocations(StringBuilder stringBuilder, IReadOnlyList<MockedMemberSymbol> members, int indent)
 	{
 		stringBuilder.Clear();
 
@@ -167,7 +168,7 @@ internal static class MockImplementationGenerator
 			.ToString();
 	}
 
-	private static string CreateProxyMethods(StringBuilder stringBuilder, ITypeSymbol typeSymbol, IReadOnlyList<MemberSymbol> members, int indent)
+	private static string CreateProxyMethods(StringBuilder stringBuilder, ITypeSymbol typeSymbol, IReadOnlyList<MockedMemberSymbol> members, int indent)
 	{
 		stringBuilder.Clear();
 
@@ -299,13 +300,13 @@ internal static class MockImplementationGenerator
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateMockExtensions(StringBuilder stringBuilder, IReadOnlyList<MemberSymbol> members, int indent)
+	private static string CreateMockExtensions(StringBuilder stringBuilder, IReadOnlyList<MockedMemberSymbol> members, int indent)
 	{
 		stringBuilder.Clear();
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateMockSequenceExtensions(StringBuilder stringBuilder, IReadOnlyList<MemberSymbol> members, int indent)
+	private static string CreateMockSequenceExtensions(StringBuilder stringBuilder, IReadOnlyList<MockedMemberSymbol> members, int indent)
 	{
 		stringBuilder.Clear();
 		return stringBuilder.ToString();
