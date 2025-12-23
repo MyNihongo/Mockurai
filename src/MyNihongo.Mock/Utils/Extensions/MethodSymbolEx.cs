@@ -127,21 +127,18 @@ internal static class MethodSymbolEx
 					.AppendLine(");");
 			}
 
-			@this
+			return @this
 				.Indent(indent)
-				.Append("return ");
-
-			if (!genericTypeNames.IsDefaultOrEmpty)
-				@this.AppendParameterName(memberSymbol.MemberName, methodSymbol.MethodKind);
-			else
-				@this.AppendFieldName(memberSymbol.MemberName, methodSymbol.MethodKind);
-
-			return @this.AppendLine(";")
+				.Append("return ")
+				.AppendVariableName(memberSymbol.MemberName, methodSymbol.MethodKind, isField: genericTypeNames.IsDefaultOrEmpty)
+				.AppendLine(";")
 				.Indent(--indent).Append('}');
 		}
 
 		public void AppendVerifyMethods(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 		{
+			var areGenericTypesEmpty = !methodSymbol.TryGetGenericTypeCount(mockedTypeSymbol, out _);
+
 			// Verify times
 			@this
 				.Indent(indent)
@@ -160,7 +157,7 @@ internal static class MethodSymbolEx
 
 			@this
 				.Indent(indent)
-				.AppendInvocationFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
+				.AppendAppendInvocationVariableName(memberSymbol.MemberName, methodSymbol.MethodKind, isField: areGenericTypesEmpty)
 				.Append(".Verify(")
 				.AppendParameterNames(methodSymbol.Parameters, appendComma: true)
 				.Append("times, _invocationProviders);").AppendLine();
@@ -175,6 +172,7 @@ internal static class MethodSymbolEx
 				.Indent(indent)
 				.Append("public long Verify")
 				.AppendMethodName(methodSymbol)
+				.AppendGenericTypes(methodSymbol.TypeArguments)
 				.Append('(')
 				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
 				.AppendLine("long index)")
@@ -188,7 +186,7 @@ internal static class MethodSymbolEx
 			@this
 				.Indent(indent)
 				.Append("return ")
-				.AppendInvocationFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
+				.AppendAppendInvocationVariableName(memberSymbol.MemberName, methodSymbol.MethodKind, isField: areGenericTypesEmpty)
 				.Append(".Verify(")
 				.AppendParameterNames(methodSymbol.Parameters, appendComma: true)
 				.Append("index, _invocationProviders);").AppendLine();
@@ -196,6 +194,20 @@ internal static class MethodSymbolEx
 			@this
 				.Indent(--indent)
 				.Append('}');
+		}
+
+		private StringBuilder AppendVariableName(string? name, MethodKind? methodKind, bool isField)
+		{
+			return isField
+				? @this.AppendFieldName(name, methodKind)
+				: @this.AppendParameterName(name, methodKind);
+		}
+
+		private StringBuilder AppendAppendInvocationVariableName(string? name, MethodKind? methodKind, bool isField)
+		{
+			return isField
+				? @this.AppendInvocationFieldName(name, methodKind)
+				: @this.AppendParameterName(name, methodKind, suffix: MockGeneratorConst.Suffixes.Invocation);
 		}
 
 		private StringBuilder AppendSetupType(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol)
@@ -457,10 +469,10 @@ internal static class MethodSymbolEx
 			@this.Append(')');
 		}
 
-		private StringBuilder TryAppendParameterPrefixes(IMethodSymbol methodSymbol)
+		private void TryAppendParameterPrefixes(IMethodSymbol methodSymbol)
 		{
 			if (methodSymbol.Parameters.Length == 0)
-				return @this;
+				return;
 
 			var appendParameterNumber = methodSymbol.Parameters.Length > 1;
 
@@ -479,8 +491,6 @@ internal static class MethodSymbolEx
 					.Append(refKindString)
 					.Append('"');
 			}
-
-			return @this;
 		}
 	}
 }

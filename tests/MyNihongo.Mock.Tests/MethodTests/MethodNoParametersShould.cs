@@ -105,7 +105,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 				invoke0Invocation.Verify(times, _invocationProviders);
 			}
 
-			public long VerifyInvoke<T>(in long index)
+			public long VerifyInvoke<T>(long index)
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
 				var invoke0Invocation = (Invocation)_invoke0Invocation.GetOrAdd(typeof(T), static (t) => new Invocation($"IInterface.Invoke<{t.Name}>()"));
@@ -113,7 +113,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke(out int result) {result = default;}";
+		const string proxy = "public void Invoke<T>() {}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
