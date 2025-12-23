@@ -104,18 +104,5 @@ internal static class StringBuilderEx
 			var stringValue = refKind.GetString();
 			return @this.AppendPropertyName(stringValue);
 		}
-
-		public StringBuilder AppendJoin(string separator, ImmutableArray<string> values, Action<StringBuilder, string> func)
-		{
-			for (var i = 0; i < values.Length; i++)
-			{
-				if (i > 0)
-					@this.Append(separator);
-
-				func(@this, values[i]);
-			}
-
-			return @this;
-		}
 	}
 }

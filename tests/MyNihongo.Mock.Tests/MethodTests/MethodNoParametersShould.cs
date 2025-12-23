@@ -101,14 +101,14 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			public void VerifyInvoke<T>(in Times times)
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
-				var invoke0Invocation = (Invocation)_invoke0Invocation.GetOrAdd(typeof(T), static (t) => new Invocation($"IInterface.Invoke<{t.Name}>()"));
+				var invoke0Invocation = (Invocation)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation($"IInterface.Invoke<{key.Name}>()"));
 				invoke0Invocation.Verify(times, _invocationProviders);
 			}
 
 			public long VerifyInvoke<T>(long index)
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
-				var invoke0Invocation = (Invocation)_invoke0Invocation.GetOrAdd(typeof(T), static (t) => new Invocation($"IInterface.Invoke<{t.Name}>()"));
+				var invoke0Invocation = (Invocation)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation($"IInterface.Invoke<{key.Name}>()"));
 				return invoke0Invocation.Verify(index, _invocationProviders);
 			}
 			""";
@@ -130,29 +130,32 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 		const string methods =
 			"""
 			// Invoke
-			private SetupWithOutParameter<int>? _invoke0;
-			private InvocationDictionary? _invoke0Invocation;
+			private System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), Setup>? _invoke0;
+			private InvocationDictionary<(System.Type, System.Type)>? _invoke0Invocation;
 
-			public SetupWithOutParameter<int> SetupInvoke(in ItOut<int> result)
+			public Setup SetupInvoke<T1, T2>()
 			{
-				_invoke0 ??= new SetupWithOutParameter<int>();
-				return _invoke0;
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), Setup>();
+				var invoke0 = _invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new Setup());
+				return invoke0;
 			}
 
-			public void VerifyInvoke(in ItOut<int> result, in Times times)
+			public void VerifyInvoke<T1, T2>(in Times times)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
-				_invoke0Invocation.Verify(result, times, _invocationProviders);
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>()"));
+				invoke0Invocation.Verify(times, _invocationProviders);
 			}
 
-			public long VerifyInvoke(in ItOut<int> result, long index)
+			public long VerifyInvoke<T1, T2>(long index)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
-				return _invoke0Invocation.Verify(result, index, _invocationProviders);
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>()"));
+				return invoke0Invocation.Verify(index, _invocationProviders);
 			}
 			""";
 
-		const string proxy = "public void Invoke(out int result) {result = default;}";
+		const string proxy = "public void Invoke<T1, T2>() {}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);

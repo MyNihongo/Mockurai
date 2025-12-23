@@ -287,9 +287,13 @@ internal static class MethodSymbolEx
 		{
 			@this.Append("InvocationDictionary");
 
-			return genericTypeCount > 1
-				? @this.AppendTypesType(genericTypeCount)
-				: @this;
+			if (genericTypeCount <= 1)
+				return @this;
+
+			return @this
+				.Append('<')
+				.AppendTypesType(genericTypeCount)
+				.Append('>');
 		}
 
 		private StringBuilder AppendTypesType(int typesCount)
@@ -302,7 +306,7 @@ internal static class MethodSymbolEx
 			@this.Append('(');
 			for (var i = 0; i < typesCount; i++)
 			{
-				if (i < 0)
+				if (i > 0)
 					@this.Append(", ");
 
 				@this.Append(typeString);
@@ -319,7 +323,7 @@ internal static class MethodSymbolEx
 			@this.Append('(');
 			for (var i = 0; i < typeNames.Length; i++)
 			{
-				if (i < 0)
+				if (i > 0)
 					@this.Append(", ");
 
 				@this
@@ -383,9 +387,7 @@ internal static class MethodSymbolEx
 					.AppendInvocationFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
 					.Append(".GetOrAdd(")
 					.AppendTypesDeclaration(genericTypeNames)
-					.Append(", static (")
-					.AppendJoin(", ", genericTypeNames, static (sb, x) => sb.AppendParameterName(x))
-					.Append(") => new ")
+					.Append(", static key => new ")
 					.AppendInvocationType(methodSymbol);
 			}
 
@@ -436,16 +438,22 @@ internal static class MethodSymbolEx
 			if (methodSymbol.TypeArguments.IsDefaultOrEmpty)
 				return;
 
+			if (methodOnlyGenericTypeNames.Length == 1)
+			{
+				@this.Append("<{key.Name}>");
+				return;
+			}
+
 			@this.Append('<');
 
-			for (var i = 0; i < methodSymbol.TypeArguments.Length; i++)
+			for (int i = 0, itemCounter = 1; i < methodSymbol.TypeArguments.Length; i++)
 			{
 				if (i > 0)
 					@this.Append(", ");
 
 				var typeArgument = methodSymbol.TypeArguments[i];
 				if (methodOnlyGenericTypeNames.Contains(typeArgument.Name))
-					@this.Append('{').AppendParameterName(typeArgument.Name).Append(".Name}");
+					@this.Append("{key.Item").Append(itemCounter++).Append(".Name}");
 				else
 					@this.AppendType(typeArgument);
 			}

@@ -38,30 +38,43 @@ internal static class TypeSymbolEx
 			@this.Append("Mock");
 
 			return appendGenericTypes
-				? @this.AppendGenericTypes(typeSymbol)
+				? @this.AppendGenericTypes(typeSymbol, useSeparator: false)
 				: @this;
 		}
 
-		public StringBuilder AppendGenericTypes(ITypeSymbol typeSymbol)
+		public StringBuilder AppendGenericTypes(ITypeSymbol typeSymbol, bool useSeparator = true)
 		{
 			return typeSymbol is INamedTypeSymbol { TypeArguments.Length: > 0 } namedTypeSymbol
-				? @this.AppendGenericTypeArguments(namedTypeSymbol.TypeArguments)
+				? @this.AppendGenericTypeArguments(namedTypeSymbol.TypeArguments, useSeparator)
 				: @this;
 		}
 
-		public StringBuilder AppendGenericTypes(ImmutableArray<ITypeSymbol> typeArguments)
+		public StringBuilder AppendGenericTypes(ImmutableArray<ITypeSymbol> typeArguments, bool useSeparator = true)
 		{
 			return typeArguments.Length > 0
-				? @this.AppendGenericTypeArguments(typeArguments)
+				? @this.AppendGenericTypeArguments(typeArguments, useSeparator)
 				: @this;
 		}
 
-		private StringBuilder AppendGenericTypeArguments(ImmutableArray<ITypeSymbol> typeArguments)
+		private StringBuilder AppendGenericTypeArguments(ImmutableArray<ITypeSymbol> typeArguments, bool useSeparator)
 		{
 			@this.Append('<');
 
-			foreach (var typeArgument in typeArguments)
-				@this.Append(typeArgument);
+			if (useSeparator)
+			{
+				for (var i = 0; i < typeArguments.Length; i++)
+				{
+					if (i > 0)
+						@this.Append(", ");
+
+					@this.AppendType(typeArguments[i]);
+				}
+			}
+			else
+			{
+				foreach (var typeArgument in typeArguments)
+					@this.AppendType(typeArgument);
+			}
 
 			return @this.Append('>');
 		}
