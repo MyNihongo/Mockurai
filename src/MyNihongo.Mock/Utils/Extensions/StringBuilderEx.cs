@@ -14,7 +14,7 @@ internal static class StringBuilderEx
 
 		public StringBuilder AppendInvocationFieldName(string? name, MethodKind? methodKind = null)
 		{
-			return @this.AppendFieldName(name, methodKind, suffix: "Invocation");
+			return @this.AppendFieldName(name, methodKind, suffix: MockGeneratorConst.Suffixes.Invocation);
 		}
 
 		public StringBuilder AppendFieldName(string? name, MethodKind? methodKind = null, string? suffix = null)
@@ -37,7 +37,7 @@ internal static class StringBuilderEx
 				.Append(suffix);
 		}
 
-		public StringBuilder AppendParameterName(string? name, MethodKind? methodKind = null)
+		public StringBuilder AppendParameterName(string? name, MethodKind? methodKind = null, string? suffix = null)
 		{
 			if (string.IsNullOrEmpty(name))
 				return @this;
@@ -54,7 +54,9 @@ internal static class StringBuilderEx
 			if (startIndex + 1 < name.Length)
 				@this.Append(name.Substring(startIndex + 1));
 
-			return @this.AppendMethodKind(methodKind);
+			return @this
+				.AppendMethodKind(methodKind)
+				.Append(suffix);
 		}
 
 		public StringBuilder AppendPropertyName(string? name)
@@ -101,6 +103,19 @@ internal static class StringBuilderEx
 		{
 			var stringValue = refKind.GetString();
 			return @this.AppendPropertyName(stringValue);
+		}
+
+		public StringBuilder AppendJoin(string separator, ImmutableArray<string> values, Action<StringBuilder, string> func)
+		{
+			for (var i = 0; i < values.Length; i++)
+			{
+				if (i > 0)
+					@this.Append(separator);
+
+				func(@this, values[i]);
+			}
+
+			return @this;
 		}
 	}
 }

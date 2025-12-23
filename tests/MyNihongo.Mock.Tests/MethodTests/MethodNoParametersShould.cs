@@ -101,14 +101,14 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			public void VerifyInvoke<T>(in Times times)
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
-				var invoke0Invocation = (Invocation)_invoke0Invocation.GetOrAdd(typeof(T), static type => new Invocation($"IInterface.Invoke<{type.Name}>()"));
+				var invoke0Invocation = (Invocation)_invoke0Invocation.GetOrAdd(typeof(T), static (t) => new Invocation($"IInterface.Invoke<{t.Name}>()"));
 				invoke0Invocation.Verify(times, _invocationProviders);
 			}
 
 			public long VerifyInvoke<T>(in long index)
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
-				var invoke0Invocation = (Invocation)_invoke0Invocation.GetOrAdd(typeof(T), static type => new Invocation($"IInterface.Invoke<{type.Name}>()"));
+				var invoke0Invocation = (Invocation)_invoke0Invocation.GetOrAdd(typeof(T), static (t) => new Invocation($"IInterface.Invoke<{t.Name}>()"));
 				return invoke0Invocation.Verify(index, _invocationProviders);
 			}
 			""";

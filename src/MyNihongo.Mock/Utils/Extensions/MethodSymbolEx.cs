@@ -147,6 +147,7 @@ internal static class MethodSymbolEx
 				.Indent(indent)
 				.Append("public void Verify")
 				.AppendMethodName(methodSymbol)
+				.AppendGenericTypes(methodSymbol.TypeArguments)
 				.Append('(')
 				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
 				.AppendLine("in Times times)")
@@ -154,7 +155,7 @@ internal static class MethodSymbolEx
 
 			@this
 				.Indent(indent)
-				.AppendInvocationDeclaration(methodSymbol, mockedTypeSymbol, memberSymbol)
+				.AppendInvocationDeclaration(methodSymbol, mockedTypeSymbol, memberSymbol, indent)
 				.AppendLine();
 
 			@this
@@ -181,7 +182,7 @@ internal static class MethodSymbolEx
 
 			@this
 				.Indent(indent)
-				.AppendInvocationDeclaration(methodSymbol, mockedTypeSymbol, memberSymbol)
+				.AppendInvocationDeclaration(methodSymbol, mockedTypeSymbol, memberSymbol, indent)
 				.AppendLine();
 
 			@this
@@ -347,17 +348,44 @@ internal static class MethodSymbolEx
 			return @this;
 		}
 
-		private StringBuilder AppendInvocationDeclaration(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol)
+		private StringBuilder AppendInvocationDeclaration(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 		{
 			@this
 				.AppendInvocationFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
 				.Append(" ??= new ")
-				.AppendInvocationType(methodSymbol, mockedTypeSymbol)
-				.Append("(\"")
+				.AppendInvocationType(methodSymbol, mockedTypeSymbol);
+
+			if (methodSymbol.TryGetGenericTypeNames(mockedTypeSymbol, out var genericTypeNames))
+			{
+				@this.AppendLine("();");
+
+				@this
+					.Indent(indent)
+					.Append("var ")
+					.AppendParameterName(memberSymbol.MemberName, methodSymbol.MethodKind, suffix: MockGeneratorConst.Suffixes.Invocation)
+					.Append(" = (")
+					.AppendInvocationType(methodSymbol)
+					.Append(')')
+					.AppendInvocationFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
+					.Append(".GetOrAdd(")
+					.AppendTypesDeclaration(genericTypeNames)
+					.Append(", static (")
+					.AppendJoin(", ", genericTypeNames, static (sb, x) => sb.AppendParameterName(x))
+					.Append(") => new ")
+					.AppendInvocationType(methodSymbol);
+			}
+
+			@this.Append('(');
+			if (!genericTypeNames.IsDefaultOrEmpty)
+				@this.Append('$');
+
+			@this
+				.Append('"')
 				.Append(mockedTypeSymbol.TypeSymbol.Name)
 				.AppendGenericTypes(mockedTypeSymbol.TypeSymbol)
 				.Append('.')
-				.AppendPropertyName(memberSymbol.Symbol.Name);
+				.AppendPropertyName(memberSymbol.Symbol.Name)
+				.AppendInvocationMethodGenericParameters(methodSymbol, genericTypeNames);
 
 			switch (methodSymbol.MethodKind)
 			{
@@ -378,10 +406,37 @@ internal static class MethodSymbolEx
 					break;
 			}
 
-			return @this
+			@this
 				.Append('"')
-				.TryAppendParameterPrefixes(methodSymbol)
-				.Append(");");
+				.TryAppendParameterPrefixes(methodSymbol);
+
+			// For GetOrAdd
+			if (!genericTypeNames.IsDefaultOrEmpty)
+				@this.Append(')');
+
+			return @this.Append(");");
+		}
+
+		private void AppendInvocationMethodGenericParameters(IMethodSymbol methodSymbol, ImmutableArray<string> methodOnlyGenericTypeNames)
+		{
+			if (methodSymbol.TypeArguments.IsDefaultOrEmpty)
+				return;
+
+			@this.Append('<');
+
+			for (var i = 0; i < methodSymbol.TypeArguments.Length; i++)
+			{
+				if (i > 0)
+					@this.Append(", ");
+
+				var typeArgument = methodSymbol.TypeArguments[i];
+				if (methodOnlyGenericTypeNames.Contains(typeArgument.Name))
+					@this.Append('{').AppendParameterName(typeArgument.Name).Append(".Name}");
+				else
+					@this.AppendType(typeArgument);
+			}
+
+			@this.Append('>');
 		}
 
 		private void AppendParameterPlaceholders(IMethodSymbol methodSymbol)
