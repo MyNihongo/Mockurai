@@ -215,6 +215,7 @@ internal static class MockImplementationGenerator
 						.Append(((IMethodSymbol)member.Symbol).ReturnType)
 						.Append(' ')
 						.Append(member.Symbol.Name)
+						.AppendGenericTypes(((IMethodSymbol)member.Symbol).TypeArguments)
 						.Append("(")
 						.AppendParameters(((IMethodSymbol)member.Symbol).Parameters)
 						.Append(") {");
@@ -277,6 +278,7 @@ internal static class MockImplementationGenerator
 						.Append(((IMethodSymbol)member).ReturnType)
 						.Append(' ')
 						.Append(member.Name)
+						.AppendGenericTypes(((IMethodSymbol)member).TypeArguments)
 						.Append("(")
 						.AppendParameters(((IMethodSymbol)member).Parameters)
 						.Append(") {");
