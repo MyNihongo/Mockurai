@@ -88,12 +88,12 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 		const string methods =
 			"""
 			// Invoke
-			private System.Collections.Concurrent.ConcurrentDictionary<Type, Setup>? _invoke0;
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>? _invoke0;
 			private InvocationDictionary? _invoke0Invocation;
 
 			public Setup SetupInvoke<T>()
 			{
-				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<Type, Setup>();
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
 				var invoke0 = _invoke0.GetOrAdd(typeof(T), static _ => new Setup());
 				return invoke0;
 			}

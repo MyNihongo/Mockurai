@@ -294,8 +294,10 @@ internal static class MethodSymbolEx
 
 		private StringBuilder AppendTypesType(int typesCount)
 		{
+			const string typeString = "System.Type";
+
 			if (typesCount == 1)
-				return @this.Append("Type");
+				return @this.Append(typeString);
 
 			@this.Append('(');
 			for (var i = 0; i < typesCount; i++)
@@ -303,7 +305,7 @@ internal static class MethodSymbolEx
 				if (i < 0)
 					@this.Append(", ");
 
-				@this.Append("Type");
+				@this.Append(typeString);
 			}
 
 			return @this.Append(')');
