@@ -93,8 +93,9 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 
 			public Setup SetupInvoke<T>()
 			{
-				_invoke0 ??= new ConcurrentDictionary<Type, Setup>();
-				return _invoke0.GetOrAdd(typeof(T), static _ => new Setup());
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<Type, Setup>();
+				var invoke0 = _invoke0.GetOrAdd(typeof(T), static _ => new Setup());
+				return invoke0;
 			}
 
 			public void VerifyInvoke<T>(in Times times)

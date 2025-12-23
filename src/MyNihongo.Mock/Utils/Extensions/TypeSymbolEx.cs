@@ -44,17 +44,26 @@ internal static class TypeSymbolEx
 
 		public StringBuilder AppendGenericTypes(ITypeSymbol typeSymbol)
 		{
-			if (typeSymbol is INamedTypeSymbol { TypeArguments.Length: > 0 } namedTypeSymbol)
-			{
-				@this.Append('<');
+			return typeSymbol is INamedTypeSymbol { TypeArguments.Length: > 0 } namedTypeSymbol
+				? @this.AppendGenericTypeArguments(namedTypeSymbol.TypeArguments)
+				: @this;
+		}
 
-				foreach (var typeArgument in namedTypeSymbol.TypeArguments)
-					@this.Append(typeArgument);
+		public StringBuilder AppendGenericTypes(ImmutableArray<ITypeSymbol> typeArguments)
+		{
+			return typeArguments.Length > 0
+				? @this.AppendGenericTypeArguments(typeArguments)
+				: @this;
+		}
 
-				@this.Append('>');
-			}
+		private StringBuilder AppendGenericTypeArguments(ImmutableArray<ITypeSymbol> typeArguments)
+		{
+			@this.Append('<');
 
-			return @this;
+			foreach (var typeArgument in typeArguments)
+				@this.Append(typeArgument);
+
+			return @this.Append('>');
 		}
 
 		public StringBuilder TryAppendOverride(ISymbol symbol)

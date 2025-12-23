@@ -22,6 +22,31 @@ internal static class MethodSymbolEx
 
 			return count > 0;
 		}
+
+		private bool TryGetGenericTypeNames(MockedTypeSymbol mockedTypeSymbol, out ImmutableArray<string> result)
+		{
+			if (mockedTypeSymbol.GenericTypeParameterNames is null)
+			{
+				result =
+				[
+					..@this.TypeArguments
+						.Select(static x => x.Name),
+				];
+			}
+			else
+			{
+				var builder = ImmutableArray.CreateBuilder<string>();
+				foreach (var genericType in @this.TypeArguments)
+				{
+					if (!mockedTypeSymbol.GenericTypeParameterNames.Contains(genericType.Name))
+						builder.Add(genericType.Name);
+				}
+
+				result = builder.ToImmutable();
+			}
+
+			return result.Length > 0;
+		}
 	}
 
 	extension(StringBuilder @this)
@@ -50,31 +75,47 @@ internal static class MethodSymbolEx
 				.AppendLine(";");
 		}
 
-		public StringBuilder AppendSetupMethod(IMethodSymbol method, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
+		public StringBuilder AppendSetupMethod(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 		{
 			@this
 				.Indent(indent)
 				.Append("public ")
-				.AppendSetupType(method)
+				.AppendSetupType(methodSymbol)
 				.Append(" Setup")
-				.AppendMethodName(method)
+				.AppendMethodName(methodSymbol)
+				.AppendGenericTypes(methodSymbol.TypeArguments)
 				.Append('(')
-				.AppendItParameters(method.Parameters)
+				.AppendItParameters(methodSymbol.Parameters)
 				.AppendLine(")")
 				.Indent(indent++).AppendLine("{");
 
 			@this
 				.Indent(indent)
-				.AppendFieldName(memberSymbol.MemberName, method.MethodKind)
+				.AppendFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
 				.Append(" ??= new ")
-				.AppendSetupType(method, mockedTypeSymbol)
+				.AppendSetupType(methodSymbol, mockedTypeSymbol)
 				.AppendLine("();");
 
-			if (method.Parameters.TryGetInputParameters(out var parameters))
+			if (methodSymbol.TryGetGenericTypeNames(mockedTypeSymbol, out var genericTypeNames))
 			{
 				@this
 					.Indent(indent)
-					.AppendFieldName(memberSymbol.MemberName, method.MethodKind)
+					.Append("var ")
+					.AppendParameterName(memberSymbol.MemberName, methodSymbol.MethodKind)
+					.Append(" = ")
+					.AppendFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
+					.Append(".GetOrAdd(")
+					.AppendTypesDeclaration(genericTypeNames)
+					.Append(", static _ => new ")
+					.AppendSetupType(methodSymbol)
+					.AppendLine("());");
+			}
+
+			if (methodSymbol.Parameters.TryGetInputParameters(out var parameters))
+			{
+				@this
+					.Indent(indent)
+					.AppendFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
 					.Append(".SetupParameter");
 
 				if (parameters.Length > 1)
@@ -88,11 +129,14 @@ internal static class MethodSymbolEx
 
 			@this
 				.Indent(indent)
-				.Append("return ")
-				.AppendFieldName(memberSymbol.MemberName, method.MethodKind)
-				.AppendLine(";");
+				.Append("return ");
 
-			return @this
+			if (!genericTypeNames.IsDefaultOrEmpty)
+				@this.AppendParameterName(memberSymbol.MemberName, methodSymbol.MethodKind);
+			else
+				@this.AppendFieldName(memberSymbol.MemberName, methodSymbol.MethodKind);
+
+			return @this.AppendLine(";")
 				.Indent(--indent).Append('}');
 		}
 
@@ -247,6 +291,26 @@ internal static class MethodSymbolEx
 					@this.Append(", ");
 
 				@this.Append("Type");
+			}
+
+			return @this.Append(')');
+		}
+
+		private StringBuilder AppendTypesDeclaration(ImmutableArray<string> typeNames)
+		{
+			if (typeNames.Length == 1)
+				return @this.Append("typeof(").Append(typeNames[0]).Append(')');
+
+			@this.Append('(');
+			for (var i = 0; i < typeNames.Length; i++)
+			{
+				if (i < 0)
+					@this.Append(", ");
+
+				@this
+					.Append("typeof(")
+					.Append(typeNames[i])
+					.Append(')');
 			}
 
 			return @this.Append(')');
