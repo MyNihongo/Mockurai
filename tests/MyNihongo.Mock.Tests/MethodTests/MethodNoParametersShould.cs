@@ -172,29 +172,32 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 		const string methods =
 			"""
 			// Invoke
-			private SetupWithOutParameter<int>? _invoke0;
-			private Invocation<int>? _invoke0Invocation;
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
+			private InvocationDictionary? _invoke0Invocation;
 
-			public SetupWithOutParameter<int> SetupInvoke(in ItOut<int> result)
+			public SetupWithOutParameter<T> SetupInvoke<T>(in ItOut<T> value)
 			{
-				_invoke0 ??= new SetupWithOutParameter<int>();
-				return _invoke0;
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+				var invoke0 = (SetupWithOutParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithOutParameter<T>());
+				return invoke0;
 			}
 
-			public void VerifyInvoke(in ItOut<int> result, in Times times)
+			public void VerifyInvoke<T>(in ItOut<T> value, in Times times)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
-				_invoke0Invocation.Verify(result, times, _invocationProviders);
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "out"));
+				invoke0Invocation.Verify(value, times, _invocationProviders);
 			}
 
-			public long VerifyInvoke(in ItOut<int> result, long index)
+			public long VerifyInvoke<T>(in ItOut<T> value, long index)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
-				return _invoke0Invocation.Verify(result, index, _invocationProviders);
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "out"));
+				return invoke0Invocation.Verify(value, index, _invocationProviders);
 			}
 			""";
 
-		const string proxy = "public void Invoke(out int result) {result = default;}";
+		const string proxy = "public void Invoke<T>(out T value) {value = default;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
