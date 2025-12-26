@@ -231,18 +231,25 @@ internal static class MockImplementationGenerator
 					}
 
 					// TODO: appropriate check
-					if (((IMethodSymbol)member.Symbol).ReturnType is INamedTypeSymbol { Name: "Task" or "ValueTask" } returnType)
+					if (!((IMethodSymbol)member.Symbol).ReturnsVoid)
 					{
-						stringBuilder
-							.Append("return ")
-							.Append(returnType.ContainingNamespace)
-							.Append('.')
-							.Append(returnType.Name);
+						if (((IMethodSymbol)member.Symbol).ReturnType is INamedTypeSymbol { Name: "Task" or "ValueTask" } returnType)
+						{
+							stringBuilder
+								.Append("return ")
+								.Append(returnType.ContainingNamespace)
+								.Append('.')
+								.Append(returnType.Name);
 
-						if (returnType.TypeArguments.IsDefaultOrEmpty)
-							stringBuilder.Append(".CompletedTask;");
+							if (returnType.TypeArguments.IsDefaultOrEmpty)
+								stringBuilder.Append(".CompletedTask;");
+							else
+								stringBuilder.Append(".FromResult").AppendGenericTypes(returnType.TypeArguments).Append("(default);");
+						}
 						else
-							stringBuilder.Append(".FromResult").AppendGenericTypes(returnType.TypeArguments).Append("(default);");
+						{
+							stringBuilder.Append("return default;");
+						}
 					}
 
 					stringBuilder
@@ -309,18 +316,25 @@ internal static class MockImplementationGenerator
 					}
 
 					// TODO: appropriate check
-					if (((IMethodSymbol)member).ReturnType is INamedTypeSymbol { Name: "Task" or "ValueTask" } returnType)
+					if (!((IMethodSymbol)member).ReturnsVoid && ((IMethodSymbol)member).ReturnType is INamedTypeSymbol returnType)
 					{
-						stringBuilder
-							.Append("return ")
-							.Append(returnType.ContainingNamespace)
-							.Append('.')
-							.Append(returnType.Name);
+						if (returnType.Name is "Task" or "ValueTask")
+						{
+							stringBuilder
+								.Append("return ")
+								.Append(returnType.ContainingNamespace)
+								.Append('.')
+								.Append(returnType.Name);
 
-						if (returnType.TypeArguments.IsDefaultOrEmpty)
-							stringBuilder.Append(".CompletedTask;");
+							if (returnType.TypeArguments.IsDefaultOrEmpty)
+								stringBuilder.Append(".CompletedTask;");
+							else
+								stringBuilder.Append(".FromResult").AppendGenericTypes(returnType.TypeArguments).Append("(default);");
+						}
 						else
-							stringBuilder.Append(".FromResult").AppendGenericTypes(returnType.TypeArguments).Append("(default);");
+						{
+							stringBuilder.Append("return default;");
+						}
 					}
 
 					stringBuilder
