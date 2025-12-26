@@ -272,7 +272,8 @@ internal static class MethodSymbolEx
 				.AppendTypesType(genericTypeCount)
 				.Append(", ");
 
-			var setupType = methodSymbol is { ReturnsVoid: true, Parameters.Length: 0 } ? "Setup" : "object";
+			var returnType = methodSymbol.TryGetReturnType();
+			var setupType = returnType is null ? "Setup" : "object";
 			return @this.Append(setupType).Append('>');
 		}
 

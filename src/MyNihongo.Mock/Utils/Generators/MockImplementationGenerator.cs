@@ -229,7 +229,7 @@ internal static class MockImplementationGenerator
 							.Append(parameter.Name)
 							.Append(" = default;");
 					}
-					
+
 					// TODO: appropriate check
 					if (((IMethodSymbol)member.Symbol).ReturnType is INamedTypeSymbol { Name: "Task" or "ValueTask" } returnType)
 					{
@@ -237,8 +237,12 @@ internal static class MockImplementationGenerator
 							.Append("return ")
 							.Append(returnType.ContainingNamespace)
 							.Append('.')
-							.Append(returnType.Name)
-							.Append(".CompletedTask;");
+							.Append(returnType.Name);
+
+						if (returnType.TypeArguments.IsDefaultOrEmpty)
+							stringBuilder.Append(".CompletedTask;");
+						else
+							stringBuilder.Append(".FromResult").AppendGenericTypes(returnType.TypeArguments).Append("(default);");
 					}
 
 					stringBuilder
@@ -303,7 +307,7 @@ internal static class MockImplementationGenerator
 							.Append(parameter.Name)
 							.Append(" = default;");
 					}
-					
+
 					// TODO: appropriate check
 					if (((IMethodSymbol)member).ReturnType is INamedTypeSymbol { Name: "Task" or "ValueTask" } returnType)
 					{
@@ -311,8 +315,12 @@ internal static class MockImplementationGenerator
 							.Append("return ")
 							.Append(returnType.ContainingNamespace)
 							.Append('.')
-							.Append(returnType.Name)
-							.Append(".CompletedTask;");
+							.Append(returnType.Name);
+
+						if (returnType.TypeArguments.IsDefaultOrEmpty)
+							stringBuilder.Append(".CompletedTask;");
+						else
+							stringBuilder.Append(".FromResult").AppendGenericTypes(returnType.TypeArguments).Append("(default);");
 					}
 
 					stringBuilder
