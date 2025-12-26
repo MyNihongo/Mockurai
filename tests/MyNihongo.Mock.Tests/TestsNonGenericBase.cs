@@ -6,6 +6,8 @@ public abstract class TestsNonGenericBase : TestsBase
 	{
 		return
 			$$"""
+			  using System.Threading.Tasks;
+			  
 			  namespace MyNihongo.Mock.Tests;
 
 			  {{customCode}}

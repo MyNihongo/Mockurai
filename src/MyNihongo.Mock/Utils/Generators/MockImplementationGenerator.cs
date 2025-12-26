@@ -9,6 +9,7 @@ internal static class MockImplementationGenerator
 		var stringBuilder = new StringBuilder();
 		var typeString = typeSymbol.ToString();
 		var (constructor, mockClassName, genericTypes) = CreateMockClassName(stringBuilder, typeSymbol);
+		var mockedTypeSymbol = new MockedTypeSymbol(typeSymbol);
 		var mockableMembers = GetMockableMembers(typeSymbol);
 
 		var source =
@@ -29,7 +30,7 @@ internal static class MockImplementationGenerator
 
 			  	public {{typeString}} Object => _proxy ??= new Proxy(this);
 
-			  {{CreateMockMethods(stringBuilder, typeSymbol, mockableMembers, indent: 1)}}
+			  {{CreateMockMethods(stringBuilder, mockedTypeSymbol, mockableMembers, indent: 1)}}
 
 			  	public void VerifyNoOtherCalls()
 			  	{
@@ -96,7 +97,7 @@ internal static class MockImplementationGenerator
 		return (constructorName, constructorName + genericTypes, genericTypes);
 	}
 
-	private static IReadOnlyList<MemberSymbol> GetMockableMembers(ITypeSymbol typeSymbol)
+	private static IReadOnlyList<MockedMemberSymbol> GetMockableMembers(ITypeSymbol typeSymbol)
 	{
 		var symbols = typeSymbol.TypeKind switch
 		{
@@ -105,22 +106,24 @@ internal static class MockImplementationGenerator
 		};
 
 		return symbols
+			.FilterMockableSymbols()
 			.ToLookup(static x => x.Name)
-			.SelectMany(static x => x.Select((y, i) => new MemberSymbol($"{x.Key}{i}", y)))
+			.SelectMany(static x => x.Select((y, i) => new MockedMemberSymbol($"{x.Key}{i}", y)))
 			.ToArray();
 	}
 
-	private static string CreateMockMethods(StringBuilder stringBuilder, ITypeSymbol typeSymbol, IReadOnlyList<MemberSymbol> members, int indent)
+	private static string CreateMockMethods(StringBuilder stringBuilder, MockedTypeSymbol typeSymbol, IReadOnlyList<MockedMemberSymbol> members, int indent)
 	{
 		stringBuilder.Clear();
 
 		for (int i = 0, generateCount = 0; i < members.Count; i++)
 		{
 			var member = members[i];
-			Action<StringBuilder, ITypeSymbol, MemberSymbol, int>? handler = member.Symbol.Kind switch
+			Action<StringBuilder, MockedTypeSymbol, MockedMemberSymbol, int>? handler = member.Symbol.Kind switch
 			{
 				SymbolKind.Event => MockImplementationEventGenerator.AppendEventMockMethod,
 				SymbolKind.Property => MockImplementationPropertyGenerator.AppendPropertyMockMethod,
+				SymbolKind.Method => MockImplementationMethodGenerator.AppendPropertyMockMethod,
 				_ => null,
 			};
 
@@ -139,13 +142,13 @@ internal static class MockImplementationGenerator
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, IReadOnlyList<MemberSymbol> members, int indent)
+	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, IReadOnlyList<MockedMemberSymbol> members, int indent)
 	{
 		stringBuilder.Clear();
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateGetInvocations(StringBuilder stringBuilder, IReadOnlyList<MemberSymbol> members, int indent)
+	private static string CreateGetInvocations(StringBuilder stringBuilder, IReadOnlyList<MockedMemberSymbol> members, int indent)
 	{
 		stringBuilder.Clear();
 
@@ -165,7 +168,7 @@ internal static class MockImplementationGenerator
 			.ToString();
 	}
 
-	private static string CreateProxyMethods(StringBuilder stringBuilder, ITypeSymbol typeSymbol, IReadOnlyList<MemberSymbol> members, int indent)
+	private static string CreateProxyMethods(StringBuilder stringBuilder, ITypeSymbol typeSymbol, IReadOnlyList<MockedMemberSymbol> members, int indent)
 	{
 		stringBuilder.Clear();
 
@@ -204,11 +207,59 @@ internal static class MockImplementationGenerator
 					stringBuilder
 						.AppendLine("}");
 					break;
+				case SymbolKind.Method:
+					stringBuilder
+						.Indent(indent)
+						.Append("public ")
+						.TryAppendOverride(member.Symbol)
+						.Append(((IMethodSymbol)member.Symbol).ReturnType)
+						.Append(' ')
+						.Append(member.Symbol.Name)
+						.AppendGenericTypes(((IMethodSymbol)member.Symbol).TypeArguments)
+						.Append("(")
+						.AppendParameters(((IMethodSymbol)member.Symbol).Parameters)
+						.Append(") {");
+
+					foreach (var parameter in ((IMethodSymbol)member.Symbol).Parameters)
+					{
+						if (parameter.RefKind != RefKind.Out)
+							continue;
+
+						stringBuilder
+							.Append(parameter.Name)
+							.Append(" = default;");
+					}
+
+					// TODO: appropriate check
+					if (!((IMethodSymbol)member.Symbol).ReturnsVoid)
+					{
+						if (((IMethodSymbol)member.Symbol).ReturnType is INamedTypeSymbol { Name: "Task" or "ValueTask" } returnType)
+						{
+							stringBuilder
+								.Append("return ")
+								.Append(returnType.ContainingNamespace)
+								.Append('.')
+								.Append(returnType.Name);
+
+							if (returnType.TypeArguments.IsDefaultOrEmpty)
+								stringBuilder.Append(".CompletedTask;");
+							else
+								stringBuilder.Append(".FromResult").AppendGenericTypes(returnType.TypeArguments).Append("(default);");
+						}
+						else
+						{
+							stringBuilder.Append("return default;");
+						}
+					}
+
+					stringBuilder
+						.AppendLine("}");
+					break;
 			}
 		}
 
 		// TODO: extract
-		foreach (var member in typeSymbol.GetIrrelevantOverridableMembers())
+		foreach (var member in typeSymbol.GetIrrelevantOverridableMembers().FilterMockableSymbols())
 		{
 			switch (member.Kind)
 			{
@@ -241,19 +292,67 @@ internal static class MockImplementationGenerator
 					stringBuilder
 						.AppendLine("}");
 					break;
+				case SymbolKind.Method:
+					stringBuilder
+						.Indent(indent)
+						.Append("public ")
+						.TryAppendOverride(member)
+						.Append(((IMethodSymbol)member).ReturnType)
+						.Append(' ')
+						.Append(member.Name)
+						.AppendGenericTypes(((IMethodSymbol)member).TypeArguments)
+						.Append("(")
+						.AppendParameters(((IMethodSymbol)member).Parameters)
+						.Append(") {");
+
+					foreach (var parameter in ((IMethodSymbol)member).Parameters)
+					{
+						if (parameter.RefKind != RefKind.Out)
+							continue;
+
+						stringBuilder
+							.Append(parameter.Name)
+							.Append(" = default;");
+					}
+
+					// TODO: appropriate check
+					if (!((IMethodSymbol)member).ReturnsVoid && ((IMethodSymbol)member).ReturnType is INamedTypeSymbol returnType)
+					{
+						if (returnType.Name is "Task" or "ValueTask")
+						{
+							stringBuilder
+								.Append("return ")
+								.Append(returnType.ContainingNamespace)
+								.Append('.')
+								.Append(returnType.Name);
+
+							if (returnType.TypeArguments.IsDefaultOrEmpty)
+								stringBuilder.Append(".CompletedTask;");
+							else
+								stringBuilder.Append(".FromResult").AppendGenericTypes(returnType.TypeArguments).Append("(default);");
+						}
+						else
+						{
+							stringBuilder.Append("return default;");
+						}
+					}
+
+					stringBuilder
+						.AppendLine("}");
+					break;
 			}
 		}
 
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateMockExtensions(StringBuilder stringBuilder, IReadOnlyList<MemberSymbol> members, int indent)
+	private static string CreateMockExtensions(StringBuilder stringBuilder, IReadOnlyList<MockedMemberSymbol> members, int indent)
 	{
 		stringBuilder.Clear();
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateMockSequenceExtensions(StringBuilder stringBuilder, IReadOnlyList<MemberSymbol> members, int indent)
+	private static string CreateMockSequenceExtensions(StringBuilder stringBuilder, IReadOnlyList<MockedMemberSymbol> members, int indent)
 	{
 		stringBuilder.Clear();
 		return stringBuilder.ToString();
