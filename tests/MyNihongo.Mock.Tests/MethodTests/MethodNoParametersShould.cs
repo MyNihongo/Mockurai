@@ -213,30 +213,30 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 
 		const string methods =
 			"""
-			// Invoke
-			private SetupWithOutParameter<int>? _invoke0;
-			private Invocation<int>? _invoke0Invocation;
+			// InvokeAsync
+			private Setup? _invokeAsync0;
+			private Invocation? _invokeAsync0Invocation;
 
-			public SetupWithOutParameter<int> SetupInvoke(in ItOut<int> result)
+			public Setup SetupInvokeAsync()
 			{
-				_invoke0 ??= new SetupWithOutParameter<int>();
-				return _invoke0;
+				_invokeAsync0 ??= new Setup();
+				return _invokeAsync0;
 			}
 
-			public void VerifyInvoke(in ItOut<int> result, in Times times)
+			public void VerifyInvokeAsync(in Times times)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
-				_invoke0Invocation.Verify(result, times, _invocationProviders);
+				_invokeAsync0Invocation ??= new Invocation("IInterface.InvokeAsync()");
+				_invokeAsync0Invocation.Verify(times, _invocationProviders);
 			}
 
-			public long VerifyInvoke(in ItOut<int> result, long index)
+			public long VerifyInvokeAsync(long index)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
-				return _invoke0Invocation.Verify(result, index, _invocationProviders);
+				_invokeAsync0Invocation ??= new Invocation("IInterface.InvokeAsync()");
+				return _invokeAsync0Invocation.Verify(index, _invocationProviders);
 			}
 			""";
 
-		const string proxy = "public void Invoke(out int result) {result = default;}";
+		const string proxy = "public System.Threading.Tasks.Task InvokeAsync() {return System.Threading.Tasks.Task.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);

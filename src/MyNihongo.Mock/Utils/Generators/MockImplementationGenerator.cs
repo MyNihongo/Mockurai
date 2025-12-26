@@ -229,6 +229,17 @@ internal static class MockImplementationGenerator
 							.Append(parameter.Name)
 							.Append(" = default;");
 					}
+					
+					// TODO: appropriate check
+					if (((IMethodSymbol)member.Symbol).ReturnType is INamedTypeSymbol { Name: "Task" or "ValueTask" } returnType)
+					{
+						stringBuilder
+							.Append("return ")
+							.Append(returnType.ContainingNamespace)
+							.Append('.')
+							.Append(returnType.Name)
+							.Append(".CompletedTask;");
+					}
 
 					stringBuilder
 						.AppendLine("}");
@@ -291,6 +302,17 @@ internal static class MockImplementationGenerator
 						stringBuilder
 							.Append(parameter.Name)
 							.Append(" = default;");
+					}
+					
+					// TODO: appropriate check
+					if (((IMethodSymbol)member).ReturnType is INamedTypeSymbol { Name: "Task" or "ValueTask" } returnType)
+					{
+						stringBuilder
+							.Append("return ")
+							.Append(returnType.ContainingNamespace)
+							.Append('.')
+							.Append(returnType.Name)
+							.Append(".CompletedTask;");
 					}
 
 					stringBuilder

@@ -47,6 +47,22 @@ internal static class MethodSymbolEx
 
 			return result.Length > 0;
 		}
+
+		private ITypeSymbol? TryGetReturnType()
+		{
+			if (@this.ReturnsVoid)
+				return null;
+
+			var returnType = @this.ReturnType;
+			if (returnType.Name is "Task" or "ValueTask" && returnType.ContainingNamespace.ToString() == "System.Threading.Tasks" && returnType is INamedTypeSymbol returnTypeNamedSymbol)
+			{
+				return !returnTypeNamedSymbol.TypeArguments.IsDefaultOrEmpty
+					? returnTypeNamedSymbol.TypeArguments[0]
+					: null;
+			}
+
+			return returnType;
+		}
 	}
 
 	extension(StringBuilder @this)
@@ -221,7 +237,8 @@ internal static class MethodSymbolEx
 
 		private StringBuilder AppendSetupType(IMethodSymbol methodSymbol)
 		{
-			if (methodSymbol.ReturnsVoid)
+			var returnType = methodSymbol.TryGetReturnType();
+			if (returnType is null)
 			{
 				return methodSymbol.Parameters.Length switch
 				{
@@ -235,16 +252,16 @@ internal static class MethodSymbolEx
 			{
 				0 => @this
 					.Append("Setup<")
-					.AppendType(methodSymbol.ReturnType)
+					.AppendType(returnType)
 					.Append('>'),
 
 				1 => @this
 					.AppendSetupWithParameter(methodSymbol.Parameters[0])
 					.Append(", ")
-					.AppendType(methodSymbol.ReturnType)
+					.AppendType(returnType)
 					.Append('>'),
 
-				_ => @this.AppendSetupClassName(methodSymbol.Parameters, methodSymbol.ReturnType),
+				_ => @this.AppendSetupClassName(methodSymbol.Parameters, returnType),
 			};
 		}
 
