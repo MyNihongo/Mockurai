@@ -33,7 +33,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke(int param) {}";
+		const string proxy = "public System.Threading.Tasks.Task Invoke(int param) {return System.Threading.Tasks.Task.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -73,7 +73,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke(int param) {}";
+		const string proxy = "public System.Threading.Tasks.ValueTask Invoke(int param) {return System.Threading.Tasks.ValueTask.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -113,7 +113,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public float Invoke(int param) {return default;}";
+		const string proxy = "public System.Threading.Tasks.Task<float> Invoke(int param) {return System.Threading.Tasks.Task.FromResult<float>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -153,7 +153,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public float Invoke(int param) {return default;}";
+		const string proxy = "public System.Threading.Tasks.ValueTask<float> Invoke(int param) {return System.Threading.Tasks.ValueTask.FromResult<float>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -192,7 +192,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke(out int result) {result = default;}";
+		const string proxy = "public System.Threading.Tasks.Task Invoke(out int result) {result = default;return System.Threading.Tasks.Task.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -231,7 +231,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke(out int result) {result = default;}";
+		const string proxy = "public System.Threading.Tasks.ValueTask Invoke(out int result) {result = default;return System.Threading.Tasks.ValueTask.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -270,7 +270,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public decimal Invoke(out int result) {result = default;return default;}";
+		const string proxy = "public System.Threading.Tasks.Task<decimal> Invoke(out int result) {result = default;return System.Threading.Tasks.Task.FromResult<decimal>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -309,7 +309,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public decimal Invoke(out int result) {result = default;return default;}";
+		const string proxy = "public System.Threading.Tasks.ValueTask<decimal> Invoke(out int result) {result = default;return System.Threading.Tasks.ValueTask.FromResult<decimal>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -349,7 +349,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke(in int result) {}";
+		const string proxy = "public System.Threading.Tasks.Task Invoke(in int result) {return System.Threading.Tasks.Task.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -389,7 +389,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke(in int result) {}";
+		const string proxy = "public System.Threading.Tasks.ValueTask Invoke(in int result) {return System.Threading.Tasks.ValueTask.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -429,7 +429,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public decimal Invoke(in int result) {return default;}";
+		const string proxy = "public System.Threading.Tasks.Task<decimal> Invoke(in int result) {return System.Threading.Tasks.Task.FromResult<decimal>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -469,7 +469,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public decimal Invoke(in int result) {return default;}";
+		const string proxy = "public System.Threading.Tasks.ValueTask<decimal> Invoke(in int result) {return System.Threading.Tasks.ValueTask.FromResult<decimal>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -509,7 +509,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke(ref int result) {}";
+		const string proxy = "public System.Threading.Tasks.Task Invoke(ref int result) {return System.Threading.Tasks.Task.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -549,7 +549,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke(ref int result) {}";
+		const string proxy = "public System.Threading.Tasks.ValueTask Invoke(ref int result) {return System.Threading.Tasks.ValueTask.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -589,7 +589,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public decimal Invoke(ref int result) {return default;}";
+		const string proxy = "public System.Threading.Tasks.Task<decimal> Invoke(ref int result) {return System.Threading.Tasks.Task.FromResult<decimal>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -629,7 +629,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public decimal Invoke(ref int result) {return default;}";
+		const string proxy = "public System.Threading.Tasks.ValueTask<decimal> Invoke(ref int result) {return System.Threading.Tasks.ValueTask.FromResult<decimal>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -669,7 +669,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke(ref readonly int result) {}";
+		const string proxy = "public System.Threading.Tasks.Task Invoke(ref readonly int result) {return System.Threading.Tasks.Task.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -709,7 +709,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke(ref readonly int result) {}";
+		const string proxy = "public System.Threading.Tasks.ValueTask Invoke(ref readonly int result) {return System.Threading.Tasks.ValueTask.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -749,7 +749,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public decimal Invoke(ref readonly int result) {return default;}";
+		const string proxy = "public System.Threading.Tasks.Task<decimal> Invoke(ref readonly int result) {return System.Threading.Tasks.Task.FromResult<decimal>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -789,7 +789,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public decimal Invoke(ref readonly int result) {return default;}";
+		const string proxy = "public System.Threading.Tasks.ValueTask<decimal> Invoke(ref readonly int result) {return System.Threading.Tasks.ValueTask.FromResult<decimal>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -832,7 +832,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke<T>(T param) {}";
+		const string proxy = "public System.Threading.Tasks.Task Invoke<T>(T param) {return System.Threading.Tasks.Task.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -875,7 +875,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke<T>(T param) {}";
+		const string proxy = "public System.Threading.Tasks.ValueTask Invoke<T>(T param) {return System.Threading.Tasks.ValueTask.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -918,7 +918,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public T2 Invoke<T1, T2>(T1 param) {return default;}";
+		const string proxy = "public System.Threading.Tasks.Task<T2> Invoke<T1, T2>(T1 param) {return System.Threading.Tasks.Task.FromResult<T2>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -961,7 +961,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public T2 Invoke<T1, T2>(T1 param) {return default;}";
+		const string proxy = "public System.Threading.Tasks.ValueTask<T2> Invoke<T1, T2>(T1 param) {return System.Threading.Tasks.ValueTask.FromResult<T2>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -1003,7 +1003,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke<T>(out T value) {value = default;}";
+		const string proxy = "public System.Threading.Tasks.Task Invoke<T>(out T value) {value = default;return System.Threading.Tasks.Task.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -1045,7 +1045,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke<T>(out T value) {value = default;}";
+		const string proxy = "public System.Threading.Tasks.ValueTask Invoke<T>(out T value) {value = default;return System.Threading.Tasks.ValueTask.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -1087,7 +1087,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public T2 Invoke<T1, T2>(out T1 result) {result = default;return default;}";
+		const string proxy = "public System.Threading.Tasks.Task<T2> Invoke<T1, T2>(out T1 result) {result = default;return System.Threading.Tasks.Task.FromResult<T2>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -1129,7 +1129,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public T2 Invoke<T1, T2>(out T1 result) {result = default;return default;}";
+		const string proxy = "public System.Threading.Tasks.ValueTask<T2> Invoke<T1, T2>(out T1 result) {result = default;return System.Threading.Tasks.ValueTask.FromResult<T2>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -1172,7 +1172,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke<T>(in T value) {}";
+		const string proxy = "public System.Threading.Tasks.Task Invoke<T>(in T value) {return System.Threading.Tasks.Task.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -1215,7 +1215,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke<T>(in T value) {}";
+		const string proxy = "public System.Threading.Tasks.ValueTask Invoke<T>(in T value) {return System.Threading.Tasks.ValueTask.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -1258,7 +1258,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public T2 Invoke<T1, T2>(in T1 result) {return default;}";
+		const string proxy = "public System.Threading.Tasks.Task<T2> Invoke<T1, T2>(in T1 result) {return System.Threading.Tasks.Task.FromResult<T2>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -1301,7 +1301,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public T2 Invoke<T1, T2>(in T1 result) {return default;}";
+		const string proxy = "public System.Threading.Tasks.ValueTask<T2> Invoke<T1, T2>(in T1 result) {return System.Threading.Tasks.ValueTask.FromResult<T2>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -1344,7 +1344,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke<T>(ref T value) {}";
+		const string proxy = "public System.Threading.Tasks.Task Invoke<T>(ref T value) {return System.Threading.Tasks.Task.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -1387,50 +1387,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke<T>(ref T value) {}";
-
-		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
-
-		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
-	}
-
-	[Fact]
-	public async Task GenerateInterfaceWithRefReturnGeneric()
-	{
-		const string method = "T2 Invoke<T1, T2>(ref T1 result);";
-
-		const string methods =
-			"""
-			// Invoke
-			private System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>? _invoke0;
-			private InvocationDictionary<(System.Type, System.Type)>? _invoke0Invocation;
-
-			public SetupWithRefParameter<T1, T2> SetupInvoke<T1, T2>(in ItRef<T1> result)
-			{
-				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
-				var invoke0 = (SetupWithRefParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithRefParameter<T1, T2>());
-				invoke0.SetupParameter(result);
-				return invoke0;
-			}
-
-			public void VerifyInvoke<T1, T2>(in ItRef<T1> result, in Times times)
-			{
-				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref"));
-				invoke0Invocation.Verify(result, times, _invocationProviders);
-			}
-
-			public long VerifyInvoke<T1, T2>(in ItRef<T1> result, long index)
-			{
-				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref"));
-				return invoke0Invocation.Verify(result, index, _invocationProviders);
-			}
-			""";
-
-		const string proxy = "public T2 Invoke<T1, T2>(ref T1 result) {return default;}";
+		const string proxy = "public System.Threading.Tasks.ValueTask Invoke<T>(ref T value) {return System.Threading.Tasks.ValueTask.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -1473,7 +1430,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public T2 Invoke<T1, T2>(ref T1 result) {return default;}";
+		const string proxy = "public System.Threading.Tasks.Task<T2> Invoke<T1, T2>(ref T1 result) {return System.Threading.Tasks.Task.FromResult<T2>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -1516,7 +1473,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public T2 Invoke<T1, T2>(ref T1 result) {return default;}";
+		const string proxy = "public System.Threading.Tasks.ValueTask<T2> Invoke<T1, T2>(ref T1 result) {return System.Threading.Tasks.ValueTask.FromResult<T2>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -1536,30 +1493,30 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
 			private InvocationDictionary? _invoke0Invocation;
 
-			public SetupWithRefParameter<T> SetupInvoke<T>(in ItRef<T> value)
+			public SetupWithRefReadOnlyParameter<T> SetupInvoke<T>(in ItRefReadOnly<T> value)
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
-				var invoke0 = (SetupWithRefParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithRefParameter<T>());
+				var invoke0 = (SetupWithRefReadOnlyParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithRefReadOnlyParameter<T>());
 				invoke0.SetupParameter(value);
 				return invoke0;
 			}
 
-			public void VerifyInvoke<T>(in ItRef<T> value, in Times times)
+			public void VerifyInvoke<T>(in ItRefReadOnly<T> value, in Times times)
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
-				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "ref"));
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "ref readonly"));
 				invoke0Invocation.Verify(value, times, _invocationProviders);
 			}
 
-			public long VerifyInvoke<T>(in ItRef<T> value, long index)
+			public long VerifyInvoke<T>(in ItRefReadOnly<T> value, long index)
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
-				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "ref"));
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "ref readonly"));
 				return invoke0Invocation.Verify(value, index, _invocationProviders);
 			}
 			""";
 
-		const string proxy = "public void Invoke<T>(ref T value) {}";
+		const string proxy = "public System.Threading.Tasks.Task Invoke<T>(ref readonly T value) {return System.Threading.Tasks.Task.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -1579,73 +1536,30 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
 			private InvocationDictionary? _invoke0Invocation;
 
-			public SetupWithRefParameter<T> SetupInvoke<T>(in ItRef<T> value)
+			public SetupWithRefReadOnlyParameter<T> SetupInvoke<T>(in ItRefReadOnly<T> value)
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
-				var invoke0 = (SetupWithRefParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithRefParameter<T>());
+				var invoke0 = (SetupWithRefReadOnlyParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithRefReadOnlyParameter<T>());
 				invoke0.SetupParameter(value);
 				return invoke0;
 			}
 
-			public void VerifyInvoke<T>(in ItRef<T> value, in Times times)
+			public void VerifyInvoke<T>(in ItRefReadOnly<T> value, in Times times)
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
-				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "ref"));
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "ref readonly"));
 				invoke0Invocation.Verify(value, times, _invocationProviders);
 			}
 
-			public long VerifyInvoke<T>(in ItRef<T> value, long index)
+			public long VerifyInvoke<T>(in ItRefReadOnly<T> value, long index)
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
-				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "ref"));
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "ref readonly"));
 				return invoke0Invocation.Verify(value, index, _invocationProviders);
 			}
 			""";
 
-		const string proxy = "public void Invoke<T>(ref T value) {}";
-
-		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
-
-		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
-	}
-
-	[Fact]
-	public async Task GenerateInterfaceWithRefReadOnlyReturnGeneric()
-	{
-		const string method = "T2 Invoke<T1, T2>(ref readonly T1 result);";
-
-		const string methods =
-			"""
-			// Invoke
-			private System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>? _invoke0;
-			private InvocationDictionary<(System.Type, System.Type)>? _invoke0Invocation;
-
-			public SetupWithRefParameter<T1, T2> SetupInvoke<T1, T2>(in ItRef<T1> result)
-			{
-				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
-				var invoke0 = (SetupWithRefParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithRefParameter<T1, T2>());
-				invoke0.SetupParameter(result);
-				return invoke0;
-			}
-
-			public void VerifyInvoke<T1, T2>(in ItRef<T1> result, in Times times)
-			{
-				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref"));
-				invoke0Invocation.Verify(result, times, _invocationProviders);
-			}
-
-			public long VerifyInvoke<T1, T2>(in ItRef<T1> result, long index)
-			{
-				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref"));
-				return invoke0Invocation.Verify(result, index, _invocationProviders);
-			}
-			""";
-
-		const string proxy = "public T2 Invoke<T1, T2>(ref T1 result) {return default;}";
+		const string proxy = "public System.Threading.Tasks.ValueTask Invoke<T>(ref readonly T value) {return System.Threading.Tasks.ValueTask.CompletedTask;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -1665,30 +1579,30 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			private System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>? _invoke0;
 			private InvocationDictionary<(System.Type, System.Type)>? _invoke0Invocation;
 
-			public SetupWithRefParameter<T1, T2> SetupInvoke<T1, T2>(in ItRef<T1> result)
+			public SetupWithRefReadOnlyParameter<T1, T2> SetupInvoke<T1, T2>(in ItRefReadOnly<T1> result)
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
-				var invoke0 = (SetupWithRefParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithRefParameter<T1, T2>());
+				var invoke0 = (SetupWithRefReadOnlyParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithRefReadOnlyParameter<T1, T2>());
 				invoke0.SetupParameter(result);
 				return invoke0;
 			}
 
-			public void VerifyInvoke<T1, T2>(in ItRef<T1> result, in Times times)
+			public void VerifyInvoke<T1, T2>(in ItRefReadOnly<T1> result, in Times times)
 			{
 				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref"));
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref readonly"));
 				invoke0Invocation.Verify(result, times, _invocationProviders);
 			}
 
-			public long VerifyInvoke<T1, T2>(in ItRef<T1> result, long index)
+			public long VerifyInvoke<T1, T2>(in ItRefReadOnly<T1> result, long index)
 			{
 				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref"));
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref readonly"));
 				return invoke0Invocation.Verify(result, index, _invocationProviders);
 			}
 			""";
 
-		const string proxy = "public T2 Invoke<T1, T2>(ref T1 result) {return default;}";
+		const string proxy = "public System.Threading.Tasks.Task<T2> Invoke<T1, T2>(ref readonly T1 result) {return System.Threading.Tasks.Task.FromResult<T2>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -1708,30 +1622,30 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			private System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>? _invoke0;
 			private InvocationDictionary<(System.Type, System.Type)>? _invoke0Invocation;
 
-			public SetupWithRefParameter<T1, T2> SetupInvoke<T1, T2>(in ItRef<T1> result)
+			public SetupWithRefReadOnlyParameter<T1, T2> SetupInvoke<T1, T2>(in ItRefReadOnly<T1> result)
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
-				var invoke0 = (SetupWithRefParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithRefParameter<T1, T2>());
+				var invoke0 = (SetupWithRefReadOnlyParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithRefReadOnlyParameter<T1, T2>());
 				invoke0.SetupParameter(result);
 				return invoke0;
 			}
 
-			public void VerifyInvoke<T1, T2>(in ItRef<T1> result, in Times times)
+			public void VerifyInvoke<T1, T2>(in ItRefReadOnly<T1> result, in Times times)
 			{
 				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref"));
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref readonly"));
 				invoke0Invocation.Verify(result, times, _invocationProviders);
 			}
 
-			public long VerifyInvoke<T1, T2>(in ItRef<T1> result, long index)
+			public long VerifyInvoke<T1, T2>(in ItRefReadOnly<T1> result, long index)
 			{
 				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref"));
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref readonly"));
 				return invoke0Invocation.Verify(result, index, _invocationProviders);
 			}
 			""";
 
-		const string proxy = "public T2 Invoke<T1, T2>(ref T1 result) {return default;}";
+		const string proxy = "public System.Threading.Tasks.ValueTask<T2> Invoke<T1, T2>(ref readonly T1 result) {return System.Threading.Tasks.ValueTask.FromResult<T2>(default);}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
