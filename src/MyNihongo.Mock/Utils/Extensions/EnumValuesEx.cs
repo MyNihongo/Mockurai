@@ -16,14 +16,14 @@ internal static class EnumValuesEx
 		};
 	}
 
-	public static string GetString(this RefKind @this, bool camelCase = true)
+	public static string GetString(this RefKind @this, bool pascalCase = false)
 	{
 		return @this switch
 		{
 			RefKind.Ref => "ref",
 			RefKind.Out => "out",
 			RefKind.In => "in",
-			RefKind.RefReadOnlyParameter => camelCase ? "ref readonly" : "refReadOnly",
+			RefKind.RefReadOnlyParameter => !pascalCase ? "ref readonly" : "refReadOnly",
 			_ => string.Empty,
 		};
 	}

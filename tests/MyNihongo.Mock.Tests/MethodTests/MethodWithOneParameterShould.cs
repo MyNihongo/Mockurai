@@ -208,29 +208,30 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 		const string methods =
 			"""
 			// Invoke
-			private SetupWithOutParameter<int, decimal>? _invoke0;
+			private SetupWithInParameter<int, decimal>? _invoke0;
 			private Invocation<int>? _invoke0Invocation;
 
-			public SetupWithOutParameter<int, decimal> SetupInvoke(in ItOut<int> result)
+			public SetupWithInParameter<int, decimal> SetupInvoke(in ItIn<int> result)
 			{
-				_invoke0 ??= new SetupWithOutParameter<int, decimal>();
+				_invoke0 ??= new SetupWithInParameter<int, decimal>();
+				_invoke0.SetupParameter(result);
 				return _invoke0;
 			}
 
-			public void VerifyInvoke(in ItOut<int> result, in Times times)
+			public void VerifyInvoke(in ItIn<int> result, in Times times)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
+				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "in");
 				_invoke0Invocation.Verify(result, times, _invocationProviders);
 			}
 
-			public long VerifyInvoke(in ItOut<int> result, long index)
+			public long VerifyInvoke(in ItIn<int> result, long index)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
+				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "in");
 				return _invoke0Invocation.Verify(result, index, _invocationProviders);
 			}
 			""";
 
-		const string proxy = "public decimal Invoke(out int result) {result = default;return default;}";
+		const string proxy = "public decimal Invoke(in int result) {return default;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -247,29 +248,30 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 		const string methods =
 			"""
 			// Invoke
-			private SetupWithOutParameter<int>? _invoke0;
+			private SetupWithRefParameter<int>? _invoke0;
 			private Invocation<int>? _invoke0Invocation;
 
-			public SetupWithOutParameter<int> SetupInvoke(in ItOut<int> result)
+			public SetupWithRefParameter<int> SetupInvoke(in ItRef<int> result)
 			{
-				_invoke0 ??= new SetupWithOutParameter<int>();
+				_invoke0 ??= new SetupWithRefParameter<int>();
+				_invoke0.SetupParameter(result);
 				return _invoke0;
 			}
 
-			public void VerifyInvoke(in ItOut<int> result, in Times times)
+			public void VerifyInvoke(in ItRef<int> result, in Times times)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
+				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "ref");
 				_invoke0Invocation.Verify(result, times, _invocationProviders);
 			}
 
-			public long VerifyInvoke(in ItOut<int> result, long index)
+			public long VerifyInvoke(in ItRef<int> result, long index)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
+				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "ref");
 				return _invoke0Invocation.Verify(result, index, _invocationProviders);
 			}
 			""";
 
-		const string proxy = "public void Invoke(out int result) {result = default;}";
+		const string proxy = "public void Invoke(ref int result) {}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -286,29 +288,30 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 		const string methods =
 			"""
 			// Invoke
-			private SetupWithOutParameter<int, decimal>? _invoke0;
+			private SetupWithRefParameter<int, decimal>? _invoke0;
 			private Invocation<int>? _invoke0Invocation;
 
-			public SetupWithOutParameter<int, decimal> SetupInvoke(in ItOut<int> result)
+			public SetupWithRefParameter<int, decimal> SetupInvoke(in ItRef<int> result)
 			{
-				_invoke0 ??= new SetupWithOutParameter<int, decimal>();
+				_invoke0 ??= new SetupWithRefParameter<int, decimal>();
+				_invoke0.SetupParameter(result);
 				return _invoke0;
 			}
 
-			public void VerifyInvoke(in ItOut<int> result, in Times times)
+			public void VerifyInvoke(in ItRef<int> result, in Times times)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
+				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "ref");
 				_invoke0Invocation.Verify(result, times, _invocationProviders);
 			}
 
-			public long VerifyInvoke(in ItOut<int> result, long index)
+			public long VerifyInvoke(in ItRef<int> result, long index)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
+				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "ref");
 				return _invoke0Invocation.Verify(result, index, _invocationProviders);
 			}
 			""";
 
-		const string proxy = "public decimal Invoke(ref int result) {result = default;return default;}";
+		const string proxy = "public decimal Invoke(ref int result) {return default;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -325,29 +328,30 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 		const string methods =
 			"""
 			// Invoke
-			private SetupWithOutParameter<int>? _invoke0;
+			private SetupWithRefReadOnlyParameter<int>? _invoke0;
 			private Invocation<int>? _invoke0Invocation;
 
-			public SetupWithOutParameter<int> SetupInvoke(in ItOut<int> result)
+			public SetupWithRefReadOnlyParameter<int> SetupInvoke(in ItRefReadOnly<int> result)
 			{
-				_invoke0 ??= new SetupWithOutParameter<int>();
+				_invoke0 ??= new SetupWithRefReadOnlyParameter<int>();
+				_invoke0.SetupParameter(result);
 				return _invoke0;
 			}
 
-			public void VerifyInvoke(in ItOut<int> result, in Times times)
+			public void VerifyInvoke(in ItRefReadOnly<int> result, in Times times)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
+				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "ref readonly");
 				_invoke0Invocation.Verify(result, times, _invocationProviders);
 			}
 
-			public long VerifyInvoke(in ItOut<int> result, long index)
+			public long VerifyInvoke(in ItRefReadOnly<int> result, long index)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
+				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "ref readonly");
 				return _invoke0Invocation.Verify(result, index, _invocationProviders);
 			}
 			""";
 
-		const string proxy = "public void Invoke(out int result) {result = default;}";
+		const string proxy = "public void Invoke(ref readonly int result) {}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
@@ -364,29 +368,30 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 		const string methods =
 			"""
 			// Invoke
-			private SetupWithOutParameter<int, decimal>? _invoke0;
+			private SetupWithRefReadOnlyParameter<int, decimal>? _invoke0;
 			private Invocation<int>? _invoke0Invocation;
 
-			public SetupWithOutParameter<int, decimal> SetupInvoke(in ItOut<int> result)
+			public SetupWithRefReadOnlyParameter<int, decimal> SetupInvoke(in ItRefReadOnly<int> result)
 			{
-				_invoke0 ??= new SetupWithOutParameter<int, decimal>();
+				_invoke0 ??= new SetupWithRefReadOnlyParameter<int, decimal>();
+				_invoke0.SetupParameter(result);
 				return _invoke0;
 			}
 
-			public void VerifyInvoke(in ItOut<int> result, in Times times)
+			public void VerifyInvoke(in ItRefReadOnly<int> result, in Times times)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
+				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "ref readonly");
 				_invoke0Invocation.Verify(result, times, _invocationProviders);
 			}
 
-			public long VerifyInvoke(in ItOut<int> result, long index)
+			public long VerifyInvoke(in ItRefReadOnly<int> result, long index)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
+				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "ref readonly");
 				return _invoke0Invocation.Verify(result, index, _invocationProviders);
 			}
 			""";
 
-		const string proxy = "public decimal Invoke(ref int result) {result = default;return default;}";
+		const string proxy = "public decimal Invoke(ref readonly int result) {return default;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);

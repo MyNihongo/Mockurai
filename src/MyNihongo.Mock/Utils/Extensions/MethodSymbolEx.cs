@@ -508,7 +508,7 @@ internal static class MethodSymbolEx
 
 			for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 			{
-				var refKindString = methodSymbol.Parameters[i].RefKind.GetString(camelCase: false);
+				var refKindString = methodSymbol.Parameters[i].RefKind.GetString(pascalCase: false);
 				if (string.IsNullOrEmpty(refKindString))
 					continue;
 
