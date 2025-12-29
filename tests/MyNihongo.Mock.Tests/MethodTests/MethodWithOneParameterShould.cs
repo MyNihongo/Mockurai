@@ -168,29 +168,30 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 		const string methods =
 			"""
 			// Invoke
-			private SetupWithOutParameter<int>? _invoke0;
+			private SetupWithInParameter<int>? _invoke0;
 			private Invocation<int>? _invoke0Invocation;
 
-			public SetupWithOutParameter<int> SetupInvoke(in ItOut<int> result)
+			public SetupWithInParameter<int> SetupInvoke(in ItIn<int> result)
 			{
-				_invoke0 ??= new SetupWithOutParameter<int>();
+				_invoke0 ??= new SetupWithInParameter<int>();
+				_invoke0.SetupParameter(result);
 				return _invoke0;
 			}
 
-			public void VerifyInvoke(in ItOut<int> result, in Times times)
+			public void VerifyInvoke(in ItIn<int> result, in Times times)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
+				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "in");
 				_invoke0Invocation.Verify(result, times, _invocationProviders);
 			}
 
-			public long VerifyInvoke(in ItOut<int> result, long index)
+			public long VerifyInvoke(in ItIn<int> result, long index)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
+				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "in");
 				return _invoke0Invocation.Verify(result, index, _invocationProviders);
 			}
 			""";
 
-		const string proxy = "public void Invoke(out int result) {result = default;}";
+		const string proxy = "public void Invoke(in int result) {}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);

@@ -123,7 +123,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 	}
 
 	[Fact]
-	public async Task GenerateInterfaceWithGenericParameter()
+	public async Task GenerateInterfaceWithGeneric()
 	{
 		const string method = "void Invoke<T>();";
 
@@ -165,7 +165,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 	}
 
 	[Fact]
-	public async Task GenerateInterfaceWithGenericParameters()
+	public async Task GenerateInterfaceWithGenerics()
 	{
 		const string method = "void Invoke<T1, T2>();";
 
