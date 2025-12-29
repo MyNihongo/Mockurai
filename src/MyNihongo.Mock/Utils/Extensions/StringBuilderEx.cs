@@ -101,7 +101,7 @@ internal static class StringBuilderEx
 
 		public StringBuilder AppendRefKind(RefKind refKind)
 		{
-			var stringValue = refKind.GetString();
+			var stringValue = refKind.GetString(pascalCase: true);
 			return @this.AppendPropertyName(stringValue);
 		}
 	}

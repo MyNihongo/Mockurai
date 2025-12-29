@@ -295,7 +295,8 @@ internal static class MockImplementationGenerator
 				case SymbolKind.Method:
 					stringBuilder
 						.Indent(indent)
-						.Append("public ")
+						.Append(member.DeclaredAccessibility.GetString())
+						.Append(" ")
 						.TryAppendOverride(member)
 						.Append(((IMethodSymbol)member).ReturnType)
 						.Append(' ')

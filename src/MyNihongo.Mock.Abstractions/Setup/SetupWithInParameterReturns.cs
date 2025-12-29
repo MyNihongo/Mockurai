@@ -1,8 +1,8 @@
-namespace MyNihongo.Mock;
+﻿namespace MyNihongo.Mock;
 
-public sealed class SetupWithRefParameter<TParameter, TReturns> : SetupWithParameterBase<TParameter, ActionRef<TParameter>, TReturns, FuncRef<TParameter, TReturns?>>
+public sealed class SetupWithInParameter<TParameter, TReturns> : SetupWithParameterBase<TParameter, ActionIn<TParameter>, TReturns, FuncIn<TParameter, TReturns?>>
 {
-	public bool Execute(ref TParameter parameter, out TReturns? returnValue)
+	public bool Execute(in TParameter parameter, out TReturns? returnValue)
 	{
 		if (Setups is null)
 			goto Default;
@@ -13,14 +13,14 @@ public sealed class SetupWithRefParameter<TParameter, TReturns> : SetupWithParam
 				continue;
 
 			var x = setup.GetSetup();
-			x.Callback?.Invoke(ref parameter);
+			x.Callback?.Invoke(in parameter);
 
 			if (x.Exception is not null)
 				throw x.Exception;
 
 			if (x.Returns is not null)
 			{
-				returnValue = x.Returns(ref parameter);
+				returnValue = x.Returns(parameter);
 				return true;
 			}
 
@@ -35,6 +35,6 @@ public sealed class SetupWithRefParameter<TParameter, TReturns> : SetupWithParam
 
 	public override void Returns(TReturns? returns)
 	{
-		Returns((ref _) => returns);
+		Returns((in _) => returns);
 	}
 }

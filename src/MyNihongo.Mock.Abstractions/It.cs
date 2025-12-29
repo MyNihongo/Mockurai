@@ -2,7 +2,7 @@ namespace MyNihongo.Mock;
 
 public readonly ref struct It<T>
 {
-	public readonly Setup? ValueSetup;
+	public readonly ItSetup<T>? ValueSetup;
 	private readonly Func<string>? _toString;
 
 	internal It(Func<string> toString)
@@ -10,16 +10,22 @@ public readonly ref struct It<T>
 		_toString = toString;
 	}
 
+	internal It(ItSetup<T>? valueSetup, Func<string>? toString)
+	{
+		ValueSetup = valueSetup;
+		_toString = toString;
+	}
+
 	private It(Func<T, bool> predicate, SetupType type, Func<string> toString)
 	{
 		_toString = toString;
-		ValueSetup = new Setup(predicate, type);
+		ValueSetup = new ItSetup<T>(predicate, type);
 	}
 
 	private It(Func<T, ComparisonResult> predicate, SetupType type, Func<string> toString)
 	{
 		_toString = toString;
-		ValueSetup = new Setup(predicate, type);
+		ValueSetup = new ItSetup<T>(predicate, type);
 	}
 
 	public static It<T> Value(T value)
@@ -50,52 +56,5 @@ public readonly ref struct It<T>
 	public override string ToString()
 	{
 		return _toString?.Invoke() ?? "any";
-	}
-
-	public readonly struct Setup : IComparable<Setup>
-	{
-		private readonly Func<T, bool>? _predicateBool;
-		private readonly Func<T, ComparisonResult>? _predicateResult;
-		public readonly SetupType Type;
-
-		public Setup(in Func<T, bool> predicate, in SetupType type)
-		{
-			_predicateBool = predicate;
-			Type = type;
-		}
-
-		public Setup(in Func<T, ComparisonResult> predicate, in SetupType type)
-		{
-			_predicateResult = predicate;
-			Type = type;
-		}
-
-		public int Sort => (int)Type;
-
-		public int CompareTo(Setup other)
-		{
-			return Sort.CompareTo(Sort);
-		}
-
-		public bool Check(in T value)
-		{
-			return _predicateBool?.Invoke(value) ?? _predicateResult?.Invoke(value) ?? false;
-		}
-
-		public bool Check(in T value, out ComparisonResult? result)
-		{
-			if (_predicateBool is not null)
-			{
-				result = null;
-				return _predicateBool(value);
-			}
-
-			return result = _predicateResult?.Invoke(value);
-		}
-
-		public override string ToString()
-		{
-			return Sort.ToString();
-		}
 	}
 }
