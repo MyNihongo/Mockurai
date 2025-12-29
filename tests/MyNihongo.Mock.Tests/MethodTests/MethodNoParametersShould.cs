@@ -529,4 +529,96 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
 	}
+
+	[Fact]
+	public async Task GenerateClass()
+	{
+		const string method =
+			"""
+			public virtual void Invoke() {}
+			protected virtual void Invoke2() {}
+			public void Invoke3() {}
+			""";
+
+		const string methods =
+			"""
+			// Invoke
+			private Setup? _invoke0;
+			private Invocation? _invoke0Invocation;
+
+			public Setup SetupInvoke()
+			{
+				_invoke0 ??= new Setup();
+				return _invoke0;
+			}
+
+			public void VerifyInvoke(in Times times)
+			{
+				_invoke0Invocation ??= new Invocation("Class.Invoke()");
+				_invoke0Invocation.Verify(times, _invocationProviders);
+			}
+
+			public long VerifyInvoke(long index)
+			{
+				_invoke0Invocation ??= new Invocation("Class.Invoke()");
+				return _invoke0Invocation.Verify(index, _invocationProviders);
+			}
+			""";
+
+		const string proxy = "public override void Invoke() {}";
+
+		var testCode = CreateClassTestCode(method);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateClassAbstract()
+	{
+		const string method =
+			"""
+			public abstract int Invoke();
+			protected abstract decimal Invoke2();
+			public decimal Invoke3() { return 12m; }
+			""";
+
+		const string methods =
+			"""
+			// Invoke
+			private Setup<int>? _invoke0;
+			private Invocation? _invoke0Invocation;
+
+			public Setup<int> SetupInvoke()
+			{
+				_invoke0 ??= new Setup<int>();
+				return _invoke0;
+			}
+
+			public void VerifyInvoke(in Times times)
+			{
+				_invoke0Invocation ??= new Invocation("Class.Invoke()");
+				_invoke0Invocation.Verify(times, _invocationProviders);
+			}
+
+			public long VerifyInvoke(long index)
+			{
+				_invoke0Invocation ??= new Invocation("Class.Invoke()");
+				return _invoke0Invocation.Verify(index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public override int Invoke() {return default;}
+			protected override decimal Invoke2() {return default;}
+			""";
+
+		var testCode = CreateClassTestCode(method, isAbstract: true);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
 }
