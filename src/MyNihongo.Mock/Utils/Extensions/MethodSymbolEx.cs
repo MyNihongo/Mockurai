@@ -133,7 +133,7 @@ internal static class MethodSymbolEx
 			{
 				@this
 					.Indent(indent)
-					.AppendFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
+					.AppendVariableName(memberSymbol.MemberName, methodSymbol.MethodKind, isField: genericTypeNames.IsDefaultOrEmpty)
 					.Append(".SetupParameter");
 
 				if (parameters.Length > 1)

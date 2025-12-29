@@ -401,6 +401,134 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 	}
 
 	[Fact]
+	public async Task GenerateInterfaceGeneric()
+	{
+		const string method = "void Invoke<T>(T param);";
+
+		const string methods =
+			"""
+			// Invoke
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
+			private InvocationDictionary? _invoke0Invocation;
+
+			public SetupWithParameter<T> SetupInvoke<T>(in It<T> param)
+			{
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+				var invoke0 = (SetupWithParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithParameter<T>());
+				invoke0.SetupParameter(param);
+				return invoke0;
+			}
+
+			public void VerifyInvoke<T>(in It<T> param, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})"));
+				invoke0Invocation.Verify(param, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke<T>(in It<T> param, long index)
+			{
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})"));
+				return invoke0Invocation.Verify(param, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy = "public void Invoke<T>(T param) {}";
+
+		var testCode = CreateInterfaceTestCode(method);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateInterfaceGenericReturn()
+	{
+		const string method = "T2 Invoke<T1, T2>(T1 param);";
+
+		const string methods =
+			"""
+			// Invoke
+			private System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>? _invoke0;
+			private InvocationDictionary<(System.Type, System.Type)>? _invoke0Invocation;
+
+			public SetupWithParameter<T1, T2> SetupInvoke<T1, T2>(in It<T1> param)
+			{
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
+				var invoke0 = (SetupWithParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithParameter<T1, T2>());
+				invoke0.SetupParameter(param);
+				return invoke0;
+			}
+
+			public void VerifyInvoke<T1, T2>(in It<T1> param, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})"));
+				invoke0Invocation.Verify(param, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke<T1, T2>(in It<T1> param, long index)
+			{
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})"));
+				return invoke0Invocation.Verify(param, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy = "public T2 Invoke<T1, T2>(T1 param) {return default;}";
+
+		var testCode = CreateInterfaceTestCode(method);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateInterfaceGenericWithOut()
+	{
+		const string method = "void Invoke<T>(out T value);";
+
+		const string methods =
+			"""
+			// Invoke
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
+			private InvocationDictionary? _invoke0Invocation;
+
+			public SetupWithOutParameter<T> SetupInvoke<T>(in ItOut<T> value)
+			{
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+				var invoke0 = (SetupWithOutParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithOutParameter<T>());
+				return invoke0;
+			}
+
+			public void VerifyInvoke<T>(in ItOut<T> value, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "out"));
+				invoke0Invocation.Verify(value, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke<T>(in ItOut<T> value, long index)
+			{
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "out"));
+				return invoke0Invocation.Verify(value, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy = "public void Invoke<T>(out T value) {value = default;}";
+
+		var testCode = CreateInterfaceTestCode(method);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
 	public async Task GenerateInterfaceWithOutReturnGeneric()
 	{
 		const string method = "T2 Invoke<T1, T2>(out T1 result);";
@@ -443,9 +571,9 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 	}
 
 	[Fact]
-	public async Task GenerateInterfaceWithGenericOut()
+	public async Task GenerateInterfaceGenericWithIn()
 	{
-		const string method = "void Invoke<T>(out T value);";
+		const string method = "void Invoke<T>(in T value);";
 
 		const string methods =
 			"""
@@ -453,29 +581,159 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
 			private InvocationDictionary? _invoke0Invocation;
 
-			public SetupWithOutParameter<T> SetupInvoke<T>(in ItOut<T> value)
+			public SetupWithInParameter<T> SetupInvoke<T>(in ItIn<T> value)
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
-				var invoke0 = (SetupWithOutParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithOutParameter<T>());
+				var invoke0 = (SetupWithInParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithInParameter<T>());
+				invoke0.SetupParameter(value);
 				return invoke0;
 			}
 
-			public void VerifyInvoke<T>(in ItOut<T> value, in Times times)
+			public void VerifyInvoke<T>(in ItIn<T> value, in Times times)
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
-				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "out"));
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "in"));
 				invoke0Invocation.Verify(value, times, _invocationProviders);
 			}
 
-			public long VerifyInvoke<T>(in ItOut<T> value, long index)
+			public long VerifyInvoke<T>(in ItIn<T> value, long index)
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
-				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "out"));
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "in"));
 				return invoke0Invocation.Verify(value, index, _invocationProviders);
 			}
 			""";
 
-		const string proxy = "public void Invoke<T>(out T value) {value = default;}";
+		const string proxy = "public void Invoke<T>(in T value) {}";
+
+		var testCode = CreateInterfaceTestCode(method);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateInterfaceWithInReturnGeneric()
+	{
+		const string method = "T2 Invoke<T1, T2>(in T1 result);";
+
+		const string methods =
+			"""
+			// Invoke
+			private System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>? _invoke0;
+			private InvocationDictionary<(System.Type, System.Type)>? _invoke0Invocation;
+
+			public SetupWithInParameter<T1, T2> SetupInvoke<T1, T2>(in ItIn<T1> result)
+			{
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
+				var invoke0 = (SetupWithInParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithInParameter<T1, T2>());
+				invoke0.SetupParameter(result);
+				return invoke0;
+			}
+
+			public void VerifyInvoke<T1, T2>(in ItIn<T1> result, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "in"));
+				invoke0Invocation.Verify(result, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke<T1, T2>(in ItIn<T1> result, long index)
+			{
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "in"));
+				return invoke0Invocation.Verify(result, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy = "public T2 Invoke<T1, T2>(in T1 result) {return default;}";
+
+		var testCode = CreateInterfaceTestCode(method);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateInterfaceGenericWithRef()
+	{
+		const string method = "void Invoke<T>(ref T value);";
+
+		const string methods =
+			"""
+			// Invoke
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
+			private InvocationDictionary? _invoke0Invocation;
+
+			public SetupWithRefParameter<T> SetupInvoke<T>(in ItRef<T> value)
+			{
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+				var invoke0 = (SetupWithRefParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithRefParameter<T>());
+				invoke0.SetupParameter(value);
+				return invoke0;
+			}
+
+			public void VerifyInvoke<T>(in ItRef<T> value, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "ref"));
+				invoke0Invocation.Verify(value, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke<T>(in ItRef<T> value, long index)
+			{
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "ref"));
+				return invoke0Invocation.Verify(value, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy = "public void Invoke<T>(ref T value) {}";
+
+		var testCode = CreateInterfaceTestCode(method);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateInterfaceWithRefReturnGeneric()
+	{
+		const string method = "T2 Invoke<T1, T2>(ref T1 result);";
+
+		const string methods =
+			"""
+			// Invoke
+			private System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>? _invoke0;
+			private InvocationDictionary<(System.Type, System.Type)>? _invoke0Invocation;
+
+			public SetupWithRefParameter<T1, T2> SetupInvoke<T1, T2>(in ItRef<T1> result)
+			{
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
+				var invoke0 = (SetupWithRefParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithRefParameter<T1, T2>());
+				invoke0.SetupParameter(result);
+				return invoke0;
+			}
+
+			public void VerifyInvoke<T1, T2>(in ItRef<T1> result, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref"));
+				invoke0Invocation.Verify(result, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke<T1, T2>(in ItRef<T1> result, long index)
+			{
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref"));
+				return invoke0Invocation.Verify(result, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy = "public T2 Invoke<T1, T2>(ref T1 result) {return default;}";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
