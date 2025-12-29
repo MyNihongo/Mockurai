@@ -72,9 +72,9 @@ public abstract class SetupWithParameterBase<TParameter, TCallback>
 		return this;
 	}
 
-	protected sealed class Item(in It<TParameter>.Setup? parameter)
+	protected sealed class Item(in ItSetup<TParameter>? parameter)
 	{
-		public readonly It<TParameter>.Setup? Parameter = parameter;
+		public readonly ItSetup<TParameter>? Parameter = parameter;
 		private readonly Queue<ItemSetup> _queue = [];
 		private ItemSetup? _currentSetup;
 		public bool AndContinue;

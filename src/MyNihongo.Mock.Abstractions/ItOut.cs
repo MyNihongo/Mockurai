@@ -7,7 +7,7 @@ public readonly ref struct ItOut<T>
 		return new ItOut<T>();
 	}
 
-	public static implicit operator It<T>(ItOut<T> itRef)
+	public static implicit operator It<T>(ItOut<T> _)
 	{
 		return default;
 	}

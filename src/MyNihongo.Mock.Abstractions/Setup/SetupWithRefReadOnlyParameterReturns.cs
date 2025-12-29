@@ -1,6 +1,6 @@
-namespace MyNihongo.Mock;
+﻿namespace MyNihongo.Mock;
 
-public sealed class SetupWithRefParameter<TParameter, TReturns> : SetupWithParameterBase<TParameter, ActionRef<TParameter>, TReturns, FuncRef<TParameter, TReturns?>>
+public sealed class SetupWithRefReadOnlyParameter<TParameter, TReturns> : SetupWithParameterBase<TParameter, ActionRefReadOnly<TParameter>, TReturns, FuncRefReadOnly<TParameter, TReturns?>>
 {
 	public bool Execute(ref TParameter parameter, out TReturns? returnValue)
 	{
@@ -35,6 +35,6 @@ public sealed class SetupWithRefParameter<TParameter, TReturns> : SetupWithParam
 
 	public override void Returns(TReturns? returns)
 	{
-		Returns((ref _) => returns);
+		Returns((ref readonly _) => returns);
 	}
 }
