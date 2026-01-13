@@ -43,20 +43,20 @@ public sealed class PrimitiveDependencyBaseMock : IMock<PrimitiveDependencyBase>
 	public SetupWithParameter<float> SetupInvokeWithParameter(in It<float> parameter)
 	{
 		_invokeWithParameter ??= new SetupWithParameter<float>();
-		_invokeWithParameter.SetupParameter(parameter);
+		_invokeWithParameter.SetupParameter(parameter.ValueSetup);
 		return _invokeWithParameter;
 	}
 
 	public void VerifyInvokeWithParameter(in It<float> parameter, in Times times)
 	{
 		_invokeWithParameterInvocation ??= new Invocation<float>("PrimitiveDependencyBase.InvokeWithParameter({0})");
-		_invokeWithParameterInvocation.Verify(parameter, times, _invocationProviders);
+		_invokeWithParameterInvocation.Verify(parameter.ValueSetup, times, _invocationProviders);
 	}
 
 	public long VerifyInvokeWithParameter(in It<float> parameter, in long index)
 	{
 		_invokeWithParameterInvocation ??= new Invocation<float>("PrimitiveDependencyBase.InvokeWithParameter({0})");
-		return _invokeWithParameterInvocation.Verify(parameter, index, _invocationProviders);
+		return _invokeWithParameterInvocation.Verify(parameter.ValueSetup, index, _invocationProviders);
 	}
 
 	public void VerifyNoOtherCalls()

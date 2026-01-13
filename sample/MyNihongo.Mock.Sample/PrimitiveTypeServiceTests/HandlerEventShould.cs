@@ -24,8 +24,8 @@ public sealed class HandlerEventShould : PrimitiveTypeServiceTestsBase
 
 		Assert.Equal(inputValue1 + inputValue2, _result);
 
-		DependencyServiceMock.VerifyAddHandlerEvent(OnEventHandler, Times.Once);
-		DependencyServiceMock.VerifyRemoveHandlerEvent(OnEventHandler, Times.Exactly(2));
+		DependencyServiceMock.VerifyAddHandlerEvent(It<EventHandler<string>?>.Value(OnEventHandler), Times.Once);
+		DependencyServiceMock.VerifyRemoveHandlerEvent(It<EventHandler<string>?>.Value(OnEventHandler), Times.Exactly(2));
 		VerifyNoOtherCalls();
 	}
 
@@ -40,7 +40,7 @@ public sealed class HandlerEventShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.RaiseHandlerEvent(inputValue2);
 		fixture.HandlerEvent -= OnEventHandler;
 
-		var actual = () => DependencyServiceMock.VerifyAddHandlerEvent((_, _) => { }, Times.Once);
+		var actual = () => DependencyServiceMock.VerifyAddHandlerEvent(It<EventHandler<string>?>.Value((_, _) => { }), Times.Once);
 
 		const string expectedMessage =
 			"""
@@ -64,7 +64,7 @@ public sealed class HandlerEventShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.RaiseHandlerEvent(inputValue2);
 		fixture.HandlerEvent -= OnEventHandler;
 
-		DependencyServiceMock.VerifyRemoveHandlerEvent(OnEventHandler, Times.Once);
+		DependencyServiceMock.VerifyRemoveHandlerEvent(It<EventHandler<string>?>.Value(OnEventHandler), Times.Once);
 
 		var actual = () => VerifyNoOtherCalls();
 
@@ -88,7 +88,7 @@ public sealed class HandlerEventShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.RaiseHandlerEvent(inputValue2);
 		fixture.HandlerEvent -= OnEventHandler;
 
-		DependencyServiceMock.VerifyAddHandlerEvent(OnEventHandler, Times.Once);
+		DependencyServiceMock.VerifyAddHandlerEvent(It<EventHandler<string>?>.Value(OnEventHandler), Times.Once);
 
 		var actual = () => VerifyNoOtherCalls();
 

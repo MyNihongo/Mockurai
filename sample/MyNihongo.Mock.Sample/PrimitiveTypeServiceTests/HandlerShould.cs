@@ -15,8 +15,8 @@ public sealed class HandlerShould : PrimitiveTypeServiceTestsBase
 
 		Assert.Equal(inputValue1 + inputValue2, fixture.Sum);
 
-		DependencyServiceMock.VerifyAddHandler(((PrimitiveTypeService)fixture).PrimitiveDependencyServiceOnHandler, Times.Once);
-		DependencyServiceMock.VerifyRemoveHandler(((PrimitiveTypeService)fixture).PrimitiveDependencyServiceOnHandler, Times.Exactly(2));
+		DependencyServiceMock.VerifyAddHandler(It<PrimitiveHandler?>.Value(((PrimitiveTypeService)fixture).PrimitiveDependencyServiceOnHandler), Times.Once);
+		DependencyServiceMock.VerifyRemoveHandler(It<PrimitiveHandler?>.Value(((PrimitiveTypeService)fixture).PrimitiveDependencyServiceOnHandler), Times.Exactly(2));
 		VerifyNoOtherCalls();
 	}
 
@@ -30,7 +30,7 @@ public sealed class HandlerShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.RaiseHandler(inputValue2);
 		fixture.Dispose();
 
-		var actual = () => DependencyServiceMock.VerifyAddHandler((_, _) => { }, Times.Once);
+		var actual = () => DependencyServiceMock.VerifyAddHandler(It<PrimitiveHandler?>.Value((_, _) => { }), Times.Once);
 
 		const string expectedMessage =
 			"""
@@ -53,7 +53,7 @@ public sealed class HandlerShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.RaiseHandler(inputValue2);
 		fixture.Dispose();
 
-		DependencyServiceMock.VerifyRemoveHandler(((PrimitiveTypeService)fixture).PrimitiveDependencyServiceOnHandler, Times.Once);
+		DependencyServiceMock.VerifyRemoveHandler(It<PrimitiveHandler?>.Value(((PrimitiveTypeService)fixture).PrimitiveDependencyServiceOnHandler), Times.Once);
 
 		var actual = () => VerifyNoOtherCalls();
 
@@ -76,7 +76,7 @@ public sealed class HandlerShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.RaiseHandler(inputValue2);
 		fixture.Dispose();
 
-		DependencyServiceMock.VerifyAddHandler(((PrimitiveTypeService)fixture).PrimitiveDependencyServiceOnHandler, Times.Once);
+		DependencyServiceMock.VerifyAddHandler(It<PrimitiveHandler?>.Value(((PrimitiveTypeService)fixture).PrimitiveDependencyServiceOnHandler), Times.Once);
 
 		var actual = () => VerifyNoOtherCalls();
 
