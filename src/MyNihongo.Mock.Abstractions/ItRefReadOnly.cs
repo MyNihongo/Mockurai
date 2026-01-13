@@ -2,30 +2,25 @@
 
 public readonly ref struct ItRefReadOnly<T>
 {
-	private readonly It<T> _it;
+	public readonly ItSetup<T> ValueSetup;
 
-	private ItRefReadOnly(It<T> it)
+	private ItRefReadOnly(Func<T, bool> predicate, SetupType type, Func<string> toString)
 	{
-		_it = it;
+		ValueSetup = new ItSetup<T>(predicate, type, toString);
 	}
 
-	public static ItRefReadOnly<T> Value(in T value)
+	public static ItRefReadOnly<T> Value(T value)
 	{
-		return new ItRefReadOnly<T>(It<T>.Value(value));
+		return new ItRefReadOnly<T>(x => EqualityComparer<T>.Default.Equals(value, x), SetupType.Value, () => value.ToJsonString());
 	}
 
-	public static ItRef<T> Any()
+	public static ItRefReadOnly<T> Any()
 	{
-		return new ItRef<T>();
-	}
-
-	public static implicit operator It<T>(ItRefReadOnly<T> itRef)
-	{
-		return itRef._it;
+		return new ItRefReadOnly<T>();
 	}
 
 	public override string ToString()
 	{
-		return $"ref {_it.ToString()}";
+		return ValueSetup.ToString();
 	}
 }
