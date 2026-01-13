@@ -93,11 +93,11 @@ public sealed class SetupIntInt
 		return this;
 	}
 
-	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
+	private sealed class Item(in ItSetup<int>? parameter1, in ItSetup<int>? parameter2)
 	{
 		private readonly Queue<ItemSetup> _queue = [];
-		public readonly It<int>.Setup? Parameter1 = parameter1;
-		public readonly It<int>.Setup? Parameter2 = parameter2;
+		public readonly ItSetup<int>? Parameter1 = parameter1;
+		public readonly ItSetup<int>? Parameter2 = parameter2;
 		private ItemSetup? _currentSetup;
 		public bool AndContinue;
 
@@ -321,10 +321,10 @@ public sealed class SetupIntInt<TReturns>
 		return this;
 	}
 
-	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
+	private sealed class Item(in ItSetup<int>? parameter1, in ItSetup<int>? parameter2)
 	{
-		public readonly It<int>.Setup? Parameter1 = parameter1;
-		public readonly It<int>.Setup? Parameter2 = parameter2;
+		public readonly ItSetup<int>? Parameter1 = parameter1;
+		public readonly ItSetup<int>? Parameter2 = parameter2;
 
 		private readonly Queue<ItemSetup> _queue = [];
 		private ItemSetup? _currentSetup;
@@ -518,10 +518,10 @@ public sealed class SetupRefIntInt
 		return this;
 	}
 
-	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
+	private sealed class Item(in ItSetup<int>? parameter1, in ItSetup<int>? parameter2)
 	{
-		public readonly It<int>.Setup? Parameter1 = parameter1;
-		public readonly It<int>.Setup? Parameter2 = parameter2;
+		public readonly ItSetup<int>? Parameter1 = parameter1;
+		public readonly ItSetup<int>? Parameter2 = parameter2;
 		private readonly Queue<ItemSetup> _queue = [];
 		private ItemSetup? _currentSetup;
 		public bool AndContinue;
@@ -750,10 +750,10 @@ public sealed class SetupRefIntInt<TReturns>
 		return this;
 	}
 
-	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
+	private sealed class Item(in ItSetup<int>? parameter1, in ItSetup<int>? parameter2)
 	{
-		public readonly It<int>.Setup? Parameter1 = parameter1;
-		public readonly It<int>.Setup? Parameter2 = parameter2;
+		public readonly ItSetup<int>? Parameter1 = parameter1;
+		public readonly ItSetup<int>? Parameter2 = parameter2;
 		private readonly Queue<ItemSetup> _queue = [];
 		private ItemSetup? _currentSetup;
 		public bool AndContinue;
@@ -998,10 +998,10 @@ public sealed class SetupRefT1T2<T1, T2, TReturns>
 		return this;
 	}
 
-	private sealed class Item(in It<T1>.Setup? parameter1, in It<T2>.Setup? parameter2)
+	private sealed class Item(in ItSetup<T1>? parameter1, in ItSetup<T2>? parameter2)
 	{
-		public readonly It<T1>.Setup? Parameter1 = parameter1;
-		public readonly It<T2>.Setup? Parameter2 = parameter2;
+		public readonly ItSetup<T1>? Parameter1 = parameter1;
+		public readonly ItSetup<T2>? Parameter2 = parameter2;
 		private readonly Queue<ItemSetup> _queue = [];
 		private ItemSetup? _currentSetup;
 		public bool AndContinue;
@@ -1194,10 +1194,10 @@ public sealed class SetupIntRefInt
 		return this;
 	}
 
-	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
+	private sealed class Item(in ItSetup<int>? parameter1, in ItSetup<int>? parameter2)
 	{
-		public readonly It<int>.Setup? Parameter1 = parameter1;
-		public readonly It<int>.Setup? Parameter2 = parameter2;
+		public readonly ItSetup<int>? Parameter1 = parameter1;
+		public readonly ItSetup<int>? Parameter2 = parameter2;
 		private readonly Queue<ItemSetup> _queue = [];
 		private ItemSetup? _currentSetup;
 		public bool AndContinue;
@@ -1426,10 +1426,10 @@ public sealed class SetupIntRefInt<TReturns>
 		return this;
 	}
 
-	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
+	private sealed class Item(in ItSetup<int>? parameter1, in ItSetup<int>? parameter2)
 	{
-		public readonly It<int>.Setup? Parameter1 = parameter1;
-		public readonly It<int>.Setup? Parameter2 = parameter2;
+		public readonly ItSetup<int>? Parameter1 = parameter1;
+		public readonly ItSetup<int>? Parameter2 = parameter2;
 		private readonly Queue<ItemSetup> _queue = [];
 		private ItemSetup? _currentSetup;
 		public bool AndContinue;
@@ -1622,10 +1622,10 @@ public sealed class SetupRefIntRefInt
 		return this;
 	}
 
-	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
+	private sealed class Item(in ItSetup<int>? parameter1, in ItSetup<int>? parameter2)
 	{
-		public readonly It<int>.Setup? Parameter1 = parameter1;
-		public readonly It<int>.Setup? Parameter2 = parameter2;
+		public readonly ItSetup<int>? Parameter1 = parameter1;
+		public readonly ItSetup<int>? Parameter2 = parameter2;
 		private readonly Queue<ItemSetup> _queue = [];
 		private ItemSetup? _currentSetup;
 		public bool AndContinue;
@@ -1854,10 +1854,10 @@ public sealed class SetupRefIntRefInt<TReturns>
 		return this;
 	}
 
-	private sealed class Item(in It<int>.Setup? parameter1, in It<int>.Setup? parameter2)
+	private sealed class Item(in ItSetup<int>? parameter1, in ItSetup<int>? parameter2)
 	{
-		public readonly It<int>.Setup? Parameter1 = parameter1;
-		public readonly It<int>.Setup? Parameter2 = parameter2;
+		public readonly ItSetup<int>? Parameter1 = parameter1;
+		public readonly ItSetup<int>? Parameter2 = parameter2;
 		private readonly Queue<ItemSetup> _queue = [];
 		private ItemSetup? _currentSetup;
 		public bool AndContinue;
@@ -2048,11 +2048,11 @@ public sealed class SetupT1Int<T1>
 		return this;
 	}
 
-	private sealed class Item(in It<T1>.Setup? parameter1, in It<int>.Setup? parameter2)
+	private sealed class Item(in ItSetup<T1>? parameter1, in ItSetup<int>? parameter2)
 	{
 		private readonly Queue<ItemSetup> _queue = [];
-		public readonly It<T1>.Setup? Parameter1 = parameter1;
-		public readonly It<int>.Setup? Parameter2 = parameter2;
+		public readonly ItSetup<T1>? Parameter1 = parameter1;
+		public readonly ItSetup<int>? Parameter2 = parameter2;
 		private ItemSetup? _currentSetup;
 		public bool AndContinue;
 
@@ -2226,11 +2226,11 @@ public sealed class SetupT1T2<T1, T2>
 		return this;
 	}
 
-	private sealed class Item(in It<T1>.Setup? parameter1, in It<T2>.Setup? parameter2)
+	private sealed class Item(in ItSetup<T1>? parameter1, in ItSetup<T2>? parameter2)
 	{
 		private readonly Queue<ItemSetup> _queue = [];
-		public readonly It<T1>.Setup? Parameter1 = parameter1;
-		public readonly It<T2>.Setup? Parameter2 = parameter2;
+		public readonly ItSetup<T1>? Parameter1 = parameter1;
+		public readonly ItSetup<T2>? Parameter2 = parameter2;
 		private ItemSetup? _currentSetup;
 		public bool AndContinue;
 
@@ -2458,10 +2458,10 @@ public sealed class SetupT1T2<T1, T2, TReturns>
 		return this;
 	}
 
-	private sealed class Item(in It<T1>.Setup? parameter1, in It<T2>.Setup? parameter2)
+	private sealed class Item(in ItSetup<T1>? parameter1, in ItSetup<T2>? parameter2)
 	{
-		public readonly It<T1>.Setup? Parameter1 = parameter1;
-		public readonly It<T2>.Setup? Parameter2 = parameter2;
+		public readonly ItSetup<T1>? Parameter1 = parameter1;
+		public readonly ItSetup<T2>? Parameter2 = parameter2;
 		private readonly Queue<ItemSetup> _queue = [];
 		private ItemSetup? _currentSetup;
 		public bool AndContinue;
