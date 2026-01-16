@@ -21,7 +21,7 @@ public sealed class Invocation<TParameter> : IInvocationVerify
 		_invocations.Add(new Item(invokedIndex, parameter, invocation: this));
 	}
 
-	public void Verify(in It<TParameter?> parameter, in Times times, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
+	public void Verify(in ItSetup<TParameter> parameter, in Times times, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var span = _invocations.GetItemsSpan();
 
@@ -31,8 +31,8 @@ public sealed class Invocation<TParameter> : IInvocationVerify
 		var count = 0;
 		for (var i = 0; i < span.Length; i++)
 		{
-			var verifyParameter = span[i].GetParameter(parameter.ValueSetup?.Type);
-			if (parameter.ValueSetup.HasValue && !parameter.ValueSetup.Value.Check(verifyParameter, out var result))
+			var verifyParameter = span[i].GetParameter(parameter.Type);
+			if (!parameter.Check(verifyParameter, out var result))
 			{
 				verifyOutput[i] = (span[i], result);
 				continue;
@@ -51,7 +51,7 @@ public sealed class Invocation<TParameter> : IInvocationVerify
 		throw new MockVerifyCountException(verifyName, times, count, invocations);
 	}
 
-	public long Verify(in It<TParameter?> parameter, in long index, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
+	public long Verify(in ItSetup<TParameter> parameter, in long index, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var span = _invocations.GetItemsSpanFrom(index);
 
@@ -60,9 +60,9 @@ public sealed class Invocation<TParameter> : IInvocationVerify
 
 		for (var i = 0; i < span.Length; i++)
 		{
-			var verifyParameter = span[i].GetParameter(parameter.ValueSetup?.Type);
+			var verifyParameter = span[i].GetParameter(parameter.Type);
 
-			if (parameter.ValueSetup.HasValue && !parameter.ValueSetup.Value.Check(verifyParameter, out var result))
+			if (!parameter.Check(verifyParameter, out var result))
 			{
 				verifyOutput[i] = (span[i], result);
 				continue;

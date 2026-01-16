@@ -30,7 +30,7 @@ public sealed class InvokePrimitiveShould : SetupWithOutParameterTestsBase
 		var counter = 0;
 
 		var fixture = CreateFixture<int>();
-		fixture.Callback((out int x) => x = counter++);
+		fixture.Callback((out x) => x = counter++);
 		fixture.And();
 		fixture.Throws(new IndexOutOfRangeException(errorMessage));
 
@@ -48,7 +48,7 @@ public sealed class InvokePrimitiveShould : SetupWithOutParameterTestsBase
 		var counter = 0;
 
 		var fixture = CreateFixture<int>();
-		fixture.Callback((out int x) => x = counter++);
+		fixture.Callback((out x) => x = counter++);
 		fixture.Invoke(out _);
 
 		const int expected = 1;
@@ -61,7 +61,7 @@ public sealed class InvokePrimitiveShould : SetupWithOutParameterTestsBase
 		const int expected = 12345;
 
 		var fixture = CreateFixture<int>();
-		fixture.Callback((out int x) => x = expected);
+		fixture.Callback((out x) => x = expected);
 		fixture.Invoke(out var result);
 
 		Assert.Equal(expected, result);
@@ -96,7 +96,7 @@ public sealed class InvokePrimitiveShould : SetupWithOutParameterTestsBase
 		var callback = 0;
 
 		var fixture = CreateFixture<int>();
-		fixture.Callback((out int value) => value = callback++);
+		fixture.Callback((out x) => x = callback++);
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Throws(new NullReferenceException(errorMessage2));
 		
@@ -125,7 +125,7 @@ public sealed class InvokePrimitiveShould : SetupWithOutParameterTestsBase
 		var callback = 0;
 
 		var fixture = CreateFixture<int>();
-		fixture.Callback((out int value) => value = callback++);
+		fixture.Callback((out x) => x = callback++);
 		fixture.And();
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Throws(new NullReferenceException(errorMessage2));
@@ -154,7 +154,7 @@ public sealed class InvokePrimitiveShould : SetupWithOutParameterTestsBase
 
 		var fixture = CreateFixture<int>();
 		fixture.Throws(new COMException(errorMessage1));
-		fixture.Callback((out int value) => value = callback++);
+		fixture.Callback((out x) => x = callback++);
 		fixture.And();
 		fixture.Throws(new NullReferenceException(errorMessage2));
 
@@ -181,12 +181,12 @@ public sealed class InvokePrimitiveShould : SetupWithOutParameterTestsBase
 		int callback1 = 10, callback2 = 0;
 
 		var fixture = CreateFixture<int>();
-		fixture.Callback((out int value) => value = callback1++);
+		fixture.Callback((out x) => x = callback1++);
 		fixture.And();
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Throws(new NullReferenceException(errorMessage2));
 		fixture.And();
-		fixture.Callback((out int value) => value = callback2++);
+		fixture.Callback((out x) => x = callback2++);
 
 		var actual1 = () => fixture.Invoke(out _);
 		var exception1 = Assert.Throws<COMException>(actual1);

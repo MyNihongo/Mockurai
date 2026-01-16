@@ -8,8 +8,7 @@ public sealed class WhereShould
 	public void BeTrueForValidValues(int inputValue)
 	{
 		var actual = It<int>.Where(x => x > 10)
-			.ValueSetup!.Value
-			.Check(inputValue);
+			.ValueSetup.Check(inputValue);
 
 		Assert.True(actual);
 	}
@@ -22,8 +21,7 @@ public sealed class WhereShould
 	public void BeFalseForValidValues(int inputValue)
 	{
 		var actual = It<int>.Where(x => x > 10)
-			.ValueSetup!.Value
-			.Check(inputValue);
+			.ValueSetup.Check(inputValue);
 
 		Assert.False(actual);
 	}

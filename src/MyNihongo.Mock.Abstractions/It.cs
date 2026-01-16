@@ -2,30 +2,16 @@ namespace MyNihongo.Mock;
 
 public readonly ref struct It<T>
 {
-	public readonly ItSetup<T>? ValueSetup;
-	private readonly Func<string>? _toString;
-
-	internal It(Func<string> toString)
-	{
-		_toString = toString;
-	}
-
-	internal It(ItSetup<T>? valueSetup, Func<string>? toString)
-	{
-		ValueSetup = valueSetup;
-		_toString = toString;
-	}
+	public readonly ItSetup<T> ValueSetup;
 
 	private It(Func<T, bool> predicate, SetupType type, Func<string> toString)
 	{
-		_toString = toString;
-		ValueSetup = new ItSetup<T>(predicate, type);
+		ValueSetup = new ItSetup<T>(predicate, type, toString);
 	}
 
 	private It(Func<T, ComparisonResult> predicate, SetupType type, Func<string> toString)
 	{
-		_toString = toString;
-		ValueSetup = new ItSetup<T>(predicate, type);
+		ValueSetup = new ItSetup<T>(predicate, type, toString);
 	}
 
 	public static It<T> Value(T value)
@@ -40,7 +26,7 @@ public readonly ref struct It<T>
 
 	public static It<T> Where(in Func<T, bool> predicate)
 	{
-		return new It<T>(predicate, SetupType.Where, static () => "where(predicate)");
+		return new It<T>(predicate, SetupType.Where, Constants.WhereToString);
 	}
 
 	public static It<T> Any()
@@ -55,6 +41,6 @@ public readonly ref struct It<T>
 
 	public override string ToString()
 	{
-		return _toString?.Invoke() ?? "any";
+		return ValueSetup.ToString();
 	}
 }

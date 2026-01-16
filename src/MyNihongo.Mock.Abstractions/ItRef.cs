@@ -2,16 +2,21 @@ namespace MyNihongo.Mock;
 
 public readonly ref struct ItRef<T>
 {
-	private readonly It<T> _it;
+	public readonly ItSetup<T> ValueSetup;
 
-	private ItRef(It<T> it)
+	private ItRef(Func<T, bool> predicate, SetupType type, Func<string> toString)
 	{
-		_it = it;
+		ValueSetup = new ItSetup<T>(predicate, type, toString);
 	}
 
-	public static ItRef<T> Value(in T value)
+	public static ItRef<T> Value(T value)
 	{
-		return new ItRef<T>(It<T>.Value(value));
+		return new ItRef<T>(x => EqualityComparer<T>.Default.Equals(value, x), SetupType.Value, () => value.ToJsonString());
+	}
+
+	public static ItRef<T> Where(in Func<T, bool> predicate)
+	{
+		return new ItRef<T>(predicate, SetupType.Where, Constants.WhereToString);
 	}
 
 	public static ItRef<T> Any()
@@ -19,13 +24,8 @@ public readonly ref struct ItRef<T>
 		return new ItRef<T>();
 	}
 
-	public static implicit operator It<T>(ItRef<T> itRef)
-	{
-		return itRef._it;
-	}
-
 	public override string ToString()
 	{
-		return $"ref {_it.ToString()}";
+		return ValueSetup.ToString();
 	}
 }

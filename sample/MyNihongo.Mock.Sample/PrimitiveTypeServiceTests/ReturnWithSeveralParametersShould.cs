@@ -17,9 +17,9 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 	[Fact]
 	public void VerifyIfNotCalled()
 	{
-		DependencyServiceMock.VerifyReturnWithSeveralParameters(default, default, Times.Never);
-		DependencyServiceMock.VerifyReturnWithSeveralParameters(ItRef<int>.Any(), default, Times.Never);
-		DependencyServiceMock.VerifyReturnWithSeveralParameters(default, ItRef<int>.Any(), Times.Never);
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(It<int>.Any(), It<int>.Any(), Times.Never);
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(ItRef<int>.Any(), It<int>.Any(), Times.Never);
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(It<int>.Any(), ItRef<int>.Any(), Times.Never);
 		DependencyServiceMock.VerifyReturnWithSeveralParameters(ItRef<int>.Any(), ItRef<int>.Any(), Times.Never);
 	}
 

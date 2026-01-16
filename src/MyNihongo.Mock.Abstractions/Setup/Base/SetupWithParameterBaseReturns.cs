@@ -10,9 +10,9 @@ public abstract class SetupWithParameterBase<TParameter, TCallback, TReturns, TR
 
 	public abstract void Returns(TReturns? returns);
 
-	public void SetupParameter(in It<TParameter> parameter)
+	public void SetupParameter(in ItSetup<TParameter> parameter)
 	{
-		_currentSetup = new Item(parameter.ValueSetup);
+		_currentSetup = new Item(parameter);
 
 		Setups ??= new SetupContainer<Item>(SortComparer);
 		Setups.Add(_currentSetup);

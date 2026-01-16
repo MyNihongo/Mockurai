@@ -14,7 +14,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, 234d, 345m);
 
 		const int expected = 2;
-		fixture.Verify(verify1, verify2, Times.Exactly(expected));
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Exactly(expected));
 	}
 
 	[Fact]
@@ -29,7 +29,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, 234d, 345m);
 
 		const int expected = 2;
-		fixture.Verify(verify1, verify2, Times.Exactly(expected));
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Exactly(expected));
 	}
 
 	[Fact]
@@ -47,7 +47,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, setupValue1, setupValue2);
 
 		const int expected = 2;
-		fixture.Verify(verify1, verify2, Times.Exactly(expected));
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Exactly(expected));
 	}
 
 	[Fact]
@@ -62,7 +62,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, 234d, 345m);
 
 		const int expected = 2;
-		fixture.Verify(verify1, verify2, Times.Exactly(expected));
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Exactly(expected));
 	}
 
 	[Fact]
@@ -77,7 +77,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, 234d, 345m);
 
 		const int expected = 2;
-		fixture.Verify(verify1, verify2, Times.Exactly(expected));
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Exactly(expected));
 	}
 
 	[Fact]
@@ -91,7 +91,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, 123d, 234m);
 		fixture.Register(index, 234d, 345m);
 
-		fixture.Verify(verify1, verify2, Times.Once());
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 	}
 
 	[Fact]
@@ -105,7 +105,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, 123d, 234m);
 		fixture.Register(index, 234d, 345m);
 
-		fixture.Verify(verify1, verify2, Times.Once());
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 	}
 
 	[Fact]
@@ -121,7 +121,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, setupValue1, 234m);
 		fixture.Register(index, 234d, 345m);
 
-		fixture.Verify(verify1, verify2, Times.Once());
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 	}
 
 	[Fact]
@@ -136,7 +136,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, 123d, setupValue2);
 		fixture.Register(index, 234d, 345m);
 
-		fixture.Verify(verify1, verify2, Times.Once());
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 	}
 
 	[Fact]
@@ -152,7 +152,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, 234d, setupValue2);
 
 		const int expected = 2;
-		fixture.Verify(verify1, verify2, Times.Exactly(expected));
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Exactly(expected));
 	}
 
 	[Fact]
@@ -168,7 +168,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, setupValue1, 345m);
 
 		const int expected = 2;
-		fixture.Verify(verify1, verify2, Times.Exactly(expected));
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Exactly(expected));
 	}
 
 	[Fact]
@@ -183,7 +183,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, 123d, setupValue2);
 		fixture.Register(index, 234d, setupValue2);
 
-		fixture.Verify(verify1, verify2, Times.Once());
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 	}
 
 	[Fact]
@@ -198,7 +198,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, setupValue1, 234m);
 		fixture.Register(index, setupValue1, 345m);
 
-		fixture.Verify(verify1, verify2, Times.Once());
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 	}
 
 	[Fact]
@@ -208,7 +208,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		var verify2 = It<decimal>.Any();
 
 		var fixture = CreateFixturePrimitive<double, decimal>();
-		fixture.Verify(verify1, verify2, Times.Never());
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Never());
 	}
 
 	[Fact]
@@ -218,7 +218,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		var verify2 = It<decimal>.Where(x => x < 0);
 
 		var fixture = CreateFixturePrimitive<double, decimal>();
-		fixture.Verify(verify1, verify2, Times.Never());
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Never());
 	}
 
 	[Fact]
@@ -228,7 +228,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		It<decimal> verify2 = 321m;
 
 		var fixture = CreateFixturePrimitive<double, decimal>();
-		fixture.Verify(verify1, verify2, Times.Never());
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Never());
 	}
 
 	[Fact]
@@ -243,7 +243,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			var verify1 = It<double>.Where(x => x > 200);
 			var verify2 = It<decimal>.Any();
-			fixture.Verify(verify1, verify2, Times.Once());
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 		};
 
 		const string expectedMessage =
@@ -269,7 +269,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			var verify1 = It<double>.Any();
 			var verify2 = It<decimal>.Where(x => x < 100);
-			fixture.Verify(verify1, verify2, Times.Once());
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 		};
 
 		const string expectedMessage =
@@ -296,7 +296,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			It<double> verify1 = inputValue1 + 1;
 			var verify2 = It<decimal>.Any();
-			fixture.Verify(verify1, verify2, Times.Once());
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 		};
 
 		const string expectedMessage =
@@ -323,7 +323,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			var verify1 = It<double>.Any();
 			It<decimal> verify2 = inputValue2 + 1;
-			fixture.Verify(verify1, verify2, Times.Once());
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 		};
 
 		const string expectedMessage =
@@ -349,7 +349,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			var verify1 = It<double>.Where(x => x > 100);
 			var verify2 = It<decimal>.Where(x => x < 200);
-			fixture.Verify(verify1, verify2, Times.Once());
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 		};
 
 		const string expectedMessage =
@@ -375,7 +375,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			var verify1 = It<double>.Where(x => x < 100);
 			var verify2 = It<decimal>.Where(x => x > 200);
-			fixture.Verify(verify1, verify2, Times.Once());
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 		};
 
 		const string expectedMessage =
@@ -401,7 +401,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			var verify1 = It<double>.Where(x => x > 200);
 			var verify2 = It<decimal>.Where(x => x < 200);
-			fixture.Verify(verify1, verify2, Times.Once());
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 		};
 
 		const string expectedMessage =
@@ -428,7 +428,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			It<double> verify1 = inputValue2;
 			It<decimal> verify2 = inputValue1;
-			fixture.Verify(verify1, verify2, Times.Once());
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 		};
 
 		const string expectedMessage =
@@ -455,7 +455,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			It<double> verify1 = inputValue1;
 			It<decimal> verify2 = inputValue1;
-			fixture.Verify(verify1, verify2, Times.Once());
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 		};
 
 		const string expectedMessage =
@@ -482,7 +482,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			It<double> verify1 = inputValue2;
 			It<decimal> verify2 = inputValue2;
-			fixture.Verify(verify1, verify2, Times.Once());
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 		};
 
 		const string expectedMessage =
@@ -508,11 +508,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, 234d, 345m);
 
 		const long expected1 = 2L;
-		var actual1 = fixture.Verify(verify1, verify2, 1L);
+		var actual1 = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		Assert.Equal(expected1, actual1);
 
 		const long expected2 = 3L;
-		var actual2 = fixture.Verify(verify1, verify2, 2L);
+		var actual2 = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 2L);
 		Assert.Equal(expected2, actual2);
 	}
 
@@ -528,11 +528,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, 234d, 345m);
 
 		const long expected1 = 2L;
-		var actual1 = fixture.Verify(verify1, verify2, 1L);
+		var actual1 = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		Assert.Equal(expected1, actual1);
 
 		const long expected2 = 3L;
-		var actual2 = fixture.Verify(verify1, verify2, 2L);
+		var actual2 = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 2L);
 		Assert.Equal(expected2, actual2);
 	}
 
@@ -550,11 +550,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, setupValue1, setupValue2);
 
 		const long expected1 = 2L;
-		var actual1 = fixture.Verify(verify1, verify2, 1L);
+		var actual1 = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		Assert.Equal(expected1, actual1);
 
 		const long expected2 = 3L;
-		var actual2 = fixture.Verify(verify1, verify2, 2L);
+		var actual2 = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 2L);
 		Assert.Equal(expected2, actual2);
 	}
 
@@ -570,11 +570,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, 234d, 345m);
 
 		const long expected1 = 2L;
-		var actual1 = fixture.Verify(verify1, verify2, 1L);
+		var actual1 = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		Assert.Equal(expected1, actual1);
 
 		const long expected2 = 3L;
-		var actual2 = fixture.Verify(verify1, verify2, 2L);
+		var actual2 = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 2L);
 		Assert.Equal(expected2, actual2);
 	}
 
@@ -590,11 +590,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, 234d, 345m);
 
 		const long expected1 = 2L;
-		var actual1 = fixture.Verify(verify1, verify2, 1L);
+		var actual1 = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		Assert.Equal(expected1, actual1);
 
 		const long expected2 = 3L;
-		var actual2 = fixture.Verify(verify1, verify2, 2L);
+		var actual2 = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 2L);
 		Assert.Equal(expected2, actual2);
 	}
 
@@ -610,7 +610,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, 234d, 345m);
 
 		const long expected = 3L;
-		var actual = fixture.Verify(verify1, verify2, 1L);
+		var actual = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		Assert.Equal(expected, actual);
 	}
 
@@ -626,7 +626,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, 234d, 345m);
 
 		const long expected = 3L;
-		var actual = fixture.Verify(verify1, verify2, 1L);
+		var actual = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		Assert.Equal(expected, actual);
 	}
 
@@ -644,7 +644,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, 234d, 345m);
 
 		const long expected = 2L;
-		var actual = fixture.Verify(verify1, verify2, 1L);
+		var actual = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		Assert.Equal(expected, actual);
 	}
 
@@ -661,7 +661,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, 234d, 345m);
 
 		const long expected = 2L;
-		var actual = fixture.Verify(verify1, verify2, 1L);
+		var actual = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		Assert.Equal(expected, actual);
 	}
 
@@ -678,11 +678,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, 234d, setupValue2);
 
 		const long expected1 = 2L;
-		var actual1 = fixture.Verify(verify1, verify2, 1L);
+		var actual1 = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		Assert.Equal(expected1, actual1);
 
 		const long expected2 = 3L;
-		var actual2 = fixture.Verify(verify1, verify2, 2L);
+		var actual2 = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 2L);
 		Assert.Equal(expected2, actual2);
 	}
 
@@ -699,11 +699,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, setupValue1, 345m);
 
 		const long expected1 = 2L;
-		var actual1 = fixture.Verify(verify1, verify2, 1L);
+		var actual1 = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		Assert.Equal(expected1, actual1);
 
 		const long expected2 = 3L;
-		var actual2 = fixture.Verify(verify1, verify2, 2L);
+		var actual2 = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 2L);
 		Assert.Equal(expected2, actual2);
 	}
 
@@ -720,7 +720,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, 234d, setupValue2);
 
 		const long expected = 3L;
-		var actual = fixture.Verify(verify1, verify2, 1L);
+		var actual = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		Assert.Equal(expected, actual);
 	}
 
@@ -737,7 +737,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		fixture.Register(index, setupValue1, 345m);
 
 		const long expected = 3L;
-		var actual = fixture.Verify(verify1, verify2, 1L);
+		var actual = fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		Assert.Equal(expected, actual);
 	}
 
@@ -750,7 +750,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			var verify1 = It<double>.Any();
 		var verify2 = It<decimal>.Any();
-			fixture.Verify(verify1, verify2, 0L);
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 0L);
 		};
 
 		const string expectedMessage = "Expected MyClass.MyMethod<T1, T2>(any, any) to be invoked at index 0, but there are no invocations.";
@@ -767,7 +767,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			var verify1 = It<double>.Where(x => x > 0);
 			var verify2 = It<decimal>.Where(x => x < 0);
-			fixture.Verify(verify1, verify2, 0L);
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 0L);
 		};
 
 		const string expectedMessage = "Expected MyClass.MyMethod<T1, T2>(where(predicate), where(predicate)) to be invoked at index 0, but there are no invocations.";
@@ -784,7 +784,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			It<double> verify1 = 123d;
 			It<decimal> verify2 = 321m;
-			fixture.Verify(verify1, verify2, 0L);
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 0L);
 		};
 
 		const string expectedMessage = "Expected MyClass.MyMethod<T1, T2>(123, 321) to be invoked at index 0, but there are no invocations.";
@@ -804,7 +804,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			var verify1 = It<double>.Where(x => x > 200);
 			var verify2 = It<decimal>.Any();
-			fixture.Verify(verify1, verify2, 1L);
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		};
 
 		const string expectedMessage =
@@ -829,7 +829,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			var verify1 = It<double>.Any();
 			var verify2 = It<decimal>.Where(x => x < 100);
-			fixture.Verify(verify1, verify2, 1L);
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		};
 
 		const string expectedMessage =
@@ -855,7 +855,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			It<double> verify1 = inputValue1 + 1;
 			var verify2 = It<decimal>.Any();
-			fixture.Verify(verify1, verify2, 1L);
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		};
 
 		const string expectedMessage =
@@ -881,7 +881,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			var verify1 = It<double>.Any();
 			It<decimal> verify2 = inputValue2 + 1;
-			fixture.Verify(verify1, verify2, 1L);
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		};
 
 		const string expectedMessage =
@@ -906,7 +906,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			var verify1 = It<double>.Where(x => x > 100);
 			var verify2 = It<decimal>.Where(x => x < 200);
-			fixture.Verify(verify1, verify2, 1L);
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		};
 
 		const string expectedMessage =
@@ -931,7 +931,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			var verify1 = It<double>.Where(x => x < 100);
 			var verify2 = It<decimal>.Where(x => x > 200);
-			fixture.Verify(verify1, verify2, 1L);
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		};
 
 		const string expectedMessage =
@@ -956,7 +956,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			var verify1 = It<double>.Where(x => x > 200);
 			var verify2 = It<decimal>.Where(x => x < 200);
-			fixture.Verify(verify1, verify2, 1L);
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		};
 
 		const string expectedMessage =
@@ -982,7 +982,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			It<double> verify1 = inputValue2;
 			It<decimal> verify2 = inputValue1;
-			fixture.Verify(verify1, verify2, 1L);
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		};
 
 		const string expectedMessage =
@@ -1008,7 +1008,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			It<double> verify1 = inputValue1;
 			It<decimal> verify2 = inputValue1;
-			fixture.Verify(verify1, verify2, 1L);
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		};
 
 		const string expectedMessage =
@@ -1034,7 +1034,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			It<double> verify1 = inputValue2;
 			It<decimal> verify2 = inputValue2;
-			fixture.Verify(verify1, verify2, 1L);
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 		};
 
 		const string expectedMessage =
@@ -1059,7 +1059,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		var verify1 = It<double>.Equivalent(inputValue1);
 		var verify2 = It<decimal>.Equivalent(inputValue2);
-		fixture.Verify(verify1, verify2, Times.Once());
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 	}
 
 	[Fact]
@@ -1076,7 +1076,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			var verify1 = It<double>.Equivalent(inputValue1);
 			var verify2 = It<decimal>.Equivalent(inputValue2);
-			fixture.Verify(verify1, verify2, Times.Once());
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 		};
 
 		const string expectedMessage =
@@ -1116,7 +1116,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			var verify1 = It<double>.Equivalent(inputValue1);
 			var verify2 = It<decimal>.Equivalent(inputValue2);
-			fixture.Verify(verify1, verify2, Times.Once());
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 		};
 
 		const string expectedMessage =
@@ -1153,7 +1153,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		{
 			var verify1 = It<double>.Equivalent(inputValue1);
 			var verify2 = It<decimal>.Equivalent(inputValue2);
-			fixture.Verify(verify1, verify2, Times.Once());
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 		};
 
 		const string expectedMessage =
@@ -1192,7 +1192,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			var verify1 = It<double>.Equivalent(inputValue1);
 			var verify2 = It<decimal>.Equivalent(inputValue2);
 			const int expected = 2;
-			fixture.Verify(verify1, verify2, Times.Exactly(expected));
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Exactly(expected));
 		};
 
 		const string expectedMessage =
@@ -1235,7 +1235,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			var verify1 = It<double>.Equivalent(inputValue1);
 			var verify2 = It<decimal>.Equivalent(inputValue2);
 			const int expected = 2;
-			fixture.Verify(verify1, verify2, Times.Exactly(expected));
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Exactly(expected));
 		};
 
 		const string expectedMessage =
@@ -1275,7 +1275,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			var verify1 = It<double>.Equivalent(inputValue1);
 			var verify2 = It<decimal>.Equivalent(inputValue2);
 			const int expected = 2;
-			fixture.Verify(verify1, verify2, Times.Exactly(expected));
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Exactly(expected));
 		};
 
 		const string expectedMessage =
@@ -1312,7 +1312,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 		var verify1 = It<double>.Equivalent(inputValue1);
 		var verify2 = It<decimal>.Equivalent(inputValue2);
 		const long expected = 1L;
-		fixture.Verify(verify1, verify2, expected);
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, expected);
 	}
 
 	[Fact]
@@ -1330,7 +1330,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			var verify1 = It<double>.Equivalent(inputValue1);
 			var verify2 = It<decimal>.Equivalent(inputValue2);
 			const long expected = 3;
-			fixture.Verify(verify1, verify2, expected);
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, expected);
 		};
 
 		const string expectedMessage =
@@ -1359,7 +1359,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			var verify1 = It<double>.Equivalent(inputValue1);
 			var verify2 = It<decimal>.Equivalent(inputValue2);
 			const long expected = 3;
-			fixture.Verify(verify1, verify2, expected);
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, expected);
 		};
 
 		const string expectedMessage =
@@ -1388,7 +1388,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			var verify1 = It<double>.Equivalent(inputValue1);
 			var verify2 = It<decimal>.Equivalent(inputValue2);
 			const long expected = 3;
-			fixture.Verify(verify1, verify2, expected);
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, expected);
 		};
 
 		const string expectedMessage =
@@ -1418,7 +1418,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			var verify1 = It<double>.Equivalent(inputValue1);
 			var verify2 = It<decimal>.Equivalent(inputValue2);
 			const long expected = 3L;
-			fixture.Verify(verify1, verify2, expected);
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, expected);
 		};
 
 		const string expectedMessage =
@@ -1455,7 +1455,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			var verify1 = It<double>.Equivalent(inputValue1);
 			var verify2 = It<decimal>.Equivalent(inputValue2);
 			const long expected = 3L;
-			fixture.Verify(verify1, verify2, expected);
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, expected);
 		};
 
 		const string expectedMessage =
@@ -1492,7 +1492,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			var verify1 = It<double>.Equivalent(inputValue1);
 			var verify2 = It<decimal>.Equivalent(inputValue2);
 			const long expected = 3L;
-			fixture.Verify(verify1, verify2, expected);
+			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, expected);
 		};
 
 		const string expectedMessage =

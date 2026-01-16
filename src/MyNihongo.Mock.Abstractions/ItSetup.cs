@@ -4,17 +4,20 @@ public readonly struct ItSetup<T> : IComparable<ItSetup<T>>
 {
 	private readonly Func<T, bool>? _predicateBool;
 	private readonly Func<T, ComparisonResult>? _predicateResult;
+	private readonly Func<string>? _toString;
 	public readonly SetupType Type;
 
-	public ItSetup(in Func<T, bool> predicate, in SetupType type)
+	public ItSetup(Func<T, bool> predicate, SetupType type, Func<string> toString)
 	{
 		_predicateBool = predicate;
+		_toString = toString;
 		Type = type;
 	}
 
-	public ItSetup(in Func<T, ComparisonResult> predicate, in SetupType type)
+	public ItSetup(Func<T, ComparisonResult> predicate, SetupType type, Func<string> toString)
 	{
 		_predicateResult = predicate;
+		_toString = toString;
 		Type = type;
 	}
 
@@ -27,7 +30,13 @@ public readonly struct ItSetup<T> : IComparable<ItSetup<T>>
 
 	public bool Check(in T value)
 	{
-		return _predicateBool?.Invoke(value) ?? _predicateResult?.Invoke(value) ?? false;
+		if (_predicateBool is not null)
+			return _predicateBool.Invoke(value);
+		
+		if (_predicateResult is not null)
+			return _predicateResult.Invoke(value);
+		
+		return Type == SetupType.Any;
 	}
 
 	public bool Check(in T value, out ComparisonResult? result)
@@ -38,11 +47,15 @@ public readonly struct ItSetup<T> : IComparable<ItSetup<T>>
 			return _predicateBool(value);
 		}
 
-		return result = _predicateResult?.Invoke(value);
+		if (_predicateResult is not null)
+			return result = _predicateResult.Invoke(value);
+
+		result = null;
+		return Type == SetupType.Any;
 	}
 
 	public override string ToString()
 	{
-		return Sort.ToString();
+		return _toString?.Invoke() ?? "any";
 	}
 }

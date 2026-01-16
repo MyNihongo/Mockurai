@@ -28,7 +28,7 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 			Text = name,
 		});
 		const int expected = 1;
-		fixture.Verify(verify, Times.Exactly(expected));
+		fixture.Verify(verify.ValueSetup, Times.Exactly(expected));
 	}
 
 	[Fact]
@@ -58,7 +58,7 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 				Number = number,
 				Text = name,
 			});
-			fixture.Verify(verify, Times.Once());
+			fixture.Verify(verify.ValueSetup, Times.Once());
 		};
 
 		const string expectedMessage =
@@ -117,7 +117,7 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 				Text = name,
 			});
 			const int expected = 2;
-			fixture.Verify(verify, Times.Exactly(expected));
+			fixture.Verify(verify.ValueSetup, Times.Exactly(expected));
 		};
 
 		const string expectedMessage =
@@ -164,7 +164,7 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 			Text = name,
 		});
 		const long expected = 1L;
-		fixture.Verify(verify, expected);
+		fixture.Verify(verify.ValueSetup, expected);
 	}
 
 	[Fact]
@@ -195,7 +195,7 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 				Text = name,
 			});
 			const long expected = 1L;
-			fixture.Verify(verify, expected);
+			fixture.Verify(verify.ValueSetup, expected);
 		};
 
 		const string expectedMessage =
@@ -254,7 +254,7 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 				Text = name,
 			});
 			const long expected = 3L;
-			fixture.Verify(verify, expected);
+			fixture.Verify(verify.ValueSetup, expected);
 		};
 
 		const string expectedMessage =

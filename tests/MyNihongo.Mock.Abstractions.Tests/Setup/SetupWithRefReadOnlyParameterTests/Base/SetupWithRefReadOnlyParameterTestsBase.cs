@@ -7,10 +7,10 @@ public abstract class SetupWithRefReadOnlyParameterTestsBase : SetupTestsBase
 		return new SetupWithRefReadOnlyParameter<T>();
 	}
 
-	protected static SetupWithRefReadOnlyParameter<T> CreateFixture<T>(in It<T> setup)
+	protected static SetupWithRefReadOnlyParameter<T> CreateFixture<T>(in ItRefReadOnly<T> setup)
 	{
 		var fixture = new SetupWithRefReadOnlyParameter<T>();
-		fixture.SetupParameter(setup);
+		fixture.SetupParameter(setup.ValueSetup);
 		return fixture;
 	}
 }

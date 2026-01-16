@@ -8,9 +8,9 @@ public abstract class SetupWithParameterBase<TParameter, TCallback>
 	protected SetupContainer<Item>? Setups;
 	private Item? _currentSetup;
 
-	public void SetupParameter(in It<TParameter> parameter)
+	public void SetupParameter(in ItSetup<TParameter> parameter)
 	{
-		_currentSetup = new Item(parameter.ValueSetup);
+		_currentSetup = new Item(parameter);
 
 		Setups ??= new SetupContainer<Item>(SortComparer);
 		Setups.Add(_currentSetup);

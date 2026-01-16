@@ -9,8 +9,7 @@ public sealed class EquivalentStructShould
 		var inputValue = new StructObject();
 
 		var actual = It<StructObject>.Equivalent(setupValue)
-			.ValueSetup!.Value
-			.Check(inputValue);
+			.ValueSetup.Check(inputValue);
 
 		Assert.True(actual);
 	}
@@ -25,7 +24,7 @@ public sealed class EquivalentStructShould
 		var inputValue = new StructObject(name, age);
 
 		var actual = It<StructObject>.Equivalent(setupValue)
-			.ValueSetup!.Value
+			.ValueSetup
 			.Check(inputValue);
 
 		Assert.True(actual);
@@ -41,7 +40,7 @@ public sealed class EquivalentStructShould
 		var inputValue = new StructObject(name2, age);
 
 		var actual = It<StructObject>.Equivalent(setupValue)
-			.ValueSetup!.Value
+			.ValueSetup
 			.Check(inputValue);
 
 		Assert.False(actual);
@@ -57,7 +56,7 @@ public sealed class EquivalentStructShould
 		var inputValue = new StructObject(name, age2);
 
 		var actual = It<StructObject>.Equivalent(setupValue)
-			.ValueSetup!.Value
+			.ValueSetup
 			.Check(inputValue);
 
 		Assert.False(actual);
@@ -73,7 +72,7 @@ public sealed class EquivalentStructShould
 		var inputValue = new StructObject(name, age);
 
 		var actual = It<StructObject>.Equivalent(setupValue)
-			.ValueSetup!.Value
+			.ValueSetup
 			.Check(inputValue);
 
 		Assert.False(actual);
@@ -89,7 +88,7 @@ public sealed class EquivalentStructShould
 		var inputValue = new StructObject(name: null, age);
 
 		var actual = It<StructObject>.Equivalent(setupValue)
-			.ValueSetup!.Value
+			.ValueSetup
 			.Check(inputValue);
 
 		Assert.False(actual);
@@ -116,7 +115,7 @@ public sealed class EquivalentStructShould
 		);
 
 		var actual = It<StructNestedObject>.Equivalent(setupValue)
-			.ValueSetup!.Value
+			.ValueSetup
 			.Check(inputValue);
 
 		Assert.True(actual);
@@ -143,7 +142,7 @@ public sealed class EquivalentStructShould
 		);
 
 		var actual = It<StructNestedObject>.Equivalent(setupValue)
-			.ValueSetup!.Value
+			.ValueSetup
 			.Check(inputValue);
 
 		Assert.False(actual);
@@ -170,7 +169,7 @@ public sealed class EquivalentStructShould
 		);
 
 		var actual = It<StructNestedObject>.Equivalent(setupValue)
-			.ValueSetup!.Value
+			.ValueSetup
 			.Check(inputValue);
 
 		Assert.False(actual);
@@ -197,7 +196,7 @@ public sealed class EquivalentStructShould
 		);
 
 		var actual = It<StructNestedObject>.Equivalent(setupValue)
-			.ValueSetup!.Value
+			.ValueSetup
 			.Check(inputValue);
 
 		Assert.False(actual);
@@ -224,7 +223,7 @@ public sealed class EquivalentStructShould
 		);
 
 		var actual = It<StructNestedObject>.Equivalent(setupValue)
-			.ValueSetup!.Value
+			.ValueSetup
 			.Check(inputValue);
 
 		Assert.False(actual);
@@ -249,7 +248,7 @@ public sealed class EquivalentStructShould
 		};
 
 		var actual = It<StructObject[]>.Equivalent(setupValue)
-			.ValueSetup!.Value
+			.ValueSetup
 			.Check(inputValue);
 
 		Assert.True(actual);
@@ -274,7 +273,7 @@ public sealed class EquivalentStructShould
 		};
 
 		var actual = It<StructObject[]>.Equivalent(setupValue)
-			.ValueSetup!.Value
+			.ValueSetup
 			.Check(inputValue);
 
 		Assert.False(actual);
@@ -317,7 +316,7 @@ public sealed class EquivalentStructShould
 		};
 
 		var actual = It<StructNestedObject[]>.Equivalent(setupValue)
-			.ValueSetup!.Value
+			.ValueSetup
 			.Check(inputValue);
 
 		Assert.False(actual);

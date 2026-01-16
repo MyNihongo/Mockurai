@@ -23,7 +23,7 @@ public sealed class InvocationIntInt : IInvocationVerify
 		_invocations.Add(new Item(invokedIndex, parameter1, parameter2, invocation: this));
 	}
 
-	public void Verify(in It<int> parameter1, in It<int> parameter2, in Times times, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
+	public void Verify(in ItSetup<int> parameter1, in ItSetup<int> parameter2, in Times times, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var span = _invocations.GetItemsSpan();
 
@@ -33,16 +33,16 @@ public sealed class InvocationIntInt : IInvocationVerify
 		var count = 0;
 		for (var i = 0; i < span.Length; i++)
 		{
-			var verifyParameter1 = span[i].GetParameter1(parameter1.ValueSetup?.Type);
-			var verifyParameter2 = span[i].GetParameter2(parameter2.ValueSetup?.Type);
+			var verifyParameter1 = span[i].GetParameter1(parameter1.Type);
+			var verifyParameter2 = span[i].GetParameter2(parameter2.Type);
 			(string, ComparisonResult?)[]? verifyResults = null;
 
-			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Check(verifyParameter1, out var result))
+			if (!parameter1.Check(verifyParameter1, out var result))
 			{
 				verifyResults = [("parameter1", result)];
 			}
 
-			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Check(verifyParameter2, out result))
+			if (!parameter2.Check(verifyParameter2, out result))
 			{
 				verifyResults = verifyResults is not null
 					? [..verifyResults, ("parameter2", result)]
@@ -68,7 +68,7 @@ public sealed class InvocationIntInt : IInvocationVerify
 		throw new MockVerifyCountException(verifyName, times, count, invocations);
 	}
 
-	public long Verify(in It<int> parameter1, in It<int> parameter2, in long index, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
+	public long Verify(in ItSetup<int> parameter1, in ItSetup<int> parameter2, in long index, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var span = _invocations.GetItemsSpanFrom(index);
 
@@ -77,16 +77,16 @@ public sealed class InvocationIntInt : IInvocationVerify
 
 		for (var i = 0; i < span.Length; i++)
 		{
-			var verifyParameter1 = span[i].GetParameter1(parameter1.ValueSetup?.Type);
-			var verifyParameter2 = span[i].GetParameter2(parameter2.ValueSetup?.Type);
+			var verifyParameter1 = span[i].GetParameter1(parameter1.Type);
+			var verifyParameter2 = span[i].GetParameter2(parameter2.Type);
 			(string, ComparisonResult?)[]? verifyResults = null;
 
-			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Check(verifyParameter1, out var result))
+			if (!parameter1.Check(verifyParameter1, out var result))
 			{
 				verifyResults = [("parameter1", result)];
 			}
 
-			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Check(verifyParameter2, out result))
+			if (!parameter2.Check(verifyParameter2, out result))
 			{
 				verifyResults = verifyResults is not null
 					? [..verifyResults, ("parameter2", result)]
@@ -169,14 +169,14 @@ public sealed class InvocationIntInt : IInvocationVerify
 
 		public bool IsVerified { get; set; }
 
-		public int GetParameter1(SetupType? setupType)
+		public int GetParameter1(SetupType setupType)
 		{
 			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshot1)
 				? JsonSerializer.Deserialize<int>(_jsonSnapshot1)
 				: _parameter1;
 		}
 
-		public int GetParameter2(SetupType? setupType)
+		public int GetParameter2(SetupType setupType)
 		{
 			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshot2)
 				? JsonSerializer.Deserialize<int>(_jsonSnapshot2)
@@ -231,7 +231,7 @@ public sealed class InvocationT1Int<T1> : IInvocationVerify
 		_invocations.Add(new Item(invokedIndex, parameter1, parameter2, invocation: this));
 	}
 
-	public void Verify(in It<T1> parameter1, in It<int> parameter2, in Times times, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
+	public void Verify(in ItSetup<T1> parameter1, in ItSetup<int> parameter2, in Times times, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var span = _invocations.GetItemsSpan();
 
@@ -241,16 +241,16 @@ public sealed class InvocationT1Int<T1> : IInvocationVerify
 		var count = 0;
 		for (var i = 0; i < span.Length; i++)
 		{
-			var verifyParameter1 = span[i].GetParameter1(parameter1.ValueSetup?.Type);
-			var verifyParameter2 = span[i].GetParameter2(parameter2.ValueSetup?.Type);
+			var verifyParameter1 = span[i].GetParameter1(parameter1.Type);
+			var verifyParameter2 = span[i].GetParameter2(parameter2.Type);
 			(string, ComparisonResult?)[]? verifyResults = null;
 
-			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Check(verifyParameter1, out var result))
+			if (!parameter1.Check(verifyParameter1, out var result))
 			{
 				verifyResults = [("parameter1", result)];
 			}
 
-			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Check(verifyParameter2, out result))
+			if (!parameter2.Check(verifyParameter2, out result))
 			{
 				verifyResults = verifyResults is not null
 					? [..verifyResults, ("parameter2", result)]
@@ -276,7 +276,7 @@ public sealed class InvocationT1Int<T1> : IInvocationVerify
 		throw new MockVerifyCountException(verifyName, times, count, invocations);
 	}
 
-	public long Verify(in It<T1> parameter1, in It<int> parameter2, in long index, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
+	public long Verify(in ItSetup<T1> parameter1, in ItSetup<int> parameter2, in long index, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var span = _invocations.GetItemsSpanFrom(index);
 
@@ -285,16 +285,16 @@ public sealed class InvocationT1Int<T1> : IInvocationVerify
 
 		for (var i = 0; i < span.Length; i++)
 		{
-			var verifyParameter1 = span[i].GetParameter1(parameter1.ValueSetup?.Type);
-			var verifyParameter2 = span[i].GetParameter2(parameter2.ValueSetup?.Type);
+			var verifyParameter1 = span[i].GetParameter1(parameter1.Type);
+			var verifyParameter2 = span[i].GetParameter2(parameter2.Type);
 			(string, ComparisonResult?)[]? verifyResults = null;
 
-			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Check(verifyParameter1, out var result))
+			if (!parameter1.Check(verifyParameter1, out var result))
 			{
 				verifyResults = [("parameter1", result)];
 			}
 
-			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Check(verifyParameter2, out result))
+			if (!parameter2.Check(verifyParameter2, out result))
 			{
 				verifyResults = verifyResults is not null
 					? [..verifyResults, ("parameter2", result)]
@@ -440,7 +440,7 @@ public sealed class InvocationT1T2<T1, T2> : IInvocationVerify
 		_invocations.Add(new Item(invokedIndex, parameter1, parameter2, invocation: this));
 	}
 
-	public void Verify(in It<T1> parameter1, in It<T2> parameter2, in Times times, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
+	public void Verify(in ItSetup<T1> parameter1, in ItSetup<T2> parameter2, in Times times, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var span = _invocations.GetItemsSpan();
 
@@ -450,16 +450,16 @@ public sealed class InvocationT1T2<T1, T2> : IInvocationVerify
 		var count = 0;
 		for (var i = 0; i < span.Length; i++)
 		{
-			var verifyParameter1 = span[i].GetParameter1(parameter1.ValueSetup?.Type);
-			var verifyParameter2 = span[i].GetParameter2(parameter2.ValueSetup?.Type);
+			var verifyParameter1 = span[i].GetParameter1(parameter1.Type);
+			var verifyParameter2 = span[i].GetParameter2(parameter2.Type);
 			(string, ComparisonResult?)[]? verifyResults = null;
 
-			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Check(verifyParameter1, out var result))
+			if (!parameter1.Check(verifyParameter1, out var result))
 			{
 				verifyResults = [("parameter1", result)];
 			}
 
-			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Check(verifyParameter2, out result))
+			if (!parameter2.Check(verifyParameter2, out result))
 			{
 				verifyResults = verifyResults is not null
 					? [..verifyResults, ("parameter2", result)]
@@ -485,7 +485,7 @@ public sealed class InvocationT1T2<T1, T2> : IInvocationVerify
 		throw new MockVerifyCountException(verifyName, times, count, invocations);
 	}
 
-	public long Verify(in It<T1> parameter1, in It<T2> parameter2, in long index, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
+	public long Verify(in ItSetup<T1> parameter1, in ItSetup<T2> parameter2, in long index, Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 	{
 		var span = _invocations.GetItemsSpanFrom(index);
 
@@ -494,16 +494,16 @@ public sealed class InvocationT1T2<T1, T2> : IInvocationVerify
 
 		for (var i = 0; i < span.Length; i++)
 		{
-			var verifyParameter1 = span[i].GetParameter1(parameter1.ValueSetup?.Type);
-			var verifyParameter2 = span[i].GetParameter2(parameter2.ValueSetup?.Type);
+			var verifyParameter1 = span[i].GetParameter1(parameter1.Type);
+			var verifyParameter2 = span[i].GetParameter2(parameter2.Type);
 			(string, ComparisonResult?)[]? verifyResults = null;
 
-			if (parameter1.ValueSetup.HasValue && !parameter1.ValueSetup.Value.Check(verifyParameter1, out var result))
+			if (!parameter1.Check(verifyParameter1, out var result))
 			{
 				verifyResults = [("parameter1", result)];
 			}
 
-			if (parameter2.ValueSetup.HasValue && !parameter2.ValueSetup.Value.Check(verifyParameter2, out result))
+			if (!parameter2.Check(verifyParameter2, out result))
 			{
 				verifyResults = verifyResults is not null
 					? [..verifyResults, ("parameter2", result)]

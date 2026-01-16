@@ -14,7 +14,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		fixture.Register(index, 345);
 
 		const int expected = 3;
-		fixture.Verify(verify, Times.Exactly(expected));
+		fixture.Verify(verify.ValueSetup, Times.Exactly(expected));
 	}
 
 	[Fact]
@@ -29,7 +29,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		fixture.Register(index, 345);
 
 		const int expected = 3;
-		fixture.Verify(verify, Times.Exactly(expected));
+		fixture.Verify(verify.ValueSetup, Times.Exactly(expected));
 	}
 
 	[Fact]
@@ -43,7 +43,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		fixture.Register(index, 234);
 		fixture.Register(index, 345);
 
-		fixture.Verify(verify, Times.Once());
+		fixture.Verify(verify.ValueSetup, Times.Once());
 	}
 
 	[Fact]
@@ -57,7 +57,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		fixture.Register(index, 234);
 		fixture.Register(index, 345);
 
-		fixture.Verify(verify, Times.Never());
+		fixture.Verify(verify.ValueSetup, Times.Never());
 	}
 
 	[Theory]
@@ -77,7 +77,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		var actual = () =>
 		{
 			var verify = It<int>.Where(x => x > 200);
-			fixture.Verify(verify, Times.Exactly(expected));
+			fixture.Verify(verify.ValueSetup, Times.Exactly(expected));
 		};
 
 		var expectedMessage =
@@ -107,7 +107,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		fixture.Register(index, 234);
 		fixture.Register(index, 345);
 
-		fixture.Verify(verify, Times.Once());
+		fixture.Verify(verify.ValueSetup, Times.Once());
 	}
 
 	[Fact]
@@ -125,7 +125,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		fixture.Register(index, 345);
 
 		const int expected = 2;
-		fixture.Verify(verify, Times.Exactly(expected));
+		fixture.Verify(verify.ValueSetup, Times.Exactly(expected));
 	}
 
 	[Fact]
@@ -141,7 +141,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		fixture.Register(index, 234);
 		fixture.Register(index, 345);
 
-		fixture.Verify(verify, Times.Never());
+		fixture.Verify(verify.ValueSetup, Times.Never());
 	}
 
 	[Theory]
@@ -162,7 +162,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		var actual = () =>
 		{
 			var verify = It<int>.Value(setupValue);
-			fixture.Verify(verify, Times.Exactly(expected));
+			fixture.Verify(verify.ValueSetup, Times.Exactly(expected));
 		};
 
 		var expectedMessage =
@@ -185,7 +185,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		var verify = It<int>.Any();
 
 		var fixture = CreateFixture<int>();
-		fixture.Verify(verify, Times.Never());
+		fixture.Verify(verify.ValueSetup, Times.Never());
 	}
 
 	[Fact]
@@ -199,7 +199,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		var actual = () =>
 		{
 			var verify = It<int>.Value(123);
-			fixture.Verify(verify, Times.Once());
+			fixture.Verify(verify.ValueSetup, Times.Once());
 		};
 
 		const string expectedMessage =
@@ -224,7 +224,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		var actual = () =>
 		{
 			var verify = It<int>.Where(x => x > 3000);
-			fixture.Verify(verify, Times.Once());
+			fixture.Verify(verify.ValueSetup, Times.Once());
 		};
 
 		const string expectedMessage =
@@ -249,9 +249,9 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		fixture.Register(index, 234);
 		fixture.Register(index, 345);
 
-		fixture.Verify(verify, 1L);
-		fixture.Verify(verify, 2L);
-		fixture.Verify(verify, 3L);
+		fixture.Verify(verify.ValueSetup, 1L);
+		fixture.Verify(verify.ValueSetup, 2L);
+		fixture.Verify(verify.ValueSetup, 3L);
 	}
 
 	[Fact]
@@ -266,11 +266,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		fixture.Register(index, 345);
 
 		const long expected1 = 3L;
-		var actual1 = fixture.Verify(verify, 2L);
+		var actual1 = fixture.Verify(verify.ValueSetup, 2L);
 		Assert.Equal(expected1, actual1);
 
 		const long expected2 = 4L;
-		var actual2 = fixture.Verify(verify, 3L);
+		var actual2 = fixture.Verify(verify.ValueSetup, 3L);
 		Assert.Equal(expected2, actual2);
 	}
 
@@ -288,11 +288,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		fixture.Register(index, setupValue);
 
 		const long expected1 = 3L;
-		var actual1 = fixture.Verify(verify, 2L);
+		var actual1 = fixture.Verify(verify.ValueSetup, 2L);
 		Assert.Equal(expected1, actual1);
 
 		const long expected2 = 5L;
-		var actual2 = fixture.Verify(verify, 4L);
+		var actual2 = fixture.Verify(verify.ValueSetup, 4L);
 		Assert.Equal(expected2, actual2);
 	}
 
@@ -310,7 +310,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		var actual = () =>
 		{
 			var verify = It<int>.Any();
-			fixture.Verify(verify, verifyIndex);
+			fixture.Verify(verify.ValueSetup, verifyIndex);
 		};
 
 		const string expectedMessage =
@@ -339,7 +339,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		var actual = () =>
 		{
 			var verify = It<int>.Where(x => x < 200);
-			fixture.Verify(verify, verifyIndex);
+			fixture.Verify(verify.ValueSetup, verifyIndex);
 		};
 
 		const string expectedMessage =
@@ -369,7 +369,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		var actual = () =>
 		{
 			var verify = It<int>.Value(setupValue);
-			fixture.Verify(verify, verifyIndex);
+			fixture.Verify(verify.ValueSetup, verifyIndex);
 		};
 
 		const string expectedMessage =
@@ -394,7 +394,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		var actual = () =>
 		{
 			var verify = It<int>.Any();
-			fixture.Verify(verify, verifyIndex);
+			fixture.Verify(verify.ValueSetup, verifyIndex);
 		};
 
 		var expectedMessage = $"Expected MyClass.MyMethod(any) to be invoked at index {verifyIndex}, but there are no invocations.";
@@ -412,7 +412,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		var actual = () =>
 		{
 			var verify = It<int>.Where(x => x > 123);
-			fixture.Verify(verify, verifyIndex);
+			fixture.Verify(verify.ValueSetup, verifyIndex);
 		};
 
 		var expectedMessage = $"Expected MyClass.MyMethod(where(predicate)) to be invoked at index {verifyIndex}, but there are no invocations.";
@@ -430,7 +430,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		var actual = () =>
 		{
 			var verify = It<int>.Value(123);
-			fixture.Verify(verify, verifyIndex);
+			fixture.Verify(verify.ValueSetup, verifyIndex);
 		};
 
 		var expectedMessage = $"Expected MyClass.MyMethod(123) to be invoked at index {verifyIndex}, but there are no invocations.";
@@ -449,11 +449,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		fixture.Register(index, 234);
 
 		const long expected1 = 102L;
-		var actual1 = fixture.Verify(verify, 1L);
+		var actual1 = fixture.Verify(verify.ValueSetup, 1L);
 		Assert.Equal(expected1, actual1);
 
 		const long expected2 = 103L;
-		var actual2 = fixture.Verify(verify, 102L);
+		var actual2 = fixture.Verify(verify.ValueSetup, 102L);
 		Assert.Equal(expected2, actual2);
 	}
 
@@ -469,11 +469,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		fixture.Register(index, 345);
 
 		const long expected1 = 103L;
-		var actual1 = fixture.Verify(verify, 1L);
+		var actual1 = fixture.Verify(verify.ValueSetup, 1L);
 		Assert.Equal(expected1, actual1);
 
 		const long expected2 = 104L;
-		var actual2 = fixture.Verify(verify, 103L);
+		var actual2 = fixture.Verify(verify.ValueSetup, 103L);
 		Assert.Equal(expected2, actual2);
 	}
 
@@ -495,11 +495,11 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		fixture.Register(index, verifyValue2);
 
 		const long expected1 = 103L;
-		var actual1 = fixture.Verify(verify1, 1L);
+		var actual1 = fixture.Verify(verify1.ValueSetup, 1L);
 		Assert.Equal(expected1, actual1);
 
 		const long expected2 = 105L;
-		var actual2 = fixture.Verify(verify2, 103L);
+		var actual2 = fixture.Verify(verify2.ValueSetup, 103L);
 		Assert.Equal(expected2, actual2);
 	}
 
@@ -516,7 +516,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		var verify = It<int>.Equivalent(inputValue);
 		const int expected = 1;
-		fixture.Verify(verify, Times.Exactly(expected));
+		fixture.Verify(verify.ValueSetup, Times.Exactly(expected));
 	}
 
 	[Fact]
@@ -533,7 +533,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		var actual = () =>
 		{
 			var verify = It<int>.Equivalent(inputValue);
-			fixture.Verify(verify, Times.Once());
+			fixture.Verify(verify.ValueSetup, Times.Once());
 		};
 
 		const string expectedMessage =
@@ -567,7 +567,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		{
 			var verify = It<int>.Equivalent(inputValue);
 			const int expected = 2;
-			fixture.Verify(verify, Times.Exactly(expected));
+			fixture.Verify(verify.ValueSetup, Times.Exactly(expected));
 		};
 
 		const string expectedMessage =
@@ -599,7 +599,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 
 		var verify = It<int>.Equivalent(inputValue);
 		const long expected = 1L;
-		fixture.Verify(verify, expected);
+		fixture.Verify(verify.ValueSetup, expected);
 	}
 
 	[Fact]
@@ -617,7 +617,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		{
 			var verify = It<int>.Equivalent(inputValue);
 			const long expected = 1L;
-			fixture.Verify(verify, expected);
+			fixture.Verify(verify.ValueSetup, expected);
 		};
 
 		const string expectedMessage =
@@ -651,7 +651,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithOneParameterTestsBase
 		{
 			var verify = It<int>.Equivalent(inputValue);
 			const long expected = 3L;
-			fixture.Verify(verify, expected);
+			fixture.Verify(verify.ValueSetup, expected);
 		};
 
 		const string expectedMessage =

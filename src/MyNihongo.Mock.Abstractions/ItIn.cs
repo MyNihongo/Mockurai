@@ -2,24 +2,16 @@
 
 public readonly ref struct ItIn<T>
 {
-	private readonly ItSetup<T>? _valueSetup;
-	private readonly Func<string>? _toString;
-
-	internal ItIn(Func<string> toString)
-	{
-		_toString = toString;
-	}
+	public readonly ItSetup<T> ValueSetup;
 
 	private ItIn(Func<T, bool> predicate, SetupType type, Func<string> toString)
 	{
-		_toString = toString;
-		_valueSetup = new ItSetup<T>(predicate, type);
+		ValueSetup = new ItSetup<T>(predicate, type, toString);
 	}
 
 	private ItIn(Func<T, ComparisonResult> predicate, SetupType type, Func<string> toString)
 	{
-		_toString = toString;
-		_valueSetup = new ItSetup<T>(predicate, type);
+		ValueSetup = new ItSetup<T>(predicate, type, toString);
 	}
 
 	public static ItIn<T> Value(T value)
@@ -34,7 +26,7 @@ public readonly ref struct ItIn<T>
 
 	public static ItIn<T> Where(in Func<T, bool> predicate)
 	{
-		return new ItIn<T>(predicate, SetupType.Where, static () => "where(predicate)");
+		return new ItIn<T>(predicate, SetupType.Where, Constants.WhereToString);
 	}
 
 	public static ItIn<T> Any()
@@ -42,18 +34,8 @@ public readonly ref struct ItIn<T>
 		return new ItIn<T>();
 	}
 
-	public static implicit operator ItIn<T>(in T value)
-	{
-		return Value(value);
-	}
-
-	public static implicit operator It<T>(in ItIn<T> itIn)
-	{
-		return new It<T>(itIn._valueSetup, itIn._toString);
-	}
-
 	public override string ToString()
 	{
-		return _toString?.Invoke() ?? "any";
+		return ValueSetup.ToString();
 	}
 }

@@ -47,7 +47,7 @@ internal static class ParameterSymbolEx
 			return @this.Append(parameter);
 		}
 
-		public StringBuilder AppendParameterNames(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false)
+		public StringBuilder AppendParameterNames(ImmutableArray<IParameterSymbol> parameters, string? suffix = null, bool appendComma = false)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
@@ -55,6 +55,9 @@ internal static class ParameterSymbolEx
 					@this.Append(", ");
 
 				@this.Append(parameters[i].Name);
+
+				if (!string.IsNullOrEmpty(suffix))
+					@this.Append(suffix);
 
 				if (appendComma)
 					@this.Append(", ");

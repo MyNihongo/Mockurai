@@ -16,7 +16,7 @@ public sealed class VerifyClassDisposableShould : InvocationWithOneParameterTest
 			fixture.Register(index, parameter);
 
 		using var expected = new ClassParameterDisposable(name);
-		fixture.Verify(It<ClassParameterDisposable>.Equivalent(expected), Times.Once());
+		fixture.Verify(It<ClassParameterDisposable>.Equivalent(expected).ValueSetup, Times.Once());
 	}
 
 	[Fact]
@@ -31,7 +31,7 @@ public sealed class VerifyClassDisposableShould : InvocationWithOneParameterTest
 			fixture.Register(index, parameter);
 
 		using var expected = new ClassParameterDisposable(name);
-		var actual = () => fixture.Verify(expected, Times.Once());
+		var actual = () => fixture.Verify(It<ClassParameterDisposable>.Value(expected).ValueSetup, Times.Once());
 
 		Assert.Throws<ObjectDisposedException>(actual);
 	}

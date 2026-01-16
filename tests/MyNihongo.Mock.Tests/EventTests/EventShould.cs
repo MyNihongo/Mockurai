@@ -22,25 +22,25 @@ public sealed class EventShould : EventGenericTestsBase
 			public void VerifyAddHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, in Times times)
 			{
 				_handlerEvent0AddInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("IInterface<T>.HandlerEvent.add += {0}");
-				_handlerEvent0AddInvocation.Verify(value, times, _invocationProviders);
+				_handlerEvent0AddInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyAddHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, long index)
 			{
 				_handlerEvent0AddInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("IInterface<T>.HandlerEvent.add += {0}");
-				return _handlerEvent0AddInvocation.Verify(value, index, _invocationProviders);
+				return _handlerEvent0AddInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 
 			public void VerifyRemoveHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, in Times times)
 			{
 				_handlerEvent0RemoveInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("IInterface<T>.HandlerEvent.remove -= {0}");
-				_handlerEvent0RemoveInvocation.Verify(value, times, _invocationProviders);
+				_handlerEvent0RemoveInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyRemoveHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, long index)
 			{
 				_handlerEvent0RemoveInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("IInterface<T>.HandlerEvent.remove -= {0}");
-				return _handlerEvent0RemoveInvocation.Verify(value, index, _invocationProviders);
+				return _handlerEvent0RemoveInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -73,25 +73,25 @@ public sealed class EventShould : EventGenericTestsBase
 			public void VerifyAddHandlerEvent(in It<System.EventHandler<string>?> value, in Times times)
 			{
 				_handlerEvent0AddInvocation ??= new Invocation<System.EventHandler<string>?>("IInterface<T>.HandlerEvent.add += {0}");
-				_handlerEvent0AddInvocation.Verify(value, times, _invocationProviders);
+				_handlerEvent0AddInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyAddHandlerEvent(in It<System.EventHandler<string>?> value, long index)
 			{
 				_handlerEvent0AddInvocation ??= new Invocation<System.EventHandler<string>?>("IInterface<T>.HandlerEvent.add += {0}");
-				return _handlerEvent0AddInvocation.Verify(value, index, _invocationProviders);
+				return _handlerEvent0AddInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 
 			public void VerifyRemoveHandlerEvent(in It<System.EventHandler<string>?> value, in Times times)
 			{
 				_handlerEvent0RemoveInvocation ??= new Invocation<System.EventHandler<string>?>("IInterface<T>.HandlerEvent.remove -= {0}");
-				_handlerEvent0RemoveInvocation.Verify(value, times, _invocationProviders);
+				_handlerEvent0RemoveInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyRemoveHandlerEvent(in It<System.EventHandler<string>?> value, long index)
 			{
 				_handlerEvent0RemoveInvocation ??= new Invocation<System.EventHandler<string>?>("IInterface<T>.HandlerEvent.remove -= {0}");
-				return _handlerEvent0RemoveInvocation.Verify(value, index, _invocationProviders);
+				return _handlerEvent0RemoveInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -124,25 +124,25 @@ public sealed class EventShould : EventGenericTestsBase
 			public void VerifyAddHandlerEvent(in It<System.EventHandler<T>?> value, in Times times)
 			{
 				_handlerEvent0AddInvocation ??= new Invocation<System.EventHandler<T>?>("IInterface<T>.HandlerEvent.add += {0}");
-				_handlerEvent0AddInvocation.Verify(value, times, _invocationProviders);
+				_handlerEvent0AddInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyAddHandlerEvent(in It<System.EventHandler<T>?> value, long index)
 			{
 				_handlerEvent0AddInvocation ??= new Invocation<System.EventHandler<T>?>("IInterface<T>.HandlerEvent.add += {0}");
-				return _handlerEvent0AddInvocation.Verify(value, index, _invocationProviders);
+				return _handlerEvent0AddInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 
 			public void VerifyRemoveHandlerEvent(in It<System.EventHandler<T>?> value, in Times times)
 			{
 				_handlerEvent0RemoveInvocation ??= new Invocation<System.EventHandler<T>?>("IInterface<T>.HandlerEvent.remove -= {0}");
-				_handlerEvent0RemoveInvocation.Verify(value, times, _invocationProviders);
+				_handlerEvent0RemoveInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyRemoveHandlerEvent(in It<System.EventHandler<T>?> value, long index)
 			{
 				_handlerEvent0RemoveInvocation ??= new Invocation<System.EventHandler<T>?>("IInterface<T>.HandlerEvent.remove -= {0}");
-				return _handlerEvent0RemoveInvocation.Verify(value, index, _invocationProviders);
+				return _handlerEvent0RemoveInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -180,25 +180,25 @@ public sealed class EventShould : EventGenericTestsBase
 			public void VerifyAddHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, in Times times)
 			{
 				_handlerEvent0AddInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class<T>.HandlerEvent.add += {0}");
-				_handlerEvent0AddInvocation.Verify(value, times, _invocationProviders);
+				_handlerEvent0AddInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyAddHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, long index)
 			{
 				_handlerEvent0AddInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class<T>.HandlerEvent.add += {0}");
-				return _handlerEvent0AddInvocation.Verify(value, index, _invocationProviders);
+				return _handlerEvent0AddInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 
 			public void VerifyRemoveHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, in Times times)
 			{
 				_handlerEvent0RemoveInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class<T>.HandlerEvent.remove -= {0}");
-				_handlerEvent0RemoveInvocation.Verify(value, times, _invocationProviders);
+				_handlerEvent0RemoveInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyRemoveHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, long index)
 			{
 				_handlerEvent0RemoveInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class<T>.HandlerEvent.remove -= {0}");
-				return _handlerEvent0RemoveInvocation.Verify(value, index, _invocationProviders);
+				return _handlerEvent0RemoveInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -236,25 +236,25 @@ public sealed class EventShould : EventGenericTestsBase
 			public void VerifyAddHandlerEvent(in It<System.EventHandler<T>?> value, in Times times)
 			{
 				_handlerEvent0AddInvocation ??= new Invocation<System.EventHandler<T>?>("Class<T>.HandlerEvent.add += {0}");
-				_handlerEvent0AddInvocation.Verify(value, times, _invocationProviders);
+				_handlerEvent0AddInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyAddHandlerEvent(in It<System.EventHandler<T>?> value, long index)
 			{
 				_handlerEvent0AddInvocation ??= new Invocation<System.EventHandler<T>?>("Class<T>.HandlerEvent.add += {0}");
-				return _handlerEvent0AddInvocation.Verify(value, index, _invocationProviders);
+				return _handlerEvent0AddInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 
 			public void VerifyRemoveHandlerEvent(in It<System.EventHandler<T>?> value, in Times times)
 			{
 				_handlerEvent0RemoveInvocation ??= new Invocation<System.EventHandler<T>?>("Class<T>.HandlerEvent.remove -= {0}");
-				_handlerEvent0RemoveInvocation.Verify(value, times, _invocationProviders);
+				_handlerEvent0RemoveInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyRemoveHandlerEvent(in It<System.EventHandler<T>?> value, long index)
 			{
 				_handlerEvent0RemoveInvocation ??= new Invocation<System.EventHandler<T>?>("Class<T>.HandlerEvent.remove -= {0}");
-				return _handlerEvent0RemoveInvocation.Verify(value, index, _invocationProviders);
+				return _handlerEvent0RemoveInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
