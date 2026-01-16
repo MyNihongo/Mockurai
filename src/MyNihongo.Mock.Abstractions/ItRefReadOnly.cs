@@ -14,6 +14,11 @@ public readonly ref struct ItRefReadOnly<T>
 		return new ItRefReadOnly<T>(x => EqualityComparer<T>.Default.Equals(value, x), SetupType.Value, () => value.ToJsonString());
 	}
 
+	public static ItRefReadOnly<T> Where(in Func<T, bool> predicate)
+	{
+		return new ItRefReadOnly<T>(predicate, SetupType.Where, Constants.WhereToString);
+	}
+
 	public static ItRefReadOnly<T> Any()
 	{
 		return new ItRefReadOnly<T>();

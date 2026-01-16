@@ -6,7 +6,7 @@ public sealed class InvokeClassShould : SetupWithRefParameterTestsBase
 	public void ThrowForAnySetup()
 	{
 		const string errorMessage = nameof(errorMessage);
-		var setup = It<ClassParameter1>.Any();
+		var setup = ItRef<ClassParameter1>.Any();
 
 		var fixture = CreateFixture(setup);
 		fixture.Throws(new InvalidOperationException(errorMessage));

@@ -7,7 +7,7 @@ public abstract class SetupReturnsWithRefParameterTestsBase : SetupTestsBase
 		return new SetupWithRefParameter<T, TReturns>();
 	}
 
-	protected static SetupWithRefParameter<T, TReturns> CreateFixture<T, TReturns>(in It<T> setup)
+	protected static SetupWithRefParameter<T, TReturns> CreateFixture<T, TReturns>(in ItRef<T> setup)
 	{
 		var fixture = new SetupWithRefParameter<T, TReturns>();
 		fixture.SetupParameter(setup.ValueSetup);

@@ -6,7 +6,7 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	public void ThrowForAnySetup()
 	{
 		const string errorMessage = nameof(errorMessage);
-		var setup = It<int>.Any();
+		var setup = ItRef<int>.Any();
 
 		var fixture = CreateFixture(setup);
 		fixture.Throws(new InvalidOperationException(errorMessage));
@@ -23,7 +23,7 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	{
 		const string errorMessage = nameof(errorMessage);
 		var input = 12345678;
-		var setup = It<int>.Value(input);
+		var setup = ItRef<int>.Value(input);
 
 		var fixture = CreateFixture(setup);
 		fixture.Throws(new InvalidOperationException(errorMessage));
@@ -39,7 +39,7 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	{
 		const string errorMessage = nameof(errorMessage);
 		const int setupValue = 23456789;
-		var setup = It<int>.Value(setupValue);
+		var setup = ItRef<int>.Value(setupValue);
 
 		var fixture = CreateFixture(setup);
 		fixture.Throws(new InvalidOperationException(errorMessage));
@@ -55,7 +55,7 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	public void ThrowForWhereSetup(int input)
 	{
 		const string errorMessage = nameof(errorMessage);
-		var setup = It<int>.Where(static x => x <= 10);
+		var setup = ItRef<int>.Where(static x => x <= 10);
 
 		var fixture = CreateFixture(setup);
 		fixture.Throws(new InvalidOperationException(errorMessage));
@@ -72,7 +72,7 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	public void NotThrowForWhereSetup(int input)
 	{
 		const string errorMessage = nameof(errorMessage);
-		var setup = It<int>.Where(static x => x <= 10);
+		var setup = ItRef<int>.Where(static x => x <= 10);
 
 		var fixture = CreateFixture(setup);
 		fixture.Throws(new InvalidOperationException(errorMessage));
@@ -84,10 +84,10 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	public void PrioritiseWhereOverAnyThrowWhere()
 	{
 		const string errorMessage1 = nameof(errorMessage1);
-		var setup1 = It<int>.Any();
+		var setup1 = ItRef<int>.Any();
 
 		const string errorMessage2 = nameof(errorMessage2);
-		var setup2 = It<int>.Where(static x => x > 10);
+		var setup2 = ItRef<int>.Where(static x => x > 10);
 
 		var fixture = CreateFixture<int>();
 		fixture.SetupParameter(setup1.ValueSetup);
@@ -107,10 +107,10 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	public void PrioritiseWhereOverAnyThrowAny()
 	{
 		const string errorMessage1 = nameof(errorMessage1);
-		var setup1 = It<int>.Any();
+		var setup1 = ItRef<int>.Any();
 
 		const string errorMessage2 = nameof(errorMessage2);
-		var setup2 = It<int>.Where(static x => x > 10);
+		var setup2 = ItRef<int>.Where(static x => x > 10);
 
 		var fixture = CreateFixture<int>();
 		fixture.SetupParameter(setup1.ValueSetup);
@@ -130,14 +130,14 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	public void PrioritiseValueOverWhereThrowValue()
 	{
 		const string errorMessage1 = nameof(errorMessage1);
-		var setup1 = It<int>.Any();
+		var setup1 = ItRef<int>.Any();
 
 		const string errorMessage2 = nameof(errorMessage2);
-		var setup2 = It<int>.Where(static x => x > 10);
+		var setup2 = ItRef<int>.Where(static x => x > 10);
 
 		var setupValue3 = 12345678;
 		const string errorMessage3 = nameof(errorMessage3);
-		var setup3 = It<int>.Value(setupValue3);
+		var setup3 = ItRef<int>.Value(setupValue3);
 
 		var fixture = CreateFixture<int>();
 		fixture.SetupParameter(setup1.ValueSetup);
@@ -159,14 +159,14 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	public void PrioritiseValueOverWhereThrowWhere()
 	{
 		const string errorMessage1 = nameof(errorMessage1);
-		var setup1 = It<int>.Any();
+		var setup1 = ItRef<int>.Any();
 
 		const string errorMessage2 = nameof(errorMessage2);
-		var setup2 = It<int>.Where(static x => x > 10);
+		var setup2 = ItRef<int>.Where(static x => x > 10);
 
 		const int setupValue3 = 12345678;
 		const string errorMessage3 = nameof(errorMessage3);
-		var setup3 = It<int>.Value(setupValue3);
+		var setup3 = ItRef<int>.Value(setupValue3);
 
 		var fixture = CreateFixture<int>();
 		fixture.SetupParameter(setup1.ValueSetup);
@@ -189,14 +189,14 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	public void PrioritiseValueOverWhereThrowAny()
 	{
 		const string errorMessage1 = nameof(errorMessage1);
-		var setup1 = It<int>.Any();
+		var setup1 = ItRef<int>.Any();
 
 		const string errorMessage2 = nameof(errorMessage2);
-		var setup2 = It<int>.Where(static x => x > 10);
+		var setup2 = ItRef<int>.Where(static x => x > 10);
 
 		const int setupValue3 = 12345678;
 		const string errorMessage3 = nameof(errorMessage3);
-		var setup3 = It<int>.Value(setupValue3);
+		var setup3 = ItRef<int>.Value(setupValue3);
 
 		var fixture = CreateFixture<int>();
 		fixture.SetupParameter(setup1.ValueSetup);
@@ -218,11 +218,11 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	[Fact]
 	public void InvokeCallbackForAny()
 	{
-		var setup = It<int>.Any();
+		var setup = ItRef<int>.Any();
 		var callbackValue = 0;
 
 		var fixture = CreateFixture(setup);
-		fixture.Callback((ref int x) => callbackValue = x + 1);
+		fixture.Callback((ref x) => callbackValue = x + 1);
 
 		var inputValue = 12345678;
 		fixture.Invoke(ref inputValue);
@@ -234,11 +234,11 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	public void InvokeCallbackForAnyBeforeThrows()
 	{
 		const string expectedMessage = nameof(expectedMessage);
-		var setup = It<int>.Any();
+		var setup = ItRef<int>.Any();
 		var callbackValue = 0;
 
 		var fixture = CreateFixture(setup);
-		fixture.Callback((ref int x) => callbackValue = x + 1);
+		fixture.Callback((ref x) => callbackValue = x + 1);
 		fixture.And();
 		fixture.Throws(new Exception(expectedMessage));
 
@@ -253,10 +253,10 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	[Fact]
 	public void UpdateValueInCallbackForAny()
 	{
-		var setup = It<int>.Any();
+		var setup = ItRef<int>.Any();
 
 		var fixture = CreateFixture(setup);
-		fixture.Callback((ref int x) => x += 2);
+		fixture.Callback((ref x) => x += 2);
 
 		var inputValue = 12345678;
 		fixture.Invoke(ref inputValue);
@@ -269,11 +269,11 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	public void InvokeCallbackForValue()
 	{
 		var setupValue = 12345678;
-		var setup = It<int>.Value(setupValue);
+		var setup = ItRef<int>.Value(setupValue);
 		var callbackValue = 0;
 
 		var fixture = CreateFixture(setup);
-		fixture.Callback((ref int x) => callbackValue = x + 1);
+		fixture.Callback((ref x) => callbackValue = x + 1);
 		fixture.Invoke(ref setupValue);
 
 		Assert.Equal(setupValue + 1, callbackValue);
@@ -284,13 +284,13 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	{
 		const string expectedMessage = nameof(expectedMessage);
 		const int setupValue = 12345678;
-		var setup = It<int>.Value(setupValue);
+		var setup = ItRef<int>.Value(setupValue);
 		var callbackValue = 0;
 
 		var fixture = CreateFixture(setup);
 		fixture.Throws(new Exception(expectedMessage));
 		fixture.And();
-		fixture.Callback((ref int x) => callbackValue = x + 1);
+		fixture.Callback((ref x) => callbackValue = x + 1);
 
 		var inputValue = 12345678;
 		var actual = () => fixture.Invoke(ref inputValue);
@@ -304,10 +304,10 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	public void UpdateValueInCallbackForValue()
 	{
 		var setupValue = 12345678;
-		var setup = It<int>.Value(setupValue);
+		var setup = ItRef<int>.Value(setupValue);
 
 		var fixture = CreateFixture(setup);
-		fixture.Callback((ref int x) => x += 2);
+		fixture.Callback((ref x) => x += 2);
 		fixture.Invoke(ref setupValue);
 
 		const int expected = 12345680;
@@ -318,11 +318,11 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	public void NotInvokeCallbackForValue()
 	{
 		const int setupValue = 12345678;
-		var setup = It<int>.Value(setupValue);
+		var setup = ItRef<int>.Value(setupValue);
 		var callbackValue = 0;
 
 		var fixture = CreateFixture(setup);
-		fixture.Callback((ref int x) => callbackValue = x + 1);
+		fixture.Callback((ref x) => callbackValue = x + 1);
 
 		var inputValue = -64713;
 		fixture.Invoke(ref inputValue);
@@ -335,10 +335,10 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	public void NotUpdateValueInCallbackForValue()
 	{
 		const int setupValue = 12345678;
-		var setup = It<int>.Value(setupValue);
+		var setup = ItRef<int>.Value(setupValue);
 
 		var fixture = CreateFixture(setup);
-		fixture.Callback((ref int x) => x += 2);
+		fixture.Callback((ref x) => x += 2);
 
 		var inputValue = -64713;
 		fixture.Invoke(ref inputValue);
@@ -350,11 +350,11 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	[Fact]
 	public void InvokeCallbackForWhere()
 	{
-		var setup = It<int>.Where(x => x > 10);
+		var setup = ItRef<int>.Where(x => x > 10);
 		var callbackValue = 0;
 
 		var fixture = CreateFixture(setup);
-		fixture.Callback((ref int x) => callbackValue = x + 1);
+		fixture.Callback((ref x) => callbackValue = x + 1);
 
 		var inputValue = 12345678;
 		fixture.Invoke(ref inputValue);
@@ -365,10 +365,10 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	[Fact]
 	public void UpdateValueInCallbackForWhere()
 	{
-		var setup = It<int>.Where(x => x > 10);
+		var setup = ItRef<int>.Where(x => x > 10);
 
 		var fixture = CreateFixture(setup);
-		fixture.Callback((ref int x) => x += 2);
+		fixture.Callback((ref x) => x += 2);
 
 		var inputValue = 12345678;
 		fixture.Invoke(ref inputValue);
@@ -381,11 +381,11 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	public void InvokeCallbackForWhereBeforeThrows()
 	{
 		const string expectedMessage = nameof(expectedMessage);
-		var setup = It<int>.Where(x => x > 10);
+		var setup = ItRef<int>.Where(x => x > 10);
 		var callbackValue = 0;
 
 		var fixture = CreateFixture(setup);
-		fixture.Callback((ref int x) => callbackValue = x + 1);
+		fixture.Callback((ref x) => callbackValue = x + 1);
 		fixture.And();
 		fixture.Throws(new Exception(expectedMessage));
 
@@ -400,11 +400,11 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	[Fact]
 	public void NotInvokeCallbackForWhere()
 	{
-		var setup = It<int>.Where(x => x > 10);
+		var setup = ItRef<int>.Where(x => x > 10);
 		var callbackValue = 0;
 
 		var fixture = CreateFixture(setup);
-		fixture.Callback((ref int x) => callbackValue = x + 1);
+		fixture.Callback((ref x) => callbackValue = x + 1);
 
 		var inputValue = -64713;
 		fixture.Invoke(ref inputValue);
@@ -416,10 +416,10 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	[Fact]
 	public void NotUpdateValueInCallbackForWhere()
 	{
-		var setup = It<int>.Where(x => x > 10);
+		var setup = ItRef<int>.Where(x => x > 10);
 
 		var fixture = CreateFixture(setup);
-		fixture.Callback((ref int x) => x += 2);
+		fixture.Callback((ref x) => x += 2);
 
 		var inputValue = -64713;
 		fixture.Invoke(ref inputValue);
@@ -432,10 +432,10 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	public void NotDuplicateSameSetup()
 	{
 		var fixture = CreateFixture<int>();
-		fixture.SetupParameter(It<int>.Any().ValueSetup);
-		fixture.Callback((ref int _) => { });
+		fixture.SetupParameter(ItRef<int>.Any().ValueSetup);
+		fixture.Callback((ref _) => { });
 		fixture.Throws(new Exception());
-		fixture.Callback((ref int _) => { Debug.WriteLine("output"); });
+		fixture.Callback((ref _) => { Debug.WriteLine("output"); });
 
 		const int expected = 1;
 		var actual = GetSetupCount(fixture);
@@ -446,14 +446,14 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	public void InsertAllSetups()
 	{
 		var fixture = CreateFixture<int>();
-		fixture.SetupParameter(It<int>.Any().ValueSetup);
-		fixture.Callback((ref int _) => { });
+		fixture.SetupParameter(ItRef<int>.Any().ValueSetup);
+		fixture.Callback((ref _) => { });
 
-		fixture.SetupParameter(It<int>.Any().ValueSetup);
+		fixture.SetupParameter(ItRef<int>.Any().ValueSetup);
 		fixture.Throws(new Exception());
 
-		fixture.SetupParameter(It<int>.Any().ValueSetup);
-		fixture.Callback((ref int _) => { Debug.WriteLine("output"); });
+		fixture.SetupParameter(ItRef<int>.Any().ValueSetup);
+		fixture.Callback((ref _) => { Debug.WriteLine("output"); });
 
 		const int expected = 3;
 		var actual = GetSetupCount(fixture);
@@ -465,11 +465,11 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	{
 		var fixture = CreateFixture<int>();
 
-		fixture.SetupParameter(It<int>.Any().ValueSetup);
+		fixture.SetupParameter(ItRef<int>.Any().ValueSetup);
 		fixture.Throws(new Exception("random text"));
 
 		const string expectedMessage = nameof(expectedMessage);
-		fixture.SetupParameter(It<int>.Any().ValueSetup);
+		fixture.SetupParameter(ItRef<int>.Any().ValueSetup);
 		fixture.Throws(new NullReferenceException(expectedMessage));
 
 		var inputValue = 12345678;
@@ -484,11 +484,11 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 	{
 		var fixture = CreateFixture<int>();
 
-		fixture.SetupParameter(It<int>.Where(x => x > 10).ValueSetup);
+		fixture.SetupParameter(ItRef<int>.Where(x => x > 10).ValueSetup);
 		fixture.Throws(new Exception("random text"));
 
 		const string expectedMessage = nameof(expectedMessage);
-		fixture.SetupParameter(It<int>.Where(x => x > 100).ValueSetup);
+		fixture.SetupParameter(ItRef<int>.Where(x => x > 100).ValueSetup);
 		fixture.Throws(new NullReferenceException(expectedMessage));
 
 		var inputValue = 12345678;
@@ -504,11 +504,11 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 		var setupValue = 12345678;
 		var fixture = CreateFixture<int>();
 
-		fixture.SetupParameter(It<int>.Value(setupValue).ValueSetup);
+		fixture.SetupParameter(ItRef<int>.Value(setupValue).ValueSetup);
 		fixture.Throws(new Exception("random text"));
 
 		const string expectedMessage = nameof(expectedMessage);
-		fixture.SetupParameter(It<int>.Value(setupValue).ValueSetup);
+		fixture.SetupParameter(ItRef<int>.Value(setupValue).ValueSetup);
 		fixture.Throws(new NullReferenceException(expectedMessage));
 
 		var actual = () => fixture.Invoke(ref setupValue);
@@ -523,7 +523,7 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
 
 		var fixture = CreateFixture<int>();
-		fixture.SetupParameter(It<int>.Any().ValueSetup);
+		fixture.SetupParameter(ItRef<int>.Any().ValueSetup);
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Throws(new NullReferenceException(errorMessage2));
 
@@ -548,8 +548,8 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 		var callback = 0;
 
 		var fixture = CreateFixture<int>();
-		fixture.SetupParameter(It<int>.Any().ValueSetup);
-		fixture.Callback((ref int value) => value = callback++);
+		fixture.SetupParameter(ItRef<int>.Any().ValueSetup);
+		fixture.Callback((ref x) => x = callback++);
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Throws(new NullReferenceException(errorMessage2));
 
@@ -579,8 +579,8 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 		var callback = 0;
 
 		var fixture = CreateFixture<int>();
-		fixture.SetupParameter(It<int>.Any().ValueSetup);
-		fixture.Callback((ref int value) => value = callback++);
+		fixture.SetupParameter(ItRef<int>.Any().ValueSetup);
+		fixture.Callback((ref x) => x = callback++);
 		fixture.And();
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Throws(new NullReferenceException(errorMessage2));
@@ -609,9 +609,9 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 		var callback = 0;
 
 		var fixture = CreateFixture<int>();
-		fixture.SetupParameter(It<int>.Any().ValueSetup);
+		fixture.SetupParameter(ItRef<int>.Any().ValueSetup);
 		fixture.Throws(new COMException(errorMessage1));
-		fixture.Callback((ref int value) => value = callback++);
+		fixture.Callback((ref x) => x = callback++);
 		fixture.And();
 		fixture.Throws(new NullReferenceException(errorMessage2));
 
@@ -639,13 +639,13 @@ public sealed class InvokePrimitiveShould : SetupWithRefParameterTestsBase
 		int callback1 = 10, callback2 = 0;
 
 		var fixture = CreateFixture<int>();
-		fixture.SetupParameter(It<int>.Any().ValueSetup);
-		fixture.Callback((ref int value) => value = callback1++);
+		fixture.SetupParameter(ItRef<int>.Any().ValueSetup);
+		fixture.Callback((ref x) => x = callback1++);
 		fixture.And();
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Throws(new NullReferenceException(errorMessage2));
 		fixture.And();
-		fixture.Callback((ref int value) => value = callback2++);
+		fixture.Callback((ref x) => x = callback2++);
 
 		var parameter = 1234;
 		var actual1 = () => fixture.Invoke(ref parameter);

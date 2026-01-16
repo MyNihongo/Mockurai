@@ -6,7 +6,7 @@ public sealed class InvokeStructShould : SetupWithInParameterTestsBase
 	public void ThrowForAnySetup()
 	{
 		const string errorMessage = nameof(errorMessage);
-		var setup = It<StructParameter1>.Any();
+		var setup = ItIn<StructParameter1>.Any();
 
 		var fixture = CreateFixture(setup);
 		fixture.Throws(new InvalidOperationException(errorMessage));

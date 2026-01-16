@@ -6,7 +6,7 @@ public sealed class InvokeRecordShould : SetupWithRefReadOnlyParameterTestsBase
 	public void ThrowForAnySetup()
 	{
 		const string errorMessage = nameof(errorMessage);
-		var setup = It<RecordParameter1>.Any();
+		var setup = ItRefReadOnly<RecordParameter1>.Any();
 
 		var fixture = CreateFixture(setup);
 		fixture.Throws(new InvalidOperationException(errorMessage));

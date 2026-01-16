@@ -2,7 +2,7 @@ namespace MyNihongo.Mock.Abstractions.Tests.Setup.SetupReturnsWithInParameterTes
 
 public abstract class SetupReturnsWithInParameterTestsBase : SetupTestsBase
 {
-	protected static SetupWithInParameter<TParameter, TReturns> CreateFixture<TParameter, TReturns>(It<TParameter> parameter)
+	protected static SetupWithInParameter<TParameter, TReturns> CreateFixture<TParameter, TReturns>(ItIn<TParameter> parameter)
 	{
 		var fixture = CreateFixture<TParameter, TReturns>();
 		fixture.SetupParameter(parameter.ValueSetup);

@@ -69,7 +69,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 		const int setupValue = 123;
 
 		var fixture = CreateFixture<int, int>();
-		fixture.Returns((out int x) => x = setupValue + 2);
+		fixture.Returns((out x) => x = setupValue + 2);
 		var actual = fixture.Execute(out _, out var returnValue);
 
 		Assert.True(actual);
@@ -82,7 +82,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 		int? setupValue = null;
 
 		var fixture = CreateFixture<int?, int?>();
-		fixture.Returns((out int? x) => x = setupValue);
+		fixture.Returns((out x) => x = setupValue);
 		var actual = fixture.Execute(out _, out var returnValue);
 
 		Assert.True(actual);
@@ -96,7 +96,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 		var counter = 0;
 
 		var fixture = CreateFixture<int, int>();
-		fixture.Callback((out int x) => x = counter++);
+		fixture.Callback((out x) => x = counter++);
 		fixture.And();
 		fixture.Returns(setupValue);
 
@@ -117,7 +117,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 		var fixture = CreateFixture<int, int>();
 		fixture.Throws(new IndexOutOfRangeException(errorMessage));
 		fixture.And();
-		fixture.Callback((out int x) => x = counter++);
+		fixture.Callback((out x) => x = counter++);
 
 		Action actual = () => fixture.Execute(out _, out _);
 
@@ -133,7 +133,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 		var counter = 0;
 
 		var fixture = CreateFixture<int, int>();
-		fixture.Callback((out int x) => x = counter++);
+		fixture.Callback((out x) => x = counter++);
 
 		var hasValue = fixture.Execute(out _, out _);
 
@@ -148,7 +148,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 		const int expected = 12345;
 
 		var fixture = CreateFixture<int, bool>();
-		fixture.Callback((out int x) => x = expected);
+		fixture.Callback((out x) => x = expected);
 
 		var hasValue = fixture.Execute(out var result, out _);
 
@@ -162,7 +162,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 		const int expected = 12345;
 
 		var fixture = CreateFixture<int, bool>();
-		fixture.Returns((out int x) =>
+		fixture.Returns((out x) =>
 		{
 			x = expected;
 			return x > 0;
@@ -204,7 +204,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 		var callback = 0;
 
 		var fixture = CreateFixture<int, bool>();
-		fixture.Callback((out int value) => value = callback++);
+		fixture.Callback((out x) => x = callback++);
 		fixture.Returns(setupValue1);
 		fixture.Returns(setupValue2);
 
@@ -235,7 +235,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 		var callback = 0;
 
 		var fixture = CreateFixture<int, bool>();
-		fixture.Callback((out int value) => value = callback++);
+		fixture.Callback((out x) => x = callback++);
 		fixture.And();
 		fixture.Returns(setupValue1);
 		fixture.Returns(setupValue2);
@@ -264,7 +264,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 
 		var fixture = CreateFixture<int, bool>();
 		fixture.Returns(setupValue1);
-		fixture.Callback((out int value) => value = callback++);
+		fixture.Callback((out x) => x = callback++);
 		fixture.And();
 		fixture.Returns(setupValue2);
 
@@ -291,12 +291,12 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 		int callback1 = 10, callback2 = 0;
 
 		var fixture = CreateFixture<int, bool>();
-		fixture.Callback((out int value) => value = callback1++);
+		fixture.Callback((out x) => x = callback1++);
 		fixture.And();
 		fixture.Returns(setupValue1);
 		fixture.Returns(setupValue2);
 		fixture.And();
-		fixture.Callback((out int value) => value = callback2++);
+		fixture.Callback((out x) => x = callback2++);
 
 		var actual1 = fixture.Execute(out _, out var returnValue1);
 		Assert.True(actual1);
@@ -344,7 +344,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 		var callback = 0;
 
 		var fixture = CreateFixture<int, bool>();
-		fixture.Callback((out int value) => value = callback++);
+		fixture.Callback((out x) => x = callback++);
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Throws(new NullReferenceException(errorMessage2));
 
@@ -373,7 +373,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 		var callback = 0;
 
 		var fixture = CreateFixture<int, bool>();
-		fixture.Callback((out int value) => value = callback++);
+		fixture.Callback((out x) => x = callback++);
 		fixture.And();
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Throws(new NullReferenceException(errorMessage2));
@@ -402,7 +402,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 
 		var fixture = CreateFixture<int, bool>();
 		fixture.Throws(new COMException(errorMessage1));
-		fixture.Callback((out int value) => value = callback++);
+		fixture.Callback((out x) => x = callback++);
 		fixture.And();
 		fixture.Throws(new NullReferenceException(errorMessage2));
 
@@ -429,12 +429,12 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithOutParameterTestsBa
 		int callback1 = 10, callback2 = 0;
 
 		var fixture = CreateFixture<int, bool>();
-		fixture.Callback((out int value) => value = callback1++);
+		fixture.Callback((out x) => x = callback1++);
 		fixture.And();
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Throws(new NullReferenceException(errorMessage2));
 		fixture.And();
-		fixture.Callback((out int value) => value = callback2++);
+		fixture.Callback((out x) => x = callback2++);
 
 		Action actual1 = () => fixture.Execute(out _, out _);
 		var exception1 = Assert.Throws<COMException>(actual1);
