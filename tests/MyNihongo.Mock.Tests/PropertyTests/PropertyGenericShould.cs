@@ -55,20 +55,20 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			public SetupWithParameter<int> SetupSetProperty(in It<int> value)
 			{
 				_property0Set ??= new SetupWithParameter<int>();
-				_property0Set.SetupParameter(value);
+				_property0Set.SetupParameter(value.ValueSetup);
 				return _property0Set;
 			}
 
 			public void VerifySetProperty(in It<int> value, in Times times)
 			{
 				_property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
-				_property0SetInvocation.Verify(value, times, _invocationProviders);
+				_property0SetInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifySetProperty(in It<int> value, long index)
 			{
 				_property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
-				return _property0SetInvocation.Verify(value, index, _invocationProviders);
+				return _property0SetInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -95,20 +95,20 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			public SetupWithParameter<int> SetupSetProperty(in It<int> value)
 			{
 				_property0Set ??= new SetupWithParameter<int>();
-				_property0Set.SetupParameter(value);
+				_property0Set.SetupParameter(value.ValueSetup);
 				return _property0Set;
 			}
 
 			public void VerifySetProperty(in It<int> value, in Times times)
 			{
 				_property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
-				_property0SetInvocation.Verify(value, times, _invocationProviders);
+				_property0SetInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifySetProperty(in It<int> value, long index)
 			{
 				_property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
-				return _property0SetInvocation.Verify(value, index, _invocationProviders);
+				return _property0SetInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -155,20 +155,20 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			public SetupWithParameter<int> SetupSetProperty(in It<int> value)
 			{
 				_property0Set ??= new SetupWithParameter<int>();
-				_property0Set.SetupParameter(value);
+				_property0Set.SetupParameter(value.ValueSetup);
 				return _property0Set;
 			}
 
 			public void VerifySetProperty(in It<int> value, in Times times)
 			{
 				_property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
-				_property0SetInvocation.Verify(value, times, _invocationProviders);
+				_property0SetInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifySetProperty(in It<int> value, long index)
 			{
 				_property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
-				return _property0SetInvocation.Verify(value, index, _invocationProviders);
+				return _property0SetInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -215,20 +215,20 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			public SetupWithParameter<int> SetupSetProperty(in It<int> value)
 			{
 				_property0Set ??= new SetupWithParameter<int>();
-				_property0Set.SetupParameter(value);
+				_property0Set.SetupParameter(value.ValueSetup);
 				return _property0Set;
 			}
 
 			public void VerifySetProperty(in It<int> value, in Times times)
 			{
 				_property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
-				_property0SetInvocation.Verify(value, times, _invocationProviders);
+				_property0SetInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifySetProperty(in It<int> value, long index)
 			{
 				_property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
-				return _property0SetInvocation.Verify(value, index, _invocationProviders);
+				return _property0SetInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -275,20 +275,20 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			public SetupWithParameter<T> SetupSetProperty(in It<T> value)
 			{
 				_property0Set ??= new SetupWithParameter<T>();
-				_property0Set.SetupParameter(value);
+				_property0Set.SetupParameter(value.ValueSetup);
 				return _property0Set;
 			}
 
 			public void VerifySetProperty(in It<T> value, in Times times)
 			{
 				_property0SetInvocation ??= new Invocation<T>("IInterface<T>.Property.set = {0}");
-				_property0SetInvocation.Verify(value, times, _invocationProviders);
+				_property0SetInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifySetProperty(in It<T> value, long index)
 			{
 				_property0SetInvocation ??= new Invocation<T>("IInterface<T>.Property.set = {0}");
-				return _property0SetInvocation.Verify(value, index, _invocationProviders);
+				return _property0SetInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -335,20 +335,20 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			public SetupWithParameter<T?> SetupSetProperty(in It<T?> value)
 			{
 				_property0Set ??= new SetupWithParameter<T?>();
-				_property0Set.SetupParameter(value);
+				_property0Set.SetupParameter(value.ValueSetup);
 				return _property0Set;
 			}
 
 			public void VerifySetProperty(in It<T?> value, in Times times)
 			{
 				_property0SetInvocation ??= new Invocation<T?>("IInterface<T>.Property.set = {0}");
-				_property0SetInvocation.Verify(value, times, _invocationProviders);
+				_property0SetInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifySetProperty(in It<T?> value, long index)
 			{
 				_property0SetInvocation ??= new Invocation<T?>("IInterface<T>.Property.set = {0}");
-				return _property0SetInvocation.Verify(value, index, _invocationProviders);
+				return _property0SetInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -395,20 +395,20 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			public SetupWithParameter<MyNihongo.Mock.Tests.Record<T?>> SetupSetProperty(in It<MyNihongo.Mock.Tests.Record<T?>> value)
 			{
 				_property0Set ??= new SetupWithParameter<MyNihongo.Mock.Tests.Record<T?>>();
-				_property0Set.SetupParameter(value);
+				_property0Set.SetupParameter(value.ValueSetup);
 				return _property0Set;
 			}
 
 			public void VerifySetProperty(in It<MyNihongo.Mock.Tests.Record<T?>> value, in Times times)
 			{
 				_property0SetInvocation ??= new Invocation<MyNihongo.Mock.Tests.Record<T?>>("Class<T>.Property.set = {0}");
-				_property0SetInvocation.Verify(value, times, _invocationProviders);
+				_property0SetInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifySetProperty(in It<MyNihongo.Mock.Tests.Record<T?>> value, long index)
 			{
 				_property0SetInvocation ??= new Invocation<MyNihongo.Mock.Tests.Record<T?>>("Class<T>.Property.set = {0}");
-				return _property0SetInvocation.Verify(value, index, _invocationProviders);
+				return _property0SetInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
 

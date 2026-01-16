@@ -16,20 +16,20 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			public SetupWithParameter<int> SetupInvoke(in It<int> param)
 			{
 				_invoke0 ??= new SetupWithParameter<int>();
-				_invoke0.SetupParameter(param);
+				_invoke0.SetupParameter(param.ValueSetup);
 				return _invoke0;
 			}
 
 			public void VerifyInvoke(in It<int> param, in Times times)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})");
-				_invoke0Invocation.Verify(param, times, _invocationProviders);
+				_invoke0Invocation.Verify(param.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke(in It<int> param, long index)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})");
-				return _invoke0Invocation.Verify(param, index, _invocationProviders);
+				return _invoke0Invocation.Verify(param.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -56,20 +56,20 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			public SetupWithParameter<int, float> SetupInvoke(in It<int> param)
 			{
 				_invoke0 ??= new SetupWithParameter<int, float>();
-				_invoke0.SetupParameter(param);
+				_invoke0.SetupParameter(param.ValueSetup);
 				return _invoke0;
 			}
 
 			public void VerifyInvoke(in It<int> param, in Times times)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})");
-				_invoke0Invocation.Verify(param, times, _invocationProviders);
+				_invoke0Invocation.Verify(param.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke(in It<int> param, long index)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})");
-				return _invoke0Invocation.Verify(param, index, _invocationProviders);
+				return _invoke0Invocation.Verify(param.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -102,13 +102,13 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			public void VerifyInvoke(in ItOut<int> result, in Times times)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
-				_invoke0Invocation.Verify(result, times, _invocationProviders);
+				_invoke0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke(in ItOut<int> result, long index)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
-				return _invoke0Invocation.Verify(result, index, _invocationProviders);
+				return _invoke0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -141,13 +141,13 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			public void VerifyInvoke(in ItOut<int> result, in Times times)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
-				_invoke0Invocation.Verify(result, times, _invocationProviders);
+				_invoke0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke(in ItOut<int> result, long index)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "out");
-				return _invoke0Invocation.Verify(result, index, _invocationProviders);
+				return _invoke0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -174,20 +174,20 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			public SetupWithInParameter<int> SetupInvoke(in ItIn<int> result)
 			{
 				_invoke0 ??= new SetupWithInParameter<int>();
-				_invoke0.SetupParameter(result);
+				_invoke0.SetupParameter(result.ValueSetup);
 				return _invoke0;
 			}
 
 			public void VerifyInvoke(in ItIn<int> result, in Times times)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "in");
-				_invoke0Invocation.Verify(result, times, _invocationProviders);
+				_invoke0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke(in ItIn<int> result, long index)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "in");
-				return _invoke0Invocation.Verify(result, index, _invocationProviders);
+				return _invoke0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -214,20 +214,20 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			public SetupWithInParameter<int, decimal> SetupInvoke(in ItIn<int> result)
 			{
 				_invoke0 ??= new SetupWithInParameter<int, decimal>();
-				_invoke0.SetupParameter(result);
+				_invoke0.SetupParameter(result.ValueSetup);
 				return _invoke0;
 			}
 
 			public void VerifyInvoke(in ItIn<int> result, in Times times)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "in");
-				_invoke0Invocation.Verify(result, times, _invocationProviders);
+				_invoke0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke(in ItIn<int> result, long index)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "in");
-				return _invoke0Invocation.Verify(result, index, _invocationProviders);
+				return _invoke0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -254,20 +254,20 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			public SetupWithRefParameter<int> SetupInvoke(in ItRef<int> result)
 			{
 				_invoke0 ??= new SetupWithRefParameter<int>();
-				_invoke0.SetupParameter(result);
+				_invoke0.SetupParameter(result.ValueSetup);
 				return _invoke0;
 			}
 
 			public void VerifyInvoke(in ItRef<int> result, in Times times)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "ref");
-				_invoke0Invocation.Verify(result, times, _invocationProviders);
+				_invoke0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke(in ItRef<int> result, long index)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "ref");
-				return _invoke0Invocation.Verify(result, index, _invocationProviders);
+				return _invoke0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -294,20 +294,20 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			public SetupWithRefParameter<int, decimal> SetupInvoke(in ItRef<int> result)
 			{
 				_invoke0 ??= new SetupWithRefParameter<int, decimal>();
-				_invoke0.SetupParameter(result);
+				_invoke0.SetupParameter(result.ValueSetup);
 				return _invoke0;
 			}
 
 			public void VerifyInvoke(in ItRef<int> result, in Times times)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "ref");
-				_invoke0Invocation.Verify(result, times, _invocationProviders);
+				_invoke0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke(in ItRef<int> result, long index)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "ref");
-				return _invoke0Invocation.Verify(result, index, _invocationProviders);
+				return _invoke0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -334,20 +334,20 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			public SetupWithRefReadOnlyParameter<int> SetupInvoke(in ItRefReadOnly<int> result)
 			{
 				_invoke0 ??= new SetupWithRefReadOnlyParameter<int>();
-				_invoke0.SetupParameter(result);
+				_invoke0.SetupParameter(result.ValueSetup);
 				return _invoke0;
 			}
 
 			public void VerifyInvoke(in ItRefReadOnly<int> result, in Times times)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "ref readonly");
-				_invoke0Invocation.Verify(result, times, _invocationProviders);
+				_invoke0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke(in ItRefReadOnly<int> result, long index)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "ref readonly");
-				return _invoke0Invocation.Verify(result, index, _invocationProviders);
+				return _invoke0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -374,20 +374,20 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			public SetupWithRefReadOnlyParameter<int, decimal> SetupInvoke(in ItRefReadOnly<int> result)
 			{
 				_invoke0 ??= new SetupWithRefReadOnlyParameter<int, decimal>();
-				_invoke0.SetupParameter(result);
+				_invoke0.SetupParameter(result.ValueSetup);
 				return _invoke0;
 			}
 
 			public void VerifyInvoke(in ItRefReadOnly<int> result, in Times times)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "ref readonly");
-				_invoke0Invocation.Verify(result, times, _invocationProviders);
+				_invoke0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke(in ItRefReadOnly<int> result, long index)
 			{
 				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "ref readonly");
-				return _invoke0Invocation.Verify(result, index, _invocationProviders);
+				return _invoke0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -415,7 +415,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
 				var invoke0 = (SetupWithParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithParameter<T>());
-				invoke0.SetupParameter(param);
+				invoke0.SetupParameter(param.ValueSetup);
 				return invoke0;
 			}
 
@@ -423,14 +423,14 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
 				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})"));
-				invoke0Invocation.Verify(param, times, _invocationProviders);
+				invoke0Invocation.Verify(param.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke<T>(in It<T> param, long index)
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
 				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})"));
-				return invoke0Invocation.Verify(param, index, _invocationProviders);
+				return invoke0Invocation.Verify(param.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -458,7 +458,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
 				var invoke0 = (SetupWithParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithParameter<T1, T2>());
-				invoke0.SetupParameter(param);
+				invoke0.SetupParameter(param.ValueSetup);
 				return invoke0;
 			}
 
@@ -466,14 +466,14 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
 				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})"));
-				invoke0Invocation.Verify(param, times, _invocationProviders);
+				invoke0Invocation.Verify(param.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke<T1, T2>(in It<T1> param, long index)
 			{
 				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
 				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})"));
-				return invoke0Invocation.Verify(param, index, _invocationProviders);
+				return invoke0Invocation.Verify(param.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -508,14 +508,14 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
 				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "out"));
-				invoke0Invocation.Verify(value, times, _invocationProviders);
+				invoke0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke<T>(in ItOut<T> value, long index)
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
 				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "out"));
-				return invoke0Invocation.Verify(value, index, _invocationProviders);
+				return invoke0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -550,14 +550,14 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
 				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "out"));
-				invoke0Invocation.Verify(result, times, _invocationProviders);
+				invoke0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke<T1, T2>(in ItOut<T1> result, long index)
 			{
 				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
 				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "out"));
-				return invoke0Invocation.Verify(result, index, _invocationProviders);
+				return invoke0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -585,7 +585,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
 				var invoke0 = (SetupWithInParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithInParameter<T>());
-				invoke0.SetupParameter(value);
+				invoke0.SetupParameter(value.ValueSetup);
 				return invoke0;
 			}
 
@@ -593,14 +593,14 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
 				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "in"));
-				invoke0Invocation.Verify(value, times, _invocationProviders);
+				invoke0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke<T>(in ItIn<T> value, long index)
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
 				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "in"));
-				return invoke0Invocation.Verify(value, index, _invocationProviders);
+				return invoke0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -628,7 +628,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
 				var invoke0 = (SetupWithInParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithInParameter<T1, T2>());
-				invoke0.SetupParameter(result);
+				invoke0.SetupParameter(result.ValueSetup);
 				return invoke0;
 			}
 
@@ -636,14 +636,14 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
 				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "in"));
-				invoke0Invocation.Verify(result, times, _invocationProviders);
+				invoke0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke<T1, T2>(in ItIn<T1> result, long index)
 			{
 				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
 				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "in"));
-				return invoke0Invocation.Verify(result, index, _invocationProviders);
+				return invoke0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -671,7 +671,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
 				var invoke0 = (SetupWithRefParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithRefParameter<T>());
-				invoke0.SetupParameter(value);
+				invoke0.SetupParameter(value.ValueSetup);
 				return invoke0;
 			}
 
@@ -679,14 +679,14 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
 				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "ref"));
-				invoke0Invocation.Verify(value, times, _invocationProviders);
+				invoke0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke<T>(in ItRef<T> value, long index)
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
 				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "ref"));
-				return invoke0Invocation.Verify(value, index, _invocationProviders);
+				return invoke0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -714,7 +714,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
 				var invoke0 = (SetupWithRefParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithRefParameter<T1, T2>());
-				invoke0.SetupParameter(result);
+				invoke0.SetupParameter(result.ValueSetup);
 				return invoke0;
 			}
 
@@ -722,14 +722,14 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
 				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref"));
-				invoke0Invocation.Verify(result, times, _invocationProviders);
+				invoke0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke<T1, T2>(in ItRef<T1> result, long index)
 			{
 				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
 				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref"));
-				return invoke0Invocation.Verify(result, index, _invocationProviders);
+				return invoke0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -757,7 +757,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
 				var invoke0 = (SetupWithRefReadOnlyParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithRefReadOnlyParameter<T>());
-				invoke0.SetupParameter(value);
+				invoke0.SetupParameter(value.ValueSetup);
 				return invoke0;
 			}
 
@@ -765,14 +765,14 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
 				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "ref readonly"));
-				invoke0Invocation.Verify(value, times, _invocationProviders);
+				invoke0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke<T>(in ItRefReadOnly<T> value, long index)
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
 				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "ref readonly"));
-				return invoke0Invocation.Verify(value, index, _invocationProviders);
+				return invoke0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
@@ -800,7 +800,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
 				var invoke0 = (SetupWithRefReadOnlyParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithRefReadOnlyParameter<T1, T2>());
-				invoke0.SetupParameter(result);
+				invoke0.SetupParameter(result.ValueSetup);
 				return invoke0;
 			}
 
@@ -808,14 +808,14 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
 				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref readonly"));
-				invoke0Invocation.Verify(result, times, _invocationProviders);
+				invoke0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke<T1, T2>(in ItRefReadOnly<T1> result, long index)
 			{
 				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
 				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref readonly"));
-				return invoke0Invocation.Verify(result, index, _invocationProviders);
+				return invoke0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
