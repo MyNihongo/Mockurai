@@ -141,7 +141,7 @@ internal static class MethodSymbolEx
 
 				@this
 					.Append('(')
-					.AppendParameterNames(parameters)
+					.AppendParameterNames(parameters, suffix: MockGeneratorConst.Suffixes.ValueSetup)
 					.AppendLine(");");
 			}
 
@@ -177,7 +177,7 @@ internal static class MethodSymbolEx
 				.Indent(indent)
 				.AppendAppendInvocationVariableName(memberSymbol.MemberName, methodSymbol.MethodKind, isField: areGenericTypesEmpty)
 				.Append(".Verify(")
-				.AppendParameterNames(methodSymbol.Parameters, appendComma: true)
+				.AppendParameterNames(methodSymbol.Parameters, suffix: MockGeneratorConst.Suffixes.ValueSetup, appendComma: true)
 				.Append("times, _invocationProviders);").AppendLine();
 
 			@this
@@ -206,7 +206,7 @@ internal static class MethodSymbolEx
 				.Append("return ")
 				.AppendAppendInvocationVariableName(memberSymbol.MemberName, methodSymbol.MethodKind, isField: areGenericTypesEmpty)
 				.Append(".Verify(")
-				.AppendParameterNames(methodSymbol.Parameters, appendComma: true)
+				.AppendParameterNames(methodSymbol.Parameters, suffix: MockGeneratorConst.Suffixes.ValueSetup, appendComma: true)
 				.Append("index, _invocationProviders);").AppendLine();
 
 			@this
