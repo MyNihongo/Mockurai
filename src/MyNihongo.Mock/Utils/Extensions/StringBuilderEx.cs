@@ -104,5 +104,14 @@ internal static class StringBuilderEx
 			var stringValue = refKind.GetString(pascalCase: true);
 			return @this.AppendPropertyName(stringValue);
 		}
+
+		public StringBuilder TryAppendNullableAnnotation(ISymbol? symbol)
+		{
+			var annotation = symbol.GetNullableAnnotation();
+			if (annotation == NullableAnnotation.Annotated)
+				@this.Append('?');
+
+			return @this;
+		}
 	}
 }

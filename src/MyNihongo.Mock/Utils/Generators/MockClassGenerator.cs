@@ -28,7 +28,7 @@ internal static class MockClassGenerator
 		for (int i = 0, lastIndex = mocks.Count - 1; i < mocks.Count; i++)
 		{
 			var mock = mocks[i];
-			if (mock.Property is null)
+			if (mock.Property is null || !mock.Property.IsPartialDefinition)
 				continue;
 
 			var propertyName = mock.Property.Name;
@@ -62,6 +62,9 @@ internal static class MockClassGenerator
 				stringBuilder.AppendLine().AppendLine();
 		}
 
+		if (stringBuilder.Length == 0)
+			return string.Empty;
+
 		return stringBuilder
 			.AppendLine()
 			.ToString();
@@ -91,6 +94,7 @@ internal static class MockClassGenerator
 			stringBuilder
 				.Indent(indent)
 				.AppendFieldName(symbol?.Name)
+				.TryAppendNullableAnnotation(symbol)
 				.AppendLine(".VerifyNoOtherCalls();");
 		}
 
