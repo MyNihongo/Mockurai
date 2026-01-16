@@ -9,8 +9,7 @@ public sealed class EquivalentRecordShould
 		var inputValue = new RecordObject();
 
 		var actual = It<RecordObject>.Equivalent(setupValue)
-			.ValueSetup!.Value
-			.Check(inputValue);
+			.ValueSetup.Check(inputValue);
 
 		Assert.True(actual);
 	}
@@ -34,8 +33,7 @@ public sealed class EquivalentRecordShould
 		};
 
 		var actual = It<RecordObject>.Equivalent(setupValue)
-			.ValueSetup!.Value
-			.Check(inputValue);
+			.ValueSetup.Check(inputValue);
 
 		Assert.True(actual);
 	}
@@ -59,8 +57,7 @@ public sealed class EquivalentRecordShould
 		};
 
 		var actual = It<RecordObject>.Equivalent(setupValue)
-			.ValueSetup!.Value
-			.Check(inputValue);
+			.ValueSetup.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -84,8 +81,7 @@ public sealed class EquivalentRecordShould
 		};
 
 		var actual = It<RecordObject>.Equivalent(setupValue)
-			.ValueSetup!.Value
-			.Check(inputValue);
+			.ValueSetup.Check(inputValue);
 
 		Assert.False(actual);
 	}
@@ -135,8 +131,7 @@ public sealed class EquivalentRecordShould
 		};
 
 		var actual = It<RecordObject[]>.Equivalent(setupValue)
-			.ValueSetup!.Value
-			.Check(inputValue);
+			.ValueSetup.Check(inputValue);
 
 		Assert.True(actual);
 	}
@@ -186,8 +181,7 @@ public sealed class EquivalentRecordShould
 		};
 
 		var actual = It<RecordObject[]>.Equivalent(setupValue)
-			.ValueSetup!.Value
-			.Check(inputValue);
+			.ValueSetup.Check(inputValue);
 
 		Assert.False(actual);
 	}

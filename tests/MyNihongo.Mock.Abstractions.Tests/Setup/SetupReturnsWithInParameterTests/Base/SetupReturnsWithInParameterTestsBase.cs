@@ -5,7 +5,7 @@ public abstract class SetupReturnsWithInParameterTestsBase : SetupTestsBase
 	protected static SetupWithInParameter<TParameter, TReturns> CreateFixture<TParameter, TReturns>(It<TParameter> parameter)
 	{
 		var fixture = CreateFixture<TParameter, TReturns>();
-		fixture.SetupParameter(parameter);
+		fixture.SetupParameter(parameter.ValueSetup);
 		return fixture;
 	}
 

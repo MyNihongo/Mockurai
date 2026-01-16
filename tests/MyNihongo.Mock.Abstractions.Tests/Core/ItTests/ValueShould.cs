@@ -8,8 +8,7 @@ public sealed class ValueShould
 		const int inputValue = 123;
 
 		var actual = It<int>.Value(inputValue)
-			.ValueSetup!.Value
-			.Check(inputValue);
+			.ValueSetup.Check(inputValue);
 
 		Assert.True(actual);
 	}
@@ -22,8 +21,7 @@ public sealed class ValueShould
 		const int setupValue = 321;
 
 		var actual = It<int>.Value(setupValue)
-			.ValueSetup!.Value
-			.Check(inputValue);
+			.ValueSetup.Check(inputValue);
 
 		Assert.False(actual);
 	}
