@@ -147,13 +147,16 @@ internal static class MockClassGenerator
 		// Generate properties
 		foreach (var mock in mocks)
 		{
-			var symbolName = mock.PropertyOrField?.Name;
+			var symbol = mock.PropertyOrField;
+			var symbolName = symbol?.Name;
 
 			stringBuilder
 				.Indent(indent)
 				.Append("public readonly IMockSequence<")
 				.Append(mock.Type)
-				.Append("> ")
+				.Append('>')
+				.TryAppendNullableAnnotation(symbol)
+				.Append(' ')
 				.AppendPropertyName(symbolName)
 				.AppendLine(";");
 		}
@@ -163,6 +166,7 @@ internal static class MockClassGenerator
 			.AppendLine()
 			.Indent(indent).Append("public VerifySequenceContext(");
 
+		// Constructor - parameters
 		for (int i = 0, lastIndex = mocks.Count - 1; i < mocks.Count; i++)
 		{
 			var mock = mocks[i];
@@ -191,9 +195,12 @@ internal static class MockClassGenerator
 			.Indent(indent++)
 			.AppendLine("{");
 
+		// Constructor - initialize properties
 		foreach (var mock in mocks)
 		{
-			var symbolName = mock.PropertyOrField?.Name;
+			var symbol = mock.PropertyOrField;
+			var symbolName = symbol?.Name;
+			var nullableAnnotation = symbol.GetNullableAnnotation();
 
 			stringBuilder
 				.Indent(indent)
