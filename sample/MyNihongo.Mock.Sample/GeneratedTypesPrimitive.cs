@@ -705,7 +705,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	public SetupIntInt<decimal> SetupReturnWithSeveralParameters(in It<int> parameter1, in It<int> parameter2)
 	{
 		_returnWithSeveralParameters1 ??= new SetupIntInt<decimal>();
-		_returnWithSeveralParameters1.SetupParameters(parameter1, parameter2);
+		_returnWithSeveralParameters1.SetupParameters(parameter1.ValueSetup, parameter2.ValueSetup);
 		return _returnWithSeveralParameters1;
 	}
 
@@ -826,7 +826,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	public SetupIntInt<decimal> SetupReturnWithSeveralParametersAsync(in It<int> parameter1, in It<int> parameter2)
 	{
 		_returnWithSeveralParametersAsync ??= new SetupIntInt<decimal>();
-		_returnWithSeveralParametersAsync.SetupParameters(parameter1, parameter2);
+		_returnWithSeveralParametersAsync.SetupParameters(parameter1.ValueSetup, parameter2.ValueSetup);
 		return _returnWithSeveralParametersAsync;
 	}
 

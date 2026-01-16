@@ -220,9 +220,9 @@ public sealed class SetupIntInt<TReturns>
 		return false;
 	}
 
-	public void SetupParameters(in It<int> setup1, in It<int> setup2)
+	public void SetupParameters(in ItSetup<int> setup1, in ItSetup<int> setup2)
 	{
-		_currentSetup = new Item(setup1.ValueSetup, setup2.ValueSetup);
+		_currentSetup = new Item(setup1, setup2);
 
 		_setups ??= new SetupContainer<Item>(SortComparer);
 		_setups.Add(_currentSetup);
