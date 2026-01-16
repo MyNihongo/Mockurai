@@ -483,7 +483,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 	{
 		_invokeWithSeveralParametersInvocation5 ??= new InvocationDictionary();
 		var invokeWithSeveralParametersInvocation5 = (InvocationT1Int<T>)_invokeWithSeveralParametersInvocation5.GetOrAdd(typeof(T), static type => new InvocationT1Int<T>($"IPrimitiveDependencyService.InvokeWithSeveralParameters<{type.Name}>({{0}}, {{1}})"));
-		invokeWithSeveralParametersInvocation5.Verify(parameter1, parameter2, times, _invocationProviders);
+		invokeWithSeveralParametersInvocation5.Verify(parameter1.ValueSetup, parameter2.ValueSetup, times, _invocationProviders);
 	}
 
 	public long VerifyInvokeWithSeveralParameters<T>(in It<T> parameter1, in It<int> parameter2, in long index)

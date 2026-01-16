@@ -19,7 +19,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		var fixture = CreateFixturePrimitive<float>();
 		fixture.Register(index, 123f, 234);
 		fixture.Register(index, 234f, 345);
-		fixture.Verify(verify1, verify2, Times.Exactly(2));
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Exactly(2));
 
 		fixture.VerifyNoOtherCalls();
 	}
@@ -34,7 +34,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		var fixture = CreateFixturePrimitive<float>();
 		fixture.Register(index, 123f, 234);
 		fixture.Register(index, 234f, 345);
-		fixture.Verify(verify1, verify2, Times.Exactly(2));
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Exactly(2));
 
 		fixture.VerifyNoOtherCalls();
 	}
@@ -52,7 +52,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		var fixture = CreateFixturePrimitive<float>();
 		fixture.Register(index, setupValue1, setupValue2);
 		fixture.Register(index, setupValue1, setupValue2);
-		fixture.Verify(verify1, verify2, Times.Exactly(2));
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Exactly(2));
 
 		fixture.VerifyNoOtherCalls();
 	}
@@ -67,7 +67,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		var fixture = CreateFixturePrimitive<float>();
 		fixture.Register(index, 123f, 234);
 		fixture.Register(index, 234f, 345);
-		fixture.Verify(verify1, verify2, Times.Exactly(2));
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Exactly(2));
 
 		fixture.VerifyNoOtherCalls();
 	}
@@ -82,7 +82,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		var fixture = CreateFixturePrimitive<float>();
 		fixture.Register(index, 123f, 234);
 		fixture.Register(index, 234f, 345);
-		fixture.Verify(verify1, verify2, Times.Exactly(2));
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Exactly(2));
 
 		fixture.VerifyNoOtherCalls();
 	}
@@ -98,7 +98,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 
 		var fixture = CreateFixturePrimitive<float>();
 		fixture.Register(index, setupValue1, 234);
-		fixture.Verify(verify1, verify2, Times.Once());
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 
 		fixture.VerifyNoOtherCalls();
 	}
@@ -113,7 +113,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 
 		var fixture = CreateFixturePrimitive<float>();
 		fixture.Register(index, 123f, setupValue2);
-		fixture.Verify(verify1, verify2, Times.Once());
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Once());
 
 		fixture.VerifyNoOtherCalls();
 	}
@@ -129,7 +129,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		var fixture = CreateFixturePrimitive<float>();
 		fixture.Register(index, 123f, setupValue2);
 		fixture.Register(index, 234f, setupValue2);
-		fixture.Verify(verify1, verify2, Times.Exactly(2));
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Exactly(2));
 
 		fixture.VerifyNoOtherCalls();
 	}
@@ -145,7 +145,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		var fixture = CreateFixturePrimitive<float>();
 		fixture.Register(index, setupValue1, 234);
 		fixture.Register(index, setupValue1, 345);
-		fixture.Verify(verify1, verify2, Times.Exactly(2));
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, Times.Exactly(2));
 
 		fixture.VerifyNoOtherCalls();
 	}
@@ -183,7 +183,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		fixture.Register(index, 123f, 234);
 		fixture.Register(index, 234f, 345);
 		fixture.Register(index, 345f, 456);
-		fixture.Verify(It<float>.Any(), 234, Times.Once());
+		fixture.Verify(It<float>.Any().ValueSetup, It<int>.Value(234).ValueSetup, Times.Once());
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
@@ -207,8 +207,8 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		fixture.Register(index, 123f, 234);
 		fixture.Register(index, 234f, 345);
 		fixture.Register(index, 345f, 456);
-		fixture.Verify(234f, 345, Times.Once());
-		fixture.Verify(It<float>.Where(x => x > 300f), 456, Times.Once());
+		fixture.Verify(It<float>.Value(234f).ValueSetup, It<int>.Value(345).ValueSetup, Times.Once());
+		fixture.Verify(It<float>.Where(x => x > 300f).ValueSetup, It<int>.Value(456).ValueSetup, Times.Once());
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
@@ -232,8 +232,8 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		var fixture = CreateFixturePrimitive<float>();
 		fixture.Register(index, 123f, 234);
 		fixture.Register(index, 234f, 345);
-		fixture.Verify(verify1, verify2, 1L);
-		fixture.Verify(verify1, verify2, 2L);
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 2L);
 
 		fixture.VerifyNoOtherCalls();
 	}
@@ -248,8 +248,8 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		var fixture = CreateFixturePrimitive<float>();
 		fixture.Register(index, 123f, 234);
 		fixture.Register(index, 234f, 345);
-		fixture.Verify(verify1, verify2, 1L);
-		fixture.Verify(verify1, verify2, 2L);
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 2L);
 
 		fixture.VerifyNoOtherCalls();
 	}
@@ -267,8 +267,8 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		var fixture = CreateFixturePrimitive<float>();
 		fixture.Register(index, setupValue1, setupValue2);
 		fixture.Register(index, setupValue1, setupValue2);
-		fixture.Verify(verify1, verify2, 1L);
-		fixture.Verify(verify1, verify2, 2L);
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 2L);
 
 		fixture.VerifyNoOtherCalls();
 	}
@@ -283,8 +283,8 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		var fixture = CreateFixturePrimitive<float>();
 		fixture.Register(index, 123f, 234);
 		fixture.Register(index, 234f, 345);
-		fixture.Verify(verify1, verify2, 1L);
-		fixture.Verify(verify1, verify2, 2L);
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 2L);
 
 		fixture.VerifyNoOtherCalls();
 	}
@@ -299,8 +299,8 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		var fixture = CreateFixturePrimitive<float>();
 		fixture.Register(index, 123f, 234);
 		fixture.Register(index, 234f, 345);
-		fixture.Verify(verify1, verify2, 1L);
-		fixture.Verify(verify1, verify2, 2L);
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 2L);
 
 		fixture.VerifyNoOtherCalls();
 	}
@@ -316,7 +316,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 
 		var fixture = CreateFixturePrimitive<float>();
 		fixture.Register(index, setupValue1, 234);
-		fixture.Verify(verify1, verify2, 1L);
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 
 		fixture.VerifyNoOtherCalls();
 	}
@@ -331,7 +331,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 
 		var fixture = CreateFixturePrimitive<float>();
 		fixture.Register(index, 123f, setupValue2);
-		fixture.Verify(verify1, verify2, 1L);
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
 
 		fixture.VerifyNoOtherCalls();
 	}
@@ -347,8 +347,8 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		var fixture = CreateFixturePrimitive<float>();
 		fixture.Register(index, 123f, setupValue2);
 		fixture.Register(index, 234f, setupValue2);
-		fixture.Verify(verify1, verify2, 1L);
-		fixture.Verify(verify1, verify2, 2L);
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 2L);
 
 		fixture.VerifyNoOtherCalls();
 	}
@@ -364,8 +364,8 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		var fixture = CreateFixturePrimitive<float>();
 		fixture.Register(index, setupValue1, 234);
 		fixture.Register(index, setupValue1, 345);
-		fixture.Verify(verify1, verify2, 1L);
-		fixture.Verify(verify1, verify2, 2L);
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 1L);
+		fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 2L);
 
 		fixture.VerifyNoOtherCalls();
 	}
@@ -379,7 +379,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		fixture.Register(index, 123f, 234);
 		fixture.Register(index, 234f, 345);
 		fixture.Register(index, 345f, 456);
-		fixture.Verify(It<float>.Any(), 345, 2L);
+		fixture.Verify(It<float>.Any().ValueSetup, It<int>.Value(345).ValueSetup, 2L);
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
@@ -403,8 +403,8 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 		fixture.Register(index, 123f, 234);
 		fixture.Register(index, 234f, 345);
 		fixture.Register(index, 345f, 456);
-		fixture.Verify(123, 234, 1L);
-		fixture.Verify(It<float>.Where(x => x > 300), 456, 3L);
+		fixture.Verify(It<float>.Value(123).ValueSetup, It<int>.Value(234).ValueSetup, 1L);
+		fixture.Verify(It<float>.Where(x => x > 300).ValueSetup, It<int>.Value(456).ValueSetup, 3L);
 
 		var actual = () => fixture.VerifyNoOtherCalls();
 
