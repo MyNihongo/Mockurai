@@ -32,7 +32,7 @@ public sealed class Invocation<TParameter> : IInvocationVerify
 		for (var i = 0; i < span.Length; i++)
 		{
 			var verifyParameter = span[i].GetParameter(parameter.Type);
-			if (parameter.Check(verifyParameter, out var result))
+			if (!parameter.Check(verifyParameter, out var result))
 			{
 				verifyOutput[i] = (span[i], result);
 				continue;

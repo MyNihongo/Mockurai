@@ -30,8 +30,13 @@ public readonly struct ItSetup<T> : IComparable<ItSetup<T>>
 
 	public bool Check(in T value)
 	{
-		bool? result = _predicateBool?.Invoke(value) ?? _predicateResult?.Invoke(value);
-		return result ?? Type == SetupType.Any;
+		if (_predicateBool is not null)
+			return _predicateBool.Invoke(value);
+		
+		if (_predicateResult is not null)
+			return _predicateResult.Invoke(value);
+		
+		return Type == SetupType.Any;
 	}
 
 	public bool Check(in T value, out ComparisonResult? result)
@@ -42,7 +47,11 @@ public readonly struct ItSetup<T> : IComparable<ItSetup<T>>
 			return _predicateBool(value);
 		}
 
-		return result = _predicateResult?.Invoke(value);
+		if (_predicateResult is not null)
+			return result = _predicateResult.Invoke(value);
+
+		result = null;
+		return Type == SetupType.Any;
 	}
 
 	public override string ToString()
