@@ -30,6 +30,16 @@ internal static class SymbolEx
 
 			return defaultValue;
 		}
+
+		public NullableAnnotation GetNullableAnnotation()
+		{
+			return @this switch
+			{
+				IPropertySymbol x => x.Type.NullableAnnotation,
+				IFieldSymbol x => x.Type.NullableAnnotation,
+				_ => NullableAnnotation.NotAnnotated,
+			};
+		}
 	}
 
 	extension(IEnumerable<ISymbol> @this)

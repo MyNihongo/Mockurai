@@ -12,6 +12,16 @@ internal static class StringBuilderEx
 			return @this;
 		}
 
+		public StringBuilder AppendFieldOrPropertyName(ISymbol? symbol)
+		{
+			return symbol switch
+			{
+				IFieldSymbol x => @this.AppendFieldName(x.Name),
+				IPropertySymbol x => @this.AppendPropertyName(x.Name),
+				_ => @this,
+			};
+		}
+
 		public StringBuilder AppendInvocationFieldName(string? name, MethodKind? methodKind = null)
 		{
 			return @this.AppendFieldName(name, methodKind, suffix: MockGeneratorConst.Suffixes.Invocation);
@@ -103,6 +113,15 @@ internal static class StringBuilderEx
 		{
 			var stringValue = refKind.GetString(pascalCase: true);
 			return @this.AppendPropertyName(stringValue);
+		}
+
+		public StringBuilder TryAppendNullableAnnotation(ISymbol? symbol)
+		{
+			var annotation = symbol.GetNullableAnnotation();
+			if (annotation == NullableAnnotation.Annotated)
+				@this.Append('?');
+
+			return @this;
 		}
 	}
 }
