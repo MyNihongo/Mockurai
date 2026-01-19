@@ -12,6 +12,16 @@ internal static class StringBuilderEx
 			return @this;
 		}
 
+		public StringBuilder AppendFieldOrPropertyName(ISymbol? symbol)
+		{
+			return symbol switch
+			{
+				IFieldSymbol x => @this.AppendFieldName(x.Name),
+				IPropertySymbol x => @this.AppendPropertyName(x.Name),
+				_ => @this,
+			};
+		}
+
 		public StringBuilder AppendInvocationFieldName(string? name, MethodKind? methodKind = null)
 		{
 			return @this.AppendFieldName(name, methodKind, suffix: MockGeneratorConst.Suffixes.Invocation);

@@ -93,7 +93,7 @@ internal static class MockClassGenerator
 
 			stringBuilder
 				.Indent(indent)
-				.AppendFieldName(symbol?.Name)
+				.AppendFieldOrPropertyName(symbol)
 				.TryAppendNullableAnnotation(symbol)
 				.AppendLine(".VerifyNoOtherCalls();");
 		}
@@ -114,13 +114,14 @@ internal static class MockClassGenerator
 
 		for (int i = 0, lastIndex = mocks.Count - 1; i < mocks.Count; i++)
 		{
-			var symbolName = mocks[i].PropertyOrField?.Name;
+			var symbol = mocks[i].PropertyOrField;
+			var symbolName = symbol?.Name;
 
 			stringBuilder
 				.Indent(indent)
 				.AppendParameterName(symbolName)
 				.Append(": ")
-				.AppendFieldName(symbolName);
+				.AppendFieldOrPropertyName(symbol);
 
 			if (i < lastIndex)
 				stringBuilder.Append(',');
@@ -202,6 +203,21 @@ internal static class MockClassGenerator
 			var symbolName = symbol?.Name;
 			var nullableAnnotation = symbol.GetNullableAnnotation();
 
+			if (nullableAnnotation == NullableAnnotation.Annotated)
+			{
+				stringBuilder
+					.Indent(indent)
+					.Append("if (")
+					.AppendParameterName(symbolName)
+					.AppendLine(" is not null)");
+
+				stringBuilder
+					.Indent(indent)
+					.AppendLine("{");
+
+				indent++;
+			}
+
 			stringBuilder
 				.Indent(indent)
 				.AppendPropertyName(symbolName)
@@ -223,6 +239,13 @@ internal static class MockClassGenerator
 			stringBuilder
 				.Indent(--indent)
 				.AppendLine("};");
+
+			if (nullableAnnotation == NullableAnnotation.Annotated)
+			{
+				stringBuilder
+					.Indent(--indent)
+					.AppendLine("}");
+			}
 		}
 
 		stringBuilder
