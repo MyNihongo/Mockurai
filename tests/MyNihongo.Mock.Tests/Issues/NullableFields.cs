@@ -32,13 +32,13 @@ public sealed class NullableFields : TestsBase
 
 					protected void VerifyNoOtherCalls()
 					{
-						_interfaceMock?.VerifyNoOtherCalls();
+						InterfaceMock?.VerifyNoOtherCalls();
 					}
 
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
-							interfaceMock: _interfaceMock
+							interfaceMock: InterfaceMock
 						);
 
 						verify(ctx);
@@ -53,7 +53,7 @@ public sealed class NullableFields : TestsBase
 						{
 							if (interfaceMock is not null)
 							{
-								InterfaceMock = new MockSequence<MyNihongo.Mock.Tests.IInterface?>
+								InterfaceMock = new MockSequence<MyNihongo.Mock.Tests.IInterface>
 								{
 									VerifyIndex = _verifyIndex,
 									Mock = interfaceMock,
@@ -64,7 +64,70 @@ public sealed class NullableFields : TestsBase
 				}
 				"""
 			),
-			("InterfaceMock.g.cs", "aaa"),
+			(
+				"InterfaceMock.g.cs",
+				"""
+				namespace MyNihongo.Mock;
+
+				public sealed class InterfaceMock : IMock<MyNihongo.Mock.Tests.IInterface>
+				{
+					private readonly InvocationIndex.Counter _invocationIndex;
+					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
+					private Proxy? _proxy;
+
+					public InterfaceMock(InvocationIndex.Counter invocationIndex)
+					{
+						_invocationIndex = invocationIndex;
+						_invocationProviders = GetInvocations;
+					}
+
+					public MyNihongo.Mock.Tests.IInterface Object => _proxy ??= new Proxy(this);
+
+
+
+					public void VerifyNoOtherCalls()
+					{
+
+					}
+
+					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
+					{
+						yield break;
+					}
+
+					private sealed class Proxy : MyNihongo.Mock.Tests.IInterface
+					{
+						private readonly InterfaceMock _mock;
+
+						public Proxy(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+
+					}
+				}
+
+				public static partial class MockExtensions
+				{
+					extension(IMock<MyNihongo.Mock.Tests.IInterface> @this)
+					{
+						public void VerifyNoOtherCalls() =>
+							((InterfaceMock)@this).VerifyNoOtherCalls();
+
+						
+					}
+				}
+
+				public static partial class MockSequenceExtensions
+				{
+					extension(IMockSequence<MyNihongo.Mock.Tests.IInterface> @this)
+					{
+					
+					}
+				}
+				"""
+			),
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
