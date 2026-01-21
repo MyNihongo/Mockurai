@@ -2,10 +2,10 @@
 
 internal static class MockImplementationPropertyGenerator
 {
-	public static void AppendPropertyMockMethod(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
+	public static IMethodSymbol? AppendPropertyMockMethod(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 	{
 		if (memberSymbol.Symbol is not IPropertySymbol propertySymbol)
-			return;
+			return null;
 
 		stringBuilder.AppendNameComment(memberSymbol, indent);
 
@@ -27,6 +27,8 @@ internal static class MockImplementationPropertyGenerator
 
 			stringBuilder.AppendMethods(propertySymbol.SetMethod, mockedTypeSymbol, memberSymbol, indent);
 		}
+
+		return null;
 	}
 
 	extension(StringBuilder stringBuilder)
