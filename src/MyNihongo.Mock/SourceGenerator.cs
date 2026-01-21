@@ -40,10 +40,13 @@ public sealed class SourceGenerator : IIncrementalGenerator
 					mockTypes.AddAll(mocks);
 				}
 
+				var methodSetups = new HashSet<IMethodSymbol>(SymbolEqualityComparer.Default);
 				foreach (var mockType in mockTypes)
 				{
 					var sourceCodeResult = mockType.GenerateMockImplementation(source);
 					context.AddSanitisedSource($"{sourceCodeResult.Name}.g.cs", sourceCodeResult.Source);
+
+					methodSetups.TryAddAll(sourceCodeResult.MethodSymbols);
 				}
 
 				const string globalUsings = $"global using {MockGeneratorConst.Namespace};";

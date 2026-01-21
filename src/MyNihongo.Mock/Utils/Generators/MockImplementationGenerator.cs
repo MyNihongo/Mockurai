@@ -30,7 +30,7 @@ internal static class MockImplementationGenerator
 
 			  	public {{typeString}} Object => _proxy ??= new Proxy(this);
 
-			  {{CreateMockMethods(stringBuilder, mockedTypeSymbol, mockableMembers, indent: 1)}}
+			  {{CreateMockMethods(stringBuilder, mockedTypeSymbol, mockableMembers, indent: 1, out var methodSymbols)}}
 
 			  	public void VerifyNoOtherCalls()
 			  	{
@@ -77,7 +77,8 @@ internal static class MockImplementationGenerator
 
 		return new MockImplementationResult(
 			name: mockClassName,
-			source: source
+			source: source,
+			methodSymbols: methodSymbols
 		);
 	}
 
@@ -115,7 +116,7 @@ internal static class MockImplementationGenerator
 	private static string CreateMockMethods(StringBuilder stringBuilder, MockedTypeSymbol typeSymbol, IReadOnlyList<MockedMemberSymbol> members, int indent, out IReadOnlyList<IMethodSymbol>? methodSymbols)
 	{
 		stringBuilder.Clear();
-		methodSymbols = null;
+		List<IMethodSymbol>? methodSymbolList = null;
 
 		for (int i = 0, generateCount = 0; i < members.Count; i++)
 		{
@@ -137,9 +138,16 @@ internal static class MockImplementationGenerator
 					.AppendLine();
 
 			var methodSymbol = handler(stringBuilder, typeSymbol, member, indent);
+			if (methodSymbol is not null)
+			{
+				methodSymbolList ??= [];
+				methodSymbolList.Add(methodSymbol);
+			}
+			
 			generateCount++;
 		}
 
+		methodSymbols = methodSymbolList;
 		return stringBuilder.ToString();
 	}
 
