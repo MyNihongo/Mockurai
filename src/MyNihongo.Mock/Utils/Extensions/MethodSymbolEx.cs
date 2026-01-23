@@ -48,7 +48,7 @@ internal static class MethodSymbolEx
 			return result.Length > 0;
 		}
 
-		private ITypeSymbol? TryGetReturnType()
+		public ITypeSymbol? TryGetReturnType()
 		{
 			if (@this.ReturnsVoid)
 				return null;

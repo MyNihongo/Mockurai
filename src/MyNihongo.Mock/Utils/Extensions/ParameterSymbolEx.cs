@@ -66,6 +66,14 @@ internal static class ParameterSymbolEx
 			return @this;
 		}
 
+		public StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol)
+		{
+			var parameters = methodSymbol.Parameters;
+			var returnTypeSymbol = methodSymbol.TryGetReturnType();
+
+			return @this.AppendSetupClassName(parameters, returnTypeSymbol);
+		}
+
 		public StringBuilder AppendSetupClassName(ImmutableArray<IParameterSymbol> parameters, ITypeSymbol? returnTypeSymbol)
 		{
 			@this
