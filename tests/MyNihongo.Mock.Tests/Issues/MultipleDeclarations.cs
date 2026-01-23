@@ -1,7 +1,376 @@
 ﻿namespace MyNihongo.Mock.Tests.Issues;
 
-public sealed class MultipleDeclarations
+public sealed class MultipleDeclarations : TestsBase
 {
+	[Fact]
+	public async Task NotGenerateDuplicateMocksFromSameClass()
+	{
+		const string testCode =
+			"""
+			namespace MyNihongo.Mock.Tests;
+
+			public interface IInterface
+			{
+				void Invoke();
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<IInterface> InterfaceMock1 { get; }
+				protected partial IMock<IInterface> InterfaceMock2 { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources =
+		[
+			(
+				"TestsBase.g.cs",
+				"""
+				namespace MyNihongo.Mock.Tests;
+
+				public partial class TestsBase
+				{
+					// InterfaceMock1
+					private readonly InterfaceMock _interfaceMock1 = new(InvocationIndex.CounterValue);
+					protected partial MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.IInterface> InterfaceMock1 => _interfaceMock1;
+
+					// InterfaceMock2
+					private readonly InterfaceMock _interfaceMock2 = new(InvocationIndex.CounterValue);
+					protected partial MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.IInterface> InterfaceMock2 => _interfaceMock2;
+
+					protected void VerifyNoOtherCalls()
+					{
+						InterfaceMock1.VerifyNoOtherCalls();
+						InterfaceMock2.VerifyNoOtherCalls();
+					}
+
+					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
+					{
+						var ctx = new VerifySequenceContext(
+							interfaceMock1: InterfaceMock1,
+							interfaceMock2: InterfaceMock2
+						);
+
+						verify(ctx);
+					}
+
+					protected sealed class VerifySequenceContext
+					{
+						private readonly VerifyIndex _verifyIndex = new();
+						public readonly IMockSequence<MyNihongo.Mock.Tests.IInterface> InterfaceMock1;
+						public readonly IMockSequence<MyNihongo.Mock.Tests.IInterface> InterfaceMock2;
+
+						public VerifySequenceContext(MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.IInterface> interfaceMock1, MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.IInterface> interfaceMock2)
+						{
+							InterfaceMock1 = new MockSequence<MyNihongo.Mock.Tests.IInterface>
+							{
+								VerifyIndex = _verifyIndex,
+								Mock = interfaceMock1,
+							};
+							InterfaceMock2 = new MockSequence<MyNihongo.Mock.Tests.IInterface>
+							{
+								VerifyIndex = _verifyIndex,
+								Mock = interfaceMock2,
+							};
+						}
+					}
+				}
+				"""
+			),
+			(
+				"InterfaceMock.g.cs",
+				"""
+				namespace MyNihongo.Mock;
+
+				public sealed class InterfaceMock : IMock<MyNihongo.Mock.Tests.IInterface>
+				{
+					private readonly InvocationIndex.Counter _invocationIndex;
+					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
+					private Proxy? _proxy;
+
+					public InterfaceMock(InvocationIndex.Counter invocationIndex)
+					{
+						_invocationIndex = invocationIndex;
+						_invocationProviders = GetInvocations;
+					}
+
+					public MyNihongo.Mock.Tests.IInterface Object => _proxy ??= new Proxy(this);
+
+					// Invoke
+					private Setup? _invoke0;
+					private Invocation? _invoke0Invocation;
+
+					public Setup SetupInvoke()
+					{
+						_invoke0 ??= new Setup();
+						return _invoke0;
+					}
+
+					public void VerifyInvoke(in Times times)
+					{
+						_invoke0Invocation ??= new Invocation("IInterface.Invoke()");
+						_invoke0Invocation.Verify(times, _invocationProviders);
+					}
+
+					public long VerifyInvoke(long index)
+					{
+						_invoke0Invocation ??= new Invocation("IInterface.Invoke()");
+						return _invoke0Invocation.Verify(index, _invocationProviders);
+					}
+
+					public void VerifyNoOtherCalls()
+					{
+
+					}
+
+					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
+					{
+						yield break;
+					}
+
+					private sealed class Proxy : MyNihongo.Mock.Tests.IInterface
+					{
+						private readonly InterfaceMock _mock;
+
+						public Proxy(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public void Invoke() {}
+
+					}
+				}
+
+				public static partial class MockExtensions
+				{
+					extension(IMock<MyNihongo.Mock.Tests.IInterface> @this)
+					{
+						public void VerifyNoOtherCalls() =>
+							((InterfaceMock)@this).VerifyNoOtherCalls();
+
+						
+					}
+				}
+
+				public static partial class MockSequenceExtensions
+				{
+					extension(IMockSequence<MyNihongo.Mock.Tests.IInterface> @this)
+					{
+					
+					}
+				}
+				"""
+			),
+		];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task NotGenerateDuplicateMocksFromDifferentClasses()
+	{
+		const string testCode =
+			"""
+			namespace MyNihongo.Mock.Tests;
+
+			public interface IInterface
+			{
+				void Invoke();
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase1
+			{
+				protected partial IMock<IInterface> InterfaceMock { get; }
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase2
+			{
+				protected partial IMock<IInterface> InterfaceMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources =
+		[
+			(
+				"TestsBase1.g.cs",
+				"""
+				namespace MyNihongo.Mock.Tests;
+
+				public partial class TestsBase1
+				{
+					// InterfaceMock
+					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
+					protected partial MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.IInterface> InterfaceMock => _interfaceMock;
+
+					protected void VerifyNoOtherCalls()
+					{
+						InterfaceMock.VerifyNoOtherCalls();
+					}
+
+					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
+					{
+						var ctx = new VerifySequenceContext(
+							interfaceMock: InterfaceMock
+						);
+
+						verify(ctx);
+					}
+
+					protected sealed class VerifySequenceContext
+					{
+						private readonly VerifyIndex _verifyIndex = new();
+						public readonly IMockSequence<MyNihongo.Mock.Tests.IInterface> InterfaceMock;
+
+						public VerifySequenceContext(MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.IInterface> interfaceMock)
+						{
+							InterfaceMock = new MockSequence<MyNihongo.Mock.Tests.IInterface>
+							{
+								VerifyIndex = _verifyIndex,
+								Mock = interfaceMock,
+							};
+						}
+					}
+				}
+				"""
+			),
+			(
+				"TestsBase2.g.cs",
+				"""
+				namespace MyNihongo.Mock.Tests;
+
+				public partial class TestsBase2
+				{
+					// InterfaceMock
+					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
+					protected partial MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.IInterface> InterfaceMock => _interfaceMock;
+
+					protected void VerifyNoOtherCalls()
+					{
+						InterfaceMock.VerifyNoOtherCalls();
+					}
+
+					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
+					{
+						var ctx = new VerifySequenceContext(
+							interfaceMock: InterfaceMock
+						);
+
+						verify(ctx);
+					}
+
+					protected sealed class VerifySequenceContext
+					{
+						private readonly VerifyIndex _verifyIndex = new();
+						public readonly IMockSequence<MyNihongo.Mock.Tests.IInterface> InterfaceMock;
+
+						public VerifySequenceContext(MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.IInterface> interfaceMock)
+						{
+							InterfaceMock = new MockSequence<MyNihongo.Mock.Tests.IInterface>
+							{
+								VerifyIndex = _verifyIndex,
+								Mock = interfaceMock,
+							};
+						}
+					}
+				}
+				"""
+			),
+			(
+				"InterfaceMock.g.cs",
+				"""
+				namespace MyNihongo.Mock;
+
+				public sealed class InterfaceMock : IMock<MyNihongo.Mock.Tests.IInterface>
+				{
+					private readonly InvocationIndex.Counter _invocationIndex;
+					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
+					private Proxy? _proxy;
+
+					public InterfaceMock(InvocationIndex.Counter invocationIndex)
+					{
+						_invocationIndex = invocationIndex;
+						_invocationProviders = GetInvocations;
+					}
+
+					public MyNihongo.Mock.Tests.IInterface Object => _proxy ??= new Proxy(this);
+
+					// Invoke
+					private Setup? _invoke0;
+					private Invocation? _invoke0Invocation;
+
+					public Setup SetupInvoke()
+					{
+						_invoke0 ??= new Setup();
+						return _invoke0;
+					}
+
+					public void VerifyInvoke(in Times times)
+					{
+						_invoke0Invocation ??= new Invocation("IInterface.Invoke()");
+						_invoke0Invocation.Verify(times, _invocationProviders);
+					}
+
+					public long VerifyInvoke(long index)
+					{
+						_invoke0Invocation ??= new Invocation("IInterface.Invoke()");
+						return _invoke0Invocation.Verify(index, _invocationProviders);
+					}
+
+					public void VerifyNoOtherCalls()
+					{
+
+					}
+
+					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
+					{
+						yield break;
+					}
+
+					private sealed class Proxy : MyNihongo.Mock.Tests.IInterface
+					{
+						private readonly InterfaceMock _mock;
+
+						public Proxy(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public void Invoke() {}
+
+					}
+				}
+
+				public static partial class MockExtensions
+				{
+					extension(IMock<MyNihongo.Mock.Tests.IInterface> @this)
+					{
+						public void VerifyNoOtherCalls() =>
+							((InterfaceMock)@this).VerifyNoOtherCalls();
+
+						
+					}
+				}
+
+				public static partial class MockSequenceExtensions
+				{
+					extension(IMockSequence<MyNihongo.Mock.Tests.IInterface> @this)
+					{
+					
+					}
+				}
+				"""
+			),
+		];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
 	[Fact]
 	public async Task NotGenerateDuplicateMethodSetupAndInvocationFromDifferentClasses()
 	{
