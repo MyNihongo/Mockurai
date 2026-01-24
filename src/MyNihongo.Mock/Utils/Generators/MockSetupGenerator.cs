@@ -6,14 +6,17 @@ internal static class MockSetupGenerator
 	{
 		var stringBuilder = new StringBuilder();
 		var className = CreateSetupClassName(stringBuilder, methodSymbol);
+		var returnType = methodSymbol.TryGetReturnType();
 
 		var source =
 			$$"""
-			  public sealed class {{className}} : {{CreateInterfaceDerivedFrom(stringBuilder, methodSymbol)}}
+			  public sealed class {{className}} : {{CreateInterfaceDerivedFrom(stringBuilder, methodSymbol, returnType)}}
 			  {
 			  	private static readonly Comparer SortComparer = new();
 			  	private SetupContainer<Item>? _setups;
 			  	private Item? _currentSetup;
+
+			  {{CreateInvokeExecuteMethod(stringBuilder, methodSymbol, returnType, indent: 1)}}
 			  }
 			  """;
 
@@ -23,10 +26,8 @@ internal static class MockSetupGenerator
 		);
 	}
 
-	private static string CreateInterfaceDerivedFrom(StringBuilder stringBuilder, IMethodSymbol methodSymbol)
+	private static string CreateInterfaceDerivedFrom(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType)
 	{
-		var returnType = methodSymbol.TryGetReturnType();
-
 		string setupThrowsJoin, setupThrowsReset;
 		if (returnType is null)
 		{
@@ -44,6 +45,35 @@ internal static class MockSetupGenerator
 			.Append(", ").AppendInterface("ISetupCallbackReset", methodSymbol, returnType)
 			.Append(", ").AppendInterface(setupThrowsJoin, methodSymbol, returnType)
 			.Append(", ").AppendInterface(setupThrowsReset, methodSymbol, returnType)
+			.ToString();
+	}
+
+	private static string CreateInvokeExecuteMethod(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, int indent)
+	{
+		stringBuilder.Clear();
+		stringBuilder.Indent(indent);
+
+		if (returnType is null)
+		{
+			stringBuilder
+				.Append("public void Invoke(")
+				.AppendParameters(methodSymbol.Parameters)
+				.AppendLine(")");
+		}
+		else
+		{
+			stringBuilder
+				.Append("public bool Execute(")
+				.AppendParameters(methodSymbol.Parameters)
+				.AppendLine(", out TReturns? returnValue)");
+		}
+
+		stringBuilder
+			.Indent(indent++).AppendLine("{");
+
+		return stringBuilder
+			.Indent(--indent)
+			.Append('}')
 			.ToString();
 	}
 
