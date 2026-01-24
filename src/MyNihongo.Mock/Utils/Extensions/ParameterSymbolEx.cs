@@ -66,15 +66,15 @@ internal static class ParameterSymbolEx
 			return @this;
 		}
 
-		public StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol)
+		public StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol, Action<StringBuilder, ITypeSymbol>? returnTypeOverride = null)
 		{
 			var parameters = methodSymbol.Parameters;
 			var returnTypeSymbol = methodSymbol.TryGetReturnType();
 
-			return @this.AppendSetupClassName(parameters, returnTypeSymbol);
+			return @this.AppendSetupClassName(parameters, returnTypeSymbol, returnTypeOverride);
 		}
 
-		public StringBuilder AppendSetupClassName(ImmutableArray<IParameterSymbol> parameters, ITypeSymbol? returnTypeSymbol)
+		public StringBuilder AppendSetupClassName(ImmutableArray<IParameterSymbol> parameters, ITypeSymbol? returnTypeSymbol, Action<StringBuilder, ITypeSymbol>? returnTypeOverride = null)
 		{
 			@this
 				.Append("Setup")
@@ -82,10 +82,14 @@ internal static class ParameterSymbolEx
 
 			if (returnTypeSymbol is not null)
 			{
-				@this
-					.Append('<')
-					.AppendType(returnTypeSymbol)
-					.Append('>');
+				@this.Append('<');
+
+				if (returnTypeOverride is not null)
+					returnTypeOverride(@this, returnTypeSymbol);
+				else
+					@this.AppendType(returnTypeSymbol);
+
+				@this.Append('>');
 			}
 
 			return @this;

@@ -8,9 +8,14 @@ internal static class MockSetupGenerator
 		var className = CreateSetupClassName(stringBuilder, methodSymbol);
 
 		var source =
-			"""
-			aaa
-			""";
+			$$"""
+			  public sealed class {{className}} : {{CreateInterfaceDerivedFrom(stringBuilder, methodSymbol)}}
+			  {
+			  	private static readonly Comparer SortComparer = new();
+			  	private SetupContainer<Item>? _setups;
+			  	private Item? _currentSetup;
+			  }
+			  """;
 
 		return new MockSetupResult(
 			name: className,
@@ -18,12 +23,84 @@ internal static class MockSetupGenerator
 		);
 	}
 
+	private static string CreateInterfaceDerivedFrom(StringBuilder stringBuilder, IMethodSymbol methodSymbol)
+	{
+		var returnType = methodSymbol.TryGetReturnType();
+
+		string setupThrowsJoin, setupThrowsReset;
+		if (returnType is null)
+		{
+			setupThrowsJoin = "ISetupThrowsJoin";
+			setupThrowsReset = "ISetupThrowsReset";
+		}
+		else
+		{
+			setupThrowsJoin = "ISetupReturnsThrowsJoin";
+			setupThrowsReset = "ISetupReturnsThrowsReset";
+		}
+
+		return stringBuilder.Clear()
+			.AppendInterface("ISetupCallbackJoin", methodSymbol, returnType)
+			.Append(", ").AppendInterface("ISetupCallbackReset", methodSymbol, returnType)
+			.Append(", ").AppendInterface(setupThrowsJoin, methodSymbol, returnType)
+			.Append(", ").AppendInterface(setupThrowsReset, methodSymbol, returnType)
+			.ToString();
+	}
+
 	private static string CreateSetupClassName(StringBuilder stringBuilder, IMethodSymbol methodSymbol)
 	{
 		stringBuilder.Clear();
 
 		return stringBuilder
-			.AppendSetupClassName(methodSymbol)
+			.AppendSetupClassName(methodSymbol, static (sb, _) => sb.Append("TReturns"))
 			.ToString();
+	}
+}
+
+file static class Extensions
+{
+	extension(StringBuilder @this)
+	{
+		public StringBuilder AppendInterface(string interfaceName, IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol)
+		{
+			@this
+				.Append(interfaceName)
+				.Append('<');
+
+			if (returnTypeSymbol is null)
+			{
+				@this
+					.Append("Action<")
+					.AppendParameterTypes(methodSymbol.Parameters)
+					.Append('>');
+			}
+			else
+			{
+				@this
+					.Append("Action<")
+					.AppendParameterTypes(methodSymbol.Parameters)
+					.Append(">, TReturns, ");
+
+				@this
+					.Append("Func<")
+					.AppendParameterTypes(methodSymbol.Parameters)
+					.Append(", TReturns?>");
+			}
+
+			return @this.Append('>');
+		}
+
+		private StringBuilder AppendParameterTypes(ImmutableArray<IParameterSymbol> parameters)
+		{
+			for (var i = 0; i < parameters.Length; i++)
+			{
+				if (i > 0)
+					@this.Append(", ");
+
+				@this.AppendType(parameters[i].Type);
+			}
+
+			return @this;
+		}
 	}
 }
