@@ -66,6 +66,26 @@ internal static class ParameterSymbolEx
 			return @this;
 		}
 
+		public StringBuilder AppendDiscardParameterNames(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false)
+		{
+			for (var i = 0; i < parameters.Length; i++)
+			{
+				if (!appendComma && i > 0)
+					@this.Append(", ");
+
+				var refKindString = parameters[i].RefKind.GetString();
+				if (!string.IsNullOrEmpty(refKindString))
+					@this.Append(refKindString).Append(' ');
+
+				@this.Append('_');
+
+				if (appendComma)
+					@this.Append(", ");
+			}
+
+			return @this;
+		}
+
 		public StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol, Action<StringBuilder, ITypeSymbol>? returnTypeOverride = null)
 		{
 			var parameters = methodSymbol.Parameters;
