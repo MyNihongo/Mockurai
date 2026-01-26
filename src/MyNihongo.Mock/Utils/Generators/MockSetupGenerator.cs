@@ -74,6 +74,7 @@ internal static class MockSetupGenerator
 		stringBuilder.Clear();
 		stringBuilder.Indent(indent);
 
+		// Method name
 		if (returnType is null)
 		{
 			stringBuilder
@@ -91,6 +92,85 @@ internal static class MockSetupGenerator
 
 		stringBuilder
 			.Indent(indent++).AppendLine("{");
+
+		// Method body - early return
+		stringBuilder
+			.Indent(indent).AppendLine("if (_setups is null)")
+			.Indent(indent + 1).AppendLine(returnType is null ? "return;" : "goto Default;").AppendLine();
+
+		// Method body - setup check
+		stringBuilder
+			.Indent(indent).AppendLine("foreach (var setup in _setups)")
+			.Indent(indent++).AppendLine("{");
+
+		foreach (var parameter in methodSymbol.Parameters)
+		{
+			stringBuilder
+				.Indent(indent)
+				.Append("if (setup.")
+				.AppendPropertyName(parameter.Name)
+				.Append(".HasValue && !setup.")
+				.AppendPropertyName(parameter.Name)
+				.Append(".Value.Check(")
+				.Append(parameter.Name)
+				.AppendLine("))");
+
+			stringBuilder
+				.Indent(indent + 1)
+				.AppendLine("continue;");
+		}
+
+		stringBuilder
+			.AppendLine()
+			.Indent(indent)
+			.AppendLine("var x = setup.GetSetup();");
+
+		stringBuilder
+			.Indent(indent)
+			.Append("x.Callback?.Invoke(")
+			.AppendParameterNames(methodSymbol.Parameters)
+			.AppendLine(");").AppendLine();
+
+		stringBuilder
+			.Indent(indent)
+			.AppendLine("if (x.Exception is not null)")
+			.Indent(indent + 1).AppendLine("throw x.Exception;");
+
+		if (returnType is not null)
+		{
+			stringBuilder
+				.AppendLine()
+				.Indent(indent)
+				.AppendLine("if (x.Returns is not null)")
+				.Indent(indent++).AppendLine("{");
+
+			stringBuilder
+				.Indent(indent)
+				.Append("returnValue = x.Returns(")
+				.AppendParameterNames(methodSymbol.Parameters)
+				.AppendLine(");");
+
+			stringBuilder
+				.Indent(indent)
+				.AppendLine("return true;");
+
+			stringBuilder
+				.Indent(--indent).AppendLine("}");
+		}
+
+		stringBuilder
+			.Indent(--indent)
+			.AppendLine("}");
+
+		// Method body - return value
+		if (returnType is not null)
+		{
+			stringBuilder
+				.AppendLine()
+				.Indent(indent).AppendLine("Default:")
+				.Indent(indent).AppendLine("returnValue = default;")
+				.Indent(indent).AppendLine("return false;");
+		}
 
 		return stringBuilder
 			.Indent(--indent)
@@ -132,23 +212,10 @@ internal static class MockSetupGenerator
 					.AppendSetupClassName(methodSymbol, OverrideReturnType)
 					.Append(".CallbackDelegate, TReturns, ")
 					.AppendSetupClassName(methodSymbol, OverrideReturnType)
-					.Append("ReturnsCallbackDelegate");
+					.Append(".ReturnsCallbackDelegate");
 			}
 
 			return @this.Append('>');
-		}
-
-		private StringBuilder AppendParameterTypes(ImmutableArray<IParameterSymbol> parameters)
-		{
-			for (var i = 0; i < parameters.Length; i++)
-			{
-				if (i > 0)
-					@this.Append(", ");
-
-				@this.AppendType(parameters[i].Type);
-			}
-
-			return @this;
 		}
 	}
 }
