@@ -386,6 +386,27 @@ internal static class MethodSymbolEx
 			return @this;
 		}
 
+		public StringBuilder AppendItSetupParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false)
+		{
+			for (var i = 0; i < parameters.Length; i++)
+			{
+				if (!appendComma && i > 0)
+					@this.Append(", ");
+
+				@this
+					.Append("in ItSetup")
+					.Append('<')
+					.AppendType(parameters[i].Type)
+					.Append("> ")
+					.AppendParameterName(parameters[i].Name);
+
+				if (appendComma)
+					@this.Append(", ");
+			}
+
+			return @this;
+		}
+
 		private StringBuilder AppendInvocationDeclaration(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 		{
 			@this

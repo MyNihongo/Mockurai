@@ -18,6 +18,7 @@ internal static class MockSetupGenerator
 
 			  {{CreateDelegates(stringBuilder, methodSymbol, returnType, indent: 1)}}
 			  {{CreateInvokeExecuteMethod(stringBuilder, methodSymbol, returnType, indent: 1)}}
+			  {{CreateSetupParametersMethod(stringBuilder, methodSymbol, indent: 1)}}
 			  }
 			  """;
 
@@ -174,7 +175,34 @@ internal static class MockSetupGenerator
 
 		return stringBuilder
 			.Indent(--indent)
-			.Append('}')
+			.AppendLine("}")
+			.ToString();
+	}
+
+	private static string CreateSetupParametersMethod(StringBuilder stringBuilder, IMethodSymbol methodSymbol, int indent)
+	{
+		stringBuilder.Clear();
+
+		stringBuilder
+			.Indent(indent)
+			.Append("public void SetupParameters(")
+			.AppendItSetupParameters(methodSymbol.Parameters)
+			.AppendLine(")");
+
+		stringBuilder
+			.Indent(indent++).AppendLine("{");
+
+		stringBuilder
+			.Indent(indent).Append("_currentSetup = new Item(")
+			.AppendParameterNames(methodSymbol.Parameters)
+			.AppendLine(");").AppendLine();
+
+		stringBuilder
+			.Indent(indent).AppendLine("_setups ??= new SetupContainer<Item>(SortComparer);")
+			.Indent(indent).AppendLine("_setups.Add(_currentSetup);");
+
+		return stringBuilder
+			.Indent(--indent).AppendLine("}")
 			.ToString();
 	}
 
