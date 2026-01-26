@@ -16,6 +16,7 @@ internal static class MockSetupGenerator
 			  	private SetupContainer<Item>? _setups;
 			  	private Item? _currentSetup;
 
+			  {{CreateDelegates(stringBuilder, methodSymbol, returnType, indent: 1)}}
 			  {{CreateInvokeExecuteMethod(stringBuilder, methodSymbol, returnType, indent: 1)}}
 			  }
 			  """;
@@ -46,6 +47,26 @@ internal static class MockSetupGenerator
 			.Append(", ").AppendInterface(setupThrowsJoin, methodSymbol, returnType)
 			.Append(", ").AppendInterface(setupThrowsReset, methodSymbol, returnType)
 			.ToString();
+	}
+
+	private static string CreateDelegates(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, int indent)
+	{
+		stringBuilder.Clear();
+
+		stringBuilder
+			.Indent(indent).Append("public delegate void CallbackDelegate(")
+			.AppendParameters(methodSymbol.Parameters)
+			.AppendLine(");");
+
+		if (returnType is not null)
+		{
+			stringBuilder
+				.Indent(indent).Append("public delegate TReturns? ReturnsCallbackDelegate(")
+				.AppendParameters(methodSymbol.Parameters)
+				.AppendLine(");");
+		}
+
+		return stringBuilder.ToString();
 	}
 
 	private static string CreateInvokeExecuteMethod(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, int indent)
@@ -82,16 +103,18 @@ internal static class MockSetupGenerator
 		stringBuilder.Clear();
 
 		return stringBuilder
-			.AppendSetupClassName(methodSymbol, static (sb, _) => sb.Append("TReturns"))
+			.AppendSetupClassName(methodSymbol, OverrideReturnType)
 			.ToString();
 	}
-}
 
-file static class Extensions
-{
+	private static void OverrideReturnType(StringBuilder stringBuilder, ITypeSymbol typeSymbol)
+	{
+		stringBuilder.Append("TReturns");
+	}
+
 	extension(StringBuilder @this)
 	{
-		public StringBuilder AppendInterface(string interfaceName, IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol)
+		private StringBuilder AppendInterface(string interfaceName, IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol)
 		{
 			@this
 				.Append(interfaceName)
@@ -100,21 +123,16 @@ file static class Extensions
 			if (returnTypeSymbol is null)
 			{
 				@this
-					.Append("Action<")
-					.AppendParameterTypes(methodSymbol.Parameters)
-					.Append('>');
+					.AppendSetupClassName(methodSymbol, OverrideReturnType)
+					.Append(".CallbackDelegate");
 			}
 			else
 			{
 				@this
-					.Append("Action<")
-					.AppendParameterTypes(methodSymbol.Parameters)
-					.Append(">, TReturns, ");
-
-				@this
-					.Append("Func<")
-					.AppendParameterTypes(methodSymbol.Parameters)
-					.Append(", TReturns?>");
+					.AppendSetupClassName(methodSymbol, OverrideReturnType)
+					.Append(".CallbackDelegate, TReturns, ")
+					.AppendSetupClassName(methodSymbol, OverrideReturnType)
+					.Append("ReturnsCallbackDelegate");
 			}
 
 			return @this.Append('>');

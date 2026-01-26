@@ -2,12 +2,14 @@ namespace MyNihongo.Mock.Sample;
 
 [Obsolete("Will be generated")]
 public sealed class SetupIntInt
-	: ISetupCallbackJoin<Action<int, int>>, ISetupCallbackReset<Action<int, int>>,
-		ISetupThrowsJoin<Action<int, int>>, ISetupThrowsReset<Action<int, int>>
+	: ISetupCallbackJoin<SetupIntInt.CallbackDelegate>, ISetupCallbackReset<SetupIntInt.CallbackDelegate>,
+		ISetupThrowsJoin<SetupIntInt.CallbackDelegate>, ISetupThrowsReset<SetupIntInt.CallbackDelegate>
 {
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;
 	private Item? _currentSetup;
+	
+	public delegate void CallbackDelegate(int parameter1, int parameter2);
 
 	public void Invoke(in int parameter1, in int parameter2)
 	{
@@ -37,7 +39,7 @@ public sealed class SetupIntInt
 		_setups.Add(_currentSetup);
 	}
 
-	public void Callback(in Action<int, int> callback)
+	public void Callback(in CallbackDelegate callback)
 	{
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
@@ -53,31 +55,31 @@ public sealed class SetupIntInt
 		_currentSetup.Add(exception);
 	}
 
-	ISetupCallbackJoin<Action<int, int>> ISetupCallbackStart<Action<int, int>>.Callback(in Action<int, int> callback)
+	ISetupCallbackJoin<CallbackDelegate> ISetupCallbackStart<CallbackDelegate>.Callback(in CallbackDelegate callback)
 	{
 		Callback(callback);
 		return this;
 	}
 
-	ISetup<Action<int, int>> ISetupCallbackReset<Action<int, int>>.Callback(in Action<int, int> callback)
+	ISetup<CallbackDelegate> ISetupCallbackReset<CallbackDelegate>.Callback(in CallbackDelegate callback)
 	{
 		Callback(callback);
 		return this;
 	}
 
-	ISetupThrowsJoin<Action<int, int>> ISetupThrowsStart<Action<int, int>>.Throws(in Exception exception)
+	ISetupThrowsJoin<CallbackDelegate> ISetupThrowsStart<CallbackDelegate>.Throws(in Exception exception)
 	{
 		Throws(exception);
 		return this;
 	}
 
-	ISetup<Action<int, int>> ISetupThrowsReset<Action<int, int>>.Throws(in Exception exception)
+	ISetup<CallbackDelegate> ISetupThrowsReset<CallbackDelegate>.Throws(in Exception exception)
 	{
 		Throws(exception);
 		return this;
 	}
 
-	ISetupThrowsReset<Action<int, int>> ISetupCallbackJoin<Action<int, int>>.And()
+	ISetupThrowsReset<CallbackDelegate> ISetupCallbackJoin<CallbackDelegate>.And()
 	{
 		if (_currentSetup is not null)
 			_currentSetup.AndContinue = true;
@@ -85,7 +87,7 @@ public sealed class SetupIntInt
 		return this;
 	}
 
-	ISetupCallbackReset<Action<int, int>> ISetupThrowsJoin<Action<int, int>>.And()
+	ISetupCallbackReset<CallbackDelegate> ISetupThrowsJoin<CallbackDelegate>.And()
 	{
 		if (_currentSetup is not null)
 			_currentSetup.AndContinue = true;
@@ -101,7 +103,7 @@ public sealed class SetupIntInt
 		private ItemSetup? _currentSetup;
 		public bool AndContinue;
 
-		public void Add(in Action<int, int> callback)
+		public void Add(in CallbackDelegate callback)
 		{
 			if (AndContinue && _currentSetup is not null)
 			{
@@ -142,11 +144,11 @@ public sealed class SetupIntInt
 		}
 	}
 
-	private sealed class ItemSetup(in Action<int, int>? callback = null, in Exception? exception = null)
+	private sealed class ItemSetup(in CallbackDelegate? callback = null, in Exception? exception = null)
 	{
 		public static readonly ItemSetup Default = new();
 
-		public Action<int, int>? Callback = callback;
+		public CallbackDelegate? Callback = callback;
 		public Exception? Exception = exception;
 	}
 
@@ -180,12 +182,15 @@ public sealed class SetupIntInt
 
 [Obsolete("Will be generated")]
 public sealed class SetupIntInt<TReturns>
-	: ISetupCallbackJoin<Action<int, int>, TReturns, Func<int, int, TReturns?>>, ISetupCallbackReset<Action<int, int>, TReturns, Func<int, int, TReturns?>>,
-		ISetupReturnsThrowsJoin<Action<int, int>, TReturns, Func<int, int, TReturns?>>, ISetupReturnsThrowsReset<Action<int, int>, TReturns, Func<int, int, TReturns?>>
+	: ISetupCallbackJoin<SetupIntInt<TReturns>.CallbackDelegate, TReturns, SetupIntInt<TReturns>.ReturnsCallbackDelegate>, ISetupCallbackReset<SetupIntInt<TReturns>.CallbackDelegate, TReturns, SetupIntInt<TReturns>.ReturnsCallbackDelegate>,
+		ISetupReturnsThrowsJoin<SetupIntInt<TReturns>.CallbackDelegate, TReturns, SetupIntInt<TReturns>.ReturnsCallbackDelegate>, ISetupReturnsThrowsReset<SetupIntInt<TReturns>.CallbackDelegate, TReturns, SetupIntInt<TReturns>.ReturnsCallbackDelegate>
 {
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;
 	private Item? _currentSetup;
+	
+	public delegate void CallbackDelegate(int parameter1, int parameter2);
+	public delegate TReturns? ReturnsCallbackDelegate(int parameter1, int parameter2);
 
 	public bool Execute(in int parameter1, in int parameter2, out TReturns? returnValue)
 	{
@@ -228,7 +233,7 @@ public sealed class SetupIntInt<TReturns>
 		_setups.Add(_currentSetup);
 	}
 
-	public void Callback(in Action<int, int> callback)
+	public void Callback(in CallbackDelegate callback)
 	{
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
@@ -241,7 +246,7 @@ public sealed class SetupIntInt<TReturns>
 		Returns((_, _) => returns);
 	}
 
-	public void Returns(in Func<int, int, TReturns?> returns)
+	public void Returns(in ReturnsCallbackDelegate returns)
 	{
 		if (_currentSetup is null)
 			throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");
@@ -257,55 +262,55 @@ public sealed class SetupIntInt<TReturns>
 		_currentSetup.Add(exception);
 	}
 
-	ISetupCallbackJoin<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupCallbackStart<Action<int, int>, TReturns, Func<int, int, TReturns?>>.Callback(in Action<int, int> callback)
+	ISetupCallbackJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupCallbackStart<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Callback(in CallbackDelegate callback)
 	{
 		Callback(callback);
 		return this;
 	}
 
-	ISetup<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupCallbackReset<Action<int, int>, TReturns, Func<int, int, TReturns?>>.Callback(in Action<int, int> callback)
+	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupCallbackReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Callback(in CallbackDelegate callback)
 	{
 		Callback(callback);
 		return this;
 	}
 
-	ISetupReturnsThrowsJoin<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupReturnsThrowsStart<Action<int, int>, TReturns, Func<int, int, TReturns?>>.Returns(in TReturns returns)
+	ISetupReturnsThrowsJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsStart<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in TReturns returns)
 	{
 		Returns(returns);
 		return this;
 	}
 
-	ISetup<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupReturnsThrowsReset<Action<int, int>, TReturns, Func<int, int, TReturns?>>.Returns(in Func<int, int, TReturns?> returns)
+	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in ReturnsCallbackDelegate returns)
 	{
 		Returns(returns);
 		return this;
 	}
 
-	ISetupReturnsThrowsJoin<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupReturnsThrowsStart<Action<int, int>, TReturns, Func<int, int, TReturns?>>.Returns(in Func<int, int, TReturns?> returns)
+	ISetupReturnsThrowsJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsStart<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in ReturnsCallbackDelegate returns)
 	{
 		Returns(returns);
 		return this;
 	}
 
-	ISetup<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupReturnsThrowsReset<Action<int, int>, TReturns, Func<int, int, TReturns?>>.Returns(in TReturns returns)
+	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in TReturns returns)
 	{
 		Returns(returns);
 		return this;
 	}
 
-	ISetup<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupReturnsThrowsReset<Action<int, int>, TReturns, Func<int, int, TReturns?>>.Throws(in Exception exception)
+	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Throws(in Exception exception)
 	{
 		Throws(exception);
 		return this;
 	}
 
-	ISetupReturnsThrowsJoin<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupReturnsThrowsStart<Action<int, int>, TReturns, Func<int, int, TReturns?>>.Throws(in Exception exception)
+	ISetupReturnsThrowsJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsStart<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Throws(in Exception exception)
 	{
 		Throws(exception);
 		return this;
 	}
 
-	ISetupReturnsThrowsReset<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupCallbackJoin<Action<int, int>, TReturns, Func<int, int, TReturns?>>.And()
+	ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupCallbackJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.And()
 	{
 		if (_currentSetup is not null)
 			_currentSetup.AndContinue = true;
@@ -313,7 +318,7 @@ public sealed class SetupIntInt<TReturns>
 		return this;
 	}
 
-	ISetupCallbackReset<Action<int, int>, TReturns, Func<int, int, TReturns?>> ISetupReturnsThrowsJoin<Action<int, int>, TReturns, Func<int, int, TReturns?>>.And()
+	ISetupCallbackReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.And()
 	{
 		if (_currentSetup is not null)
 			_currentSetup.AndContinue = true;
@@ -330,7 +335,7 @@ public sealed class SetupIntInt<TReturns>
 		private ItemSetup? _currentSetup;
 		public bool AndContinue;
 
-		public void Add(in Action<int, int> callback)
+		public void Add(in CallbackDelegate callback)
 		{
 			if (AndContinue && _currentSetup is not null)
 			{
@@ -345,7 +350,7 @@ public sealed class SetupIntInt<TReturns>
 			}
 		}
 
-		public void Add(in Func<int, int, TReturns?> returns)
+		public void Add(in ReturnsCallbackDelegate returns)
 		{
 			if (AndContinue && _currentSetup is not null)
 			{
@@ -386,12 +391,12 @@ public sealed class SetupIntInt<TReturns>
 		}
 	}
 
-	private sealed class ItemSetup(in Action<int, int>? callback = null, in Func<int, int, TReturns?>? returns = null, in Exception? exception = null)
+	private sealed class ItemSetup(in CallbackDelegate? callback = null, in ReturnsCallbackDelegate? returns = null, in Exception? exception = null)
 	{
 		public static readonly ItemSetup Default = new();
 
-		public Action<int, int>? Callback = callback;
-		public Func<int, int, TReturns?>? Returns = returns;
+		public CallbackDelegate? Callback = callback;
+		public ReturnsCallbackDelegate? Returns = returns;
 		public Exception? Exception = exception;
 	}
 
@@ -613,7 +618,6 @@ public sealed class SetupRefIntInt<TReturns>
 	private Item? _currentSetup;
 
 	public delegate void CallbackDelegate(ref int parameter1, int parameter2);
-
 	public delegate TReturns? ReturnsCallbackDelegate(ref int parameter1, int parameter2);
 
 	public bool Execute(ref int parameter1, in int parameter2, out TReturns? returnValue)
