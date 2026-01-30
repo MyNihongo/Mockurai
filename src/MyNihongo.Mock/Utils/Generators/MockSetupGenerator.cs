@@ -17,7 +17,8 @@ internal static class MockSetupGenerator
 			  	private Item? _currentSetup;
 
 			  {{CreateDelegates(stringBuilder, methodSymbol, returnType, indent: 1)}}
-			  {{CreateSetupMethods(stringBuilder, methodSymbol, returnType, indent: 1)}}
+			  {{CreateMethodImplementations(stringBuilder, methodSymbol, returnType, indent: 1)}}
+			  {{CreateInterfaceMethodImplementations(stringBuilder, methodSymbol, returnType, indent: 1)}}
 			  }
 			  """;
 
@@ -69,7 +70,7 @@ internal static class MockSetupGenerator
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateSetupMethods(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, int indent)
+	private static string CreateMethodImplementations(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, int indent)
 	{
 		stringBuilder.Clear();
 
@@ -85,6 +86,17 @@ internal static class MockSetupGenerator
 				.AppendLine()
 				.AppendReturnsMethods(methodSymbol, indent);
 		}
+
+		return stringBuilder
+			.ToString();
+	}
+
+	private static string CreateInterfaceMethodImplementations(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, int indent)
+	{
+		stringBuilder.Clear();
+
+		stringBuilder
+			.AppendCallbackInterfaceImplementation(methodSymbol, returnType, indent);
 
 		return stringBuilder
 			.ToString();
@@ -128,6 +140,29 @@ internal static class MockSetupGenerator
 			}
 
 			return @this.Append('>');
+		}
+		
+		public StringBuilder AppendCallbackInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, int indent)
+		{
+			@this
+				.Indent(indent).AppendInterface("ISetupCallbackJoin", methodSymbol, returnTypeSymbol)
+				.Append(' ')
+				.AppendInterface("ISetupCallbackStart", methodSymbol, returnTypeSymbol)
+				.AppendLine(".Callback(in CallbackDelegate callback)")
+				.Indent(indent++).AppendLine("{")
+				.Indent(indent).AppendLine("Callback(callback);")
+				.Indent(indent).AppendLine("return this;")
+				.Indent(--indent).AppendLine("}").AppendLine();
+			
+			return @this
+				.Indent(indent).AppendInterface("ISetup", methodSymbol, returnTypeSymbol)
+				.Append(' ')
+				.AppendInterface("ISetupCallbackReset", methodSymbol, returnTypeSymbol)
+				.AppendLine(".Callback(in CallbackDelegate callback)")
+				.Indent(indent++).AppendLine("{")
+				.Indent(indent).AppendLine("Callback(callback);")
+				.Indent(indent).AppendLine("return this;")
+				.Indent(--indent).AppendLine("}").AppendLine();
 		}
 	}
 }
