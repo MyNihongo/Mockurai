@@ -456,6 +456,8 @@ public sealed class SetupRefIntInt
 
 			if (x.Exception is not null)
 				throw x.Exception;
+
+			return;
 		}
 	}
 
@@ -645,8 +647,7 @@ public sealed class SetupRefIntInt<TReturns>
 				return true;
 			}
 
-			returnValue = default;
-			return false;
+			goto Default;
 		}
 
 		Default:

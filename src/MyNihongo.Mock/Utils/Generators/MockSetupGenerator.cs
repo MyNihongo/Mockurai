@@ -125,18 +125,14 @@ internal static class MockSetupGenerator
 
 		stringBuilder
 			.AppendInvokeExecuteMethod(methodSymbol, returnType, indent).AppendLine()
-			.AppendSetupParametersMethod(methodSymbol, indent).AppendLine()
-			.AppendCallbackMethod(indent).AppendLine()
-			.AppendThrowsMethod(indent);
+			.AppendSetupParametersMethod(methodSymbol, indent).AppendLine();
 
 		if (returnType is not null)
-		{
-			stringBuilder
-				.AppendLine()
-				.AppendReturnsMethods(methodSymbol, indent);
-		}
+			stringBuilder.AppendReturnsMethods(methodSymbol, indent);
 
 		return stringBuilder
+			.AppendCallbackMethod(indent).AppendLine()
+			.AppendThrowsMethod(indent)
 			.ToString();
 	}
 
@@ -144,14 +140,12 @@ internal static class MockSetupGenerator
 	{
 		stringBuilder.Clear();
 
-		stringBuilder
-			.AppendCallbackInterfaceImplementation(methodSymbol, returnType, indent)
-			.AppendThrowsInterfaceImplementation(methodSymbol, returnType, indent);
-
 		if (returnType is not null)
 			stringBuilder.AppendReturnsInterfaceImplementation(methodSymbol, returnType, indent);
 
 		return stringBuilder
+			.AppendCallbackInterfaceImplementation(methodSymbol, returnType, indent)
+			.AppendThrowsInterfaceImplementation(methodSymbol, returnType, indent)
 			.AppendAndInterfaceImplementation(methodSymbol, returnType, indent)
 			.ToString();
 	}
@@ -159,7 +153,7 @@ internal static class MockSetupGenerator
 	private static string CreateItemDeclaration(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, int indent)
 	{
 		stringBuilder.Clear();
-		
+
 		// fields
 		foreach (var parameter in methodSymbol.Parameters)
 		{
@@ -279,7 +273,7 @@ internal static class MockSetupGenerator
 				.AppendInterfaceImplementationBody(methodCall, ref indent);
 		}
 
-		private void AppendThrowsInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, int indent)
+		private StringBuilder AppendThrowsInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, int indent)
 		{
 			const string methodDeclaration = ".Throws(in Exception exception)", methodCall = "Throws(exception);";
 
@@ -304,7 +298,7 @@ internal static class MockSetupGenerator
 				.AppendLine(methodDeclaration)
 				.AppendInterfaceImplementationBody(methodCall, ref indent);
 
-			@this
+			return @this
 				.Indent(indent).AppendInterface("ISetup", methodSymbol, returnTypeSymbol)
 				.Append(' ')
 				.AppendInterface(setupThrowsReset, methodSymbol, returnTypeSymbol)
@@ -470,6 +464,16 @@ file static class Extensions
 
 				stringBuilder
 					.Indent(--indent).AppendLine("}");
+
+				stringBuilder
+					.AppendLine()
+					.Indent(indent).AppendLine("goto Default;");
+			}
+			else
+			{
+				stringBuilder
+					.AppendLine()
+					.Indent(indent).AppendLine("return;");
 			}
 
 			stringBuilder
@@ -528,9 +532,9 @@ file static class Extensions
 				.Indent(--indent).AppendLine("}");
 		}
 
-		public void AppendThrowsMethod(int indent)
+		public StringBuilder AppendThrowsMethod(int indent)
 		{
-			stringBuilder
+			return stringBuilder
 				.Indent(indent).AppendLine("public void Throws(in Exception exception)")
 				.Indent(indent++).AppendLine("{")
 				.Indent(indent).AppendLine("if (_currentSetup is null)")
