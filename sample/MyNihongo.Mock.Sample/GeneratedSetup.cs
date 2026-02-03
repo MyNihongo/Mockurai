@@ -8,7 +8,7 @@ public sealed class SetupIntInt
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;
 	private Item? _currentSetup;
-	
+
 	public delegate void CallbackDelegate(int parameter1, int parameter2);
 
 	public void Invoke(in int parameter1, in int parameter2)
@@ -91,11 +91,18 @@ public sealed class SetupIntInt
 		return this;
 	}
 
-	private sealed class Item(in ItSetup<int>? parameter1, in ItSetup<int>? parameter2)
+	private sealed class Item
 	{
+		public readonly ItSetup<int>? Parameter1;
+		public readonly ItSetup<int>? Parameter2;
+
+		public Item(in ItSetup<int>? parameter1, in ItSetup<int>? parameter2)
+		{
+			Parameter1 = parameter1;
+			Parameter2 = parameter2;
+		}
+
 		private readonly Queue<ItemSetup> _queue = [];
-		public readonly ItSetup<int>? Parameter1 = parameter1;
-		public readonly ItSetup<int>? Parameter2 = parameter2;
 		private ItemSetup? _currentSetup;
 		public bool AndContinue;
 
@@ -184,8 +191,9 @@ public sealed class SetupIntInt<TReturns>
 	private static readonly Comparer SortComparer = new();
 	private SetupContainer<Item>? _setups;
 	private Item? _currentSetup;
-	
+
 	public delegate void CallbackDelegate(int parameter1, int parameter2);
+
 	public delegate TReturns? ReturnsCallbackDelegate(int parameter1, int parameter2);
 
 	public bool Execute(in int parameter1, in int parameter2, out TReturns? returnValue)
@@ -610,6 +618,7 @@ public sealed class SetupRefIntInt<TReturns>
 	private Item? _currentSetup;
 
 	public delegate void CallbackDelegate(ref int parameter1, int parameter2);
+
 	public delegate TReturns? ReturnsCallbackDelegate(ref int parameter1, int parameter2);
 
 	public bool Execute(ref int parameter1, in int parameter2, out TReturns? returnValue)

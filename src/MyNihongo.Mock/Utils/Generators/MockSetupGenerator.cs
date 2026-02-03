@@ -19,6 +19,55 @@ internal static class MockSetupGenerator
 			  {{CreateDelegates(stringBuilder, methodSymbol, returnType, indent: 1)}}
 			  {{CreateMethodImplementations(stringBuilder, methodSymbol, returnType, indent: 1)}}
 			  {{CreateInterfaceMethodImplementations(stringBuilder, methodSymbol, returnType, indent: 1)}}
+
+			  	private sealed class Item
+			  	{
+			  		private readonly Queue<ItemSetup> _queue = [];
+			  		private ItemSetup? _currentSetup;
+			  		public bool AndContinue;
+
+			  {{CreateItemDeclaration(stringBuilder, methodSymbol, returnType, indent: 2)}}
+
+			  		public void Add(in CallbackDelegate callback)
+			  		{
+			  			if (AndContinue && _currentSetup is not null)
+			  			{
+			  				_currentSetup.Callback = callback;
+			  				AndContinue = false;
+			  				_currentSetup = null;
+			  			}
+			  			else
+			  			{
+			  				_currentSetup = new ItemSetup(callback);
+			  				_queue.Enqueue(_currentSetup);
+			  			}
+			  		}
+
+			  		public void Add(in Exception exception)
+			  		{
+			  			if (AndContinue && _currentSetup is not null)
+			  			{
+			  				_currentSetup.Exception = exception;
+			  				AndContinue = false;
+			  				_currentSetup = null;
+			  			}
+			  			else
+			  			{
+			  				_currentSetup = new ItemSetup(exception: exception);
+			  				_queue.Enqueue(_currentSetup);
+			  			}
+			  		}
+
+			  		public ItemSetup GetSetup()
+			  		{
+			  			return _queue.Count switch
+			  			{
+			  				0 => ItemSetup.Default,
+			  				1 => _queue.Peek(),
+			  				_ => _queue.Dequeue(),
+			  			};
+			  		}
+			  	}
 			  }
 			  """;
 
@@ -105,6 +154,70 @@ internal static class MockSetupGenerator
 		return stringBuilder
 			.AppendAndInterfaceImplementation(methodSymbol, returnType, indent)
 			.ToString();
+	}
+
+	private static string CreateItemDeclaration(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, int indent)
+	{
+		stringBuilder.Clear();
+		
+		// fields
+		foreach (var parameter in methodSymbol.Parameters)
+		{
+			stringBuilder
+				.Indent(indent)
+				.Append("public readonly ")
+				.AppendItSetupType(parameter.Type, isNullable: true)
+				.Append(' ')
+				.AppendPropertyName(parameter.Name)
+				.AppendLine(";");
+		}
+
+		// constructor
+		stringBuilder
+			.AppendLine()
+			.Indent(indent).Append("public Item(")
+			.AppendItSetupParameters(methodSymbol.Parameters, isNullable: true)
+			.AppendLine(")")
+			.Indent(indent++).AppendLine("{");
+
+		foreach (var parameter in methodSymbol.Parameters)
+		{
+			stringBuilder
+				.Indent(indent)
+				.AppendPropertyName(parameter.Name)
+				.Append(" = ")
+				.AppendParameterName(parameter.Name)
+				.AppendLine(";");
+		}
+
+		stringBuilder
+			.Indent(--indent).Append('}');
+
+		// add return
+		if (returnType is not null)
+		{
+			stringBuilder
+				.AppendLine()
+				.AppendLine();
+
+			stringBuilder
+				.Indent(indent).AppendLine("public void Add(in ReturnsCallbackDelegate returns)")
+				.Indent(indent++).AppendLine("{")
+				.Indent(indent).AppendLine("if (AndContinue && _currentSetup is not null)")
+				.Indent(indent++).AppendLine("{")
+				.Indent(indent).AppendLine("_currentSetup.Returns = returns;")
+				.Indent(indent).AppendLine("AndContinue = false;")
+				.Indent(indent).AppendLine("_currentSetup = null;")
+				.Indent(--indent).AppendLine("}")
+				.Indent(indent).AppendLine("else")
+				.Indent(indent++).AppendLine("{")
+				.Indent(indent).AppendLine("_currentSetup = new ItemSetup(returns: returns);")
+				.Indent(indent).AppendLine("_queue.Enqueue(_currentSetup);")
+				.Indent(--indent).AppendLine("}")
+				.Indent(--indent).Append('}');
+		}
+
+		return stringBuilder.ToString();
 	}
 
 	private static string CreateSetupClassName(StringBuilder stringBuilder, IMethodSymbol methodSymbol)
@@ -249,16 +362,20 @@ internal static class MockSetupGenerator
 				.Append(' ')
 				.AppendInterface("ISetupCallbackJoin", methodSymbol, returnTypeSymbol)
 				.AppendLine(methodDeclaration)
-				.AppendInterfaceImplementationBody(methodCall, ref indent);
+				.AppendInterfaceImplementationBody(methodCall, ref indent, appendFinalLines: false);
 		}
 
-		private StringBuilder AppendInterfaceImplementationBody(string methodCall, ref int indent)
+		private StringBuilder AppendInterfaceImplementationBody(string methodCall, ref int indent, bool appendFinalLines = true)
 		{
-			return @this
+			@this
 				.Indent(indent++).AppendLine("{")
 				.Indent(indent).AppendLine(methodCall)
 				.Indent(indent).AppendLine("return this;")
-				.Indent(--indent).AppendLine("}").AppendLine();
+				.Indent(--indent);
+
+			return appendFinalLines
+				? @this.AppendLine("}").AppendLine()
+				: @this.Append('}');
 		}
 	}
 }

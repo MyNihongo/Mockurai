@@ -386,7 +386,7 @@ internal static class MethodSymbolEx
 			return @this;
 		}
 
-		public StringBuilder AppendItSetupParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false)
+		public StringBuilder AppendItSetupParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, bool isNullable = false)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
@@ -394,10 +394,9 @@ internal static class MethodSymbolEx
 					@this.Append(", ");
 
 				@this
-					.Append("in ItSetup")
-					.Append('<')
-					.AppendType(parameters[i].Type)
-					.Append("> ")
+					.Append("in ")
+					.AppendItSetupType(parameters[i].Type, isNullable)
+					.Append(' ')
 					.AppendParameterName(parameters[i].Name);
 
 				if (appendComma)
