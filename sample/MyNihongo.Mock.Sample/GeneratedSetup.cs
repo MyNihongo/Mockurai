@@ -280,7 +280,7 @@ public sealed class SetupIntInt<TReturns>
 		return this;
 	}
 
-	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in ReturnsCallbackDelegate returns)
+	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in TReturns returns)
 	{
 		Returns(returns);
 		return this;
@@ -292,7 +292,7 @@ public sealed class SetupIntInt<TReturns>
 		return this;
 	}
 
-	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in TReturns returns)
+	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Returns(in ReturnsCallbackDelegate returns)
 	{
 		Returns(returns);
 		return this;

@@ -99,6 +99,9 @@ internal static class MockSetupGenerator
 			.AppendCallbackInterfaceImplementation(methodSymbol, returnType, indent)
 			.AppendThrowsInterfaceImplementation(methodSymbol, returnType, indent);
 
+		if (returnType is not null)
+			stringBuilder.AppendReturnsInterfaceImplementation(methodSymbol, returnType, indent);
+
 		return stringBuilder
 			.ToString();
 	}
@@ -162,7 +165,7 @@ internal static class MockSetupGenerator
 				.AppendInterfaceImplementationBody(methodCall, ref indent);
 		}
 
-		private StringBuilder AppendThrowsInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, int indent)
+		private void AppendThrowsInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, int indent)
 		{
 			const string methodDeclaration = ".Throws(in Exception exception)", methodCall = "Throws(exception);";
 
@@ -187,12 +190,34 @@ internal static class MockSetupGenerator
 				.AppendLine(methodDeclaration)
 				.AppendInterfaceImplementationBody(methodCall, ref indent);
 
-			return @this
+			@this
 				.Indent(indent).AppendInterface("ISetup", methodSymbol, returnTypeSymbol)
 				.Append(' ')
 				.AppendInterface(setupThrowsReset, methodSymbol, returnTypeSymbol)
 				.AppendLine(methodDeclaration)
 				.AppendInterfaceImplementationBody(methodCall, ref indent);
+		}
+
+		private void AppendReturnsInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, int indent)
+		{
+			const string methodCall = "Returns(returns);";
+
+			foreach (var methodDeclaration in new[] { ".Returns(in TReturns returns)", ".Returns(in ReturnsCallbackDelegate returns)" })
+			{
+				@this
+					.Indent(indent).AppendInterface("ISetupReturnsThrowsJoin", methodSymbol, returnTypeSymbol)
+					.Append(' ')
+					.AppendInterface("ISetupReturnsThrowsStart", methodSymbol, returnTypeSymbol)
+					.AppendLine(methodDeclaration)
+					.AppendInterfaceImplementationBody(methodCall, ref indent);
+
+				@this
+					.Indent(indent).AppendInterface("ISetup", methodSymbol, returnTypeSymbol)
+					.Append(' ')
+					.AppendInterface("ISetupReturnsThrowsReset", methodSymbol, returnTypeSymbol)
+					.AppendLine(methodDeclaration)
+					.AppendInterfaceImplementationBody(methodCall, ref indent);
+			}
 		}
 
 		private StringBuilder AppendInterfaceImplementationBody(string methodCall, ref int indent)
