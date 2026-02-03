@@ -68,6 +68,22 @@ internal static class MockSetupGenerator
 			  			};
 			  		}
 			  	}
+
+			  	private sealed class ItemSetup
+			  	{
+			  		public static readonly ItemSetup Default = new();
+
+			  		public CallbackDelegate? Callback;
+			  		public Exception? Exception;
+			  {{CreateItemSetupDeclaration(stringBuilder, returnType, indent: 2)}}
+			  	}
+
+			  	private sealed class Comparer: IComparer<Item>
+			  	{
+			  		public int Compare(Item? x, Item? y)
+			  		{
+			  		}
+			  	}
 			  }
 			  """;
 
@@ -212,6 +228,41 @@ internal static class MockSetupGenerator
 		}
 
 		return stringBuilder.ToString();
+	}
+
+	private static string CreateItemSetupDeclaration(StringBuilder stringBuilder, ITypeSymbol? returnType, int indent)
+	{
+		stringBuilder.Clear();
+
+		// fields
+		if (returnType is not null)
+		{
+			stringBuilder
+				.Indent(indent)
+				.AppendLine("public ReturnsCallbackDelegate? Returns;");
+		}
+
+		// constructor
+		stringBuilder
+			.AppendLine()
+			.Indent(indent)
+			.Append("public ItemSetup(");
+
+		if (returnType is not null)
+			stringBuilder.Append("in ReturnsCallbackDelegate? returns = null, ");
+
+		stringBuilder
+			.AppendLine("in CallbackDelegate? callback = null, in Exception? exception = null)")
+			.Indent(indent++).AppendLine("{");
+
+		if (returnType is not null)
+			stringBuilder.Indent(indent).AppendLine("Returns = returns;");
+
+		return stringBuilder
+			.Indent(indent).AppendLine("Callback = callback;")
+			.Indent(indent).AppendLine("Exception = exception;")
+			.Indent(--indent).Append('}')
+			.ToString();
 	}
 
 	private static string CreateSetupClassName(StringBuilder stringBuilder, IMethodSymbol methodSymbol)
