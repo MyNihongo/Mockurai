@@ -298,13 +298,13 @@ public sealed class SetupIntInt<TReturns>
 		return this;
 	}
 
-	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Throws(in Exception exception)
+	ISetupReturnsThrowsJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsStart<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Throws(in Exception exception)
 	{
 		Throws(exception);
 		return this;
 	}
 
-	ISetupReturnsThrowsJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsStart<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Throws(in Exception exception)
+	ISetup<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.Throws(in Exception exception)
 	{
 		Throws(exception);
 		return this;

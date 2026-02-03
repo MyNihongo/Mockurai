@@ -96,7 +96,8 @@ internal static class MockSetupGenerator
 		stringBuilder.Clear();
 
 		stringBuilder
-			.AppendCallbackInterfaceImplementation(methodSymbol, returnType, indent);
+			.AppendCallbackInterfaceImplementation(methodSymbol, returnType, indent)
+			.AppendThrowsInterfaceImplementation(methodSymbol, returnType, indent);
 
 		return stringBuilder
 			.ToString();
@@ -141,26 +142,64 @@ internal static class MockSetupGenerator
 
 			return @this.Append('>');
 		}
-		
-		public StringBuilder AppendCallbackInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, int indent)
+
+		private StringBuilder AppendCallbackInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, int indent)
 		{
+			const string methodDeclaration = ".Callback(in CallbackDelegate callback)", methodCall = "Callback(callback);";
+
 			@this
 				.Indent(indent).AppendInterface("ISetupCallbackJoin", methodSymbol, returnTypeSymbol)
 				.Append(' ')
 				.AppendInterface("ISetupCallbackStart", methodSymbol, returnTypeSymbol)
-				.AppendLine(".Callback(in CallbackDelegate callback)")
-				.Indent(indent++).AppendLine("{")
-				.Indent(indent).AppendLine("Callback(callback);")
-				.Indent(indent).AppendLine("return this;")
-				.Indent(--indent).AppendLine("}").AppendLine();
-			
+				.AppendLine(methodDeclaration)
+				.AppendInterfaceImplementationBody(methodCall, ref indent);
+
 			return @this
 				.Indent(indent).AppendInterface("ISetup", methodSymbol, returnTypeSymbol)
 				.Append(' ')
 				.AppendInterface("ISetupCallbackReset", methodSymbol, returnTypeSymbol)
-				.AppendLine(".Callback(in CallbackDelegate callback)")
+				.AppendLine(methodDeclaration)
+				.AppendInterfaceImplementationBody(methodCall, ref indent);
+		}
+
+		private StringBuilder AppendThrowsInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, int indent)
+		{
+			const string methodDeclaration = ".Throws(in Exception exception)", methodCall = "Throws(exception);";
+
+			string setupThrowsJoin, setupThrowsStart, setupThrowsReset;
+			if (returnTypeSymbol is null)
+			{
+				setupThrowsJoin = "ISetupThrowsJoin";
+				setupThrowsStart = "ISetupThrowsStart";
+				setupThrowsReset = "ISetupThrowsReset";
+			}
+			else
+			{
+				setupThrowsJoin = "ISetupReturnsThrowsJoin";
+				setupThrowsStart = "ISetupReturnsThrowsStart";
+				setupThrowsReset = "ISetupReturnsThrowsReset";
+			}
+
+			@this
+				.Indent(indent).AppendInterface(setupThrowsJoin, methodSymbol, returnTypeSymbol)
+				.Append(' ')
+				.AppendInterface(setupThrowsStart, methodSymbol, returnTypeSymbol)
+				.AppendLine(methodDeclaration)
+				.AppendInterfaceImplementationBody(methodCall, ref indent);
+
+			return @this
+				.Indent(indent).AppendInterface("ISetup", methodSymbol, returnTypeSymbol)
+				.Append(' ')
+				.AppendInterface(setupThrowsReset, methodSymbol, returnTypeSymbol)
+				.AppendLine(methodDeclaration)
+				.AppendInterfaceImplementationBody(methodCall, ref indent);
+		}
+
+		private StringBuilder AppendInterfaceImplementationBody(string methodCall, ref int indent)
+		{
+			return @this
 				.Indent(indent++).AppendLine("{")
-				.Indent(indent).AppendLine("Callback(callback);")
+				.Indent(indent).AppendLine(methodCall)
 				.Indent(indent).AppendLine("return this;")
 				.Indent(--indent).AppendLine("}").AppendLine();
 		}
