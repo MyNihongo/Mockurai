@@ -103,6 +103,7 @@ internal static class MockSetupGenerator
 			stringBuilder.AppendReturnsInterfaceImplementation(methodSymbol, returnType, indent);
 
 		return stringBuilder
+			.AppendAndInterfaceImplementation(methodSymbol, returnType, indent)
 			.ToString();
 	}
 
@@ -218,6 +219,37 @@ internal static class MockSetupGenerator
 					.AppendLine(methodDeclaration)
 					.AppendInterfaceImplementationBody(methodCall, ref indent);
 			}
+		}
+
+		private StringBuilder AppendAndInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, int indent)
+		{
+			const string methodDeclaration = ".And()", methodCall = "_currentSetup?.AndContinue = true;";
+
+			string setupThrowsJoin, setupThrowsReset;
+			if (returnTypeSymbol is null)
+			{
+				setupThrowsJoin = "ISetupThrowsJoin";
+				setupThrowsReset = "ISetupThrowsReset";
+			}
+			else
+			{
+				setupThrowsJoin = "ISetupReturnsThrowsJoin";
+				setupThrowsReset = "ISetupReturnsThrowsReset";
+			}
+
+			@this
+				.Indent(indent).AppendInterface("ISetupCallbackReset", methodSymbol, returnTypeSymbol)
+				.Append(' ')
+				.AppendInterface(setupThrowsJoin, methodSymbol, returnTypeSymbol)
+				.AppendLine(methodDeclaration)
+				.AppendInterfaceImplementationBody(methodCall, ref indent);
+
+			return @this
+				.Indent(indent).AppendInterface(setupThrowsReset, methodSymbol, returnTypeSymbol)
+				.Append(' ')
+				.AppendInterface("ISetupCallbackJoin", methodSymbol, returnTypeSymbol)
+				.AppendLine(methodDeclaration)
+				.AppendInterfaceImplementationBody(methodCall, ref indent);
 		}
 
 		private StringBuilder AppendInterfaceImplementationBody(string methodCall, ref int indent)

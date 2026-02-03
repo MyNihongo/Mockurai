@@ -81,17 +81,13 @@ public sealed class SetupIntInt
 
 	ISetupThrowsReset<CallbackDelegate> ISetupCallbackJoin<CallbackDelegate>.And()
 	{
-		if (_currentSetup is not null)
-			_currentSetup.AndContinue = true;
-
+		_currentSetup?.AndContinue = true;
 		return this;
 	}
 
 	ISetupCallbackReset<CallbackDelegate> ISetupThrowsJoin<CallbackDelegate>.And()
 	{
-		if (_currentSetup is not null)
-			_currentSetup.AndContinue = true;
-
+		_currentSetup?.AndContinue = true;
 		return this;
 	}
 
@@ -312,17 +308,13 @@ public sealed class SetupIntInt<TReturns>
 
 	ISetupReturnsThrowsReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupCallbackJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.And()
 	{
-		if (_currentSetup is not null)
-			_currentSetup.AndContinue = true;
-
+		_currentSetup?.AndContinue = true;
 		return this;
 	}
 
 	ISetupCallbackReset<CallbackDelegate, TReturns, ReturnsCallbackDelegate> ISetupReturnsThrowsJoin<CallbackDelegate, TReturns, ReturnsCallbackDelegate>.And()
 	{
-		if (_currentSetup is not null)
-			_currentSetup.AndContinue = true;
-
+		_currentSetup?.AndContinue = true;
 		return this;
 	}
 
