@@ -82,6 +82,20 @@ internal static class MockSetupGenerator
 			  	{
 			  		public int Compare(Item? x, Item? y)
 			  		{
+			  			var xSort = 0;
+			  			var ySort = 0;
+
+			  			if (x is not null)
+			  			{
+			  {{CreateCompareDeclaration(stringBuilder, methodSymbol, item: "x", indent: 4)}}
+			  			}
+
+			  			if (y is not null)
+			  			{
+			  {{CreateCompareDeclaration(stringBuilder, methodSymbol, item: "y", indent: 4)}}
+			  			}
+
+			  			return xSort.CompareTo(ySort);
 			  		}
 			  	}
 			  }
@@ -263,6 +277,38 @@ internal static class MockSetupGenerator
 			.Indent(indent).AppendLine("Exception = exception;")
 			.Indent(--indent).Append('}')
 			.ToString();
+	}
+
+	private static string CreateCompareDeclaration(StringBuilder stringBuilder, IMethodSymbol methodSymbol, string item, int indent)
+	{
+		stringBuilder.Clear();
+
+		for (int i = 0, lastIndex = methodSymbol.Parameters.Length - 1; i < methodSymbol.Parameters.Length; i++)
+		{
+			var parameterName = methodSymbol.Parameters[i].Name;
+
+			stringBuilder
+				.Indent(indent)
+				.Append("if (")
+				.Append(item)
+				.Append('.')
+				.AppendPropertyName(parameterName)
+				.AppendLine(".HasValue)");
+
+			stringBuilder
+				.Indent(indent + 1)
+				.Append(item)
+				.Append("Sort += ")
+				.Append(item)
+				.Append('.')
+				.AppendPropertyName(parameterName)
+				.Append(".Value.Sort;");
+
+			if (i < lastIndex)
+				stringBuilder.AppendLine();
+		}
+
+		return stringBuilder.ToString();
 	}
 
 	private static string CreateSetupClassName(StringBuilder stringBuilder, IMethodSymbol methodSymbol)
