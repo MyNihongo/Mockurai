@@ -48,7 +48,7 @@ internal static class MethodSymbolEx
 			return result.Length > 0;
 		}
 
-		private ITypeSymbol? TryGetReturnType()
+		public ITypeSymbol? TryGetReturnType()
 		{
 			if (@this.ReturnsVoid)
 				return null;
@@ -377,6 +377,26 @@ internal static class MethodSymbolEx
 					.Append('<')
 					.AppendType(parameters[i].Type)
 					.Append("> ")
+					.AppendParameterName(parameters[i].Name);
+
+				if (appendComma)
+					@this.Append(", ");
+			}
+
+			return @this;
+		}
+
+		public StringBuilder AppendItSetupParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, bool isNullable = false)
+		{
+			for (var i = 0; i < parameters.Length; i++)
+			{
+				if (!appendComma && i > 0)
+					@this.Append(", ");
+
+				@this
+					.Append("in ")
+					.AppendItSetupType(parameters[i].Type, isNullable)
+					.Append(' ')
 					.AppendParameterName(parameters[i].Name);
 
 				if (appendComma)

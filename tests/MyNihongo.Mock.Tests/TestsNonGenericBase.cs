@@ -39,13 +39,13 @@ public abstract class TestsNonGenericBase : TestsBase
 
 				protected void VerifyNoOtherCalls()
 				{
-					_interfaceMock.VerifyNoOtherCalls();
+					InterfaceMock.VerifyNoOtherCalls();
 				}
 
 				protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 				{
 					var ctx = new VerifySequenceContext(
-						interfaceMock: _interfaceMock
+						interfaceMock: InterfaceMock
 					);
 
 					verify(ctx);
@@ -175,13 +175,13 @@ public abstract class TestsNonGenericBase : TestsBase
 
 				protected void VerifyNoOtherCalls()
 				{
-					_classMock.VerifyNoOtherCalls();
+					ClassMock.VerifyNoOtherCalls();
 				}
 
 				protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 				{
 					var ctx = new VerifySequenceContext(
-						classMock: _classMock
+						classMock: ClassMock
 					);
 
 					verify(ctx);

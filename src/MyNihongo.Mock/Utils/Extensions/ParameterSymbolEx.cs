@@ -66,7 +66,35 @@ internal static class ParameterSymbolEx
 			return @this;
 		}
 
-		public StringBuilder AppendSetupClassName(ImmutableArray<IParameterSymbol> parameters, ITypeSymbol? returnTypeSymbol)
+		public StringBuilder AppendDiscardParameterNames(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false)
+		{
+			for (var i = 0; i < parameters.Length; i++)
+			{
+				if (!appendComma && i > 0)
+					@this.Append(", ");
+
+				var refKindString = parameters[i].RefKind.GetString();
+				if (!string.IsNullOrEmpty(refKindString))
+					@this.Append(refKindString).Append(' ');
+
+				@this.Append('_');
+
+				if (appendComma)
+					@this.Append(", ");
+			}
+
+			return @this;
+		}
+
+		public StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol, Action<StringBuilder, ITypeSymbol>? returnTypeOverride = null)
+		{
+			var parameters = methodSymbol.Parameters;
+			var returnTypeSymbol = methodSymbol.TryGetReturnType();
+
+			return @this.AppendSetupClassName(parameters, returnTypeSymbol, returnTypeOverride);
+		}
+
+		public StringBuilder AppendSetupClassName(ImmutableArray<IParameterSymbol> parameters, ITypeSymbol? returnTypeSymbol, Action<StringBuilder, ITypeSymbol>? returnTypeOverride = null)
 		{
 			@this
 				.Append("Setup")
@@ -74,10 +102,14 @@ internal static class ParameterSymbolEx
 
 			if (returnTypeSymbol is not null)
 			{
-				@this
-					.Append('<')
-					.AppendType(returnTypeSymbol)
-					.Append('>');
+				@this.Append('<');
+
+				if (returnTypeOverride is not null)
+					returnTypeOverride(@this, returnTypeSymbol);
+				else
+					@this.AppendType(returnTypeSymbol);
+
+				@this.Append('>');
 			}
 
 			return @this;

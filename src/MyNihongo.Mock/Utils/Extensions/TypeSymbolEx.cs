@@ -86,6 +86,18 @@ internal static class TypeSymbolEx
 				: @this;
 		}
 
+		public StringBuilder AppendItSetupType(ITypeSymbol typeSymbol, bool isNullable = false)
+		{
+			@this
+				.Append("ItSetup<")
+				.AppendType(typeSymbol)
+				.Append('>');
+
+			return isNullable
+				? @this.Append('?')
+				: @this;
+		}
+
 		public StringBuilder AppendType(ITypeSymbol typeSymbol)
 		{
 			return @this.Append(typeSymbol);
