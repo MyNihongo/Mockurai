@@ -2,7 +2,7 @@
 
 internal static class MockSetupGenerator
 {
-	public static MockSetupResult GenerateMockSetup(this IMethodSymbol methodSymbol)
+	public static MockSetupResult GenerateMockSetup(this IMethodSymbol methodSymbol, CompilationCombinedResult result)
 	{
 		var stringBuilder = new StringBuilder();
 		var className = CreateSetupClassName(stringBuilder, methodSymbol);
@@ -10,6 +10,8 @@ internal static class MockSetupGenerator
 
 		var source =
 			$$"""
+			  namespace {{result.Options.RootNamespace}};
+
 			  public sealed class {{className}} : {{CreateInterfaceDerivedFrom(stringBuilder, methodSymbol, returnType)}}
 			  {
 			  	private static readonly Comparer SortComparer = new();
