@@ -20,7 +20,9 @@ internal static class MockInvocationGenerator
 			  	private readonly InvocationContainer<Item> _invocations = [];
 
 			  {{CreateConstructor(stringBuilder, methodSymbol, indent: 1)}}
-			  {{CreateRegister(stringBuilder, methodSymbol, indent: 1)}}
+			  {{CreateRegisterMethod(stringBuilder, methodSymbol, indent: 1)}}
+			  {{CreateVerifyMethod(stringBuilder, methodSymbol, VerifyMethodType.Times, indent: 1)}}
+			  {{CreateVerifyMethod(stringBuilder, methodSymbol, VerifyMethodType.Index, indent: 1)}}
 			  }
 			  """;
 
@@ -90,7 +92,7 @@ internal static class MockInvocationGenerator
 			.ToString();
 	}
 
-	private static string CreateRegister(StringBuilder stringBuilder, IMethodSymbol methodSymbol, int indent)
+	private static string CreateRegisterMethod(StringBuilder stringBuilder, IMethodSymbol methodSymbol, int indent)
 	{
 		stringBuilder.Clear();
 
@@ -112,6 +114,124 @@ internal static class MockInvocationGenerator
 			.ToString();
 	}
 
+	private static string CreateVerifyMethod(StringBuilder stringBuilder, IMethodSymbol methodSymbol, VerifyMethodType type, int indent)
+	{
+		stringBuilder.Clear();
+
+		stringBuilder
+			.Indent(indent)
+			.Append("public ")
+			.AppendVerifyReturnType(type)
+			.Append(" Verify(")
+			.AppendItSetupParameters(methodSymbol.Parameters, appendComma: true)
+			.AppendVerifyParameter(type)
+			.AppendLine(", Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>>? invocationProviders = null)");
+
+		stringBuilder
+			.Indent(indent++).AppendLine("{")
+			.Indent(indent).Append("var span = _invocations.")
+			.AppendVerifySpan(type)
+			.AppendLine(";").AppendLine();
+
+		stringBuilder
+			.Indent(indent).AppendLine("var verifyOutput = new System.Collections.Generic.List<(Item, (string, ComparisonResult?)[]?)>();")
+			.Indent(indent).AppendLine("System.Runtime.InteropServices.CollectionsMarshal.SetCount(verifyOutput, span.Length);")
+			.AppendLine();
+
+		if (type == VerifyMethodType.Times)
+		{
+			stringBuilder
+				.Indent(indent)
+				.AppendLine("var count = 0;");
+		}
+
+		stringBuilder
+			.Indent(indent).AppendLine("for (var i = 0; i < span.Length; i++)")
+			.Indent(indent++).AppendLine("{");
+
+		foreach (var parameter in methodSymbol.Parameters)
+		{
+			stringBuilder
+				.Indent(indent)
+				.Append("var verify")
+				.AppendPropertyName(parameter.Name)
+				.Append(" = span[i].Get")
+				.AppendPropertyName(parameter.Name)
+				.Append('(')
+				.Append(parameter.Name)
+				.AppendLine(".Type);");
+		}
+
+		stringBuilder
+			.Indent(indent)
+			.AppendLine("(string, ComparisonResult?)[]? verifyResults = null;")
+			.AppendLine();
+
+		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+		{
+			var parameterName = methodSymbol.Parameters[i].Name;
+
+			stringBuilder
+				.Indent(indent)
+				.Append("if (!")
+				.Append(parameterName)
+				.Append(".Check(verify")
+				.AppendPropertyName(parameterName)
+				.Append(", out ");
+
+			if (i == 0)
+				stringBuilder.Append("var ");
+
+			stringBuilder.AppendLine("result))");
+
+			stringBuilder
+				.Indent(indent++).AppendLine("{")
+				.Indent(indent).Append("verifyResults = ");
+
+			if (i > 0)
+			{
+				stringBuilder
+					.AppendLine("verifyResults is not null")
+					.Indent(indent + 1).Append("? [..verifyResults, ")
+					.AppendVerifyResult(parameterName)
+					.AppendLine("]");
+
+				stringBuilder
+					.Indent(indent + 1).Append(": ");
+			}
+
+			stringBuilder
+				.Append('[')
+				.AppendVerifyResult(parameterName)
+				.AppendLine("];");
+
+			stringBuilder
+				.Indent(--indent)
+				.AppendLine("}");
+		}
+
+		stringBuilder
+			.AppendLine()
+			.Indent(indent)
+			.AppendLine("if (verifyResults is not null)")
+			.Indent(indent++).AppendLine("{")
+			.Indent(indent).AppendLine("verifyOutput[i] = (span[i], verifyResults);")
+			.Indent(indent).AppendLine("continue;")
+			.Indent(--indent).AppendLine("}");
+
+		// for loop end
+		stringBuilder
+			.AppendLine()
+			.Indent(indent).AppendLine("verifyOutput[i] = (span[i], null);")
+			.Indent(indent).AppendLine("span[i].IsVerified = true;")
+			.Indent(indent).AppendVerifyLoopEnd(type).AppendLine()
+			.Indent(--indent).AppendLine("}");
+
+		return stringBuilder
+			.Indent(--indent).AppendLine("}")
+			.ToString();
+	}
+
 	private static string CreateSetupClassName(StringBuilder stringBuilder, IMethodSymbol methodSymbol)
 	{
 		stringBuilder.Clear();
@@ -119,5 +239,70 @@ internal static class MockInvocationGenerator
 		return stringBuilder
 			.AppendInvocationClassName(methodSymbol.Parameters)
 			.ToString();
+	}
+
+	private enum VerifyMethodType
+	{
+		Times,
+		Index,
+	}
+
+	extension(StringBuilder @this)
+	{
+		private StringBuilder AppendVerifyReturnType(VerifyMethodType type)
+		{
+			var returnType = type switch
+			{
+				VerifyMethodType.Times => "void",
+				VerifyMethodType.Index => "long",
+				_ => throw new ArgumentOutOfRangeException(nameof(type), type, $"Unknown verify method type: {type}"),
+			};
+
+			return @this.Append(returnType);
+		}
+
+		private StringBuilder AppendVerifyParameter(VerifyMethodType type)
+		{
+			var parameter = type switch
+			{
+				VerifyMethodType.Times => "in Times times",
+				VerifyMethodType.Index => "long index",
+				_ => throw new ArgumentOutOfRangeException(nameof(type), type, $"Unknown verify method type: {type}"),
+			};
+
+			return @this.Append(parameter);
+		}
+
+		private StringBuilder AppendVerifySpan(VerifyMethodType type)
+		{
+			var parameter = type switch
+			{
+				VerifyMethodType.Times => "GetItemsSpan()",
+				VerifyMethodType.Index => "GetItemsSpanFrom(index)",
+				_ => throw new ArgumentOutOfRangeException(nameof(type), type, $"Unknown verify method type: {type}"),
+			};
+
+			return @this.Append(parameter);
+		}
+
+		private StringBuilder AppendVerifyLoopEnd(VerifyMethodType type)
+		{
+			var parameter = type switch
+			{
+				VerifyMethodType.Times => "count++;",
+				VerifyMethodType.Index => "return span[i].Index + 1;",
+				_ => throw new ArgumentOutOfRangeException(nameof(type), type, $"Unknown verify method type: {type}"),
+			};
+
+			return @this.Append(parameter);
+		}
+
+		private StringBuilder AppendVerifyResult(string parameterName)
+		{
+			return @this
+				.Append("(\"")
+				.Append(parameterName)
+				.Append("\", result)");
+		}
 	}
 }
