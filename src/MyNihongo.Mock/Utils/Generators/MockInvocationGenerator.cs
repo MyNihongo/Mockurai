@@ -22,7 +22,26 @@ internal static class MockInvocationGenerator
 			  {{CreateConstructor(stringBuilder, methodSymbol, indent: 1)}}
 			  {{CreateRegisterMethod(stringBuilder, methodSymbol, indent: 1)}}
 			  {{CreateVerifyMethod(stringBuilder, methodSymbol, VerifyMethodType.Times, indent: 1)}}
-			  {{CreateVerifyMethod(stringBuilder, methodSymbol, VerifyMethodType.Index, indent: 1)}}
+			  {{CreateVerifyMethod(stringBuilder, methodSymbol, VerifyMethodType.Index, indent: 1, appendNewLine: false)}}
+
+			  	public void VerifyNoOtherCalls(Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
+			  	{
+			  		var unverifiedItems = _invocations.GetUnverifiedInvocations(invocationProviders);
+			  		if (unverifiedItems is null)
+			  			return;
+
+			  {{CreateVerifyNoOtherCalls(stringBuilder, methodSymbol, indent: 2)}}
+			  		throw new MockUnverifiedException(verifyName, unverifiedItems);
+			  	}
+
+			  	public IEnumerable<IInvocation> GetInvocations()
+			  	{
+			  		return _invocations;
+			  	}
+			  	
+			  	private sealed class Item : IInvocation
+			  	{
+			  	}
 			  }
 			  """;
 
@@ -114,7 +133,7 @@ internal static class MockInvocationGenerator
 			.ToString();
 	}
 
-	private static string CreateVerifyMethod(StringBuilder stringBuilder, IMethodSymbol methodSymbol, VerifyMethodType type, int indent)
+	private static string CreateVerifyMethod(StringBuilder stringBuilder, IMethodSymbol methodSymbol, VerifyMethodType type, int indent, bool appendNewLine = true)
 	{
 		stringBuilder.Clear();
 
@@ -268,9 +287,55 @@ internal static class MockInvocationGenerator
 
 		stringBuilder.AppendLine(");");
 
-		return stringBuilder
+		stringBuilder
 			.Indent(indent).AppendVerifyThrow(type).AppendLine()
-			.Indent(--indent).AppendLine("}")
+			.Indent(--indent).Append('}');
+
+		return appendNewLine
+			? stringBuilder.AppendLine().ToString()
+			: stringBuilder.ToString();
+	}
+
+	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, IMethodSymbol methodSymbol, int indent)
+	{
+		stringBuilder.Clear();
+
+		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+		{
+			var parameterIndex = i + 1;
+			var parameterType = methodSymbol.Parameters[i].Type;
+
+			stringBuilder
+				.Indent(indent)
+				.Append("var typeName")
+				.Append(parameterIndex)
+				.Append(" = !string.IsNullOrEmpty(")
+				.AppendFieldName(PrefixName)
+				.Append(parameterIndex)
+				.Append(") ? $\"{")
+				.AppendFieldName(PrefixName)
+				.Append("} ")
+				.AppendType(parameterType)
+				.Append("\" : \"")
+				.AppendType(parameterType)
+				.AppendLine("\";");
+		}
+
+		stringBuilder
+			.Indent(indent).Append("var verifyName = string.Format(_name, ");
+
+		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+		{
+			if (i != 0)
+				stringBuilder.Append(", ");
+
+			stringBuilder
+				.Append("typeName")
+				.Append(i + 1);
+		}
+
+		return stringBuilder
+			.Append(");")
 			.ToString();
 	}
 
