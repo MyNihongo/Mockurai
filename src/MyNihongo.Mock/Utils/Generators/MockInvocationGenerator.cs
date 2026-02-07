@@ -227,7 +227,49 @@ internal static class MockInvocationGenerator
 			.Indent(indent).AppendVerifyLoopEnd(type).AppendLine()
 			.Indent(--indent).AppendLine("}");
 
+		switch (type)
+		{
+			case VerifyMethodType.Times:
+				stringBuilder
+					.AppendLine()
+					.Indent(indent).AppendLine("if (times.Predicate(count))")
+					.Indent(indent + 1).AppendLine("return;");
+
+				break;
+			case VerifyMethodType.Index:
+				stringBuilder
+					.AppendLine()
+					.Indent(indent).AppendLine("if (invocationProviders is null)")
+					.Indent(indent++).AppendLine("{")
+					.Indent(indent).AppendLine("span = _invocations.GetItemsSpanBefore(index);")
+					.Indent(indent).AppendLine("for (var i = 0; i < span.Length; i++)")
+					.Indent(indent + 1).AppendLine("verifyOutput.Insert(i, (span[i], null));")
+					.Indent(--indent).AppendLine("}");
+				break;
+		}
+
+		stringBuilder
+			.AppendLine()
+			.Indent(indent).AppendLine("var invocations = verifyOutput.GetStrings(invocationProviders);")
+			.Indent(indent).Append("var verifyName = string.Format(_name,");
+
+		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+		{
+			if (i != 0)
+				stringBuilder.Append(", ");
+
+			stringBuilder
+				.AppendParameterName(methodSymbol.Parameters[i].Name)
+				.Append(".ToString(")
+				.AppendFieldName(PrefixName)
+				.Append(i + 1)
+				.Append(')');
+		}
+
+		stringBuilder.AppendLine(");");
+
 		return stringBuilder
+			.Indent(indent).AppendVerifyThrow(type).AppendLine()
 			.Indent(--indent).AppendLine("}")
 			.ToString();
 	}
@@ -291,6 +333,18 @@ internal static class MockInvocationGenerator
 			{
 				VerifyMethodType.Times => "count++;",
 				VerifyMethodType.Index => "return span[i].Index + 1;",
+				_ => throw new ArgumentOutOfRangeException(nameof(type), type, $"Unknown verify method type: {type}"),
+			};
+
+			return @this.Append(parameter);
+		}
+
+		private StringBuilder AppendVerifyThrow(VerifyMethodType type)
+		{
+			var parameter = type switch
+			{
+				VerifyMethodType.Times => "throw new MockVerifyCountException(verifyName, times, count, invocations);",
+				VerifyMethodType.Index => "throw new MockVerifySequenceOutOfRangeException(verifyName, index, invocations);",
 				_ => throw new ArgumentOutOfRangeException(nameof(type), type, $"Unknown verify method type: {type}"),
 			};
 
