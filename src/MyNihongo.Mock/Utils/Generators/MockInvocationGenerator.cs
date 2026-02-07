@@ -20,6 +20,7 @@ internal static class MockInvocationGenerator
 			  	private readonly InvocationContainer<Item> _invocations = [];
 
 			  {{CreateConstructor(stringBuilder, methodSymbol, indent: 1)}}
+			  {{CreateRegister(stringBuilder, methodSymbol, indent: 1)}}
 			  }
 			  """;
 
@@ -86,6 +87,28 @@ internal static class MockInvocationGenerator
 
 		return stringBuilder
 			.Indent(--indent).AppendLine("}")
+			.ToString();
+	}
+
+	private static string CreateRegister(StringBuilder stringBuilder, IMethodSymbol methodSymbol, int indent)
+	{
+		stringBuilder.Clear();
+
+		stringBuilder
+			.Indent(indent)
+			.Append("public void Register(in InvocationIndex.Counter index, ")
+			.AppendParameters(methodSymbol.Parameters)
+			.AppendLine(")");
+
+		stringBuilder
+			.Indent(indent++).AppendLine("{")
+			.Indent(indent).AppendLine("var invokedIndex = index.Increment();")
+			.Indent(indent).Append("_invocations.Add(new Item(invokedIndex, ")
+			.AppendParameterNames(methodSymbol.Parameters, appendComma: true)
+			.AppendLine("invocation: this));")
+			.Indent(--indent).AppendLine("}");
+
+		return stringBuilder
 			.ToString();
 	}
 
