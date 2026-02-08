@@ -38,7 +38,7 @@ internal static class MockInvocationGenerator
 			  	{
 			  		return _invocations;
 			  	}
-			  	
+
 			  	private sealed class Item : IInvocation
 			  	{
 			  {{CreateItemFields(stringBuilder, methodSymbol, indent: 2)}}
@@ -55,6 +55,8 @@ internal static class MockInvocationGenerator
 			  		public override string ToString()
 			  		{
 			  			var stringBuilder = new System.Text.StringBuilder();
+			  {{CreateToStringMethod(stringBuilder, methodSymbol, indent: 3)}}
+			  			return $"{Index}: {value}";
 			  		}
 			  	}
 			  }
@@ -77,7 +79,7 @@ internal static class MockInvocationGenerator
 
 			stringBuilder
 				.AppendFieldName(PrefixName)
-				.Append(i + 1);
+				.AppendPropertyName(methodSymbol.Parameters[i].Name);
 		}
 
 		return stringBuilder.ToString();
@@ -101,7 +103,7 @@ internal static class MockInvocationGenerator
 			stringBuilder
 				.Append("string? ")
 				.AppendParameterName(PrefixName)
-				.Append(i + 1)
+				.AppendPropertyName(methodSymbol.Parameters[i].Name)
 				.Append(" = null");
 		}
 
@@ -110,12 +112,12 @@ internal static class MockInvocationGenerator
 			.Indent(indent++).AppendLine("{")
 			.Indent(indent).AppendLine("_name = name;");
 
-		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+		foreach (var parameter in methodSymbol.Parameters)
 		{
 			stringBuilder
 				.Indent(indent)
 				.AppendFieldName(PrefixName)
-				.Append(i + 1)
+				.AppendPropertyName(parameter.Name)
 				.Append(" = ")
 				.AppendParameterName(PrefixName)
 				.AppendLine(";");
@@ -289,14 +291,16 @@ internal static class MockInvocationGenerator
 
 		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
+			var parameterName = methodSymbol.Parameters[i].Name;
+
 			if (i != 0)
 				stringBuilder.Append(", ");
 
 			stringBuilder
-				.AppendParameterName(methodSymbol.Parameters[i].Name)
+				.AppendParameterName(parameterName)
 				.Append(".ToString(")
 				.AppendFieldName(PrefixName)
-				.Append(i + 1)
+				.AppendPropertyName(parameterName)
 				.Append(')');
 		}
 
@@ -315,24 +319,21 @@ internal static class MockInvocationGenerator
 	{
 		stringBuilder.Clear();
 
-		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+		foreach (var parameter in methodSymbol.Parameters)
 		{
-			var parameterIndex = i + 1;
-			var parameterType = methodSymbol.Parameters[i].Type;
-
 			stringBuilder
 				.Indent(indent)
 				.Append("var typeName")
-				.Append(parameterIndex)
+				.AppendPropertyName(parameter.Name)
 				.Append(" = !string.IsNullOrEmpty(")
 				.AppendFieldName(PrefixName)
-				.Append(parameterIndex)
+				.AppendPropertyName(parameter.Name)
 				.Append(") ? $\"{")
 				.AppendFieldName(PrefixName)
 				.Append("} ")
-				.AppendType(parameterType)
+				.AppendType(parameter.Type)
 				.Append("\" : \"")
-				.AppendType(parameterType)
+				.AppendType(parameter.Type)
 				.AppendLine("\";");
 		}
 
@@ -346,7 +347,7 @@ internal static class MockInvocationGenerator
 
 			stringBuilder
 				.Append("typeName")
-				.Append(i + 1);
+				.AppendPropertyName(methodSymbol.Parameters[i].Name);
 		}
 
 		return stringBuilder
@@ -489,6 +490,80 @@ internal static class MockInvocationGenerator
 		}
 
 		return stringBuilder
+			.ToString();
+	}
+
+	private static string CreateToStringMethod(StringBuilder stringBuilder, IMethodSymbol methodSymbol, int indent)
+	{
+		stringBuilder.Clear();
+
+		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+		{
+			var parameterName = methodSymbol.Parameters[i].Name;
+
+			stringBuilder
+				.AppendLine()
+				.Indent(indent)
+				.Append("// ")
+				.AppendParameterName(parameterName)
+				.AppendLine();
+
+			if (i != 0)
+				stringBuilder
+					.Indent(indent)
+					.AppendLine("stringBuilder.Clear();");
+
+			stringBuilder
+				.Indent(indent)
+				.Append("if (!string.IsNullOrEmpty(_invocation.")
+				.AppendFieldName(PrefixName)
+				.AppendPropertyName(parameterName)
+				.AppendLine("))");
+
+			stringBuilder
+				.Indent(indent + 1)
+				.Append("stringBuilder.Append($\"{_invocation.")
+				.AppendFieldName(PrefixName)
+				.AppendPropertyName(parameterName)
+				.AppendLine("} \");");
+
+			stringBuilder
+				.Indent(indent)
+				.Append("if (!string.IsNullOrEmpty(")
+				.AppendFieldName(JsonSnapshotName)
+				.AppendPropertyName(parameterName)
+				.AppendLine("))");
+
+			stringBuilder
+				.Indent(indent + 1)
+				.Append("stringBuilder.Append(")
+				.AppendFieldName(JsonSnapshotName)
+				.AppendPropertyName(parameterName)
+				.AppendLine(");");
+
+			stringBuilder
+				.Indent(indent)
+				.AppendLine("else");
+
+			stringBuilder
+				.Indent(indent + 1)
+				.Append("stringBuilder.Append(")
+				.AppendParameterName(parameterName)
+				.AppendLine(");");
+
+			stringBuilder
+				.Indent(indent)
+				.Append("var ")
+				.AppendParameterName(parameterName)
+				.AppendLine(" = stringBuilder.ToString();");
+		}
+
+		return stringBuilder
+			.AppendLine()
+			.Indent(indent)
+			.Append("var value = string.Format(_invocation._name, ")
+			.AppendParameterNames(methodSymbol.Parameters)
+			.Append(");")
 			.ToString();
 	}
 
