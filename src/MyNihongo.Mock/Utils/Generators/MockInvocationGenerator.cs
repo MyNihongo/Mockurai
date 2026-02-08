@@ -50,6 +50,8 @@ internal static class MockInvocationGenerator
 
 			  		public bool IsVerified { get; set; }
 
+			  {{CreateItemGetMethods(stringBuilder, methodSymbol, indent: 2)}}
+
 			  		public override string ToString()
 			  		{
 			  			var stringBuilder = new System.Text.StringBuilder();
@@ -400,12 +402,11 @@ internal static class MockInvocationGenerator
 		stringBuilder
 			.Indent(indent++).AppendLine("{")
 			.Indent(indent).AppendLine("_invocation = invocation;")
-			.Indent(indent).Append("Index = index;");
+			.Indent(indent).AppendLine("Index = index;");
 
 		foreach (var parameter in methodSymbol.Parameters)
 		{
 			stringBuilder
-				.AppendLine()
 				.AppendLine()
 				.Indent(indent)
 				.AppendLine("try")
@@ -437,6 +438,57 @@ internal static class MockInvocationGenerator
 
 		return stringBuilder
 			.Indent(--indent).Append('}')
+			.ToString();
+	}
+
+	private static string CreateItemGetMethods(StringBuilder stringBuilder, IMethodSymbol methodSymbol, int indent)
+	{
+		stringBuilder.Clear();
+
+		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+		{
+			var parameter = methodSymbol.Parameters[i];
+
+			if (i != 0)
+				stringBuilder.AppendLine().AppendLine();
+
+			stringBuilder
+				.Indent(indent)
+				.Append("public ")
+				.AppendType(parameter.Type)
+				.Append(" Get")
+				.AppendPropertyName(parameter.Name)
+				.AppendLine("(SetupType setupType)")
+				.Indent(indent++).AppendLine("{");
+
+			stringBuilder
+				.Indent(indent)
+				.Append("return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(")
+				.AppendFieldName(JsonSnapshotName)
+				.AppendPropertyName(parameter.Name)
+				.AppendLine(")");
+
+			stringBuilder
+				.Indent(indent + 1)
+				.Append("? JsonSerializer.Deserialize<")
+				.AppendType(parameter.Type)
+				.Append(">(")
+				.AppendFieldName(JsonSnapshotName)
+				.AppendPropertyName(parameter.Name)
+				.AppendLine(")");
+
+			stringBuilder
+				.Indent(indent + 1)
+				.Append(": ")
+				.AppendFieldName(parameter.Name)
+				.AppendLine(";");
+
+			stringBuilder
+				.Indent(--indent)
+				.Append('}');
+		}
+
+		return stringBuilder
 			.ToString();
 	}
 
