@@ -41,6 +41,8 @@ internal static class MockInvocationGenerator
 			  	
 			  	private sealed class Item : IInvocation
 			  	{
+			  {{CreateItemFields(stringBuilder, methodSymbol, indent: 2)}}
+			  		private readonly {{className}} _invocation;
 			  	}
 			  }
 			  """;
@@ -336,6 +338,40 @@ internal static class MockInvocationGenerator
 
 		return stringBuilder
 			.Append(");")
+			.ToString();
+	}
+
+	private static string CreateItemFields(StringBuilder stringBuilder, IMethodSymbol methodSymbol, int indent)
+	{
+		stringBuilder.Clear();
+
+		foreach (var parameter in methodSymbol.Parameters)
+		{
+			stringBuilder
+				.Indent(indent)
+				.Append("private readonly ")
+				.AppendType(parameter.Type)
+				.Append(' ')
+				.AppendFieldName(parameter.Name)
+				.AppendLine(";");
+		}
+
+		stringBuilder
+			.Indent(indent)
+			.Append("private readonly string? ");
+
+		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+		{
+			if (i != 0)
+				stringBuilder.Append(", ");
+
+			stringBuilder
+				.AppendFieldName("jsonSnapshot")
+				.AppendPropertyName(methodSymbol.Parameters[i].Name);
+		}
+
+		return stringBuilder
+			.Append(';')
 			.ToString();
 	}
 
