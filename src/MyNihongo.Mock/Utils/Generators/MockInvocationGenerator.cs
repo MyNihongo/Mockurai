@@ -2,7 +2,7 @@ namespace MyNihongo.Mock.Utils;
 
 internal static class MockInvocationGenerator
 {
-	private const string PrefixName = "prefix";
+	private const string PrefixName = "prefix", JsonSnapshotName = "jsonSnapshot";
 
 	public static MockSetupResult GenerateMockInvocation(this IMethodSymbol methodSymbol, CompilationCombinedResult result)
 	{
@@ -43,6 +43,17 @@ internal static class MockInvocationGenerator
 			  	{
 			  {{CreateItemFields(stringBuilder, methodSymbol, indent: 2)}}
 			  		private readonly {{className}} _invocation;
+
+			  {{CreateItemConstructor(stringBuilder, methodSymbol, indent: 2)}}
+
+			  		public long Index { get; }
+
+			  		public bool IsVerified { get; set; }
+
+			  		public override string ToString()
+			  		{
+			  			var stringBuilder = new System.Text.StringBuilder();
+			  		}
 			  	}
 			  }
 			  """;
@@ -366,12 +377,66 @@ internal static class MockInvocationGenerator
 				stringBuilder.Append(", ");
 
 			stringBuilder
-				.AppendFieldName("jsonSnapshot")
+				.AppendFieldName(JsonSnapshotName)
 				.AppendPropertyName(methodSymbol.Parameters[i].Name);
 		}
 
 		return stringBuilder
 			.Append(';')
+			.ToString();
+	}
+
+	private static string CreateItemConstructor(StringBuilder stringBuilder, IMethodSymbol methodSymbol, int indent)
+	{
+		stringBuilder.Clear();
+
+		stringBuilder
+			.Indent(indent)
+			.Append("public Item(long index, ")
+			.AppendParameters(methodSymbol.Parameters, appendComma: true)
+			.AppendInvocationClassName(methodSymbol.Parameters)
+			.AppendLine(" invocation)");
+
+		stringBuilder
+			.Indent(indent++).AppendLine("{")
+			.Indent(indent).AppendLine("_invocation = invocation;")
+			.Indent(indent).Append("Index = index;");
+
+		foreach (var parameter in methodSymbol.Parameters)
+		{
+			stringBuilder
+				.AppendLine()
+				.AppendLine()
+				.Indent(indent)
+				.AppendLine("try")
+				.Indent(indent++).AppendLine("{");
+
+			stringBuilder
+				.Indent(indent)
+				.AppendFieldName(parameter.Name)
+				.Append(" = ")
+				.AppendParameterName(parameter.Name)
+				.AppendLine(";");
+
+			stringBuilder
+				.Indent(indent)
+				.AppendFieldName(JsonSnapshotName)
+				.AppendPropertyName(parameter.Name)
+				.Append(" = System.Text.Json.Serialize(")
+				.AppendParameterName(parameter.Name)
+				.AppendLine(");");
+
+			stringBuilder
+				.Indent(--indent)
+				.AppendLine("}")
+				.Indent(indent).AppendLine("catch")
+				.Indent(indent).AppendLine("{")
+				.Indent(indent + 1).AppendLine("// Swallow")
+				.Indent(indent).AppendLine("}");
+		}
+
+		return stringBuilder
+			.Indent(--indent).Append('}')
 			.ToString();
 	}
 

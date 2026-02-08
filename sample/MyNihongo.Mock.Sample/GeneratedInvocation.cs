@@ -141,13 +141,12 @@ public sealed class InvocationIntInt : IInvocationVerify
 
 		public Item(in long index, in int parameter1, in int parameter2, in InvocationIntInt invocation)
 		{
-			_parameter1 = parameter1;
-			_parameter2 = parameter2;
 			_invocation = invocation;
 			Index = index;
 
 			try
 			{
+				_parameter1 = parameter1;
 				_jsonSnapshot1 = JsonSerializer.Serialize(parameter1);
 			}
 			catch
@@ -157,6 +156,7 @@ public sealed class InvocationIntInt : IInvocationVerify
 
 			try
 			{
+				_parameter2 = parameter2;
 				_jsonSnapshot2 = JsonSerializer.Serialize(parameter2);
 			}
 			catch

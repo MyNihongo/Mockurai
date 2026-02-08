@@ -22,14 +22,17 @@ internal static class ParameterSymbolEx
 	// TODO: when there is more time try to optimize appending instead of appending strings of ITypeSymbol, IPropertySymbol, etc
 	extension(StringBuilder @this)
 	{
-		public StringBuilder AppendParameters(ImmutableArray<IParameterSymbol> parameters)
+		public StringBuilder AppendParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
-				if (i > 0)
+				if (!appendComma && i > 0)
 					@this.Append(", ");
 
 				@this.AppendParameter(parameters[i]);
+
+				if (appendComma)
+					@this.Append(", ");
 			}
 
 			return @this;
