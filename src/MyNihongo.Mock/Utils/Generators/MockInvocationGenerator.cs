@@ -24,7 +24,7 @@ internal static class MockInvocationGenerator
 			  {{CreateVerifyMethod(stringBuilder, methodSymbol, VerifyMethodType.Times, indent: 1)}}
 			  {{CreateVerifyMethod(stringBuilder, methodSymbol, VerifyMethodType.Index, indent: 1, appendNewLine: false)}}
 
-			  	public void VerifyNoOtherCalls(System.Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
+			  	public void VerifyNoOtherCalls(System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 			  	{
 			  		var unverifiedItems = _invocations.GetUnverifiedInvocations(invocationProviders);
 			  		if (unverifiedItems is null)
@@ -34,7 +34,7 @@ internal static class MockInvocationGenerator
 			  		throw new MockUnverifiedException(verifyName, unverifiedItems);
 			  	}
 
-			  	public IEnumerable<IInvocation> GetInvocations()
+			  	public System.Collections.Generic.IEnumerable<IInvocation> GetInvocations()
 			  	{
 			  		return _invocations;
 			  	}

@@ -24,7 +24,7 @@ internal static class MockSetupGenerator
 
 			  	private sealed class Item
 			  	{
-			  		private readonly Queue<ItemSetup> _queue = [];
+			  		private readonly System.Collections.Generic.Queue<ItemSetup> _queue = [];
 			  		private ItemSetup? _currentSetup;
 			  		public bool AndContinue;
 
@@ -45,7 +45,7 @@ internal static class MockSetupGenerator
 			  			}
 			  		}
 
-			  		public void Add(in Exception exception)
+			  		public void Add(in System.Exception exception)
 			  		{
 			  			if (AndContinue && _currentSetup is not null)
 			  			{
@@ -76,11 +76,11 @@ internal static class MockSetupGenerator
 			  		public static readonly ItemSetup Default = new();
 
 			  		public CallbackDelegate? Callback;
-			  		public Exception? Exception;
+			  		public System.Exception? Exception;
 			  {{CreateItemSetupDeclaration(stringBuilder, returnType, indent: 2)}}
 			  	}
 
-			  	private sealed class Comparer: IComparer<Item>
+			  	private sealed class Comparer: System.Collections.Generic.IComparer<Item>
 			  	{
 			  		public int Compare(Item? x, Item? y)
 			  		{
@@ -268,7 +268,7 @@ internal static class MockSetupGenerator
 			stringBuilder.Append("in ReturnsCallbackDelegate? returns = null, ");
 
 		stringBuilder
-			.AppendLine("in CallbackDelegate? callback = null, in Exception? exception = null)")
+			.AppendLine("in CallbackDelegate? callback = null, in System.Exception? exception = null)")
 			.Indent(indent++).AppendLine("{");
 
 		if (returnType is not null)
@@ -374,7 +374,7 @@ internal static class MockSetupGenerator
 
 		private StringBuilder AppendThrowsInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, int indent)
 		{
-			const string methodDeclaration = ".Throws(in Exception exception)", methodCall = "Throws(exception);";
+			const string methodDeclaration = ".Throws(in System.Exception exception)", methodCall = "Throws(exception);";
 
 			string setupThrowsJoin, setupThrowsStart, setupThrowsReset;
 			if (returnTypeSymbol is null)
@@ -624,7 +624,7 @@ file static class Extensions
 				.Indent(indent).AppendLine("public void Callback(in CallbackDelegate callback)")
 				.Indent(indent++).AppendLine("{")
 				.Indent(indent).AppendLine("if (_currentSetup is null)")
-				.Indent(indent + 1).AppendLine("""throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");""").AppendLine()
+				.Indent(indent + 1).AppendLine("""throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");""").AppendLine()
 				.Indent(indent).AppendLine("_currentSetup.Add(callback);");
 
 			return stringBuilder
@@ -634,10 +634,10 @@ file static class Extensions
 		public StringBuilder AppendThrowsMethod(int indent)
 		{
 			return stringBuilder
-				.Indent(indent).AppendLine("public void Throws(in Exception exception)")
+				.Indent(indent).AppendLine("public void Throws(in System.Exception exception)")
 				.Indent(indent++).AppendLine("{")
 				.Indent(indent).AppendLine("if (_currentSetup is null)")
-				.Indent(indent + 1).AppendLine("""throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");""").AppendLine()
+				.Indent(indent + 1).AppendLine("""throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");""").AppendLine()
 				.Indent(indent).AppendLine("_currentSetup.Add(exception);")
 				.Indent(--indent).AppendLine("}");
 		}
@@ -656,7 +656,7 @@ file static class Extensions
 				.Indent(indent).AppendLine("public void Returns(in ReturnsCallbackDelegate returns)")
 				.Indent(indent++).AppendLine("{")
 				.Indent(indent).AppendLine("if (_currentSetup is null)")
-				.Indent(indent + 1).AppendLine("""throw new InvalidOperationException("Parameters are not set, call SetupParameters first!");""").AppendLine()
+				.Indent(indent + 1).AppendLine("""throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");""").AppendLine()
 				.Indent(indent).AppendLine("_currentSetup.Add(returns);")
 				.Indent(--indent).AppendLine("}");
 		}
