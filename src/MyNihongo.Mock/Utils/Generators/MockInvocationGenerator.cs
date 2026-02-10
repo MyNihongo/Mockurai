@@ -24,7 +24,7 @@ internal static class MockInvocationGenerator
 			  {{CreateVerifyMethod(stringBuilder, methodSymbol, VerifyMethodType.Times, indent: 1)}}
 			  {{CreateVerifyMethod(stringBuilder, methodSymbol, VerifyMethodType.Index, indent: 1, appendNewLine: false)}}
 
-			  	public void VerifyNoOtherCalls(Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
+			  	public void VerifyNoOtherCalls(System.Func<IEnumerable<IInvocationProvider?>>? invocationProviders = null)
 			  	{
 			  		var unverifiedItems = _invocations.GetUnverifiedInvocations(invocationProviders);
 			  		if (unverifiedItems is null)
@@ -77,9 +77,7 @@ internal static class MockInvocationGenerator
 			if (i != 0)
 				stringBuilder.Append(", ");
 
-			stringBuilder
-				.AppendFieldName(PrefixName)
-				.AppendPropertyName(methodSymbol.Parameters[i].Name);
+			stringBuilder.AppendPrefixField(methodSymbol.Parameters[i].Name);
 		}
 
 		return stringBuilder.ToString();
@@ -102,8 +100,7 @@ internal static class MockInvocationGenerator
 
 			stringBuilder
 				.Append("string? ")
-				.AppendParameterName(PrefixName)
-				.AppendPropertyName(methodSymbol.Parameters[i].Name)
+				.AppendPrefixParameter(methodSymbol.Parameters[i].Name)
 				.Append(" = null");
 		}
 
@@ -116,10 +113,9 @@ internal static class MockInvocationGenerator
 		{
 			stringBuilder
 				.Indent(indent)
-				.AppendFieldName(PrefixName)
-				.AppendPropertyName(parameter.Name)
+				.AppendPrefixField(parameter.Name)
 				.Append(" = ")
-				.AppendParameterName(PrefixName)
+				.AppendPrefixParameter(parameter.Name)
 				.AppendLine(";");
 		}
 
@@ -161,7 +157,7 @@ internal static class MockInvocationGenerator
 			.Append(" Verify(")
 			.AppendItSetupParameters(methodSymbol.Parameters, appendComma: true)
 			.AppendVerifyParameter(type)
-			.AppendLine(", Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>>? invocationProviders = null)");
+			.AppendLine(", System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>>? invocationProviders = null)");
 
 		stringBuilder
 			.Indent(indent++).AppendLine("{")
@@ -299,8 +295,7 @@ internal static class MockInvocationGenerator
 			stringBuilder
 				.AppendParameterName(parameterName)
 				.Append(".ToString(")
-				.AppendFieldName(PrefixName)
-				.AppendPropertyName(parameterName)
+				.AppendPrefixField(parameterName)
 				.Append(')');
 		}
 
@@ -326,10 +321,9 @@ internal static class MockInvocationGenerator
 				.Append("var typeName")
 				.AppendPropertyName(parameter.Name)
 				.Append(" = !string.IsNullOrEmpty(")
-				.AppendFieldName(PrefixName)
-				.AppendPropertyName(parameter.Name)
+				.AppendPrefixField(parameter.Name)
 				.Append(") ? $\"{")
-				.AppendFieldName(PrefixName)
+				.AppendPrefixField(parameter.Name)
 				.Append("} ")
 				.AppendType(parameter.Type)
 				.Append("\" : \"")
@@ -424,7 +418,7 @@ internal static class MockInvocationGenerator
 				.Indent(indent)
 				.AppendFieldName(JsonSnapshotName)
 				.AppendPropertyName(parameter.Name)
-				.Append(" = System.Text.Json.Serialize(")
+				.Append(" = System.Text.Json.JsonSerializer.Serialize(")
 				.AppendParameterName(parameter.Name)
 				.AppendLine(");");
 
@@ -516,15 +510,13 @@ internal static class MockInvocationGenerator
 			stringBuilder
 				.Indent(indent)
 				.Append("if (!string.IsNullOrEmpty(_invocation.")
-				.AppendFieldName(PrefixName)
-				.AppendPropertyName(parameterName)
+				.AppendPrefixField(parameterName)
 				.AppendLine("))");
 
 			stringBuilder
 				.Indent(indent + 1)
 				.Append("stringBuilder.Append($\"{_invocation.")
-				.AppendFieldName(PrefixName)
-				.AppendPropertyName(parameterName)
+				.AppendPrefixField(parameterName)
 				.AppendLine("} \");");
 
 			stringBuilder
@@ -650,6 +642,20 @@ internal static class MockInvocationGenerator
 				.Append("(\"")
 				.Append(parameterName)
 				.Append("\", result)");
+		}
+
+		private StringBuilder AppendPrefixField(string name)
+		{
+			return @this
+				.AppendFieldName(PrefixName)
+				.AppendPropertyName(name);
+		}
+
+		private StringBuilder AppendPrefixParameter(string name)
+		{
+			return @this
+				.AppendParameterName(PrefixName)
+				.AppendPropertyName(name);
 		}
 	}
 }
