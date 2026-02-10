@@ -25,13 +25,13 @@ public abstract class TestsBase
 		var className = string.Join(null, types);
 		var parameters = string.Join(", ", types.Select(static (x, i) => $"{x.GetTypeString()} param{i + 1}"));
 		var parameterNames = string.Join(", ", types.Select(static (_, i) => $"param{i + 1}"));
-		var invoke = string.Join(Environment.NewLine + '\t', types.Select(static (_, i) =>
+		var invoke = string.Join(Environment.NewLine + "\t\t\t", types.Select(static (_, i) =>
 		{
 			var index = i + 1;
 
 			return
 				$"""
-				 		if (setup.Param{index}.HasValue && !setup.Param{index}.Value.Check(param{index}))
+				 if (setup.Param{index}.HasValue && !setup.Param{index}.Value.Check(param{index}))
 				 				continue;
 				 """;
 		}));
@@ -55,7 +55,7 @@ public abstract class TestsBase
 
 			  		foreach (var setup in _setups)
 			  		{
-			  	{{invoke}}
+			  			{{invoke}}
 
 			  			var x = setup.GetSetup();
 			  			x.Callback?.Invoke({{parameterNames}});
