@@ -465,7 +465,7 @@ internal static class MockInvocationGenerator
 
 			stringBuilder
 				.Indent(indent + 1)
-				.Append("? JsonSerializer.Deserialize<")
+				.Append("? System.Text.Json.JsonSerializer.Deserialize<")
 				.AppendType(parameter.Type)
 				.Append(">(")
 				.AppendFieldName(JsonSnapshotName)
@@ -540,7 +540,7 @@ internal static class MockInvocationGenerator
 			stringBuilder
 				.Indent(indent + 1)
 				.Append("stringBuilder.Append(")
-				.AppendParameterName(parameterName)
+				.AppendFieldName(parameterName)
 				.AppendLine(");");
 
 			stringBuilder
