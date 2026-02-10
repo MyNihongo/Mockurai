@@ -36,7 +36,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		const string proxy = "public void Invoke(int param1, float param2) {}";
 
 		var testCode = CreateInterfaceTestCode(method);
-		var setupCode = CreateSetupCode();
+		var setupCode = CreateSetupCode("Int32", "Single");
 		var invocationCode = CreateInvocationCode();
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, setupCode, invocationCode);
 

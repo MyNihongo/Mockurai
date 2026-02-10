@@ -20,203 +20,206 @@ public abstract class TestsBase
 		};
 	}
 
-	protected static GeneratedSource CreateSetupCode()
+	protected static GeneratedSource CreateSetupCode(params string[] types)
 	{
+		var className = string.Join(null, types);
+		var parameters = string.Join(", ", types.Select(static (x, i) => $"{x.GetTypeString()} param{i + 1}"));
+
 		var sourceCode =
-			"""
-			namespace MyNihongo.Mock;
+			$$"""
+			  namespace MyNihongo.Mock;
 
-			public sealed class SetupInt32Single : ISetupCallbackJoin<SetupInt32Single.CallbackDelegate>, ISetupCallbackReset<SetupInt32Single.CallbackDelegate>, ISetupThrowsJoin<SetupInt32Single.CallbackDelegate>, ISetupThrowsReset<SetupInt32Single.CallbackDelegate>
-			{
-				private static readonly Comparer SortComparer = new();
-				private SetupContainer<Item>? _setups;
-				private Item? _currentSetup;
+			  public sealed class Setup{{className}} : ISetupCallbackJoin<Setup{{className}}.CallbackDelegate>, ISetupCallbackReset<Setup{{className}}.CallbackDelegate>, ISetupThrowsJoin<Setup{{className}}.CallbackDelegate>, ISetupThrowsReset<Setup{{className}}.CallbackDelegate>
+			  {
+			  	private static readonly Comparer SortComparer = new();
+			  	private SetupContainer<Item>? _setups;
+			  	private Item? _currentSetup;
 
-				public delegate void CallbackDelegate(int param1, float param2);
+			  	public delegate void CallbackDelegate({{parameters}});
 
-				public void Invoke(int param1, float param2)
-				{
-					if (_setups is null)
-						return;
+			  	public void Invoke({{parameters}})
+			  	{
+			  		if (_setups is null)
+			  			return;
 
-					foreach (var setup in _setups)
-					{
-						if (setup.Param1.HasValue && !setup.Param1.Value.Check(param1))
-							continue;
-						if (setup.Param2.HasValue && !setup.Param2.Value.Check(param2))
-							continue;
+			  		foreach (var setup in _setups)
+			  		{
+			  			if (setup.Param1.HasValue && !setup.Param1.Value.Check(param1))
+			  				continue;
+			  			if (setup.Param2.HasValue && !setup.Param2.Value.Check(param2))
+			  				continue;
 
-						var x = setup.GetSetup();
-						x.Callback?.Invoke(param1, param2);
+			  			var x = setup.GetSetup();
+			  			x.Callback?.Invoke(param1, param2);
 
-						if (x.Exception is not null)
-							throw x.Exception;
+			  			if (x.Exception is not null)
+			  				throw x.Exception;
 
-						return;
-					}
-				}
+			  			return;
+			  		}
+			  	}
 
-				public void SetupParameters(in ItSetup<int> param1, in ItSetup<float> param2)
-				{
-					_currentSetup = new Item(param1, param2);
+			  	public void SetupParameters(in ItSetup<int> param1, in ItSetup<float> param2)
+			  	{
+			  		_currentSetup = new Item(param1, param2);
 
-					_setups ??= new SetupContainer<Item>(SortComparer);
-					_setups.Add(_currentSetup);
-				}
+			  		_setups ??= new SetupContainer<Item>(SortComparer);
+			  		_setups.Add(_currentSetup);
+			  	}
 
-				public void Callback(in CallbackDelegate callback)
-				{
-					if (_currentSetup is null)
-						throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
+			  	public void Callback(in CallbackDelegate callback)
+			  	{
+			  		if (_currentSetup is null)
+			  			throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-					_currentSetup.Add(callback);
-				}
+			  		_currentSetup.Add(callback);
+			  	}
 
-				public void Throws(in System.Exception exception)
-				{
-					if (_currentSetup is null)
-						throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
+			  	public void Throws(in System.Exception exception)
+			  	{
+			  		if (_currentSetup is null)
+			  			throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-					_currentSetup.Add(exception);
-				}
+			  		_currentSetup.Add(exception);
+			  	}
 
-				ISetupCallbackJoin<SetupInt32Single.CallbackDelegate> ISetupCallbackStart<SetupInt32Single.CallbackDelegate>.Callback(in CallbackDelegate callback)
-				{
-					Callback(callback);
-					return this;
-				}
+			  	ISetupCallbackJoin<Setup{{className}}.CallbackDelegate> ISetupCallbackStart<Setup{{className}}.CallbackDelegate>.Callback(in CallbackDelegate callback)
+			  	{
+			  		Callback(callback);
+			  		return this;
+			  	}
 
-				ISetup<SetupInt32Single.CallbackDelegate> ISetupCallbackReset<SetupInt32Single.CallbackDelegate>.Callback(in CallbackDelegate callback)
-				{
-					Callback(callback);
-					return this;
-				}
+			  	ISetup<Setup{{className}}.CallbackDelegate> ISetupCallbackReset<Setup{{className}}.CallbackDelegate>.Callback(in CallbackDelegate callback)
+			  	{
+			  		Callback(callback);
+			  		return this;
+			  	}
 
-				ISetupThrowsJoin<SetupInt32Single.CallbackDelegate> ISetupThrowsStart<SetupInt32Single.CallbackDelegate>.Throws(in System.Exception exception)
-				{
-					Throws(exception);
-					return this;
-				}
+			  	ISetupThrowsJoin<Setup{{className}}.CallbackDelegate> ISetupThrowsStart<Setup{{className}}.CallbackDelegate>.Throws(in System.Exception exception)
+			  	{
+			  		Throws(exception);
+			  		return this;
+			  	}
 
-				ISetup<SetupInt32Single.CallbackDelegate> ISetupThrowsReset<SetupInt32Single.CallbackDelegate>.Throws(in System.Exception exception)
-				{
-					Throws(exception);
-					return this;
-				}
+			  	ISetup<Setup{{className}}.CallbackDelegate> ISetupThrowsReset<Setup{{className}}.CallbackDelegate>.Throws(in System.Exception exception)
+			  	{
+			  		Throws(exception);
+			  		return this;
+			  	}
 
-				ISetupCallbackReset<SetupInt32Single.CallbackDelegate> ISetupThrowsJoin<SetupInt32Single.CallbackDelegate>.And()
-				{
-					_currentSetup?.AndContinue = true;
-					return this;
-				}
+			  	ISetupCallbackReset<Setup{{className}}.CallbackDelegate> ISetupThrowsJoin<Setup{{className}}.CallbackDelegate>.And()
+			  	{
+			  		_currentSetup?.AndContinue = true;
+			  		return this;
+			  	}
 
-				ISetupThrowsReset<SetupInt32Single.CallbackDelegate> ISetupCallbackJoin<SetupInt32Single.CallbackDelegate>.And()
-				{
-					_currentSetup?.AndContinue = true;
-					return this;
-				}
+			  	ISetupThrowsReset<Setup{{className}}.CallbackDelegate> ISetupCallbackJoin<Setup{{className}}.CallbackDelegate>.And()
+			  	{
+			  		_currentSetup?.AndContinue = true;
+			  		return this;
+			  	}
 
-				private sealed class Item
-				{
-					private readonly System.Collections.Generic.Queue<ItemSetup> _queue = [];
-					private ItemSetup? _currentSetup;
-					public bool AndContinue;
+			  	private sealed class Item
+			  	{
+			  		private readonly System.Collections.Generic.Queue<ItemSetup> _queue = [];
+			  		private ItemSetup? _currentSetup;
+			  		public bool AndContinue;
 
-					public readonly ItSetup<int>? Param1;
-					public readonly ItSetup<float>? Param2;
+			  		public readonly ItSetup<int>? Param1;
+			  		public readonly ItSetup<float>? Param2;
 
-					public Item(in ItSetup<int>? param1, in ItSetup<float>? param2)
-					{
-						Param1 = param1;
-						Param2 = param2;
-					}
+			  		public Item(in ItSetup<int>? param1, in ItSetup<float>? param2)
+			  		{
+			  			Param1 = param1;
+			  			Param2 = param2;
+			  		}
 
-					public void Add(in CallbackDelegate callback)
-					{
-						if (AndContinue && _currentSetup is not null)
-						{
-							_currentSetup.Callback = callback;
-							AndContinue = false;
-							_currentSetup = null;
-						}
-						else
-						{
-							_currentSetup = new ItemSetup(callback);
-							_queue.Enqueue(_currentSetup);
-						}
-					}
+			  		public void Add(in CallbackDelegate callback)
+			  		{
+			  			if (AndContinue && _currentSetup is not null)
+			  			{
+			  				_currentSetup.Callback = callback;
+			  				AndContinue = false;
+			  				_currentSetup = null;
+			  			}
+			  			else
+			  			{
+			  				_currentSetup = new ItemSetup(callback);
+			  				_queue.Enqueue(_currentSetup);
+			  			}
+			  		}
 
-					public void Add(in System.Exception exception)
-					{
-						if (AndContinue && _currentSetup is not null)
-						{
-							_currentSetup.Exception = exception;
-							AndContinue = false;
-							_currentSetup = null;
-						}
-						else
-						{
-							_currentSetup = new ItemSetup(exception: exception);
-							_queue.Enqueue(_currentSetup);
-						}
-					}
+			  		public void Add(in System.Exception exception)
+			  		{
+			  			if (AndContinue && _currentSetup is not null)
+			  			{
+			  				_currentSetup.Exception = exception;
+			  				AndContinue = false;
+			  				_currentSetup = null;
+			  			}
+			  			else
+			  			{
+			  				_currentSetup = new ItemSetup(exception: exception);
+			  				_queue.Enqueue(_currentSetup);
+			  			}
+			  		}
 
-					public ItemSetup GetSetup()
-					{
-						return _queue.Count switch
-						{
-							0 => ItemSetup.Default,
-							1 => _queue.Peek(),
-							_ => _queue.Dequeue(),
-						};
-					}
-				}
+			  		public ItemSetup GetSetup()
+			  		{
+			  			return _queue.Count switch
+			  			{
+			  				0 => ItemSetup.Default,
+			  				1 => _queue.Peek(),
+			  				_ => _queue.Dequeue(),
+			  			};
+			  		}
+			  	}
 
-				private sealed class ItemSetup
-				{
-					public static readonly ItemSetup Default = new();
+			  	private sealed class ItemSetup
+			  	{
+			  		public static readonly ItemSetup Default = new();
 
-					public CallbackDelegate? Callback;
-					public System.Exception? Exception;
+			  		public CallbackDelegate? Callback;
+			  		public System.Exception? Exception;
 
-					public ItemSetup(in CallbackDelegate? callback = null, in System.Exception? exception = null)
-					{
-						Callback = callback;
-						Exception = exception;
-					}
-				}
+			  		public ItemSetup(in CallbackDelegate? callback = null, in System.Exception? exception = null)
+			  		{
+			  			Callback = callback;
+			  			Exception = exception;
+			  		}
+			  	}
 
-				private sealed class Comparer: System.Collections.Generic.IComparer<Item>
-				{
-					public int Compare(Item? x, Item? y)
-					{
-						var xSort = 0;
-						var ySort = 0;
+			  	private sealed class Comparer: System.Collections.Generic.IComparer<Item>
+			  	{
+			  		public int Compare(Item? x, Item? y)
+			  		{
+			  			var xSort = 0;
+			  			var ySort = 0;
 
-						if (x is not null)
-						{
-							if (x.Param1.HasValue)
-								xSort += x.Param1.Value.Sort;
-							if (x.Param2.HasValue)
-								xSort += x.Param2.Value.Sort;
-						}
+			  			if (x is not null)
+			  			{
+			  				if (x.Param1.HasValue)
+			  					xSort += x.Param1.Value.Sort;
+			  				if (x.Param2.HasValue)
+			  					xSort += x.Param2.Value.Sort;
+			  			}
 
-						if (y is not null)
-						{
-							if (y.Param1.HasValue)
-								ySort += y.Param1.Value.Sort;
-							if (y.Param2.HasValue)
-								ySort += y.Param2.Value.Sort;
-						}
+			  			if (y is not null)
+			  			{
+			  				if (y.Param1.HasValue)
+			  					ySort += y.Param1.Value.Sort;
+			  				if (y.Param2.HasValue)
+			  					ySort += y.Param2.Value.Sort;
+			  			}
 
-						return xSort.CompareTo(ySort);
-					}
-				}
-			}
-			""";
+			  			return xSort.CompareTo(ySort);
+			  		}
+			  	}
+			  }
+			  """;
 
 		return (
-			"SetupInt32Single.g.cs",
+			$"Setup{className}.g.cs",
 			sourceCode
 		);
 	}
@@ -450,5 +453,15 @@ file static class SourceFileCollectionEx
 		{
 			@this.Add((typeof(SourceGenerator), item.FileName, item.SourceCode));
 		}
+	}
+
+	public static string GetTypeString(this string type)
+	{
+		return type switch
+		{
+			"Int32" => "int",
+			"Single" => "float",
+			_ => throw new NotImplementedException($"Unsupported type: `{type}`"),
+		};
 	}
 }
