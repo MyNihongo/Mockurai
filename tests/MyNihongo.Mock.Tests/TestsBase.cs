@@ -24,6 +24,17 @@ public abstract class TestsBase
 	{
 		var className = string.Join(null, types);
 		var parameters = string.Join(", ", types.Select(static (x, i) => $"{x.GetTypeString()} param{i + 1}"));
+		var parameterNames = string.Join(", ", types.Select(static (_, i) => $"param{i + 1}"));
+		var invoke = string.Join(Environment.NewLine + '\t', types.Select(static (_, i) =>
+		{
+			var index = i + 1;
+
+			return
+				$"""
+				 		if (setup.Param{index}.HasValue && !setup.Param{index}.Value.Check(param{index}))
+				 				continue;
+				 """;
+		}));
 
 		var sourceCode =
 			$$"""
@@ -44,13 +55,10 @@ public abstract class TestsBase
 
 			  		foreach (var setup in _setups)
 			  		{
-			  			if (setup.Param1.HasValue && !setup.Param1.Value.Check(param1))
-			  				continue;
-			  			if (setup.Param2.HasValue && !setup.Param2.Value.Check(param2))
-			  				continue;
+			  	{{invoke}}
 
 			  			var x = setup.GetSetup();
-			  			x.Callback?.Invoke(param1, param2);
+			  			x.Callback?.Invoke({{parameterNames}});
 
 			  			if (x.Exception is not null)
 			  				throw x.Exception;
@@ -61,7 +69,7 @@ public abstract class TestsBase
 
 			  	public void SetupParameters(in ItSetup<int> param1, in ItSetup<float> param2)
 			  	{
-			  		_currentSetup = new Item(param1, param2);
+			  		_currentSetup = new Item({{parameterNames}});
 
 			  		_setups ??= new SetupContainer<Item>(SortComparer);
 			  		_setups.Add(_currentSetup);
