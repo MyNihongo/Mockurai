@@ -25,6 +25,7 @@ public abstract class TestsBase
 		var className = string.Join(null, types);
 		var parameters = string.Join(", ", types.Select(static (x, i) => $"{x.GetTypeString()} param{i + 1}"));
 		var parameterNames = string.Join(", ", types.Select(static (_, i) => $"param{i + 1}"));
+		var setupParameters = string.Join(", ", types.Select(static (x, i) => $"in ItSetup<{x.GetTypeString()}>? param{i + 1}"));
 		var invoke = string.Join(Environment.NewLine + "\t\t\t", types.Select(static (_, i) =>
 		{
 			var index = i + 1;
@@ -35,6 +36,29 @@ public abstract class TestsBase
 				 				continue;
 				 """;
 		}));
+		var itemSetupFields = string.Join(Environment.NewLine + "\t\t", types.Select(static (type, i) =>
+		{
+			var index = i + 1;
+			return $"public readonly ItSetup<{type.GetTypeString()}>? Param{index};";
+		}));
+		var itemSetupParameterAssign = string.Join(Environment.NewLine + "\t\t\t", types.Select(static (_, i) =>
+		{
+			var index = i + 1;
+			return $"Param{index} = param{index};";
+		}));
+		var itemSetupComparer = (string item) =>
+		{
+			return string.Join(Environment.NewLine + "\t\t\t\t", types.Select((_, i) =>
+			{
+				var index = i + 1;
+
+				return
+					$"""
+					 if ({item}.Param{index}.HasValue)
+					 					{item}Sort += {item}.Param{index}.Value.Sort;
+					 """;
+			}));
+		};
 
 		var sourceCode =
 			$$"""
@@ -133,13 +157,11 @@ public abstract class TestsBase
 			  		private ItemSetup? _currentSetup;
 			  		public bool AndContinue;
 
-			  		public readonly ItSetup<int>? Param1;
-			  		public readonly ItSetup<float>? Param2;
+			  		{{itemSetupFields}}
 
-			  		public Item(in ItSetup<int>? param1, in ItSetup<float>? param2)
+			  		public Item({{setupParameters}})
 			  		{
-			  			Param1 = param1;
-			  			Param2 = param2;
+			  			{{itemSetupParameterAssign}}
 			  		}
 
 			  		public void Add(in CallbackDelegate callback)
@@ -206,18 +228,12 @@ public abstract class TestsBase
 
 			  			if (x is not null)
 			  			{
-			  				if (x.Param1.HasValue)
-			  					xSort += x.Param1.Value.Sort;
-			  				if (x.Param2.HasValue)
-			  					xSort += x.Param2.Value.Sort;
+			  				{{itemSetupComparer("x")}}
 			  			}
 
 			  			if (y is not null)
 			  			{
-			  				if (y.Param1.HasValue)
-			  					ySort += y.Param1.Value.Sort;
-			  				if (y.Param2.HasValue)
-			  					ySort += y.Param2.Value.Sort;
+			  				{{itemSetupComparer("y")}}
 			  			}
 
 			  			return xSort.CompareTo(ySort);
