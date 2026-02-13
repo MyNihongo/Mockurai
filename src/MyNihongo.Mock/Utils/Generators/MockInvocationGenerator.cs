@@ -283,7 +283,7 @@ internal static class MockInvocationGenerator
 		stringBuilder
 			.AppendLine()
 			.Indent(indent).AppendLine("var invocations = verifyOutput.GetStrings(invocationProviders);")
-			.Indent(indent).Append("var verifyName = string.Format(_name,");
+			.Indent(indent).Append("var verifyName = string.Format(_name, ");
 
 		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{

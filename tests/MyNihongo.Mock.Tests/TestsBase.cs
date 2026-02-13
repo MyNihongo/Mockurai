@@ -248,219 +248,232 @@ public abstract class TestsBase
 		);
 	}
 
-	protected static GeneratedSource CreateInvocationCode()
+	protected static GeneratedSource CreateInvocationCode(params string[] types)
 	{
+		var className = string.Join(null, types);
+		var prefixes = string.Join(", ", types.Select(static (_, i) => $"_prefixParam{i + 1}"));
+		var jsonSnapshots = string.Join(", ", types.Select(static (_, i) => $"_jsonSnapshotParam{i + 1}"));
+		var prefixParameters = string.Join(", ", types.Select(static (_, i) => $"string? prefixParam{i + 1} = null"));
+		var parameters = string.Join(", ", types.Select(static (x, i) => $"{x.GetTypeString()} param{i + 1}"));
+		var parameterNames = string.Join(", ", types.Select(static (_, i) => $"param{i + 1}"));
+		var prefixAssignemnts = string.Join(Environment.NewLine + "\t\t", types.Select(static (_, i) => $"_prefixParam{i + 1} = prefixParam{i + 1};"));
+		var setupParameters = string.Join(", ", types.Select(static (x, i) => $"in ItSetup<{x.GetTypeString()}> param{i + 1}"));
+		var verifyParameters = string.Join(Environment.NewLine + "\t\t\t", types.Select(static (_, i) => $"var verifyParam{i + 1} = span[i].GetParam{i + 1}(param{i + 1}.Type);"));
+		var parameterToString = string.Join(", ", types.Select(static (_, i) => $"param{i + 1}.ToString(_prefixParam{i + 1})"));
+		var typeNameParameters = string.Join(Environment.NewLine + "\t\t", types.Select(static (x, i) => $"var typeNameParam{i + 1} = !string.IsNullOrEmpty(_prefixParam{i + 1}) ? $\"{{_prefixParam{i + 1}}} {x.GetTypeString()}\" : \"{x.GetTypeString()}\";"));
+		var typeParameterNames = string.Join(", ", types.Select(static (_, i) => $"typeNameParam{i + 1}"));
+		var parameterFields = string.Join(Environment.NewLine + "\t\t", types.Select(static (x, i) => $"private readonly {x.GetTypeString()} _param{i + 1};"));
+		var verifyChecks = string.Join(Environment.NewLine + "\t\t\t", types.Skip(1).Select(static (_, i) =>
+		{
+			var index = i + 2;
+
+			return
+				$$"""
+				  if (!param{{index}}.Check(verifyParam{{index}}, out result))
+				  			{
+				  				verifyResults = verifyResults is not null
+				  					? [..verifyResults, ("param{{index}}", result)]
+				  					: [("param{{index}}", result)];
+				  			}
+				  """;
+		}));
+
 		var sourceCode =
-			"""
-			namespace MyNihongo.Mock;
+			$$"""
+			  namespace MyNihongo.Mock;
 
-			public sealed class InvocationInt32Single : IInvocationVerify
-			{
-				private readonly string _name;
-				private readonly string? _prefixParam1, _prefixParam2;
-				private readonly InvocationContainer<Item> _invocations = [];
+			  public sealed class Invocation{{className}} : IInvocationVerify
+			  {
+			  	private readonly string _name;
+			  	private readonly string? {{prefixes}};
+			  	private readonly InvocationContainer<Item> _invocations = [];
 
-				public InvocationInt32Single(string name, string? prefixParam1 = null, string? prefixParam2 = null)
-				{
-					_name = name;
-					_prefixParam1 = prefixParam1;
-					_prefixParam2 = prefixParam2;
-				}
+			  	public InvocationInt32Single(string name, {{prefixParameters}})
+			  	{
+			  		_name = name;
+			  		{{prefixAssignemnts}}
+			  	}
 
-				public void Register(in InvocationIndex.Counter index, int param1, float param2)
-				{
-					var invokedIndex = index.Increment();
-					_invocations.Add(new Item(invokedIndex, param1, param2, invocation: this));
-				}
+			  	public void Register(in InvocationIndex.Counter index, {{parameters}})
+			  	{
+			  		var invokedIndex = index.Increment();
+			  		_invocations.Add(new Item(invokedIndex, {{parameterNames}}, invocation: this));
+			  	}
 
-				public void Verify(in ItSetup<int> param1, in ItSetup<float> param2, in Times times, System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>>? invocationProviders = null)
-				{
-					var span = _invocations.GetItemsSpan();
+			  	public void Verify({{setupParameters}}, in Times times, System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>>? invocationProviders = null)
+			  	{
+			  		var span = _invocations.GetItemsSpan();
 
-					var verifyOutput = new System.Collections.Generic.List<(Item, (string, ComparisonResult?)[]?)>();
-					System.Runtime.InteropServices.CollectionsMarshal.SetCount(verifyOutput, span.Length);
+			  		var verifyOutput = new System.Collections.Generic.List<(Item, (string, ComparisonResult?)[]?)>();
+			  		System.Runtime.InteropServices.CollectionsMarshal.SetCount(verifyOutput, span.Length);
 
-					var count = 0;
-					for (var i = 0; i < span.Length; i++)
-					{
-						var verifyParam1 = span[i].GetParam1(param1.Type);
-						var verifyParam2 = span[i].GetParam2(param2.Type);
-						(string, ComparisonResult?)[]? verifyResults = null;
+			  		var count = 0;
+			  		for (var i = 0; i < span.Length; i++)
+			  		{
+			  			{{verifyParameters}}
+			  			(string, ComparisonResult?)[]? verifyResults = null;
 
-						if (!param1.Check(verifyParam1, out var result))
-						{
-							verifyResults = [("param1", result)];
-						}
-						if (!param2.Check(verifyParam2, out result))
-						{
-							verifyResults = verifyResults is not null
-								? [..verifyResults, ("param2", result)]
-								: [("param2", result)];
-						}
+			  			if (!param1.Check(verifyParam1, out var result))
+			  			{
+			  				verifyResults = [("param1", result)];
+			  			}
+			  			{{verifyChecks}}
 
-						if (verifyResults is not null)
-						{
-							verifyOutput[i] = (span[i], verifyResults);
-							continue;
-						}
+			  			if (verifyResults is not null)
+			  			{
+			  				verifyOutput[i] = (span[i], verifyResults);
+			  				continue;
+			  			}
 
-						verifyOutput[i] = (span[i], null);
-						span[i].IsVerified = true;
-						count++;
-					}
+			  			verifyOutput[i] = (span[i], null);
+			  			span[i].IsVerified = true;
+			  			count++;
+			  		}
 
-					if (times.Predicate(count))
-						return;
+			  		if (times.Predicate(count))
+			  			return;
 
-					var invocations = verifyOutput.GetStrings(invocationProviders);
-					var verifyName = string.Format(_name,param1.ToString(_prefixParam1), param2.ToString(_prefixParam2));
-					throw new MockVerifyCountException(verifyName, times, count, invocations);
-				}
+			  		var invocations = verifyOutput.GetStrings(invocationProviders);
+			  		var verifyName = string.Format(_name, {{parameterToString}});
+			  		throw new MockVerifyCountException(verifyName, times, count, invocations);
+			  	}
 
-				public long Verify(in ItSetup<int> param1, in ItSetup<float> param2, long index, System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>>? invocationProviders = null)
-				{
-					var span = _invocations.GetItemsSpanFrom(index);
+			  	public long Verify({{setupParameters}}, long index, System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>>? invocationProviders = null)
+			  	{
+			  		var span = _invocations.GetItemsSpanFrom(index);
 
-					var verifyOutput = new System.Collections.Generic.List<(Item, (string, ComparisonResult?)[]?)>();
-					System.Runtime.InteropServices.CollectionsMarshal.SetCount(verifyOutput, span.Length);
+			  		var verifyOutput = new System.Collections.Generic.List<(Item, (string, ComparisonResult?)[]?)>();
+			  		System.Runtime.InteropServices.CollectionsMarshal.SetCount(verifyOutput, span.Length);
 
-					for (var i = 0; i < span.Length; i++)
-					{
-						var verifyParam1 = span[i].GetParam1(param1.Type);
-						var verifyParam2 = span[i].GetParam2(param2.Type);
-						(string, ComparisonResult?)[]? verifyResults = null;
+			  		for (var i = 0; i < span.Length; i++)
+			  		{
+			  			{{verifyParameters}}
+			  			(string, ComparisonResult?)[]? verifyResults = null;
 
-						if (!param1.Check(verifyParam1, out var result))
-						{
-							verifyResults = [("param1", result)];
-						}
-						if (!param2.Check(verifyParam2, out result))
-						{
-							verifyResults = verifyResults is not null
-								? [..verifyResults, ("param2", result)]
-								: [("param2", result)];
-						}
+			  			if (!param1.Check(verifyParam1, out var result))
+			  			{
+			  				verifyResults = [("param1", result)];
+			  			}
+			  			{{verifyChecks}}
 
-						if (verifyResults is not null)
-						{
-							verifyOutput[i] = (span[i], verifyResults);
-							continue;
-						}
+			  			if (verifyResults is not null)
+			  			{
+			  				verifyOutput[i] = (span[i], verifyResults);
+			  				continue;
+			  			}
 
-						verifyOutput[i] = (span[i], null);
-						span[i].IsVerified = true;
-						return span[i].Index + 1;
-					}
+			  			verifyOutput[i] = (span[i], null);
+			  			span[i].IsVerified = true;
+			  			return span[i].Index + 1;
+			  		}
 
-					if (invocationProviders is null)
-					{
-						span = _invocations.GetItemsSpanBefore(index);
-						for (var i = 0; i < span.Length; i++)
-							verifyOutput.Insert(i, (span[i], null));
-					}
+			  		if (invocationProviders is null)
+			  		{
+			  			span = _invocations.GetItemsSpanBefore(index);
+			  			for (var i = 0; i < span.Length; i++)
+			  				verifyOutput.Insert(i, (span[i], null));
+			  		}
 
-					var invocations = verifyOutput.GetStrings(invocationProviders);
-					var verifyName = string.Format(_name,param1.ToString(_prefixParam1), param2.ToString(_prefixParam2));
-					throw new MockVerifySequenceOutOfRangeException(verifyName, index, invocations);
-				}
+			  		var invocations = verifyOutput.GetStrings(invocationProviders);
+			  		var verifyName = string.Format(_name, {{parameterToString}});
+			  		throw new MockVerifySequenceOutOfRangeException(verifyName, index, invocations);
+			  	}
 
-				public void VerifyNoOtherCalls(System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>>? invocationProviders = null)
-				{
-					var unverifiedItems = _invocations.GetUnverifiedInvocations(invocationProviders);
-					if (unverifiedItems is null)
-						return;
+			  	public void VerifyNoOtherCalls(System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>>? invocationProviders = null)
+			  	{
+			  		var unverifiedItems = _invocations.GetUnverifiedInvocations(invocationProviders);
+			  		if (unverifiedItems is null)
+			  			return;
 
-					var typeNameParam1 = !string.IsNullOrEmpty(_prefixParam1) ? $"{_prefixParam1} int" : "int";
-					var typeNameParam2 = !string.IsNullOrEmpty(_prefixParam2) ? $"{_prefixParam2} float" : "float";
-					var verifyName = string.Format(_name, typeNameParam1, typeNameParam2);
-					throw new MockUnverifiedException(verifyName, unverifiedItems);
-				}
+			  		{{typeNameParameters}}
+			  		var verifyName = string.Format(_name, {{typeParameterNames}});
+			  		throw new MockUnverifiedException(verifyName, unverifiedItems);
+			  	}
 
-				public System.Collections.Generic.IEnumerable<IInvocation> GetInvocations()
-				{
-					return _invocations;
-				}
+			  	public System.Collections.Generic.IEnumerable<IInvocation> GetInvocations()
+			  	{
+			  		return _invocations;
+			  	}
 
-				private sealed class Item : IInvocation
-				{
-					private readonly int _param1;
-					private readonly float _param2;
-					private readonly string? _jsonSnapshotParam1, _jsonSnapshotParam2;
-					private readonly InvocationInt32Single _invocation;
+			  	private sealed class Item : IInvocation
+			  	{
+			  		{{parameterFields}}
+			  		private readonly string? {{jsonSnapshots}};
+			  		private readonly Invocation{{className}} _invocation;
 
-					public Item(long index, int param1, float param2, InvocationInt32Single invocation)
-					{
-						_invocation = invocation;
-						Index = index;
+			  		public Item(long index, {{parameters}}, Invocation{{className}} invocation)
+			  		{
+			  			_invocation = invocation;
+			  			Index = index;
 
-						try
-						{
-							_param1 = param1;
-							_jsonSnapshotParam1 = System.Text.Json.JsonSerializer.Serialize(param1);
-						}
-						catch
-						{
-							// Swallow
-						}
+			  			try
+			  			{
+			  				_param1 = param1;
+			  				_jsonSnapshotParam1 = System.Text.Json.JsonSerializer.Serialize(param1);
+			  			}
+			  			catch
+			  			{
+			  				// Swallow
+			  			}
 
-						try
-						{
-							_param2 = param2;
-							_jsonSnapshotParam2 = System.Text.Json.JsonSerializer.Serialize(param2);
-						}
-						catch
-						{
-							// Swallow
-						}
-					}
+			  			try
+			  			{
+			  				_param2 = param2;
+			  				_jsonSnapshotParam2 = System.Text.Json.JsonSerializer.Serialize(param2);
+			  			}
+			  			catch
+			  			{
+			  				// Swallow
+			  			}
+			  		}
 
-					public long Index { get; }
+			  		public long Index { get; }
 
-					public bool IsVerified { get; set; }
+			  		public bool IsVerified { get; set; }
 
-					public int GetParam1(SetupType setupType)
-					{
-						return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParam1)
-							? System.Text.Json.JsonSerializer.Deserialize<int>(_jsonSnapshotParam1)
-							: _param1;
-					}
+			  		public int GetParam1(SetupType setupType)
+			  		{
+			  			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParam1)
+			  				? System.Text.Json.JsonSerializer.Deserialize<int>(_jsonSnapshotParam1)
+			  				: _param1;
+			  		}
 
-					public float GetParam2(SetupType setupType)
-					{
-						return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParam2)
-							? System.Text.Json.JsonSerializer.Deserialize<float>(_jsonSnapshotParam2)
-							: _param2;
-					}
+			  		public float GetParam2(SetupType setupType)
+			  		{
+			  			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParam2)
+			  				? System.Text.Json.JsonSerializer.Deserialize<float>(_jsonSnapshotParam2)
+			  				: _param2;
+			  		}
 
-					public override string ToString()
-					{
-						var stringBuilder = new System.Text.StringBuilder();
+			  		public override string ToString()
+			  		{
+			  			var stringBuilder = new System.Text.StringBuilder();
 
-						// param1
-						if (!string.IsNullOrEmpty(_invocation._prefixParam1))
-							stringBuilder.Append($"{_invocation._prefixParam1} ");
-						if (!string.IsNullOrEmpty(_jsonSnapshotParam1))
-							stringBuilder.Append(_jsonSnapshotParam1);
-						else
-							stringBuilder.Append(_param1);
-						var param1 = stringBuilder.ToString();
+			  			// param1
+			  			if (!string.IsNullOrEmpty(_invocation._prefixParam1))
+			  				stringBuilder.Append($"{_invocation._prefixParam1} ");
+			  			if (!string.IsNullOrEmpty(_jsonSnapshotParam1))
+			  				stringBuilder.Append(_jsonSnapshotParam1);
+			  			else
+			  				stringBuilder.Append(_param1);
+			  			var param1 = stringBuilder.ToString();
 
-						// param2
-						stringBuilder.Clear();
-						if (!string.IsNullOrEmpty(_invocation._prefixParam2))
-							stringBuilder.Append($"{_invocation._prefixParam2} ");
-						if (!string.IsNullOrEmpty(_jsonSnapshotParam2))
-							stringBuilder.Append(_jsonSnapshotParam2);
-						else
-							stringBuilder.Append(_param2);
-						var param2 = stringBuilder.ToString();
+			  			// param2
+			  			stringBuilder.Clear();
+			  			if (!string.IsNullOrEmpty(_invocation._prefixParam2))
+			  				stringBuilder.Append($"{_invocation._prefixParam2} ");
+			  			if (!string.IsNullOrEmpty(_jsonSnapshotParam2))
+			  				stringBuilder.Append(_jsonSnapshotParam2);
+			  			else
+			  				stringBuilder.Append(_param2);
+			  			var param2 = stringBuilder.ToString();
 
-						var value = string.Format(_invocation._name, param1, param2);
-						return $"{Index}: {value}";
-					}
-				}
-			}
-			""";
+			  			var value = string.Format(_invocation._name, {{parameterNames}});
+			  			return $"{Index}: {value}";
+			  		}
+			  	}
+			  }
+			  """;
 
 		return (
 			"InvocationInt32Single.g.cs",
