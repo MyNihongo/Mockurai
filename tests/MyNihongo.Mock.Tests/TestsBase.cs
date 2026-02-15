@@ -277,6 +277,57 @@ public abstract class TestsBase
 				  			}
 				  """;
 		}));
+		var verifyItemParameterAssignments = string.Join(Environment.NewLine + Environment.NewLine + "\t\t\t", types.Select(static (_, i) =>
+		{
+			var index = i + 1;
+
+			return
+				$$"""
+				try
+							{
+								_param{{index}} = param{{index}};
+								_jsonSnapshotParam{{index}} = System.Text.Json.JsonSerializer.Serialize(param{{index}});
+							}
+							catch
+							{
+								// Swallow
+							}
+				""";
+		}));
+		var verifyItemGetParameterFunctions = string.Join(Environment.NewLine + Environment.NewLine + "\t\t", types.Select(static (x ,i) =>
+		{
+			var index = i + 1;
+			var typeString = x.GetTypeString();
+
+			return
+				$$"""
+				public {{typeString}} GetParam{{index}}(SetupType setupType)
+						{
+							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParam{{index}})
+								? System.Text.Json.JsonSerializer.Deserialize<{{typeString}}>(_jsonSnapshotParam{{index}})
+								: _param{{index}};
+						}
+				""";
+		}));
+		var verifyItemParameterToString = string.Join(Environment.NewLine + Environment.NewLine + "\t\t\t", types.Select(static (_, i) =>
+		{
+			var index = i + 1;
+			var stringBuilderClear = i > 0
+				? Environment.NewLine + "\t\t\tstringBuilder.Clear();"
+				: string.Empty;
+
+			return
+				$$"""
+				// param{{index}}{{stringBuilderClear}}
+							if (!string.IsNullOrEmpty(_invocation._prefixParam{{index}}))
+								stringBuilder.Append($"{_invocation._prefixParam{{index}}} ");
+							if (!string.IsNullOrEmpty(_jsonSnapshotParam{{index}}))
+								stringBuilder.Append(_jsonSnapshotParam{{index}});
+							else
+								stringBuilder.Append(_param{{index}});
+							var param{{index}} = stringBuilder.ToString();
+				""";
+		}));
 
 		var sourceCode =
 			$$"""
@@ -406,67 +457,20 @@ public abstract class TestsBase
 			  			_invocation = invocation;
 			  			Index = index;
 
-			  			try
-			  			{
-			  				_param1 = param1;
-			  				_jsonSnapshotParam1 = System.Text.Json.JsonSerializer.Serialize(param1);
-			  			}
-			  			catch
-			  			{
-			  				// Swallow
-			  			}
-
-			  			try
-			  			{
-			  				_param2 = param2;
-			  				_jsonSnapshotParam2 = System.Text.Json.JsonSerializer.Serialize(param2);
-			  			}
-			  			catch
-			  			{
-			  				// Swallow
-			  			}
+			  			{{verifyItemParameterAssignments}}
 			  		}
 
 			  		public long Index { get; }
 
 			  		public bool IsVerified { get; set; }
 
-			  		public int GetParam1(SetupType setupType)
-			  		{
-			  			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParam1)
-			  				? System.Text.Json.JsonSerializer.Deserialize<int>(_jsonSnapshotParam1)
-			  				: _param1;
-			  		}
-
-			  		public float GetParam2(SetupType setupType)
-			  		{
-			  			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParam2)
-			  				? System.Text.Json.JsonSerializer.Deserialize<float>(_jsonSnapshotParam2)
-			  				: _param2;
-			  		}
+			  		{{verifyItemGetParameterFunctions}}
 
 			  		public override string ToString()
 			  		{
 			  			var stringBuilder = new System.Text.StringBuilder();
 
-			  			// param1
-			  			if (!string.IsNullOrEmpty(_invocation._prefixParam1))
-			  				stringBuilder.Append($"{_invocation._prefixParam1} ");
-			  			if (!string.IsNullOrEmpty(_jsonSnapshotParam1))
-			  				stringBuilder.Append(_jsonSnapshotParam1);
-			  			else
-			  				stringBuilder.Append(_param1);
-			  			var param1 = stringBuilder.ToString();
-
-			  			// param2
-			  			stringBuilder.Clear();
-			  			if (!string.IsNullOrEmpty(_invocation._prefixParam2))
-			  				stringBuilder.Append($"{_invocation._prefixParam2} ");
-			  			if (!string.IsNullOrEmpty(_jsonSnapshotParam2))
-			  				stringBuilder.Append(_jsonSnapshotParam2);
-			  			else
-			  				stringBuilder.Append(_param2);
-			  			var param2 = stringBuilder.ToString();
+			  			{{verifyItemParameterToString}}
 
 			  			var value = string.Format(_invocation._name, {{parameterNames}});
 			  			return $"{Index}: {value}";
