@@ -22,10 +22,23 @@ public abstract class TestsBase
 
 	protected static GeneratedSource CreateSetupCode(params string[] types)
 	{
+		return CreateSetupCode(useReturns: false, types);
+	}
+
+	protected static GeneratedSource CreateSetupReturnsCode(params string[] types)
+	{
+		return CreateSetupCode(useReturns: true, types);
+	}
+
+	private static GeneratedSource CreateSetupCode(bool useReturns, string[] types)
+	{
+		const string returns = "TReturns";
+		var returnsGenericType = useReturns ? $"<{returns}>" : string.Empty;
 		var className = string.Join(null, types);
+		var classNameReturns = className + returnsGenericType;
 		var parameters = string.Join(", ", types.Select(static (x, i) => $"{x.GetTypeString()} param{i + 1}"));
 		var parameterNames = string.Join(", ", types.Select(static (_, i) => $"param{i + 1}"));
-		var setupParameters = string.Join(", ", types.Select(static (x, i) => $"in ItSetup<{x.GetTypeString()}>? param{i + 1}"));
+		var setupParameters = (bool isNullable) => string.Join(", ", types.Select((x, i) => $"in ItSetup<{x.GetTypeString()}>{(isNullable ? "?" : string.Empty)} param{i + 1}"));
 		var invoke = string.Join(Environment.NewLine + "\t\t\t", types.Select(static (_, i) =>
 		{
 			var index = i + 1;
@@ -59,23 +72,50 @@ public abstract class TestsBase
 					 """;
 			}));
 		};
+		var interfaceGeneric = useReturns
+			? $"Setup{classNameReturns}.CallbackDelegate, TReturns, Setup{classNameReturns}.ReturnsCallbackDelegate"
+			: $"Setup{classNameReturns}.CallbackDelegate";
+		var iSetupThrowsJoin = useReturns ? "ISetupReturnsThrowsJoin" : "ISetupThrowsJoin";
+		var iSetupThrowsReset = useReturns ? "ISetupReturnsThrowsReset" : "ISetupThrowsReset";
+		var returnsDelegate = useReturns ? Environment.NewLine + $"\tpublic delegate {returns}? ReturnsCallbackDelegate({parameters});" : string.Empty;
+		var invokeFunction = useReturns ? $"public bool Execute({parameters}, out {returns}? returnValue)" : $"public void Invoke({parameters})";
+		var checkReturns = useReturns
+			? $$"""
+			    if (x.Returns is not null)
+			    			{
+			    				returnValue = x.Returns({{parameterNames}});
+			    				return true;
+			    			}
+
+
+			    """ + "\t\t\t"
+			: string.Empty;
+		var defaultReturns = useReturns
+			? """
+
+
+			  		Default:
+			  		returnValue = default;
+			  		return false;
+			  """
+			: string.Empty;
 
 		var sourceCode =
 			$$"""
 			  namespace MyNihongo.Mock;
 
-			  public sealed class Setup{{className}} : ISetupCallbackJoin<Setup{{className}}.CallbackDelegate>, ISetupCallbackReset<Setup{{className}}.CallbackDelegate>, ISetupThrowsJoin<Setup{{className}}.CallbackDelegate>, ISetupThrowsReset<Setup{{className}}.CallbackDelegate>
+			  public sealed class Setup{{classNameReturns}} : ISetupCallbackJoin<{{interfaceGeneric}}>, ISetupCallbackReset<{{interfaceGeneric}}>, {{iSetupThrowsJoin}}<{{interfaceGeneric}}>, {{iSetupThrowsReset}}<{{interfaceGeneric}}>
 			  {
 			  	private static readonly Comparer SortComparer = new();
 			  	private SetupContainer<Item>? _setups;
 			  	private Item? _currentSetup;
 
-			  	public delegate void CallbackDelegate({{parameters}});
+			  	public delegate void CallbackDelegate({{parameters}});{{returnsDelegate}}
 
-			  	public void Invoke({{parameters}})
+			  	{{invokeFunction}}
 			  	{
 			  		if (_setups is null)
-			  			return;
+			  			{{(useReturns ? "goto Default" : "return")}};
 
 			  		foreach (var setup in _setups)
 			  		{
@@ -87,11 +127,11 @@ public abstract class TestsBase
 			  			if (x.Exception is not null)
 			  				throw x.Exception;
 
-			  			return;
-			  		}
+			  			{{(useReturns ? $"{checkReturns}goto Default" : "return")}};
+			  		}{{defaultReturns}}
 			  	}
 
-			  	public void SetupParameters(in ItSetup<int> param1, in ItSetup<float> param2)
+			  	public void SetupParameters({{setupParameters(false)}})
 			  	{
 			  		_currentSetup = new Item({{parameterNames}});
 
@@ -115,37 +155,37 @@ public abstract class TestsBase
 			  		_currentSetup.Add(exception);
 			  	}
 
-			  	ISetupCallbackJoin<Setup{{className}}.CallbackDelegate> ISetupCallbackStart<Setup{{className}}.CallbackDelegate>.Callback(in CallbackDelegate callback)
+			  	ISetupCallbackJoin<{{interfaceGeneric}}> ISetupCallbackStart<{{interfaceGeneric}}>.Callback(in CallbackDelegate callback)
 			  	{
 			  		Callback(callback);
 			  		return this;
 			  	}
 
-			  	ISetup<Setup{{className}}.CallbackDelegate> ISetupCallbackReset<Setup{{className}}.CallbackDelegate>.Callback(in CallbackDelegate callback)
+			  	ISetup<{{interfaceGeneric}}> ISetupCallbackReset<{{interfaceGeneric}}>.Callback(in CallbackDelegate callback)
 			  	{
 			  		Callback(callback);
 			  		return this;
 			  	}
 
-			  	ISetupThrowsJoin<Setup{{className}}.CallbackDelegate> ISetupThrowsStart<Setup{{className}}.CallbackDelegate>.Throws(in System.Exception exception)
+			  	{{iSetupThrowsJoin}}<{{interfaceGeneric}}> ISetupThrowsStart<{{interfaceGeneric}}>.Throws(in System.Exception exception)
 			  	{
 			  		Throws(exception);
 			  		return this;
 			  	}
 
-			  	ISetup<Setup{{className}}.CallbackDelegate> ISetupThrowsReset<Setup{{className}}.CallbackDelegate>.Throws(in System.Exception exception)
+			  	ISetup<{{interfaceGeneric}}> {{iSetupThrowsReset}}<{{interfaceGeneric}}>.Throws(in System.Exception exception)
 			  	{
 			  		Throws(exception);
 			  		return this;
 			  	}
 
-			  	ISetupCallbackReset<Setup{{className}}.CallbackDelegate> ISetupThrowsJoin<Setup{{className}}.CallbackDelegate>.And()
+			  	ISetupCallbackReset<{{interfaceGeneric}}> {{iSetupThrowsJoin}}<{{interfaceGeneric}}>.And()
 			  	{
 			  		_currentSetup?.AndContinue = true;
 			  		return this;
 			  	}
 
-			  	ISetupThrowsReset<Setup{{className}}.CallbackDelegate> ISetupCallbackJoin<Setup{{className}}.CallbackDelegate>.And()
+			  	{{iSetupThrowsReset}}<{{interfaceGeneric}}> ISetupCallbackJoin<{{interfaceGeneric}}>.And()
 			  	{
 			  		_currentSetup?.AndContinue = true;
 			  		return this;
@@ -159,7 +199,7 @@ public abstract class TestsBase
 
 			  		{{itemSetupFields}}
 
-			  		public Item({{setupParameters}})
+			  		public Item({{setupParameters(true)}})
 			  		{
 			  			{{itemSetupParameterAssign}}
 			  		}
@@ -242,8 +282,12 @@ public abstract class TestsBase
 			  }
 			  """;
 
+		var fileName = useReturns
+			? $"Setup{className}_TReturns_.g.cs"
+			: $"Setup{className}.g.cs";
+
 		return (
-			$"Setup{className}.g.cs",
+			fileName,
 			sourceCode
 		);
 	}
@@ -283,31 +327,31 @@ public abstract class TestsBase
 
 			return
 				$$"""
-				try
-							{
-								_param{{index}} = param{{index}};
-								_jsonSnapshotParam{{index}} = System.Text.Json.JsonSerializer.Serialize(param{{index}});
-							}
-							catch
-							{
-								// Swallow
-							}
-				""";
+				  try
+				  			{
+				  				_param{{index}} = param{{index}};
+				  				_jsonSnapshotParam{{index}} = System.Text.Json.JsonSerializer.Serialize(param{{index}});
+				  			}
+				  			catch
+				  			{
+				  				// Swallow
+				  			}
+				  """;
 		}));
-		var verifyItemGetParameterFunctions = string.Join(Environment.NewLine + Environment.NewLine + "\t\t", types.Select(static (x ,i) =>
+		var verifyItemGetParameterFunctions = string.Join(Environment.NewLine + Environment.NewLine + "\t\t", types.Select(static (x, i) =>
 		{
 			var index = i + 1;
 			var typeString = x.GetTypeString();
 
 			return
 				$$"""
-				public {{typeString}} GetParam{{index}}(SetupType setupType)
-						{
-							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParam{{index}})
-								? System.Text.Json.JsonSerializer.Deserialize<{{typeString}}>(_jsonSnapshotParam{{index}})
-								: _param{{index}};
-						}
-				""";
+				  public {{typeString}} GetParam{{index}}(SetupType setupType)
+				  		{
+				  			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParam{{index}})
+				  				? System.Text.Json.JsonSerializer.Deserialize<{{typeString}}>(_jsonSnapshotParam{{index}})
+				  				: _param{{index}};
+				  		}
+				  """;
 		}));
 		var verifyItemParameterToString = string.Join(Environment.NewLine + Environment.NewLine + "\t\t\t", types.Select(static (_, i) =>
 		{
@@ -318,15 +362,15 @@ public abstract class TestsBase
 
 			return
 				$$"""
-				// param{{index}}{{stringBuilderClear}}
-							if (!string.IsNullOrEmpty(_invocation._prefixParam{{index}}))
-								stringBuilder.Append($"{_invocation._prefixParam{{index}}} ");
-							if (!string.IsNullOrEmpty(_jsonSnapshotParam{{index}}))
-								stringBuilder.Append(_jsonSnapshotParam{{index}});
-							else
-								stringBuilder.Append(_param{{index}});
-							var param{{index}} = stringBuilder.ToString();
-				""";
+				  // param{{index}}{{stringBuilderClear}}
+				  			if (!string.IsNullOrEmpty(_invocation._prefixParam{{index}}))
+				  				stringBuilder.Append($"{_invocation._prefixParam{{index}}} ");
+				  			if (!string.IsNullOrEmpty(_jsonSnapshotParam{{index}}))
+				  				stringBuilder.Append(_jsonSnapshotParam{{index}});
+				  			else
+				  				stringBuilder.Append(_param{{index}});
+				  			var param{{index}} = stringBuilder.ToString();
+				  """;
 		}));
 
 		var sourceCode =
@@ -480,7 +524,7 @@ public abstract class TestsBase
 			  """;
 
 		return (
-			"InvocationInt32Single.g.cs",
+			$"Invocation{className}.g.cs",
 			sourceCode
 		);
 	}

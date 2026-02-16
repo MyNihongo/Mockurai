@@ -372,6 +372,29 @@ public sealed class MultipleDeclarations : TestsBase
 	}
 
 	[Fact]
+	public async Task NotGenerateDuplicateMethodSetupAndInvocationFromDifferentClass()
+	{
+		const string testCode =
+			"""
+			namespace MyNihongo.Mock.Tests;
+
+			public interface IInterface
+			{
+				T Invoke<T>(int param1, long param2);
+				T Invoke2<T>(int param1, long param2);
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<IInterface> InterfaceMock1 { get; }
+			}
+			""";
+
+		throw new NotImplementedException();
+	}
+
+	[Fact]
 	public async Task NotGenerateDuplicateMethodSetupAndInvocationFromDifferentClasses()
 	{
 		const string testCode =
