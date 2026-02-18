@@ -285,7 +285,7 @@ public abstract class TestsBase
 			  			}
 			  			else
 			  			{
-			  				_currentSetup = new ItemSetup(callback);
+			  				_currentSetup = new ItemSetup(callback: callback);
 			  				_queue.Enqueue(_currentSetup);
 			  			}
 			  		}

@@ -40,7 +40,7 @@ internal static class MockSetupGenerator
 			  			}
 			  			else
 			  			{
-			  				_currentSetup = new ItemSetup(callback);
+			  				_currentSetup = new ItemSetup(callback: callback);
 			  				_queue.Enqueue(_currentSetup);
 			  			}
 			  		}
