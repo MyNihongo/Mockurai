@@ -617,6 +617,7 @@ file static class SourceFileCollectionEx
 		{
 			"Int32" => "int",
 			"Single" => "float",
+			"Int64" => "long",
 			_ => throw new NotImplementedException($"Unsupported type: `{type}`"),
 		};
 	}
