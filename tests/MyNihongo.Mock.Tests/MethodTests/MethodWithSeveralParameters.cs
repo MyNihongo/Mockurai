@@ -35,8 +35,11 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 		const string proxy = "public void Invoke(int param1, float param2) {}";
 
+		string[] types = ["Int32", "Single"];
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+		var setupCode = CreateSetupCode(types);
+		var invocationCode = CreateInvocationCode(types);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, setupCode, invocationCode);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -45,38 +48,41 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 	[Fact]
 	public async Task GenerateInterfaceReturn()
 	{
-		const string method = "decimal Invoke(int param1, float param2);";
+		const string method = "decimal Invoke(float param1, int param2);";
 
 		const string methods =
 			"""
 			// Invoke
-			private SetupInt32Single? _invoke0;
-			private InvocationInt32Single? _invoke0Invocation;
+			private SetupSingleInt32<decimal>? _invoke0;
+			private InvocationSingleInt32? _invoke0Invocation;
 
-			public SetupInt32Single SetupInvoke(in It<int> param1, in It<float> param2)
+			public SetupSingleInt32<decimal> SetupInvoke(in It<float> param1, in It<int> param2)
 			{
-				_invoke0 ??= new SetupInt32Single();
+				_invoke0 ??= new SetupSingleInt32<decimal>();
 				_invoke0.SetupParameters(param1.ValueSetup, param2.ValueSetup);
 				return _invoke0;
 			}
 
-			public void VerifyInvoke(in It<int> param1, in It<float> param2, in Times times)
+			public void VerifyInvoke(in It<float> param1, in It<int> param2, in Times times)
 			{
-				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})");
+				_invoke0Invocation ??= new InvocationSingleInt32("IInterface.Invoke({0}, {1})");
 				_invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, times, _invocationProviders);
 			}
 
-			public long VerifyInvoke(in It<int> param1, in It<float> param2, long index)
+			public long VerifyInvoke(in It<float> param1, in It<int> param2, long index)
 			{
-				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})");
+				_invoke0Invocation ??= new InvocationSingleInt32("IInterface.Invoke({0}, {1})");
 				return _invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
-		const string proxy = "public void Invoke(int param1, float param2) {}";
+		const string proxy = "public decimal Invoke(float param1, int param2) {return default;}";
 
+		string[] types = ["Single", "Int32"];
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+		var setupCode = CreateSetupReturnsCode(types);
+		var invocationCode = CreateInvocationCode(types);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, setupCode, invocationCode);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
