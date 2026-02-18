@@ -77,6 +77,7 @@ public abstract class TestsBase
 			: $"Setup{classNameReturns}.CallbackDelegate";
 		var iSetupThrowsJoin = useReturns ? "ISetupReturnsThrowsJoin" : "ISetupThrowsJoin";
 		var iSetupThrowsReset = useReturns ? "ISetupReturnsThrowsReset" : "ISetupThrowsReset";
+		var iSetupThrowsStart = useReturns ? "ISetupReturnsThrowsStart" : "ISetupThrowsStart";
 		var returnsDelegate = useReturns ? Environment.NewLine + $"\tpublic delegate {returns}? ReturnsCallbackDelegate({parameters});" : string.Empty;
 		var invokeFunction = useReturns ? $"public bool Execute({parameters}, out {returns}? returnValue)" : $"public void Invoke({parameters})";
 		var checkReturns = useReturns
@@ -99,6 +100,76 @@ public abstract class TestsBase
 			  		return false;
 			  """
 			: string.Empty;
+		var returnsMethods = useReturns
+			? """
+
+
+			  	public void Returns(TReturns? returns)
+			  	{
+			  		Returns((_, _) => returns);
+			  	}
+
+			  	public void Returns(in ReturnsCallbackDelegate returns)
+			  	{
+			  		if (_currentSetup is null)
+			  			throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
+
+			  		_currentSetup.Add(returns);
+			  	}
+			  """
+			: string.Empty;
+		var returnsInterfaceMethods = useReturns
+			? $$"""
+
+
+			    	{{iSetupThrowsJoin}}<{{interfaceGeneric}}> ISetupReturnsThrowsStart<{{interfaceGeneric}}>.Returns(in TReturns returns)
+			    	{
+			    		Returns(returns);
+			    		return this;
+			    	}
+
+			    	ISetup<{{interfaceGeneric}}> ISetupReturnsThrowsReset<{{interfaceGeneric}}>.Returns(in TReturns returns)
+			    	{
+			    		Returns(returns);
+			    		return this;
+			    	}
+
+			    	{{iSetupThrowsJoin}}<{{interfaceGeneric}}> ISetupReturnsThrowsStart<{{interfaceGeneric}}>.Returns(in ReturnsCallbackDelegate returns)
+			    	{
+			    		Returns(returns);
+			    		return this;
+			    	}
+
+			    	ISetup<{{interfaceGeneric}}> ISetupReturnsThrowsReset<{{interfaceGeneric}}>.Returns(in ReturnsCallbackDelegate returns)
+			    	{
+			    		Returns(returns);
+			    		return this;
+			    	}
+			    """
+			: string.Empty;
+		var returnsItemAdd = useReturns
+			? """
+
+
+			  		public void Add(in ReturnsCallbackDelegate returns)
+			  		{
+			  			if (AndContinue && _currentSetup is not null)
+			  			{
+			  				_currentSetup.Returns = returns;
+			  				AndContinue = false;
+			  				_currentSetup = null;
+			  			}
+			  			else
+			  			{
+			  				_currentSetup = new ItemSetup(returns: returns);
+			  				_queue.Enqueue(_currentSetup);
+			  			}
+			  		}
+			  """
+			: string.Empty;
+		var returnsItemSetup = useReturns ? Environment.NewLine + "\t\tpublic ReturnsCallbackDelegate? Returns;" : string.Empty;
+		var returnsItemSetupConstructorParameter = useReturns ? "in ReturnsCallbackDelegate? returns = null, " : string.Empty;
+		var returnsItemSetupConstructorAssign = useReturns ? Environment.NewLine + "\t\t\tReturns = returns;" : string.Empty;
 
 		var sourceCode =
 			$$"""
@@ -137,7 +208,7 @@ public abstract class TestsBase
 
 			  		_setups ??= new SetupContainer<Item>(SortComparer);
 			  		_setups.Add(_currentSetup);
-			  	}
+			  	}{{returnsMethods}}
 
 			  	public void Callback(in CallbackDelegate callback)
 			  	{
@@ -153,7 +224,7 @@ public abstract class TestsBase
 			  			throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
 			  		_currentSetup.Add(exception);
-			  	}
+			  	}{{returnsInterfaceMethods}}
 
 			  	ISetupCallbackJoin<{{interfaceGeneric}}> ISetupCallbackStart<{{interfaceGeneric}}>.Callback(in CallbackDelegate callback)
 			  	{
@@ -167,7 +238,7 @@ public abstract class TestsBase
 			  		return this;
 			  	}
 
-			  	{{iSetupThrowsJoin}}<{{interfaceGeneric}}> ISetupThrowsStart<{{interfaceGeneric}}>.Throws(in System.Exception exception)
+			  	{{iSetupThrowsJoin}}<{{interfaceGeneric}}> {{iSetupThrowsStart}}<{{interfaceGeneric}}>.Throws(in System.Exception exception)
 			  	{
 			  		Throws(exception);
 			  		return this;
@@ -202,7 +273,7 @@ public abstract class TestsBase
 			  		public Item({{setupParameters(true)}})
 			  		{
 			  			{{itemSetupParameterAssign}}
-			  		}
+			  		}{{returnsItemAdd}}
 
 			  		public void Add(in CallbackDelegate callback)
 			  		{
@@ -250,10 +321,10 @@ public abstract class TestsBase
 			  		public static readonly ItemSetup Default = new();
 
 			  		public CallbackDelegate? Callback;
-			  		public System.Exception? Exception;
+			  		public System.Exception? Exception;{{returnsItemSetup}}
 
-			  		public ItemSetup(in CallbackDelegate? callback = null, in System.Exception? exception = null)
-			  		{
+			  		public ItemSetup({{returnsItemSetupConstructorParameter}}in CallbackDelegate? callback = null, in System.Exception? exception = null)
+			  		{{{returnsItemSetupConstructorAssign}}
 			  			Callback = callback;
 			  			Exception = exception;
 			  		}
@@ -383,7 +454,7 @@ public abstract class TestsBase
 			  	private readonly string? {{prefixes}};
 			  	private readonly InvocationContainer<Item> _invocations = [];
 
-			  	public InvocationInt32Single(string name, {{prefixParameters}})
+			  	public Invocation{{className}}(string name, {{prefixParameters}})
 			  	{
 			  		_name = name;
 			  		{{prefixAssignemnts}}

@@ -160,7 +160,7 @@ internal static class MockSetupGenerator
 			.AppendSetupParametersMethod(methodSymbol, indent).AppendLine();
 
 		if (returnType is not null)
-			stringBuilder.AppendReturnsMethods(methodSymbol, indent);
+			stringBuilder.AppendReturnsMethods(methodSymbol, indent).AppendLine();
 
 		return stringBuilder
 			.AppendCallbackMethod(indent).AppendLine()
@@ -642,7 +642,7 @@ file static class Extensions
 				.Indent(--indent).AppendLine("}");
 		}
 
-		public void AppendReturnsMethods(IMethodSymbol methodSymbol, int indent)
+		public StringBuilder AppendReturnsMethods(IMethodSymbol methodSymbol, int indent)
 		{
 			// Value method
 			stringBuilder
@@ -652,7 +652,7 @@ file static class Extensions
 				.Indent(indent).AppendLine("}").AppendLine();
 
 			// Delegate method
-			stringBuilder
+			return stringBuilder
 				.Indent(indent).AppendLine("public void Returns(in ReturnsCallbackDelegate returns)")
 				.Indent(indent++).AppendLine("{")
 				.Indent(indent).AppendLine("if (_currentSetup is null)")
