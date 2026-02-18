@@ -20,17 +20,29 @@ public abstract class TestsBase
 		};
 	}
 
-	protected static GeneratedSource CreateSetupCode(params string[] types)
+	protected static GeneratedSource CreateSetupCode(string[] types)
+	{
+		var typeModels = types.ToTypeModels();
+		return CreateSetupCode(useReturns: false, typeModels);
+	}
+
+	protected static GeneratedSource CreateSetupCode(TypeModel[] types)
 	{
 		return CreateSetupCode(useReturns: false, types);
 	}
 
-	protected static GeneratedSource CreateSetupReturnsCode(params string[] types)
+	protected static GeneratedSource CreateSetupReturnsCode(string[] types)
+	{
+		var typeModels = types.ToTypeModels();
+		return CreateSetupCode(useReturns: true, typeModels);
+	}
+
+	protected static GeneratedSource CreateSetupReturnsCode(TypeModel[] types)
 	{
 		return CreateSetupCode(useReturns: true, types);
 	}
 
-	private static GeneratedSource CreateSetupCode(bool useReturns, string[] types)
+	private static GeneratedSource CreateSetupCode(bool useReturns, TypeModel[] types)
 	{
 		const string returns = "TReturns";
 		var returnsGenericType = useReturns ? $"<{returns}>" : string.Empty;
@@ -365,6 +377,12 @@ public abstract class TestsBase
 
 	protected static GeneratedSource CreateInvocationCode(params string[] types)
 	{
+		var typeModels = types.ToTypeModels();
+		return CreateInvocationCode(typeModels);
+	}
+
+	protected static GeneratedSource CreateInvocationCode(params TypeModel[] types)
+	{
 		var className = string.Join(null, types);
 		var prefixes = string.Join(", ", types.Select(static (_, i) => $"_prefixParam{i + 1}"));
 		var jsonSnapshots = string.Join(", ", types.Select(static (_, i) => $"_jsonSnapshotParam{i + 1}"));
@@ -609,6 +627,13 @@ file static class SourceFileCollectionEx
 		{
 			@this.Add((typeof(SourceGenerator), item.FileName, item.SourceCode));
 		}
+	}
+
+	public static TypeModel[] ToTypeModels(this string[] @this)
+	{
+		return @this
+			.Select(static (x, i) => new TypeModel(x, i + 1))
+			.ToArray();
 	}
 
 	public static string GetTypeString(this string type)
