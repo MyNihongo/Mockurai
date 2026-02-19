@@ -1,6 +1,6 @@
 ﻿namespace MyNihongo.Mock.Tests.Issues;
 
-public sealed class GenericSetup
+public sealed class GenericSetup : TestsBase
 {
 	[Fact]
 	public async Task AdjustGenericTypeNameForTReturns()
@@ -11,7 +11,7 @@ public sealed class GenericSetup
 
 			public interface IInterface
 			{
-				TReturns Invoke<TReturns>(int param1, long returnValue);
+				TReturns Invoke<TReturns>(int param1, TReturns returnValue);
 			}
 
 			[MockuraiGenerate]
@@ -21,6 +21,27 @@ public sealed class GenericSetup
 			}
 			""";
 
-		throw new NotImplementedException();
+		GeneratedSources generatedSources =
+		[
+			(
+				"TestsBase.g.cs",
+				""
+			),
+			(
+				"InterfaceMock.g.cs",
+				""
+			),
+			(
+				"SetupInt32TReturns_TReturns_.g.cs",
+				""
+			),
+			(
+				"InvocationInt32TReturns.g.cs",
+				""
+			),
+		];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
 	}
 }

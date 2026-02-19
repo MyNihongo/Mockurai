@@ -1196,4 +1196,30 @@ public sealed class MultipleDeclarations : TestsBase
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
 	}
+
+	[Fact]
+	public async Task NotGenerateDuplicateMethodSetupAndInvocationForSameGenericTypes()
+	{
+		const string testCode =
+			"""
+			namespace MyNihongo.Mock.Tests;
+
+			public interface IInterface
+			{
+				void Invoke<TStuff>(int param1, TStuff param2);
+				void Invoke2<TValue>(int param1, TValue param2);
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<IInterface> InterfaceMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources = [];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
 }

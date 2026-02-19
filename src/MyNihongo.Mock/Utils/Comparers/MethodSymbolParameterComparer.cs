@@ -13,16 +13,9 @@ internal sealed class MethodSymbolParameterComparer : IEqualityComparer<IMethodS
 		if (x.Parameters.Length != y.Parameters.Length)
 			return false;
 
-		for (var i = 0; i < x.Parameters.Length; i++)
-		{
-			var xHashCode = GetHashCode(x);
-			var yHashCode = GetHashCode(y);
-
-			if (xHashCode != yHashCode)
-				return false;
-		}
-
-		return true;
+		var xHashCode = GetHashCode(x);
+		var yHashCode = GetHashCode(y);
+		return xHashCode == yHashCode;
 	}
 
 	public int GetHashCode(IMethodSymbol? obj)
@@ -38,7 +31,7 @@ internal sealed class MethodSymbolParameterComparer : IEqualityComparer<IMethodS
 			var symbolComparer = SymbolEqualityComparer.Default;
 			foreach (var parameter in obj.Parameters)
 			{
-				var typeHashCode = symbolComparer.GetHashCode(parameter.Type);
+				var typeHashCode = symbolComparer.GetParameterHashCode(parameter);
 				var refHashCode = parameter.RefKind.GetHashCode();
 
 				var parameterHash = 17;
@@ -50,5 +43,17 @@ internal sealed class MethodSymbolParameterComparer : IEqualityComparer<IMethodS
 
 			return hash;
 		}
+	}
+}
+
+file static class Extensions
+{
+	public static int GetParameterHashCode(this SymbolEqualityComparer @this, IParameterSymbol parameter)
+	{
+		return parameter.Type switch
+		{
+			ITypeParameterSymbol x => x.ConstraintTypes.GetHashCode(),
+			_ => @this.GetHashCode(parameter.Type),
+		};
 	}
 }
