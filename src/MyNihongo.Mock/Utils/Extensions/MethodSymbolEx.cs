@@ -524,15 +524,21 @@ internal static class MethodSymbolEx
 			if (methodSymbol.Parameters.Length == 0)
 				return;
 
+			var customPrefixName = methodSymbol.Parameters.Length >= 2;
 			foreach (var parameter in methodSymbol.Parameters)
 			{
 				var refKindString = parameter.RefKind.GetString(pascalCase: false);
 				if (string.IsNullOrEmpty(refKindString))
 					continue;
 
+				@this.Append(", ");
+
+				if (customPrefixName)
+					@this.AppendPrefixParameter(parameter.Name);
+				else
+					@this.Append(MockGeneratorConst.Suffixes.Prefix);
+
 				@this
-					.Append(", ")
-					.AppendPrefixParameter(parameter.Name)
 					.Append(": \"")
 					.Append(refKindString)
 					.Append('"');
