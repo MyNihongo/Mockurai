@@ -48,39 +48,27 @@ public abstract class TestsBase
 		var returnsGenericType = useReturns ? $"<{returns}>" : string.Empty;
 		var className = string.Join(null, types);
 		var classNameReturns = className + returnsGenericType;
-		var parameters = string.Join(", ", types.Select(static (x, i) => $"{x.GetTypeString()} param{i + 1}"));
-		var parameterNames = string.Join(", ", types.Select(static (_, i) => $"param{i + 1}"));
-		var setupParameters = (bool isNullable) => string.Join(", ", types.Select((x, i) => $"in ItSetup<{x.GetTypeString()}>{(isNullable ? "?" : string.Empty)} param{i + 1}"));
-		var invoke = string.Join(Environment.NewLine + "\t\t\t", types.Select(static (_, i) =>
+		var parameters = string.Join(", ", types.Select(static x => $"{x.GetTypeString()} param{x.Index}"));
+		var parameterNames = string.Join(", ", types.Select(static x => $"param{x.Index}"));
+		var setupParameters = (bool isNullable) => string.Join(", ", types.Select(x => $"in ItSetup<{x.GetTypeString()}>{(isNullable ? "?" : string.Empty)} param{x.Index}"));
+		var invoke = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x =>
 		{
-			var index = i + 1;
-
 			return
 				$"""
-				 if (setup.Param{index}.HasValue && !setup.Param{index}.Value.Check(param{index}))
+				 if (setup.Param{x.Index}.HasValue && !setup.Param{x.Index}.Value.Check(param{x.Index}))
 				 				continue;
 				 """;
 		}));
-		var itemSetupFields = string.Join(Environment.NewLine + "\t\t", types.Select(static (type, i) =>
-		{
-			var index = i + 1;
-			return $"public readonly ItSetup<{type.GetTypeString()}>? Param{index};";
-		}));
-		var itemSetupParameterAssign = string.Join(Environment.NewLine + "\t\t\t", types.Select(static (_, i) =>
-		{
-			var index = i + 1;
-			return $"Param{index} = param{index};";
-		}));
+		var itemSetupFields = string.Join(Environment.NewLine + "\t\t", types.Select(static x => { return $"public readonly ItSetup<{x.GetTypeString()}>? Param{x.Index};"; }));
+		var itemSetupParameterAssign = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x => { return $"Param{x.Index} = param{x.Index};"; }));
 		var itemSetupComparer = (string item) =>
 		{
-			return string.Join(Environment.NewLine + "\t\t\t\t", types.Select((_, i) =>
+			return string.Join(Environment.NewLine + "\t\t\t\t", types.Select(x =>
 			{
-				var index = i + 1;
-
 				return
 					$"""
-					 if ({item}.Param{index}.HasValue)
-					 					{item}Sort += {item}.Param{index}.Value.Sort;
+					 if ({item}.Param{x.Index}.HasValue)
+					 					{item}Sort += {item}.Param{x.Index}.Value.Sort;
 					 """;
 			}));
 		};
@@ -384,35 +372,39 @@ public abstract class TestsBase
 	protected static GeneratedSource CreateInvocationCode(params TypeModel[] types)
 	{
 		var className = string.Join(null, types);
-		var prefixes = string.Join(", ", types.Select(static (_, i) => $"_prefixParam{i + 1}"));
-		var jsonSnapshots = string.Join(", ", types.Select(static (_, i) => $"_jsonSnapshotParam{i + 1}"));
-		var prefixParameters = string.Join(", ", types.Select(static (_, i) => $"string? prefixParam{i + 1} = null"));
-		var parameters = string.Join(", ", types.Select(static (x, i) => $"{x.GetTypeString()} param{i + 1}"));
-		var parameterNames = string.Join(", ", types.Select(static (_, i) => $"param{i + 1}"));
-		var prefixAssignemnts = string.Join(Environment.NewLine + "\t\t", types.Select(static (_, i) => $"_prefixParam{i + 1} = prefixParam{i + 1};"));
-		var setupParameters = string.Join(", ", types.Select(static (x, i) => $"in ItSetup<{x.GetTypeString()}> param{i + 1}"));
-		var verifyParameters = string.Join(Environment.NewLine + "\t\t\t", types.Select(static (_, i) => $"var verifyParam{i + 1} = span[i].GetParam{i + 1}(param{i + 1}.Type);"));
-		var parameterToString = string.Join(", ", types.Select(static (_, i) => $"param{i + 1}.ToString(_prefixParam{i + 1})"));
-		var typeNameParameters = string.Join(Environment.NewLine + "\t\t", types.Select(static (x, i) => $"var typeNameParam{i + 1} = !string.IsNullOrEmpty(_prefixParam{i + 1}) ? $\"{{_prefixParam{i + 1}}} {x.GetTypeString()}\" : \"{x.GetTypeString()}\";"));
-		var typeParameterNames = string.Join(", ", types.Select(static (_, i) => $"typeNameParam{i + 1}"));
-		var parameterFields = string.Join(Environment.NewLine + "\t\t", types.Select(static (x, i) => $"private readonly {x.GetTypeString()} _param{i + 1};"));
-		var verifyChecks = string.Join(Environment.NewLine + "\t\t\t", types.Skip(1).Select(static (_, i) =>
+		var prefixes = string.Join(", ", types.Select(static x => $"_prefixParam{x.Index}"));
+		var jsonSnapshots = string.Join(", ", types.Select(static x => $"_jsonSnapshotParam{x.Index}"));
+		var prefixParameters = string.Join(", ", types.Select(static x => $"string? prefixParam{x.Index} = null"));
+		var parameters = string.Join(", ", types.Select(static x => $"{x.GetTypeString()} param{x.Index}"));
+		var parameterNames = string.Join(", ", types.Select(static x => $"param{x.Index}"));
+		var prefixAssignemnts = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"_prefixParam{x.Index} = prefixParam{x.Index};"));
+		var setupParameters = string.Join(", ", types.Select(static x => $"in ItSetup<{x.GetTypeString()}> param{x.Index}"));
+		var verifyParameters = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x => $"var verifyParam{x.Index} = span[i].GetParam{x.Index}(param{x.Index}.Type);"));
+		var parameterToString = string.Join(", ", types.Select(static x => $"param{x.Index}.ToString(_prefixParam{x.Index})"));
+		var typeNameParameters = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"var typeNameParam{x.Index} = !string.IsNullOrEmpty(_prefixParam{x.Index}) ? $\"{{_prefixParam{x.Index}}} {x.GetTypeString()}\" : \"{x.GetTypeString()}\";"));
+		var typeParameterNames = string.Join(", ", types.Select(static x => $"typeNameParam{x.Index}"));
+		var parameterFields = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"private readonly {x.GetTypeString()} _param{x.Index};"));
+		var verifyChecks = string.Join(Environment.NewLine + "\t\t\t", types.Select(static (x, i) =>
 		{
-			var index = i + 2;
-
-			return
-				$$"""
-				  if (!param{{index}}.Check(verifyParam{{index}}, out result))
-				  			{
-				  				verifyResults = verifyResults is not null
-				  					? [..verifyResults, ("param{{index}}", result)]
-				  					: [("param{{index}}", result)];
-				  			}
-				  """;
+			return i == 0
+				? $$"""
+				    if (!param{{x.Index}}.Check(verifyParam{{x.Index}}, out var result))
+				    			{
+				    				verifyResults = [("param{{x.Index}}", result)];
+				    			}
+				    """
+				: $$"""
+				    if (!param{{x.Index}}.Check(verifyParam{{x.Index}}, out result))
+				    			{
+				    				verifyResults = verifyResults is not null
+				    					? [..verifyResults, ("param{{x.Index}}", result)]
+				    					: [("param{{x.Index}}", result)];
+				    			}
+				    """;
 		}));
-		var verifyItemParameterAssignments = string.Join(Environment.NewLine + Environment.NewLine + "\t\t\t", types.Select(static (_, i) =>
+		var verifyItemParameterAssignments = string.Join(Environment.NewLine + Environment.NewLine + "\t\t\t", types.Select(static x =>
 		{
-			var index = i + 1;
+			var index = x.Index;
 
 			return
 				$$"""
@@ -427,38 +419,36 @@ public abstract class TestsBase
 				  			}
 				  """;
 		}));
-		var verifyItemGetParameterFunctions = string.Join(Environment.NewLine + Environment.NewLine + "\t\t", types.Select(static (x, i) =>
+		var verifyItemGetParameterFunctions = string.Join(Environment.NewLine + Environment.NewLine + "\t\t", types.Select(static x =>
 		{
-			var index = i + 1;
 			var typeString = x.GetTypeString();
 
 			return
 				$$"""
-				  public {{typeString}} GetParam{{index}}(SetupType setupType)
+				  public {{typeString}} GetParam{{x.Index}}(SetupType setupType)
 				  		{
-				  			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParam{{index}})
-				  				? System.Text.Json.JsonSerializer.Deserialize<{{typeString}}>(_jsonSnapshotParam{{index}})
-				  				: _param{{index}};
+				  			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParam{{x.Index}})
+				  				? System.Text.Json.JsonSerializer.Deserialize<{{typeString}}>(_jsonSnapshotParam{{x.Index}})
+				  				: _param{{x.Index}};
 				  		}
 				  """;
 		}));
-		var verifyItemParameterToString = string.Join(Environment.NewLine + Environment.NewLine + "\t\t\t", types.Select(static (_, i) =>
+		var verifyItemParameterToString = string.Join(Environment.NewLine + Environment.NewLine + "\t\t\t", types.Select(static (x, i) =>
 		{
-			var index = i + 1;
 			var stringBuilderClear = i > 0
 				? Environment.NewLine + "\t\t\tstringBuilder.Clear();"
 				: string.Empty;
 
 			return
 				$$"""
-				  // param{{index}}{{stringBuilderClear}}
-				  			if (!string.IsNullOrEmpty(_invocation._prefixParam{{index}}))
-				  				stringBuilder.Append($"{_invocation._prefixParam{{index}}} ");
-				  			if (!string.IsNullOrEmpty(_jsonSnapshotParam{{index}}))
-				  				stringBuilder.Append(_jsonSnapshotParam{{index}});
+				  // param{{x.Index}}{{stringBuilderClear}}
+				  			if (!string.IsNullOrEmpty(_invocation._prefixParam{{x.Index}}))
+				  				stringBuilder.Append($"{_invocation._prefixParam{{x.Index}}} ");
+				  			if (!string.IsNullOrEmpty(_jsonSnapshotParam{{x.Index}}))
+				  				stringBuilder.Append(_jsonSnapshotParam{{x.Index}});
 				  			else
-				  				stringBuilder.Append(_param{{index}});
-				  			var param{{index}} = stringBuilder.ToString();
+				  				stringBuilder.Append(_param{{x.Index}});
+				  			var param{{x.Index}} = stringBuilder.ToString();
 				  """;
 		}));
 
@@ -497,10 +487,6 @@ public abstract class TestsBase
 			  			{{verifyParameters}}
 			  			(string, ComparisonResult?)[]? verifyResults = null;
 
-			  			if (!param1.Check(verifyParam1, out var result))
-			  			{
-			  				verifyResults = [("param1", result)];
-			  			}
 			  			{{verifyChecks}}
 
 			  			if (verifyResults is not null)
@@ -534,10 +520,6 @@ public abstract class TestsBase
 			  			{{verifyParameters}}
 			  			(string, ComparisonResult?)[]? verifyResults = null;
 
-			  			if (!param1.Check(verifyParam1, out var result))
-			  			{
-			  				verifyResults = [("param1", result)];
-			  			}
 			  			{{verifyChecks}}
 
 			  			if (verifyResults is not null)
@@ -636,9 +618,9 @@ file static class SourceFileCollectionEx
 			.ToArray();
 	}
 
-	public static string GetTypeString(this string type)
+	public static string GetTypeString(this TypeModel type)
 	{
-		return type switch
+		return type.Type switch
 		{
 			"Int32" => "int",
 			"Single" => "float",
