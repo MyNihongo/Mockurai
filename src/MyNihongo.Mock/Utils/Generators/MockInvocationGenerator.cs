@@ -2,7 +2,7 @@ namespace MyNihongo.Mock.Utils;
 
 internal static class MockInvocationGenerator
 {
-	private const string PrefixName = "prefix", JsonSnapshotName = "jsonSnapshot";
+	private const string JsonSnapshotName = "jsonSnapshot";
 
 	public static MockSetupResult GenerateMockInvocation(this IMethodSymbol methodSymbol, CompilationCombinedResult result)
 	{
@@ -642,20 +642,6 @@ internal static class MockInvocationGenerator
 				.Append("(\"")
 				.Append(parameterName)
 				.Append("\", result)");
-		}
-
-		private StringBuilder AppendPrefixField(string name)
-		{
-			return @this
-				.AppendFieldName(PrefixName)
-				.AppendPropertyName(name);
-		}
-
-		private StringBuilder AppendPrefixParameter(string name)
-		{
-			return @this
-				.AppendParameterName(PrefixName)
-				.AppendPropertyName(name);
 		}
 	}
 }

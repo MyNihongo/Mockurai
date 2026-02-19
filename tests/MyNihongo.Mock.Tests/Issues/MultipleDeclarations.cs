@@ -745,6 +745,195 @@ public sealed class MultipleDeclarations : TestsBase
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
 	}
+	
+		[Fact]
+	public async Task GenerateDifferentMethodSetupAndInvocationIfRefDifferent()
+	{
+		const string testCode =
+			"""
+			namespace MyNihongo.Mock.Tests;
+
+			public interface IInterface
+			{
+				T Invoke<T>(int param1, long param2);
+				decimal Invoke2(int param1, in long param2);
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<IInterface> InterfaceMock1 { get; }
+			}
+			""";
+
+		string[] types1 = ["Int32", "Int64"];
+		TypeModel[] types2 = [new("Int32", 1), new("Int64", 2, "in")];
+		GeneratedSources generatedSources =
+		[
+			(
+				"TestsBase.g.cs",
+				"""
+				namespace MyNihongo.Mock.Tests;
+
+				public partial class TestsBase
+				{
+					// InterfaceMock1
+					private readonly InterfaceMock _interfaceMock1 = new(InvocationIndex.CounterValue);
+					protected partial MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.IInterface> InterfaceMock1 => _interfaceMock1;
+
+					protected void VerifyNoOtherCalls()
+					{
+						InterfaceMock1.VerifyNoOtherCalls();
+					}
+
+					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
+					{
+						var ctx = new VerifySequenceContext(
+							interfaceMock1: InterfaceMock1
+						);
+
+						verify(ctx);
+					}
+
+					protected sealed class VerifySequenceContext
+					{
+						private readonly VerifyIndex _verifyIndex = new();
+						public readonly IMockSequence<MyNihongo.Mock.Tests.IInterface> InterfaceMock1;
+
+						public VerifySequenceContext(MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.IInterface> interfaceMock1)
+						{
+							InterfaceMock1 = new MockSequence<MyNihongo.Mock.Tests.IInterface>
+							{
+								VerifyIndex = _verifyIndex,
+								Mock = interfaceMock1,
+							};
+						}
+					}
+				}
+				"""
+			),
+			(
+				"InterfaceMock.g.cs",
+				"""
+				namespace MyNihongo.Mock;
+
+				public sealed class InterfaceMock : IMock<MyNihongo.Mock.Tests.IInterface>
+				{
+					private readonly InvocationIndex.Counter _invocationIndex;
+					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
+					private Proxy? _proxy;
+
+					public InterfaceMock(InvocationIndex.Counter invocationIndex)
+					{
+						_invocationIndex = invocationIndex;
+						_invocationProviders = GetInvocations;
+					}
+
+					public MyNihongo.Mock.Tests.IInterface Object => _proxy ??= new Proxy(this);
+
+					// Invoke
+					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
+					private InvocationDictionary? _invoke0Invocation;
+
+					public SetupInt32Int64<T> SetupInvoke<T>(in It<int> param1, in It<long> param2)
+					{
+						_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+						var invoke0 = (SetupInt32Int64<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupInt32Int64<T>());
+						invoke0.SetupParameters(param1.ValueSetup, param2.ValueSetup);
+						return invoke0;
+					}
+
+					public void VerifyInvoke<T>(in It<int> param1, in It<long> param2, in Times times)
+					{
+						_invoke0Invocation ??= new InvocationDictionary();
+						var invoke0Invocation = (InvocationInt32Int64)_invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationInt32Int64($"IInterface.Invoke<{key.Name}>({0}, {1})"));
+						invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, times, _invocationProviders);
+					}
+
+					public long VerifyInvoke<T>(in It<int> param1, in It<long> param2, long index)
+					{
+						_invoke0Invocation ??= new InvocationDictionary();
+						var invoke0Invocation = (InvocationInt32Int64)_invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationInt32Int64($"IInterface.Invoke<{key.Name}>({0}, {1})"));
+						return invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
+					}
+
+					// Invoke2
+					private SetupInt32InInt64<decimal>? _invoke20;
+					private InvocationInt32InInt64? _invoke20Invocation;
+
+					public SetupInt32InInt64<decimal> SetupInvoke2(in It<int> param1, in ItIn<long> param2)
+					{
+						_invoke20 ??= new SetupInt32InInt64<decimal>();
+						_invoke20.SetupParameters(param1.ValueSetup, param2.ValueSetup);
+						return _invoke20;
+					}
+
+					public void VerifyInvoke2(in It<int> param1, in ItIn<long> param2, in Times times)
+					{
+						_invoke20Invocation ??= new InvocationInt32InInt64("IInterface.Invoke2({0}, {1})", prefixParam2: "in");
+						_invoke20Invocation.Verify(param1.ValueSetup, param2.ValueSetup, times, _invocationProviders);
+					}
+
+					public long VerifyInvoke2(in It<int> param1, in ItIn<long> param2, long index)
+					{
+						_invoke20Invocation ??= new InvocationInt32InInt64("IInterface.Invoke2({0}, {1})", prefixParam2: "in");
+						return _invoke20Invocation.Verify(param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
+					}
+
+					public void VerifyNoOtherCalls()
+					{
+
+					}
+
+					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
+					{
+						yield break;
+					}
+
+					private sealed class Proxy : MyNihongo.Mock.Tests.IInterface
+					{
+						private readonly InterfaceMock _mock;
+
+						public Proxy(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public T Invoke<T>(int param1, long param2) {return default;}
+						public decimal Invoke2(int param1, in long param2) {return default;}
+
+					}
+				}
+
+				public static partial class MockExtensions
+				{
+					extension(IMock<MyNihongo.Mock.Tests.IInterface> @this)
+					{
+						public void VerifyNoOtherCalls() =>
+							((InterfaceMock)@this).VerifyNoOtherCalls();
+
+						
+					}
+				}
+
+				public static partial class MockSequenceExtensions
+				{
+					extension(IMockSequence<MyNihongo.Mock.Tests.IInterface> @this)
+					{
+					
+					}
+				}
+				"""
+			),
+			CreateSetupReturnsCode(types1),
+			CreateInvocationCode(types1),
+			CreateSetupReturnsCode(types2),
+			CreateInvocationCode(types2),
+		];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
 
 	[Fact]
 	public async Task NotGenerateDuplicateMethodSetupAndInvocationFromDifferentClasses()

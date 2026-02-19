@@ -48,19 +48,20 @@ public abstract class TestsBase
 		var returnsGenericType = useReturns ? $"<{returns}>" : string.Empty;
 		var className = string.Join(null, types);
 		var classNameReturns = className + returnsGenericType;
-		var parameters = string.Join(", ", types.Select(static x => $"{x.GetTypeString()} param{x.Index}"));
-		var parameterNames = string.Join(", ", types.Select(static x => $"param{x.Index}"));
-		var setupParameters = (bool isNullable) => string.Join(", ", types.Select(x => $"in ItSetup<{x.GetTypeString()}>{(isNullable ? "?" : string.Empty)} param{x.Index}"));
+		var parameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString()));
+		var discardedParameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString(typeNameOverride: "_")));
+		var parameterNames = string.Join(", ", types.Select(static x => x.GetParameterNameString()));
+		var setupParameters = (bool isNullable) => string.Join(", ", types.Select(x => $"in ItSetup<{x.GetTypeString()}>{(isNullable ? "?" : string.Empty)} {x.GetParameterNameString()}"));
 		var invoke = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x =>
 		{
 			return
 				$"""
-				 if (setup.Param{x.Index}.HasValue && !setup.Param{x.Index}.Value.Check(param{x.Index}))
+				 if (setup.Param{x.Index}.HasValue && !setup.Param{x.Index}.Value.Check({x.GetParameterNameString()}))
 				 				continue;
 				 """;
 		}));
 		var itemSetupFields = string.Join(Environment.NewLine + "\t\t", types.Select(static x => { return $"public readonly ItSetup<{x.GetTypeString()}>? Param{x.Index};"; }));
-		var itemSetupParameterAssign = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x => { return $"Param{x.Index} = param{x.Index};"; }));
+		var itemSetupParameterAssign = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x => { return $"Param{x.Index} = {x.GetParameterNameString()};"; }));
 		var itemSetupComparer = (string item) =>
 		{
 			return string.Join(Environment.NewLine + "\t\t\t\t", types.Select(x =>
@@ -100,23 +101,24 @@ public abstract class TestsBase
 			  		return false;
 			  """
 			: string.Empty;
+		
 		var returnsMethods = useReturns
-			? """
+			? $$"""
 
 
-			  	public void Returns(TReturns? returns)
-			  	{
-			  		Returns((_, _) => returns);
-			  	}
+			    	public void Returns(TReturns? returns)
+			    	{
+			    		Returns(({{discardedParameters}}) => returns);
+			    	}
 
-			  	public void Returns(in ReturnsCallbackDelegate returns)
-			  	{
-			  		if (_currentSetup is null)
-			  			throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
+			    	public void Returns(in ReturnsCallbackDelegate returns)
+			    	{
+			    		if (_currentSetup is null)
+			    			throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-			  		_currentSetup.Add(returns);
-			  	}
-			  """
+			    		_currentSetup.Add(returns);
+			    	}
+			    """
 			: string.Empty;
 		var returnsInterfaceMethods = useReturns
 			? $$"""
@@ -375,12 +377,12 @@ public abstract class TestsBase
 		var prefixes = string.Join(", ", types.Select(static x => $"_prefixParam{x.Index}"));
 		var jsonSnapshots = string.Join(", ", types.Select(static x => $"_jsonSnapshotParam{x.Index}"));
 		var prefixParameters = string.Join(", ", types.Select(static x => $"string? prefixParam{x.Index} = null"));
-		var parameters = string.Join(", ", types.Select(static x => $"{x.GetTypeString()} param{x.Index}"));
-		var parameterNames = string.Join(", ", types.Select(static x => $"param{x.Index}"));
+		var parameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString()));
+		var parameterNames = string.Join(", ", types.Select(static x => x.GetParameterNameString()));
 		var prefixAssignemnts = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"_prefixParam{x.Index} = prefixParam{x.Index};"));
-		var setupParameters = string.Join(", ", types.Select(static x => $"in ItSetup<{x.GetTypeString()}> param{x.Index}"));
-		var verifyParameters = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x => $"var verifyParam{x.Index} = span[i].GetParam{x.Index}(param{x.Index}.Type);"));
-		var parameterToString = string.Join(", ", types.Select(static x => $"param{x.Index}.ToString(_prefixParam{x.Index})"));
+		var setupParameters = string.Join(", ", types.Select(static x => $"in ItSetup<{x.GetTypeString()}> {x.GetParameterNameString()}"));
+		var verifyParameters = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x => $"var verifyParam{x.Index} = span[i].GetParam{x.Index}({x.GetParameterNameString()}.Type);"));
+		var parameterToString = string.Join(", ", types.Select(static x => $"{x.GetParameterNameString()}.ToString(_prefixParam{x.Index})"));
 		var typeNameParameters = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"var typeNameParam{x.Index} = !string.IsNullOrEmpty(_prefixParam{x.Index}) ? $\"{{_prefixParam{x.Index}}} {x.GetTypeString()}\" : \"{x.GetTypeString()}\";"));
 		var typeParameterNames = string.Join(", ", types.Select(static x => $"typeNameParam{x.Index}"));
 		var parameterFields = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"private readonly {x.GetTypeString()} _param{x.Index};"));
@@ -616,16 +618,5 @@ file static class SourceFileCollectionEx
 		return @this
 			.Select(static (x, i) => new TypeModel(x, i + 1))
 			.ToArray();
-	}
-
-	public static string GetTypeString(this TypeModel type)
-	{
-		return type.Type switch
-		{
-			"Int32" => "int",
-			"Single" => "float",
-			"Int64" => "long",
-			_ => throw new NotImplementedException($"Unsupported type: `{type}`"),
-		};
 	}
 }
