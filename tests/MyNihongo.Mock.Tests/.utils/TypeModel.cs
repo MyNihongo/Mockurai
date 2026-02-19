@@ -41,6 +41,7 @@ public static class TypeModelEx
 				"Int32" => "int",
 				"Single" => "float",
 				"Int64" => "long",
+				"Double" => "double",
 				_ => throw new NotImplementedException($"Unsupported type: `{@this}`"),
 			};
 		}
