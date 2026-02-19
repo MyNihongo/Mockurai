@@ -576,6 +576,11 @@ internal static class MockInvocationGenerator
 
 	extension(StringBuilder @this)
 	{
+		private StringBuilder AppendInvocationClassName(ImmutableArray<IParameterSymbol> parameters)
+		{
+			return @this.AppendInvocationClassName(parameters, useOverriddenGenericNames: true);
+		}
+
 		private StringBuilder AppendVerifyReturnType(VerifyMethodType type)
 		{
 			var returnType = type switch

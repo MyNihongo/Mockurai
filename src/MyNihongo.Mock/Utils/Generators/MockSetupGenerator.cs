@@ -143,7 +143,7 @@ internal static class MockSetupGenerator
 		if (returnType is not null)
 		{
 			stringBuilder
-				.Indent(indent).Append("public delegate TReturns? ReturnsCallbackDelegate(")
+				.Indent(indent).Append($"public delegate {MockGeneratorConst.Suffixes.GenericReturnParameter}? ReturnsCallbackDelegate(")
 				.AppendParameters(methodSymbol.Parameters)
 				.AppendLine(");");
 		}
@@ -318,17 +318,17 @@ internal static class MockSetupGenerator
 		stringBuilder.Clear();
 
 		return stringBuilder
-			.AppendSetupClassName(methodSymbol, OverrideReturnType)
+			.AppendSetupClassName(methodSymbol)
 			.ToString();
-	}
-
-	private static void OverrideReturnType(StringBuilder stringBuilder, ITypeSymbol typeSymbol)
-	{
-		stringBuilder.Append("TReturns");
 	}
 
 	extension(StringBuilder @this)
 	{
+		private StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol)
+		{
+			return @this.AppendSetupClassName(methodSymbol, useOverriddenGenericNames: true);
+		}
+		
 		private StringBuilder AppendInterface(string interfaceName, IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol)
 		{
 			@this
@@ -338,15 +338,15 @@ internal static class MockSetupGenerator
 			if (returnTypeSymbol is null)
 			{
 				@this
-					.AppendSetupClassName(methodSymbol, OverrideReturnType)
+					.AppendSetupClassName(methodSymbol)
 					.Append(".CallbackDelegate");
 			}
 			else
 			{
 				@this
-					.AppendSetupClassName(methodSymbol, OverrideReturnType)
-					.Append(".CallbackDelegate, TReturns, ")
-					.AppendSetupClassName(methodSymbol, OverrideReturnType)
+					.AppendSetupClassName(methodSymbol)
+					.Append($".CallbackDelegate, {MockGeneratorConst.Suffixes.GenericReturnParameter}, ")
+					.AppendSetupClassName(methodSymbol)
 					.Append(".ReturnsCallbackDelegate");
 			}
 
@@ -409,7 +409,7 @@ internal static class MockSetupGenerator
 		{
 			const string methodCall = "Returns(returns);";
 
-			foreach (var methodDeclaration in new[] { ".Returns(in TReturns returns)", ".Returns(in ReturnsCallbackDelegate returns)" })
+			foreach (var methodDeclaration in new[] { $".Returns(in {MockGeneratorConst.Suffixes.GenericReturnParameter} returns)", ".Returns(in ReturnsCallbackDelegate returns)" })
 			{
 				@this
 					.Indent(indent).AppendInterface("ISetupReturnsThrowsJoin", methodSymbol, returnTypeSymbol)
@@ -494,7 +494,7 @@ file static class Extensions
 				stringBuilder
 					.Append("public bool Execute(")
 					.AppendParameters(methodSymbol.Parameters)
-					.AppendLine(", out TReturns? returnValue)");
+					.AppendLine($", out {MockGeneratorConst.Suffixes.GenericReturnParameter}? returnValue)");
 			}
 
 			stringBuilder
@@ -646,7 +646,7 @@ file static class Extensions
 		{
 			// Value method
 			stringBuilder
-				.Indent(indent).AppendLine("public void Returns(TReturns? returns)")
+				.Indent(indent).AppendLine($"public void Returns({MockGeneratorConst.Suffixes.GenericReturnParameter}? returns)")
 				.Indent(indent).AppendLine("{")
 				.Indent(indent + 1).Append("Returns((").AppendDiscardParameterNames(methodSymbol.Parameters).AppendLine(") => returns);")
 				.Indent(indent).AppendLine("}").AppendLine();

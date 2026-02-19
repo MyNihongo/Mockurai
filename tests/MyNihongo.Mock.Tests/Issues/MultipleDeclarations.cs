@@ -1217,7 +1217,77 @@ public sealed class MultipleDeclarations : TestsBase
 			}
 			""";
 
-		GeneratedSources generatedSources = [];
+		GeneratedSources generatedSources =
+		[
+			(
+				"TestsBase.g.cs",
+				""
+			),
+			(
+				"InterfaceMock.g.cs",
+				""
+			),
+			(
+				"SetupInt32T1_T1_.g.cs",
+				""
+			),
+			(
+				"InvocationInt32T1_T1_.g.cs",
+				""
+			),
+		];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateDifferentMethodSetupAndInvocationForGenericTypesWithDifferentOrder()
+	{
+		const string testCode =
+			"""
+			namespace MyNihongo.Mock.Tests;
+
+			public interface IInterface
+			{
+				void Invoke<TStuff>(int param1, TStuff param2);
+				void Invoke2<TValue>(TValue param1, int param2);
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<IInterface> InterfaceMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources =
+		[
+			(
+				"TestsBase.g.cs",
+				""
+			),
+			(
+				"InterfaceMock.g.cs",
+				""
+			),
+			(
+				"SetupInt32T1_T1_.g.cs",
+				""
+			),
+			(
+				"SetupT1Int32_T1_.g.cs",
+				""
+			),
+			(
+				"InvocationT1Int32_T1_.g.cs",
+				""
+			),
+			(
+				"InvocationTValueInt32.g.cs",
+				""
+			),
+		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();

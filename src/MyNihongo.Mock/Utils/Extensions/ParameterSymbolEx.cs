@@ -89,50 +89,105 @@ internal static class ParameterSymbolEx
 			return @this;
 		}
 
-		public StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol, Action<StringBuilder, ITypeSymbol>? returnTypeOverride = null)
+		public StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol, bool useOverriddenGenericNames = false)
 		{
 			var parameters = methodSymbol.Parameters;
 			var returnTypeSymbol = methodSymbol.TryGetReturnType();
 
-			return @this.AppendSetupClassName(parameters, returnTypeSymbol, returnTypeOverride);
+			return @this.AppendSetupClassName(parameters, returnTypeSymbol, useOverriddenGenericNames);
 		}
 
-		public StringBuilder AppendSetupClassName(ImmutableArray<IParameterSymbol> parameters, ITypeSymbol? returnTypeSymbol, Action<StringBuilder, ITypeSymbol>? returnTypeOverride = null)
+		public StringBuilder AppendSetupClassName(ImmutableArray<IParameterSymbol> parameters, ITypeSymbol? returnTypeSymbol, bool useOverriddenGenericNames = false)
 		{
 			@this
 				.Append("Setup")
-				.AppendParameterRefKinds(parameters);
+				.AppendParameterRefKinds(parameters, out var genericParameters);
 
 			if (returnTypeSymbol is not null)
 			{
-				@this.Append('<');
+				@this
+					.Append('<')
+					.AppendGenericSetupInvocationParameters(genericParameters, useOverriddenGenericNames, appendGenericSymbols: false, appendTrailingComma: true);
 
-				if (returnTypeOverride is not null)
-					returnTypeOverride(@this, returnTypeSymbol);
+				if (useOverriddenGenericNames)
+					@this.Append(MockGeneratorConst.Suffixes.GenericReturnParameter);
 				else
 					@this.AppendType(returnTypeSymbol);
 
 				@this.Append('>');
 			}
+			else
+			{
+				@this.AppendGenericSetupInvocationParameters(genericParameters, useOverriddenGenericNames);
+			}
 
 			return @this;
 		}
 
-		public StringBuilder AppendInvocationClassName(ImmutableArray<IParameterSymbol> parameters)
+		public StringBuilder AppendInvocationClassName(ImmutableArray<IParameterSymbol> parameters, bool useOverriddenGenericNames = false)
 		{
 			return @this
 				.Append("Invocation")
-				.AppendParameterRefKinds(parameters);
+				.AppendParameterRefKinds(parameters, out var genericParameters)
+				.AppendGenericSetupInvocationParameters(genericParameters, useOverriddenGenericNames);
 		}
 
-		private StringBuilder AppendParameterRefKinds(ImmutableArray<IParameterSymbol> parameters)
+		private StringBuilder AppendParameterRefKinds(ImmutableArray<IParameterSymbol> parameters, out ImmutableArray<ITypeParameterSymbol> genericParameters)
 		{
+			ImmutableArray<ITypeParameterSymbol>.Builder? builder = null;
+
 			foreach (var parameter in parameters)
 			{
-				@this
-					.AppendRefKind(parameter.RefKind)
-					.Append(parameter.Type.Name);
+				if (parameter.Type is ITypeParameterSymbol typeParameterSymbol)
+				{
+					builder ??= ImmutableArray.CreateBuilder<ITypeParameterSymbol>();
+					builder.Add(typeParameterSymbol);
+
+					@this
+						.Append(MockGeneratorConst.Suffixes.GenericParameter)
+						.Append(builder.Count);
+				}
+				else
+				{
+					@this
+						.AppendRefKind(parameter.RefKind)
+						.Append(parameter.Type.Name);
+				}
 			}
+
+			genericParameters = builder?.ToImmutable() ?? ImmutableArray<ITypeParameterSymbol>.Empty;
+			return @this;
+		}
+
+		private StringBuilder AppendGenericSetupInvocationParameters(ImmutableArray<ITypeParameterSymbol> genericParameters, bool useOverriddenGenericNames, bool appendGenericSymbols = true, bool appendTrailingComma = false)
+		{
+			if (genericParameters.IsDefaultOrEmpty)
+				return @this;
+
+			if (appendGenericSymbols)
+				@this.Append('<');
+
+			for (var i = 0; i < genericParameters.Length; i++)
+			{
+				if (i > 0)
+					@this.Append(", ");
+
+				if (useOverriddenGenericNames)
+				{
+					@this
+						.Append(MockGeneratorConst.Suffixes.GenericParameter)
+						.Append(i + 1);
+				}
+				else
+				{
+					@this.AppendType(genericParameters[i]);
+				}
+			}
+
+			if (appendGenericSymbols)
+				@this.Append('>');
+			else if (appendTrailingComma)
+				@this.Append(", ");
 
 			return @this;
 		}
