@@ -89,15 +89,36 @@ internal static class ParameterSymbolEx
 			return @this;
 		}
 
-		public StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol, bool useOverriddenGenericNames = false)
+		public StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol, bool useOverriddenGenericNames)
 		{
 			var parameters = methodSymbol.Parameters;
 			var returnTypeSymbol = methodSymbol.TryGetReturnType();
 
-			return @this.AppendSetupClassName(parameters, returnTypeSymbol, useOverriddenGenericNames);
+			return @this.AppendSetupClassName(parameters, returnTypeSymbol, typeOverrideBuilder: null, useOverriddenGenericNames);
+		}
+
+		public StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol, bool useOverriddenGenericNames, out ImmutableDictionary<IParameterSymbol, string> genericTypeOverride)
+		{
+			var parameters = methodSymbol.Parameters;
+			var returnTypeSymbol = methodSymbol.TryGetReturnType();
+
+			var builder = ImmutableDictionary.CreateBuilder<IParameterSymbol, string>();
+			@this.AppendSetupClassName(parameters, returnTypeSymbol, builder, useOverriddenGenericNames);
+
+			genericTypeOverride = builder.ToImmutable();
+			return @this;
 		}
 
 		public StringBuilder AppendSetupClassName(ImmutableArray<IParameterSymbol> parameters, ITypeSymbol? returnTypeSymbol, bool useOverriddenGenericNames = false)
+		{
+			return @this.AppendSetupClassName(parameters, returnTypeSymbol, typeOverrideBuilder: null, useOverriddenGenericNames);
+		}
+
+		private StringBuilder AppendSetupClassName(
+			ImmutableArray<IParameterSymbol> parameters,
+			ITypeSymbol? returnTypeSymbol,
+			ImmutableDictionary<IParameterSymbol, string>.Builder? typeOverrideBuilder,
+			bool useOverriddenGenericNames)
 		{
 			@this
 				.Append("Setup")
@@ -107,7 +128,7 @@ internal static class ParameterSymbolEx
 			{
 				@this
 					.Append('<')
-					.AppendGenericSetupInvocationParameters(genericParameters, useOverriddenGenericNames, appendGenericSymbols: false, appendTrailingComma: true);
+					.AppendGenericSetupInvocationParameters(genericParameters, useOverriddenGenericNames, typeOverrideBuilder, appendGenericSymbols: false, appendTrailingComma: true);
 
 				if (useOverriddenGenericNames)
 					@this.Append(MockGeneratorConst.Suffixes.GenericReturnParameter);
@@ -118,7 +139,7 @@ internal static class ParameterSymbolEx
 			}
 			else
 			{
-				@this.AppendGenericSetupInvocationParameters(genericParameters, useOverriddenGenericNames);
+				@this.AppendGenericSetupInvocationParameters(genericParameters, useOverriddenGenericNames, typeOverrideBuilder);
 			}
 
 			return @this;
@@ -129,7 +150,7 @@ internal static class ParameterSymbolEx
 			return @this
 				.Append("Invocation")
 				.AppendParameterRefKinds(parameters, out var genericParameters)
-				.AppendGenericSetupInvocationParameters(genericParameters, useOverriddenGenericNames);
+				.AppendGenericSetupInvocationParameters(genericParameters, useOverriddenGenericNames, typeOverrideBuilder: null);
 		}
 
 		private StringBuilder AppendParameterRefKinds(ImmutableArray<IParameterSymbol> parameters, out ImmutableArray<IParameterSymbol> genericParameters)
@@ -159,7 +180,12 @@ internal static class ParameterSymbolEx
 			return @this;
 		}
 
-		private StringBuilder AppendGenericSetupInvocationParameters(ImmutableArray<IParameterSymbol> genericParameters, bool useOverriddenGenericNames, bool appendGenericSymbols = true, bool appendTrailingComma = false)
+		private StringBuilder AppendGenericSetupInvocationParameters(
+			ImmutableArray<IParameterSymbol> genericParameters,
+			bool useOverriddenGenericNames,
+			ImmutableDictionary<IParameterSymbol, string>.Builder? typeOverrideBuilder,
+			bool appendGenericSymbols = true,
+			bool appendTrailingComma = false)
 		{
 			if (genericParameters.IsDefaultOrEmpty)
 				return @this;
@@ -174,9 +200,10 @@ internal static class ParameterSymbolEx
 
 				if (useOverriddenGenericNames)
 				{
-					@this
-						.Append(MockGeneratorConst.Suffixes.GenericParameter)
-						.Append(i + 1);
+					var typeNameOverride = MockGeneratorConst.Suffixes.GenericParameter + (i + 1);
+					@this.Append(typeNameOverride);
+
+					typeOverrideBuilder?[genericParameters[i]] = typeNameOverride;
 				}
 				else
 				{
