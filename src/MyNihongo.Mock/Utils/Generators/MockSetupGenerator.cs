@@ -7,6 +7,7 @@ internal static class MockSetupGenerator
 		var stringBuilder = new StringBuilder();
 		var className = CreateSetupClassName(stringBuilder, methodSymbol);
 		var returnType = methodSymbol.TryGetReturnType();
+		var returnValueName = GetReturnValueName(methodSymbol.Parameters);
 
 		var source =
 			$$"""
@@ -19,7 +20,7 @@ internal static class MockSetupGenerator
 			  	private Item? _currentSetup;
 
 			  {{CreateDelegates(stringBuilder, methodSymbol, returnType, indent: 1)}}
-			  {{CreateMethodImplementations(stringBuilder, methodSymbol, returnType, indent: 1)}}
+			  {{CreateMethodImplementations(stringBuilder, methodSymbol, returnType, returnValueName, indent: 1)}}
 			  {{CreateInterfaceMethodImplementations(stringBuilder, methodSymbol, returnType, indent: 1)}}
 
 			  	private sealed class Item
@@ -151,12 +152,12 @@ internal static class MockSetupGenerator
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateMethodImplementations(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, int indent)
+	private static string CreateMethodImplementations(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, string returnValueName, int indent)
 	{
 		stringBuilder.Clear();
 
 		stringBuilder
-			.AppendInvokeExecuteMethod(methodSymbol, returnType, indent).AppendLine()
+			.AppendInvokeExecuteMethod(methodSymbol, returnType, returnValueName, indent).AppendLine()
 			.AppendSetupParametersMethod(methodSymbol, indent).AppendLine();
 
 		if (returnType is not null)
@@ -322,13 +323,32 @@ internal static class MockSetupGenerator
 			.ToString();
 	}
 
+	private static string GetReturnValueName(ImmutableArray<IParameterSymbol> parameterSymbols)
+	{
+		var parameterNames = parameterSymbols
+			.Select(static x => x.Name)
+			.ToImmutableHashSet();
+
+		var returnValue = "returnValue";
+
+		for (var i = 0; i < 100; i++)
+		{
+			if (!parameterNames.Contains(returnValue))
+				break;
+
+			returnValue = '_' + returnValue;
+		}
+
+		return returnValue;
+	}
+
 	extension(StringBuilder @this)
 	{
 		private StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol)
 		{
 			return @this.AppendSetupClassName(methodSymbol, useOverriddenGenericNames: true);
 		}
-		
+
 		private StringBuilder AppendInterface(string interfaceName, IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol)
 		{
 			@this
@@ -477,7 +497,7 @@ file static class Extensions
 {
 	extension(StringBuilder stringBuilder)
 	{
-		public StringBuilder AppendInvokeExecuteMethod(IMethodSymbol methodSymbol, ITypeSymbol? returnType, int indent)
+		public StringBuilder AppendInvokeExecuteMethod(IMethodSymbol methodSymbol, ITypeSymbol? returnType, string returnValueName, int indent)
 		{
 			stringBuilder.Indent(indent);
 
@@ -494,7 +514,9 @@ file static class Extensions
 				stringBuilder
 					.Append("public bool Execute(")
 					.AppendParameters(methodSymbol.Parameters)
-					.AppendLine($", out {MockGeneratorConst.Suffixes.GenericReturnParameter}? returnValue)");
+					.Append($", out {MockGeneratorConst.Suffixes.GenericReturnParameter}? ")
+					.Append(returnValueName)
+					.AppendLine(")");
 			}
 
 			stringBuilder
@@ -553,7 +575,8 @@ file static class Extensions
 
 				stringBuilder
 					.Indent(indent)
-					.Append("returnValue = x.Returns(")
+					.Append(returnValueName)
+					.Append(" = x.Returns(")
 					.AppendParameterNames(methodSymbol.Parameters)
 					.AppendLine(");");
 
@@ -585,7 +608,7 @@ file static class Extensions
 				stringBuilder
 					.AppendLine()
 					.Indent(indent).AppendLine("Default:")
-					.Indent(indent).AppendLine("returnValue = default;")
+					.Indent(indent).Append(returnValueName).AppendLine(" = default;")
 					.Indent(indent).AppendLine("return false;");
 			}
 
