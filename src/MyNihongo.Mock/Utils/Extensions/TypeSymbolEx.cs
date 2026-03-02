@@ -86,11 +86,11 @@ internal static class TypeSymbolEx
 				: @this;
 		}
 
-		public StringBuilder AppendItSetupType(ITypeSymbol typeSymbol, bool isNullable = false)
+		public StringBuilder AppendItSetupType(ITypeSymbol typeSymbol, bool isNullable = false, string? typeOverride = null)
 		{
 			@this
 				.Append("ItSetup<")
-				.AppendType(typeSymbol)
+				.AppendType(typeSymbol, typeOverride)
 				.Append('>');
 
 			return isNullable
@@ -98,9 +98,11 @@ internal static class TypeSymbolEx
 				: @this;
 		}
 
-		public StringBuilder AppendType(ITypeSymbol typeSymbol)
+		public StringBuilder AppendType(ITypeSymbol typeSymbol, string? typeOverride = null)
 		{
-			return @this.Append(typeSymbol);
+			return string.IsNullOrEmpty(typeOverride)
+				? @this.Append(typeSymbol)
+				: @this.Append(typeOverride);
 		}
 	}
 }

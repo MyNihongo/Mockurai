@@ -5,7 +5,7 @@ internal static class MockSetupGenerator
 	public static MockSetupResult GenerateMockSetup(this IMethodSymbol methodSymbol, CompilationCombinedResult result)
 	{
 		var stringBuilder = new StringBuilder();
-		var className = CreateSetupClassName(stringBuilder, methodSymbol);
+		var className = CreateSetupClassName(stringBuilder, methodSymbol, out var genericTypeOverride);
 		var returnType = methodSymbol.TryGetReturnType();
 		var returnValueName = GetReturnValueName(methodSymbol.Parameters);
 
@@ -19,8 +19,8 @@ internal static class MockSetupGenerator
 			  	private SetupContainer<Item>? _setups;
 			  	private Item? _currentSetup;
 
-			  {{CreateDelegates(stringBuilder, methodSymbol, returnType, indent: 1)}}
-			  {{CreateMethodImplementations(stringBuilder, methodSymbol, returnType, returnValueName, indent: 1)}}
+			  {{CreateDelegates(stringBuilder, methodSymbol, returnType, genericTypeOverride, indent: 1)}}
+			  {{CreateMethodImplementations(stringBuilder, methodSymbol, returnType, returnValueName, genericTypeOverride, indent: 1)}}
 			  {{CreateInterfaceMethodImplementations(stringBuilder, methodSymbol, returnType, indent: 1)}}
 
 			  	private sealed class Item
@@ -132,33 +132,33 @@ internal static class MockSetupGenerator
 			.ToString();
 	}
 
-	private static string CreateDelegates(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, int indent)
+	private static string CreateDelegates(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
 	{
 		stringBuilder.Clear();
 
 		stringBuilder
 			.Indent(indent).Append("public delegate void CallbackDelegate(")
-			.AppendParameters(methodSymbol.Parameters)
+			.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride)
 			.AppendLine(");");
 
 		if (returnType is not null)
 		{
 			stringBuilder
 				.Indent(indent).Append($"public delegate {MockGeneratorConst.Suffixes.GenericReturnParameter}? ReturnsCallbackDelegate(")
-				.AppendParameters(methodSymbol.Parameters)
+				.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride)
 				.AppendLine(");");
 		}
 
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateMethodImplementations(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, string returnValueName, int indent)
+	private static string CreateMethodImplementations(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, string returnValueName, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
 	{
 		stringBuilder.Clear();
 
 		stringBuilder
-			.AppendInvokeExecuteMethod(methodSymbol, returnType, returnValueName, indent).AppendLine()
-			.AppendSetupParametersMethod(methodSymbol, indent).AppendLine();
+			.AppendInvokeExecuteMethod(methodSymbol, returnType, returnValueName, genericTypeOverride, indent).AppendLine()
+			.AppendSetupParametersMethod(methodSymbol, genericTypeOverride, indent).AppendLine();
 
 		if (returnType is not null)
 			stringBuilder.AppendReturnsMethods(methodSymbol, indent).AppendLine();
@@ -314,12 +314,12 @@ internal static class MockSetupGenerator
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateSetupClassName(StringBuilder stringBuilder, IMethodSymbol methodSymbol)
+	private static string CreateSetupClassName(StringBuilder stringBuilder, IMethodSymbol methodSymbol, out ImmutableDictionary<IParameterSymbol, string> genericTypeOverride)
 	{
 		stringBuilder.Clear();
 
 		return stringBuilder
-			.AppendSetupClassName(methodSymbol)
+			.AppendSetupClassName(methodSymbol, out genericTypeOverride)
 			.ToString();
 	}
 
@@ -347,6 +347,11 @@ internal static class MockSetupGenerator
 		private StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol)
 		{
 			return @this.AppendSetupClassName(methodSymbol, useOverriddenGenericNames: true);
+		}
+
+		private StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol, out ImmutableDictionary<IParameterSymbol, string> genericTypeOverride)
+		{
+			return @this.AppendSetupClassName(methodSymbol, useOverriddenGenericNames: true, out genericTypeOverride);
 		}
 
 		private StringBuilder AppendInterface(string interfaceName, IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol)
@@ -497,7 +502,7 @@ file static class Extensions
 {
 	extension(StringBuilder stringBuilder)
 	{
-		public StringBuilder AppendInvokeExecuteMethod(IMethodSymbol methodSymbol, ITypeSymbol? returnType, string returnValueName, int indent)
+		public StringBuilder AppendInvokeExecuteMethod(IMethodSymbol methodSymbol, ITypeSymbol? returnType, string returnValueName, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
 		{
 			stringBuilder.Indent(indent);
 
@@ -506,14 +511,14 @@ file static class Extensions
 			{
 				stringBuilder
 					.Append("public void Invoke(")
-					.AppendParameters(methodSymbol.Parameters)
+					.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride)
 					.AppendLine(")");
 			}
 			else
 			{
 				stringBuilder
 					.Append("public bool Execute(")
-					.AppendParameters(methodSymbol.Parameters)
+					.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride)
 					.Append($", out {MockGeneratorConst.Suffixes.GenericReturnParameter}? ")
 					.Append(returnValueName)
 					.AppendLine(")");
@@ -617,12 +622,12 @@ file static class Extensions
 				.AppendLine("}");
 		}
 
-		public StringBuilder AppendSetupParametersMethod(IMethodSymbol methodSymbol, int indent)
+		public StringBuilder AppendSetupParametersMethod(IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
 		{
 			stringBuilder
 				.Indent(indent)
 				.Append("public void SetupParameters(")
-				.AppendItSetupParameters(methodSymbol.Parameters)
+				.AppendItSetupParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride)
 				.AppendLine(")");
 
 			stringBuilder

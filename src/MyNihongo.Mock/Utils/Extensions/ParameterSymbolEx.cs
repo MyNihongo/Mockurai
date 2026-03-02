@@ -22,14 +22,15 @@ internal static class ParameterSymbolEx
 	// TODO: when there is more time try to optimize appending instead of appending strings of ITypeSymbol, IPropertySymbol, etc
 	extension(StringBuilder @this)
 	{
-		public StringBuilder AppendParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false)
+		public StringBuilder AppendParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride = null)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
 				if (!appendComma && i > 0)
 					@this.Append(", ");
 
-				@this.AppendParameter(parameters[i]);
+				var typeOverride = parameterTypeOverride?.GetValueOrDefault(parameters[i]);
+				@this.AppendParameter(parameters[i], typeOverride);
 
 				if (appendComma)
 					@this.Append(", ");
@@ -45,9 +46,16 @@ internal static class ParameterSymbolEx
 				: @this;
 		}
 
-		private StringBuilder AppendParameter(IParameterSymbol parameter)
+		private StringBuilder AppendParameter(IParameterSymbol parameter, string? typeOverride = null)
 		{
-			return @this.Append(parameter);
+			var refKindString = parameter.RefKind.GetString();
+			if (!string.IsNullOrEmpty(refKindString))
+				@this.Append(refKindString).Append(' ');
+
+			return @this
+				.AppendType(parameter.Type, typeOverride)
+				.Append(' ')
+				.Append(parameter.Name);
 		}
 
 		public StringBuilder AppendParameterNames(ImmutableArray<IParameterSymbol> parameters, string? suffix = null, bool appendComma = false)
@@ -102,7 +110,7 @@ internal static class ParameterSymbolEx
 			var parameters = methodSymbol.Parameters;
 			var returnTypeSymbol = methodSymbol.TryGetReturnType();
 
-			var builder = ImmutableDictionary.CreateBuilder<IParameterSymbol, string>();
+			var builder = ImmutableDictionary.CreateBuilder<IParameterSymbol, string>(SymbolEqualityComparer.Default);
 			@this.AppendSetupClassName(parameters, returnTypeSymbol, builder, useOverriddenGenericNames);
 
 			genericTypeOverride = builder.ToImmutable();
@@ -171,7 +179,7 @@ internal static class ParameterSymbolEx
 				else
 				{
 					@this
-						.AppendRefKind(parameter.RefKind)
+						.AppendRefKindPrefix(parameter.RefKind)
 						.Append(parameter.Type.Name);
 				}
 			}
