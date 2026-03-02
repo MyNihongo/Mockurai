@@ -1,10 +1,11 @@
 ﻿namespace MyNihongo.Mock.Tests;
 
-public readonly struct TypeModel(string type, int index, string? refType = null)
+public readonly struct TypeModel(string type, int index, string? refType = null, bool isGeneric = false)
 {
 	public readonly string Type = type;
 	public readonly int Index = index;
 	public readonly string? RefType = refType;
+	public readonly bool IsGeneric = isGeneric;
 
 	public override string ToString()
 	{
@@ -42,6 +43,7 @@ public static class TypeModelEx
 				"Single" => "float",
 				"Int64" => "long",
 				"Double" => "double",
+				"T1" or "T2" or "T3" => @this.Type,
 				_ => throw new NotImplementedException($"Unsupported type: `{@this}`"),
 			};
 		}

@@ -21,6 +21,12 @@ public sealed class GenericSetup : TestsBase
 			}
 			""";
 
+		var types = new TypeModel[]
+		{
+			new("Int32", 1),
+			new("T1", 2, isGeneric: true),
+		};
+
 		GeneratedSources generatedSources =
 		[
 			(
@@ -154,10 +160,7 @@ public sealed class GenericSetup : TestsBase
 				}
 				"""
 			),
-			(
-				"SetupInt32T1_T1_TReturns_.g.cs",
-				""
-			),
+			CreateSetupReturnsCode(types),
 			(
 				"InvocationInt32T1_T1_.g.cs",
 				""

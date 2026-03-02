@@ -45,9 +45,11 @@ public abstract class TestsBase
 	private static GeneratedSource CreateSetupCode(bool useReturns, TypeModel[] types)
 	{
 		const string returns = "TReturns";
-		var returnsGenericType = useReturns ? $"<{returns}>" : string.Empty;
-		var className = string.Join(null, types);
-		var classNameReturns = className + returnsGenericType;
+		var genericTypes = types.Where(x => x.IsGeneric).Select(x => x.Type).ToList();
+		if (useReturns) genericTypes.Add(returns);
+
+		var returnsGenericType = genericTypes.Count > 0 ? $"<{string.Join(", ", genericTypes)}>" : string.Empty;
+		var classNameReturns = string.Join(null, types) + returnsGenericType;
 		var parameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString()));
 		var discardedParameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString(typeNameOverride: "_")));
 		var parameterNames = string.Join(", ", types.Select(static x => x.GetParameterNameString()));
@@ -101,7 +103,7 @@ public abstract class TestsBase
 			  		return false;
 			  """
 			: string.Empty;
-		
+
 		var returnsMethods = useReturns
 			? $$"""
 
@@ -355,12 +357,10 @@ public abstract class TestsBase
 			  }
 			  """;
 
-		var fileName = useReturns
-			? $"Setup{className}_TReturns_.g.cs"
-			: $"Setup{className}.g.cs";
+		var sanitizedClassName = classNameReturns.Replace('<', '_').Replace('>', '_').Replace(", ", "_");
 
 		return (
-			fileName,
+			$"Setup{sanitizedClassName}.g.cs",
 			sourceCode
 		);
 	}

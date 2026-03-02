@@ -29,7 +29,7 @@ internal static class MockSetupGenerator
 			  		private ItemSetup? _currentSetup;
 			  		public bool AndContinue;
 
-			  {{CreateItemDeclaration(stringBuilder, methodSymbol, returnType, indent: 2)}}
+			  {{CreateItemDeclaration(stringBuilder, methodSymbol, returnType, genericTypeOverride, indent: 2)}}
 
 			  		public void Add(in CallbackDelegate callback)
 			  		{
@@ -183,17 +183,19 @@ internal static class MockSetupGenerator
 			.ToString();
 	}
 
-	private static string CreateItemDeclaration(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, int indent)
+	private static string CreateItemDeclaration(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
 	{
 		stringBuilder.Clear();
 
 		// fields
 		foreach (var parameter in methodSymbol.Parameters)
 		{
+			var typeOverride = genericTypeOverride.GetValueOrDefault(parameter);
+			
 			stringBuilder
 				.Indent(indent)
 				.Append("public readonly ")
-				.AppendItSetupType(parameter.Type, isNullable: true)
+				.AppendItSetupType(parameter.Type, isNullable: true, typeOverride)
 				.Append(' ')
 				.AppendPropertyName(parameter.Name)
 				.AppendLine(";");
@@ -203,7 +205,7 @@ internal static class MockSetupGenerator
 		stringBuilder
 			.AppendLine()
 			.Indent(indent).Append("public Item(")
-			.AppendItSetupParameters(methodSymbol.Parameters, isNullable: true)
+			.AppendItSetupParameters(methodSymbol.Parameters, isNullable: true, parameterTypeOverride: genericTypeOverride)
 			.AppendLine(")")
 			.Indent(indent++).AppendLine("{");
 
