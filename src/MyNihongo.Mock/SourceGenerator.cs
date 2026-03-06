@@ -44,7 +44,7 @@ public sealed class SourceGenerator : IIncrementalGenerator
 				foreach (var mockType in mockTypes)
 				{
 					var sourceCodeResult = mockType.GenerateMockImplementation(source);
-					//context.AddSanitisedSource($"{sourceCodeResult.Name}.g.cs", sourceCodeResult.Source);
+					context.AddSanitisedSource($"{sourceCodeResult.Name}.g.cs", sourceCodeResult.Source);
 
 					methodSetups.TryAddAll(sourceCodeResult.MethodSymbols);
 				}
@@ -52,10 +52,10 @@ public sealed class SourceGenerator : IIncrementalGenerator
 				foreach (var methodSetup in methodSetups)
 				{
 					var setupSourceCode = methodSetup.GenerateMockSetup(source);
-					//context.AddSanitisedSource($"{setupSourceCode.Name}.g.cs", setupSourceCode.Source);
+					context.AddSanitisedSource($"{setupSourceCode.Name}.g.cs", setupSourceCode.Source);
 
 					var invocationSourceCode = methodSetup.GenerateMockInvocation(source);
-					//context.AddSanitisedSource($"{invocationSourceCode.Name}.g.cs", invocationSourceCode.Source);
+					context.AddSanitisedSource($"{invocationSourceCode.Name}.g.cs", invocationSourceCode.Source);
 				}
 
 				const string globalUsings = $"global using {MockGeneratorConst.Namespace};";

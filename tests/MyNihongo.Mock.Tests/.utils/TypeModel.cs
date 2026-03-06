@@ -67,7 +67,8 @@ public static class TypeModelEx
 				"Single" => "float",
 				"Int64" => "long",
 				"Double" => "double",
-				"T1" or "T2" or "T3" => @this.Type,
+				"String" => "string",
+				"T" or "T1" or "T2" or "T3" => @this.Type,
 				_ => throw new NotImplementedException($"Unsupported type: `{@this}`"),
 			};
 		}
