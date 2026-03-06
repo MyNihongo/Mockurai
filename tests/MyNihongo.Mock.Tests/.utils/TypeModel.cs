@@ -42,6 +42,12 @@ public static class TypeModelEx
 				: @this.Name;
 		}
 
+		public string GetCamelCaseNameString()
+		{
+			var parameterName = @this.GetParameterNameString();
+			return char.ToUpperInvariant(parameterName[0]) + parameterName[1..];
+		}
+
 		public string GetParameterDeclarationString(string? typeNameOverride = null)
 		{
 			var result = string.IsNullOrEmpty(typeNameOverride)

@@ -160,7 +160,7 @@ public sealed class GenericSetup : TestsBase
 				}
 				"""
 			),
-			CreateSetupReturnsCode(types),
+			CreateSetupReturnsCode(types, returnValue: "_returnValue"),
 			(
 				"InvocationInt32T1_T1_.g.cs",
 				""
