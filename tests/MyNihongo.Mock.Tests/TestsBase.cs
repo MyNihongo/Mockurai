@@ -378,7 +378,8 @@ public abstract class TestsBase
 	{
 		var genericTypes = types.Where(x => x.IsGeneric).Select(x => x.Type).ToList();
 		var genericType = genericTypes.Count > 0 ? $"<{string.Join(", ", genericTypes)}>" : string.Empty;
-		var className = string.Join(null, types) + genericType;
+		var className = string.Join(null, types);
+		var classNameGenerics = className + genericType;
 		var prefixes = string.Join(", ", types.Select(static x => $"_prefix{x.GetCamelCaseNameString()}"));
 		var jsonSnapshots = string.Join(", ", types.Select(static x => $"_jsonSnapshot{x.GetCamelCaseNameString()}"));
 		var prefixParameters = string.Join(", ", types.Select(static x => $"string? prefix{x.GetCamelCaseNameString()} = null"));
@@ -464,7 +465,7 @@ public abstract class TestsBase
 			$$"""
 			  namespace MyNihongo.Mock;
 
-			  public sealed class Invocation{{className}} : IInvocationVerify
+			  public sealed class Invocation{{classNameGenerics}} : IInvocationVerify
 			  {
 			  	private readonly string _name;
 			  	private readonly string? {{prefixes}};
@@ -573,9 +574,9 @@ public abstract class TestsBase
 			  	{
 			  		{{parameterFields}}
 			  		private readonly string? {{jsonSnapshots}};
-			  		private readonly Invocation{{className}} _invocation;
+			  		private readonly Invocation{{classNameGenerics}} _invocation;
 
-			  		public Item(long index, {{parameters}}, Invocation{{className}} invocation)
+			  		public Item(long index, {{parameters}}, Invocation{{classNameGenerics}} invocation)
 			  		{
 			  			_invocation = invocation;
 			  			Index = index;
@@ -602,7 +603,7 @@ public abstract class TestsBase
 			  }
 			  """;
 
-		var sanitizedClassName = className.Replace('<', '_').Replace('>', '_').Replace(", ", "_");
+		var sanitizedClassName = classNameGenerics.Replace('<', '_').Replace('>', '_').Replace(", ", "_");
 
 		return (
 			$"Invocation{sanitizedClassName}.g.cs",

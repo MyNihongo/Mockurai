@@ -156,26 +156,30 @@ internal static class ParameterSymbolEx
 		public StringBuilder AppendInvocationClassName(ImmutableArray<IParameterSymbol> parameters, bool useOverriddenGenericNames, out ImmutableDictionary<IParameterSymbol, string> genericTypeOverride)
 		{
 			var builder = ImmutableDictionary.CreateBuilder<IParameterSymbol, string>(SymbolEqualityComparer.Default);
-			@this.AppendInvocationClassName(parameters, useOverriddenGenericNames, builder);
+			@this.AppendInvocationClassName(parameters, useOverriddenGenericNames, builder, appendGenericDeclaration: true);
 
 			genericTypeOverride = builder.ToImmutable();
 			return @this;
 		}
 
-		public StringBuilder AppendInvocationClassName(ImmutableArray<IParameterSymbol> parameters, bool useOverriddenGenericNames = false)
+		public StringBuilder AppendInvocationClassName(ImmutableArray<IParameterSymbol> parameters, bool useOverriddenGenericNames = false, bool appendGenericDeclaration = true)
 		{
-			return @this.AppendInvocationClassName(parameters, useOverriddenGenericNames, typeOverrideBuilder: null);
+			return @this.AppendInvocationClassName(parameters, useOverriddenGenericNames, typeOverrideBuilder: null, appendGenericDeclaration);
 		}
 
 		private StringBuilder AppendInvocationClassName(
 			ImmutableArray<IParameterSymbol> parameters,
 			bool useOverriddenGenericNames,
-			ImmutableDictionary<IParameterSymbol, string>.Builder? typeOverrideBuilder)
+			ImmutableDictionary<IParameterSymbol, string>.Builder? typeOverrideBuilder,
+			bool appendGenericDeclaration)
 		{
-			return @this
+			@this
 				.Append("Invocation")
-				.AppendParameterRefKinds(parameters, out var genericParameters)
-				.AppendGenericSetupInvocationParameters(genericParameters, useOverriddenGenericNames, typeOverrideBuilder);
+				.AppendParameterRefKinds(parameters, out var genericParameters);
+
+			return appendGenericDeclaration
+				? @this.AppendGenericSetupInvocationParameters(genericParameters, useOverriddenGenericNames, typeOverrideBuilder)
+				: @this;
 		}
 
 		private StringBuilder AppendParameterRefKinds(ImmutableArray<IParameterSymbol> parameters, out ImmutableArray<IParameterSymbol> genericParameters)

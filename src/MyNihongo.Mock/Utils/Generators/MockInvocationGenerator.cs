@@ -90,7 +90,7 @@ internal static class MockInvocationGenerator
 		stringBuilder
 			.Indent(indent)
 			.Append("public ")
-			.AppendInvocationClassName(methodSymbol.Parameters)
+			.AppendInvocationClassName(methodSymbol.Parameters, appendGenericDeclaration: false)
 			.Append("(string name, ");
 
 		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
@@ -395,7 +395,7 @@ internal static class MockInvocationGenerator
 			.Indent(indent)
 			.Append("public Item(long index, ")
 			.AppendParameters(methodSymbol.Parameters, appendComma: true, parameterTypeOverride: genericTypeOverride)
-			.AppendInvocationClassName(methodSymbol.Parameters)
+			.AppendInvocationClassName(methodSymbol.Parameters, appendGenericDeclaration: true)
 			.AppendLine(" invocation)");
 
 		stringBuilder
@@ -581,9 +581,9 @@ internal static class MockInvocationGenerator
 
 	extension(StringBuilder @this)
 	{
-		private StringBuilder AppendInvocationClassName(ImmutableArray<IParameterSymbol> parameters)
+		private StringBuilder AppendInvocationClassName(ImmutableArray<IParameterSymbol> parameters, bool appendGenericDeclaration)
 		{
-			return @this.AppendInvocationClassName(parameters, useOverriddenGenericNames: true);
+			return @this.AppendInvocationClassName(parameters, useOverriddenGenericNames: true, appendGenericDeclaration);
 		}
 
 		private StringBuilder AppendInvocationClassName(ImmutableArray<IParameterSymbol> parameters, out ImmutableDictionary<IParameterSymbol, string> genericTypeOverride)
