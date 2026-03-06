@@ -22,13 +22,13 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 
 			public void VerifyInvoke(in It<int> param, in Times times)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})");
+				_invoke0Invocation ??= new Invocation<int>("IInterface<T>.Invoke({0})");
 				_invoke0Invocation.Verify(param.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke(in It<int> param, long index)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})");
+				_invoke0Invocation ??= new Invocation<int>("IInterface<T>.Invoke({0})");
 				return _invoke0Invocation.Verify(param.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -62,13 +62,13 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 
 			public void VerifyInvoke(in It<int> param, in Times times)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})");
+				_invoke0Invocation ??= new Invocation<int>("IInterface<T>.Invoke({0})");
 				_invoke0Invocation.Verify(param.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke(in It<int> param, long index)
 			{
-				_invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})");
+				_invoke0Invocation ??= new Invocation<int>("IInterface<T>.Invoke({0})");
 				return _invoke0Invocation.Verify(param.ValueSetup, index, _invocationProviders);
 			}
 			""";
