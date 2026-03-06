@@ -161,10 +161,7 @@ public sealed class GenericSetup : TestsBase
 				"""
 			),
 			CreateSetupReturnsCode(types, returnValue: "_returnValue"),
-			(
-				"InvocationInt32T1_T1_.g.cs",
-				""
-			),
+			CreateInvocationCode(types),
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);

@@ -153,12 +153,29 @@ internal static class ParameterSymbolEx
 			return @this;
 		}
 
+		public StringBuilder AppendInvocationClassName(ImmutableArray<IParameterSymbol> parameters, bool useOverriddenGenericNames, out ImmutableDictionary<IParameterSymbol, string> genericTypeOverride)
+		{
+			var builder = ImmutableDictionary.CreateBuilder<IParameterSymbol, string>(SymbolEqualityComparer.Default);
+			@this.AppendInvocationClassName(parameters, useOverriddenGenericNames, builder);
+
+			genericTypeOverride = builder.ToImmutable();
+			return @this;
+		}
+
 		public StringBuilder AppendInvocationClassName(ImmutableArray<IParameterSymbol> parameters, bool useOverriddenGenericNames = false)
+		{
+			return @this.AppendInvocationClassName(parameters, useOverriddenGenericNames, typeOverrideBuilder: null);
+		}
+
+		private StringBuilder AppendInvocationClassName(
+			ImmutableArray<IParameterSymbol> parameters,
+			bool useOverriddenGenericNames,
+			ImmutableDictionary<IParameterSymbol, string>.Builder? typeOverrideBuilder)
 		{
 			return @this
 				.Append("Invocation")
 				.AppendParameterRefKinds(parameters, out var genericParameters)
-				.AppendGenericSetupInvocationParameters(genericParameters, useOverriddenGenericNames, typeOverrideBuilder: null);
+				.AppendGenericSetupInvocationParameters(genericParameters, useOverriddenGenericNames, typeOverrideBuilder);
 		}
 
 		private StringBuilder AppendParameterRefKinds(ImmutableArray<IParameterSymbol> parameters, out ImmutableArray<IParameterSymbol> genericParameters)

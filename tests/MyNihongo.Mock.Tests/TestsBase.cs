@@ -376,7 +376,9 @@ public abstract class TestsBase
 
 	protected static GeneratedSource CreateInvocationCode(params TypeModel[] types)
 	{
-		var className = string.Join(null, types);
+		var genericTypes = types.Where(x => x.IsGeneric).Select(x => x.Type).ToList();
+		var genericType = genericTypes.Count > 0 ? $"<{string.Join(", ", genericTypes)}>" : string.Empty;
+		var className = string.Join(null, types) + genericType;
 		var prefixes = string.Join(", ", types.Select(static x => $"_prefix{x.GetCamelCaseNameString()}"));
 		var jsonSnapshots = string.Join(", ", types.Select(static x => $"_jsonSnapshot{x.GetCamelCaseNameString()}"));
 		var prefixParameters = string.Join(", ", types.Select(static x => $"string? prefix{x.GetCamelCaseNameString()} = null"));
@@ -388,7 +390,7 @@ public abstract class TestsBase
 		var parameterToString = string.Join(", ", types.Select(static x => $"{x.GetParameterNameString()}.ToString(_prefix{x.GetCamelCaseNameString()})"));
 		var typeNameParameters = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"var typeName{x.GetCamelCaseNameString()} = !string.IsNullOrEmpty(_prefix{x.GetCamelCaseNameString()}) ? $\"{{_prefix{x.GetCamelCaseNameString()}}} {x.GetTypeString()}\" : \"{x.GetTypeString()}\";"));
 		var typeParameterNames = string.Join(", ", types.Select(static x => $"typeName{x.GetCamelCaseNameString()}"));
-		var parameterFields = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"private readonly {x.GetTypeString()} _param{x.Index};"));
+		var parameterFields = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"private readonly {x.GetTypeString()} _{x.GetParameterNameString()};"));
 		var verifyChecks = string.Join(Environment.NewLine + "\t\t\t", types.Select(static (x, i) =>
 		{
 			return i == 0
@@ -409,14 +411,15 @@ public abstract class TestsBase
 		}));
 		var verifyItemParameterAssignments = string.Join(Environment.NewLine + Environment.NewLine + "\t\t\t", types.Select(static x =>
 		{
-			var index = x.Index;
+			var name = x.GetParameterNameString();
+			var camelCase = x.GetCamelCaseNameString();
 
 			return
 				$$"""
 				  try
 				  			{
-				  				_param{{index}} = param{{index}};
-				  				_jsonSnapshotParam{{index}} = System.Text.Json.JsonSerializer.Serialize(param{{index}});
+				  				_{{name}} = {{name}};
+				  				_jsonSnapshot{{camelCase}} = System.Text.Json.JsonSerializer.Serialize({{name}});
 				  			}
 				  			catch
 				  			{
@@ -599,8 +602,10 @@ public abstract class TestsBase
 			  }
 			  """;
 
+		var sanitizedClassName = className.Replace('<', '_').Replace('>', '_').Replace(", ", "_");
+
 		return (
-			$"Invocation{className}.g.cs",
+			$"Invocation{sanitizedClassName}.g.cs",
 			sourceCode
 		);
 	}
