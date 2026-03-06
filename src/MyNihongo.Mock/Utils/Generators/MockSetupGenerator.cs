@@ -5,8 +5,9 @@ internal static class MockSetupGenerator
 	public static MockSetupResult GenerateMockSetup(this IMethodSymbol methodSymbol, CompilationCombinedResult result)
 	{
 		var stringBuilder = new StringBuilder();
-		var className = CreateSetupClassName(stringBuilder, methodSymbol);
+		var className = CreateSetupClassName(stringBuilder, methodSymbol, out var genericTypeOverride);
 		var returnType = methodSymbol.TryGetReturnType();
+		var returnValueName = GetReturnValueName(methodSymbol.Parameters);
 
 		var source =
 			$$"""
@@ -18,8 +19,8 @@ internal static class MockSetupGenerator
 			  	private SetupContainer<Item>? _setups;
 			  	private Item? _currentSetup;
 
-			  {{CreateDelegates(stringBuilder, methodSymbol, returnType, indent: 1)}}
-			  {{CreateMethodImplementations(stringBuilder, methodSymbol, returnType, indent: 1)}}
+			  {{CreateDelegates(stringBuilder, methodSymbol, returnType, genericTypeOverride, indent: 1)}}
+			  {{CreateMethodImplementations(stringBuilder, methodSymbol, returnType, returnValueName, genericTypeOverride, indent: 1)}}
 			  {{CreateInterfaceMethodImplementations(stringBuilder, methodSymbol, returnType, indent: 1)}}
 
 			  	private sealed class Item
@@ -28,7 +29,7 @@ internal static class MockSetupGenerator
 			  		private ItemSetup? _currentSetup;
 			  		public bool AndContinue;
 
-			  {{CreateItemDeclaration(stringBuilder, methodSymbol, returnType, indent: 2)}}
+			  {{CreateItemDeclaration(stringBuilder, methodSymbol, returnType, genericTypeOverride, indent: 2)}}
 
 			  		public void Add(in CallbackDelegate callback)
 			  		{
@@ -131,33 +132,33 @@ internal static class MockSetupGenerator
 			.ToString();
 	}
 
-	private static string CreateDelegates(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, int indent)
+	private static string CreateDelegates(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
 	{
 		stringBuilder.Clear();
 
 		stringBuilder
 			.Indent(indent).Append("public delegate void CallbackDelegate(")
-			.AppendParameters(methodSymbol.Parameters)
+			.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride)
 			.AppendLine(");");
 
 		if (returnType is not null)
 		{
 			stringBuilder
-				.Indent(indent).Append("public delegate TReturns? ReturnsCallbackDelegate(")
-				.AppendParameters(methodSymbol.Parameters)
+				.Indent(indent).Append($"public delegate {MockGeneratorConst.Suffixes.GenericReturnParameter}? ReturnsCallbackDelegate(")
+				.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride)
 				.AppendLine(");");
 		}
 
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateMethodImplementations(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, int indent)
+	private static string CreateMethodImplementations(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, string returnValueName, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
 	{
 		stringBuilder.Clear();
 
 		stringBuilder
-			.AppendInvokeExecuteMethod(methodSymbol, returnType, indent).AppendLine()
-			.AppendSetupParametersMethod(methodSymbol, indent).AppendLine();
+			.AppendInvokeExecuteMethod(methodSymbol, returnType, returnValueName, genericTypeOverride, indent).AppendLine()
+			.AppendSetupParametersMethod(methodSymbol, genericTypeOverride, indent).AppendLine();
 
 		if (returnType is not null)
 			stringBuilder.AppendReturnsMethods(methodSymbol, indent).AppendLine();
@@ -182,17 +183,19 @@ internal static class MockSetupGenerator
 			.ToString();
 	}
 
-	private static string CreateItemDeclaration(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, int indent)
+	private static string CreateItemDeclaration(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
 	{
 		stringBuilder.Clear();
 
 		// fields
 		foreach (var parameter in methodSymbol.Parameters)
 		{
+			var typeOverride = genericTypeOverride.GetValueOrDefault(parameter);
+			
 			stringBuilder
 				.Indent(indent)
 				.Append("public readonly ")
-				.AppendItSetupType(parameter.Type, isNullable: true)
+				.AppendItSetupType(parameter.Type, isNullable: true, typeOverride)
 				.Append(' ')
 				.AppendPropertyName(parameter.Name)
 				.AppendLine(";");
@@ -202,7 +205,7 @@ internal static class MockSetupGenerator
 		stringBuilder
 			.AppendLine()
 			.Indent(indent).Append("public Item(")
-			.AppendItSetupParameters(methodSymbol.Parameters, isNullable: true)
+			.AppendItSetupParameters(methodSymbol.Parameters, isNullable: true, parameterTypeOverride: genericTypeOverride)
 			.AppendLine(")")
 			.Indent(indent++).AppendLine("{");
 
@@ -313,22 +316,46 @@ internal static class MockSetupGenerator
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateSetupClassName(StringBuilder stringBuilder, IMethodSymbol methodSymbol)
+	private static string CreateSetupClassName(StringBuilder stringBuilder, IMethodSymbol methodSymbol, out ImmutableDictionary<IParameterSymbol, string> genericTypeOverride)
 	{
 		stringBuilder.Clear();
 
 		return stringBuilder
-			.AppendSetupClassName(methodSymbol, OverrideReturnType)
+			.AppendSetupClassName(methodSymbol, out genericTypeOverride)
 			.ToString();
 	}
 
-	private static void OverrideReturnType(StringBuilder stringBuilder, ITypeSymbol typeSymbol)
+	private static string GetReturnValueName(ImmutableArray<IParameterSymbol> parameterSymbols)
 	{
-		stringBuilder.Append("TReturns");
+		var parameterNames = parameterSymbols
+			.Select(static x => x.Name)
+			.ToImmutableHashSet();
+
+		var returnValue = "returnValue";
+
+		for (var i = 0; i < 100; i++)
+		{
+			if (!parameterNames.Contains(returnValue))
+				break;
+
+			returnValue = '_' + returnValue;
+		}
+
+		return returnValue;
 	}
 
 	extension(StringBuilder @this)
 	{
+		private StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol)
+		{
+			return @this.AppendSetupClassName(methodSymbol, useOverriddenGenericNames: true);
+		}
+
+		private StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol, out ImmutableDictionary<IParameterSymbol, string> genericTypeOverride)
+		{
+			return @this.AppendSetupClassName(methodSymbol, useOverriddenGenericNames: true, out genericTypeOverride);
+		}
+
 		private StringBuilder AppendInterface(string interfaceName, IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol)
 		{
 			@this
@@ -338,15 +365,15 @@ internal static class MockSetupGenerator
 			if (returnTypeSymbol is null)
 			{
 				@this
-					.AppendSetupClassName(methodSymbol, OverrideReturnType)
+					.AppendSetupClassName(methodSymbol)
 					.Append(".CallbackDelegate");
 			}
 			else
 			{
 				@this
-					.AppendSetupClassName(methodSymbol, OverrideReturnType)
-					.Append(".CallbackDelegate, TReturns, ")
-					.AppendSetupClassName(methodSymbol, OverrideReturnType)
+					.AppendSetupClassName(methodSymbol)
+					.Append($".CallbackDelegate, {MockGeneratorConst.Suffixes.GenericReturnParameter}, ")
+					.AppendSetupClassName(methodSymbol)
 					.Append(".ReturnsCallbackDelegate");
 			}
 
@@ -409,7 +436,7 @@ internal static class MockSetupGenerator
 		{
 			const string methodCall = "Returns(returns);";
 
-			foreach (var methodDeclaration in new[] { ".Returns(in TReturns returns)", ".Returns(in ReturnsCallbackDelegate returns)" })
+			foreach (var methodDeclaration in new[] { $".Returns(in {MockGeneratorConst.Suffixes.GenericReturnParameter} returns)", ".Returns(in ReturnsCallbackDelegate returns)" })
 			{
 				@this
 					.Indent(indent).AppendInterface("ISetupReturnsThrowsJoin", methodSymbol, returnTypeSymbol)
@@ -477,7 +504,7 @@ file static class Extensions
 {
 	extension(StringBuilder stringBuilder)
 	{
-		public StringBuilder AppendInvokeExecuteMethod(IMethodSymbol methodSymbol, ITypeSymbol? returnType, int indent)
+		public StringBuilder AppendInvokeExecuteMethod(IMethodSymbol methodSymbol, ITypeSymbol? returnType, string returnValueName, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
 		{
 			stringBuilder.Indent(indent);
 
@@ -486,15 +513,17 @@ file static class Extensions
 			{
 				stringBuilder
 					.Append("public void Invoke(")
-					.AppendParameters(methodSymbol.Parameters)
+					.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride)
 					.AppendLine(")");
 			}
 			else
 			{
 				stringBuilder
 					.Append("public bool Execute(")
-					.AppendParameters(methodSymbol.Parameters)
-					.AppendLine(", out TReturns? returnValue)");
+					.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride)
+					.Append($", out {MockGeneratorConst.Suffixes.GenericReturnParameter}? ")
+					.Append(returnValueName)
+					.AppendLine(")");
 			}
 
 			stringBuilder
@@ -553,7 +582,8 @@ file static class Extensions
 
 				stringBuilder
 					.Indent(indent)
-					.Append("returnValue = x.Returns(")
+					.Append(returnValueName)
+					.Append(" = x.Returns(")
 					.AppendParameterNames(methodSymbol.Parameters)
 					.AppendLine(");");
 
@@ -585,7 +615,7 @@ file static class Extensions
 				stringBuilder
 					.AppendLine()
 					.Indent(indent).AppendLine("Default:")
-					.Indent(indent).AppendLine("returnValue = default;")
+					.Indent(indent).Append(returnValueName).AppendLine(" = default;")
 					.Indent(indent).AppendLine("return false;");
 			}
 
@@ -594,12 +624,12 @@ file static class Extensions
 				.AppendLine("}");
 		}
 
-		public StringBuilder AppendSetupParametersMethod(IMethodSymbol methodSymbol, int indent)
+		public StringBuilder AppendSetupParametersMethod(IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
 		{
 			stringBuilder
 				.Indent(indent)
 				.Append("public void SetupParameters(")
-				.AppendItSetupParameters(methodSymbol.Parameters)
+				.AppendItSetupParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride)
 				.AppendLine(")");
 
 			stringBuilder
@@ -646,7 +676,7 @@ file static class Extensions
 		{
 			// Value method
 			stringBuilder
-				.Indent(indent).AppendLine("public void Returns(TReturns? returns)")
+				.Indent(indent).AppendLine($"public void Returns({MockGeneratorConst.Suffixes.GenericReturnParameter}? returns)")
 				.Indent(indent).AppendLine("{")
 				.Indent(indent + 1).Append("Returns((").AppendDiscardParameterNames(methodSymbol.Parameters).AppendLine(") => returns);")
 				.Indent(indent).AppendLine("}").AppendLine();

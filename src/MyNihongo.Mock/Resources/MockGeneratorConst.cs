@@ -11,5 +11,7 @@ internal static class MockGeneratorConst
 	{
 		public const string Invocation = "Invocation";
 		public const string ValueSetup = ".ValueSetup";
+		public const string Prefix = "prefix";
+		public const string GenericParameter = "T", GenericReturnParameter = "TReturns";
 	}
 }

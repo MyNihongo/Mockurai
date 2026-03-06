@@ -20,55 +20,61 @@ public abstract class TestsBase
 		};
 	}
 
-	protected static GeneratedSource CreateSetupCode(params string[] types)
+	protected static GeneratedSource CreateSetupCode(string[] types)
+	{
+		var typeModels = types.ToTypeModels();
+		return CreateSetupCode(useReturns: false, typeModels);
+	}
+
+	protected static GeneratedSource CreateSetupCode(TypeModel[] types)
 	{
 		return CreateSetupCode(useReturns: false, types);
 	}
 
-	protected static GeneratedSource CreateSetupReturnsCode(params string[] types)
+	protected static GeneratedSource CreateSetupReturnsCode(string[] types, string? returnValue = null)
 	{
-		return CreateSetupCode(useReturns: true, types);
+		var typeModels = types.ToTypeModels();
+		return CreateSetupCode(useReturns: true, typeModels, returnValue);
 	}
 
-	private static GeneratedSource CreateSetupCode(bool useReturns, string[] types)
+	protected static GeneratedSource CreateSetupReturnsCode(TypeModel[] types, string? returnValue = null)
 	{
-		const string returns = "TReturns";
-		var returnsGenericType = useReturns ? $"<{returns}>" : string.Empty;
-		var className = string.Join(null, types);
-		var classNameReturns = className + returnsGenericType;
-		var parameters = string.Join(", ", types.Select(static (x, i) => $"{x.GetTypeString()} param{i + 1}"));
-		var parameterNames = string.Join(", ", types.Select(static (_, i) => $"param{i + 1}"));
-		var setupParameters = (bool isNullable) => string.Join(", ", types.Select((x, i) => $"in ItSetup<{x.GetTypeString()}>{(isNullable ? "?" : string.Empty)} param{i + 1}"));
-		var invoke = string.Join(Environment.NewLine + "\t\t\t", types.Select(static (_, i) =>
-		{
-			var index = i + 1;
+		return CreateSetupCode(useReturns: true, types, returnValue);
+	}
 
+	private static GeneratedSource CreateSetupCode(bool useReturns, TypeModel[] types, string? returnValue = null)
+	{
+		if (string.IsNullOrEmpty(returnValue))
+			returnValue = "returnValue";
+
+		const string returns = "TReturns";
+		var genericTypes = types.Where(x => x.IsGeneric).Select(x => x.Type).ToList();
+		if (useReturns) genericTypes.Add(returns);
+
+		var returnsGenericType = genericTypes.Count > 0 ? $"<{string.Join(", ", genericTypes)}>" : string.Empty;
+		var classNameReturns = string.Join(null, types) + returnsGenericType;
+		var parameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString()));
+		var discardedParameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString(typeNameOverride: "_")));
+		var parameterNames = string.Join(", ", types.Select(static x => x.GetParameterNameString()));
+		var setupParameters = (bool isNullable) => string.Join(", ", types.Select(x => $"in ItSetup<{x.GetTypeString()}>{(isNullable ? "?" : string.Empty)} {x.GetParameterNameString()}"));
+		var invoke = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x =>
+		{
 			return
 				$"""
-				 if (setup.Param{index}.HasValue && !setup.Param{index}.Value.Check(param{index}))
+				 if (setup.{x.GetCamelCaseNameString()}.HasValue && !setup.{x.GetCamelCaseNameString()}.Value.Check({x.GetParameterNameString()}))
 				 				continue;
 				 """;
 		}));
-		var itemSetupFields = string.Join(Environment.NewLine + "\t\t", types.Select(static (type, i) =>
-		{
-			var index = i + 1;
-			return $"public readonly ItSetup<{type.GetTypeString()}>? Param{index};";
-		}));
-		var itemSetupParameterAssign = string.Join(Environment.NewLine + "\t\t\t", types.Select(static (_, i) =>
-		{
-			var index = i + 1;
-			return $"Param{index} = param{index};";
-		}));
+		var itemSetupFields = string.Join(Environment.NewLine + "\t\t", types.Select(static x => { return $"public readonly ItSetup<{x.GetTypeString()}>? {x.GetCamelCaseNameString()};"; }));
+		var itemSetupParameterAssign = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x => { return $"{x.GetCamelCaseNameString()} = {x.GetParameterNameString()};"; }));
 		var itemSetupComparer = (string item) =>
 		{
-			return string.Join(Environment.NewLine + "\t\t\t\t", types.Select((_, i) =>
+			return string.Join(Environment.NewLine + "\t\t\t\t", types.Select(x =>
 			{
-				var index = i + 1;
-
 				return
 					$"""
-					 if ({item}.Param{index}.HasValue)
-					 					{item}Sort += {item}.Param{index}.Value.Sort;
+					 if ({item}.{x.GetCamelCaseNameString()}.HasValue)
+					 					{item}Sort += {item}.{x.GetCamelCaseNameString()}.Value.Sort;
 					 """;
 			}));
 		};
@@ -79,12 +85,12 @@ public abstract class TestsBase
 		var iSetupThrowsReset = useReturns ? "ISetupReturnsThrowsReset" : "ISetupThrowsReset";
 		var iSetupThrowsStart = useReturns ? "ISetupReturnsThrowsStart" : "ISetupThrowsStart";
 		var returnsDelegate = useReturns ? Environment.NewLine + $"\tpublic delegate {returns}? ReturnsCallbackDelegate({parameters});" : string.Empty;
-		var invokeFunction = useReturns ? $"public bool Execute({parameters}, out {returns}? returnValue)" : $"public void Invoke({parameters})";
+		var invokeFunction = useReturns ? $"public bool Execute({parameters}, out {returns}? {returnValue})" : $"public void Invoke({parameters})";
 		var checkReturns = useReturns
 			? $$"""
 			    if (x.Returns is not null)
 			    			{
-			    				returnValue = x.Returns({{parameterNames}});
+			    				{{returnValue}} = x.Returns({{parameterNames}});
 			    				return true;
 			    			}
 
@@ -92,31 +98,32 @@ public abstract class TestsBase
 			    """ + "\t\t\t"
 			: string.Empty;
 		var defaultReturns = useReturns
-			? """
+			? $"""
 
 
-			  		Default:
-			  		returnValue = default;
-			  		return false;
-			  """
+			   		Default:
+			   		{returnValue} = default;
+			   		return false;
+			   """
 			: string.Empty;
+
 		var returnsMethods = useReturns
-			? """
+			? $$"""
 
 
-			  	public void Returns(TReturns? returns)
-			  	{
-			  		Returns((_, _) => returns);
-			  	}
+			    	public void Returns(TReturns? returns)
+			    	{
+			    		Returns(({{discardedParameters}}) => returns);
+			    	}
 
-			  	public void Returns(in ReturnsCallbackDelegate returns)
-			  	{
-			  		if (_currentSetup is null)
-			  			throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
+			    	public void Returns(in ReturnsCallbackDelegate returns)
+			    	{
+			    		if (_currentSetup is null)
+			    			throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
-			  		_currentSetup.Add(returns);
-			  	}
-			  """
+			    		_currentSetup.Add(returns);
+			    	}
+			    """
 			: string.Empty;
 		var returnsInterfaceMethods = useReturns
 			? $$"""
@@ -353,55 +360,67 @@ public abstract class TestsBase
 			  }
 			  """;
 
-		var fileName = useReturns
-			? $"Setup{className}_TReturns_.g.cs"
-			: $"Setup{className}.g.cs";
+		var sanitizedClassName = classNameReturns.Replace('<', '_').Replace('>', '_').Replace(", ", "_");
 
 		return (
-			fileName,
+			$"Setup{sanitizedClassName}.g.cs",
 			sourceCode
 		);
 	}
 
 	protected static GeneratedSource CreateInvocationCode(params string[] types)
 	{
-		var className = string.Join(null, types);
-		var prefixes = string.Join(", ", types.Select(static (_, i) => $"_prefixParam{i + 1}"));
-		var jsonSnapshots = string.Join(", ", types.Select(static (_, i) => $"_jsonSnapshotParam{i + 1}"));
-		var prefixParameters = string.Join(", ", types.Select(static (_, i) => $"string? prefixParam{i + 1} = null"));
-		var parameters = string.Join(", ", types.Select(static (x, i) => $"{x.GetTypeString()} param{i + 1}"));
-		var parameterNames = string.Join(", ", types.Select(static (_, i) => $"param{i + 1}"));
-		var prefixAssignemnts = string.Join(Environment.NewLine + "\t\t", types.Select(static (_, i) => $"_prefixParam{i + 1} = prefixParam{i + 1};"));
-		var setupParameters = string.Join(", ", types.Select(static (x, i) => $"in ItSetup<{x.GetTypeString()}> param{i + 1}"));
-		var verifyParameters = string.Join(Environment.NewLine + "\t\t\t", types.Select(static (_, i) => $"var verifyParam{i + 1} = span[i].GetParam{i + 1}(param{i + 1}.Type);"));
-		var parameterToString = string.Join(", ", types.Select(static (_, i) => $"param{i + 1}.ToString(_prefixParam{i + 1})"));
-		var typeNameParameters = string.Join(Environment.NewLine + "\t\t", types.Select(static (x, i) => $"var typeNameParam{i + 1} = !string.IsNullOrEmpty(_prefixParam{i + 1}) ? $\"{{_prefixParam{i + 1}}} {x.GetTypeString()}\" : \"{x.GetTypeString()}\";"));
-		var typeParameterNames = string.Join(", ", types.Select(static (_, i) => $"typeNameParam{i + 1}"));
-		var parameterFields = string.Join(Environment.NewLine + "\t\t", types.Select(static (x, i) => $"private readonly {x.GetTypeString()} _param{i + 1};"));
-		var verifyChecks = string.Join(Environment.NewLine + "\t\t\t", types.Skip(1).Select(static (_, i) =>
-		{
-			var index = i + 2;
+		var typeModels = types.ToTypeModels();
+		return CreateInvocationCode(typeModels);
+	}
 
-			return
-				$$"""
-				  if (!param{{index}}.Check(verifyParam{{index}}, out result))
-				  			{
-				  				verifyResults = verifyResults is not null
-				  					? [..verifyResults, ("param{{index}}", result)]
-				  					: [("param{{index}}", result)];
-				  			}
-				  """;
-		}));
-		var verifyItemParameterAssignments = string.Join(Environment.NewLine + Environment.NewLine + "\t\t\t", types.Select(static (_, i) =>
+	protected static GeneratedSource CreateInvocationCode(params TypeModel[] types)
+	{
+		var genericTypes = types.Where(x => x.IsGeneric).Select(x => x.Type).ToList();
+		var genericType = genericTypes.Count > 0 ? $"<{string.Join(", ", genericTypes)}>" : string.Empty;
+		var className = string.Join(null, types);
+		var classNameGenerics = className + genericType;
+		var prefixes = string.Join(", ", types.Select(static x => $"_prefix{x.GetCamelCaseNameString()}"));
+		var jsonSnapshots = string.Join(", ", types.Select(static x => $"_jsonSnapshot{x.GetCamelCaseNameString()}"));
+		var prefixParameters = string.Join(", ", types.Select(static x => $"string? prefix{x.GetCamelCaseNameString()} = null"));
+		var parameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString()));
+		var parameterNames = string.Join(", ", types.Select(static x => x.GetParameterNameString()));
+		var prefixAssignemnts = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"_prefix{x.GetCamelCaseNameString()} = prefix{x.GetCamelCaseNameString()};"));
+		var setupParameters = string.Join(", ", types.Select(static x => $"in ItSetup<{x.GetTypeString()}> {x.GetParameterNameString()}"));
+		var verifyParameters = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x => $"var verify{x.GetCamelCaseNameString()} = span[i].Get{x.GetCamelCaseNameString()}({x.GetParameterNameString()}.Type);"));
+		var parameterToString = string.Join(", ", types.Select(static x => $"{x.GetParameterNameString()}.ToString(_prefix{x.GetCamelCaseNameString()})"));
+		var typeNameParameters = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"var typeName{x.GetCamelCaseNameString()} = !string.IsNullOrEmpty(_prefix{x.GetCamelCaseNameString()}) ? $\"{{_prefix{x.GetCamelCaseNameString()}}} {x.GetTypeString()}\" : \"{x.GetTypeString()}\";"));
+		var typeParameterNames = string.Join(", ", types.Select(static x => $"typeName{x.GetCamelCaseNameString()}"));
+		var parameterFields = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"private readonly {x.GetTypeString()} _{x.GetParameterNameString()};"));
+		var verifyChecks = string.Join(Environment.NewLine + "\t\t\t", types.Select(static (x, i) =>
 		{
-			var index = i + 1;
+			return i == 0
+				? $$"""
+				    if (!{{x.GetParameterNameString()}}.Check(verify{{x.GetCamelCaseNameString()}}, out var result))
+				    			{
+				    				verifyResults = [("{{x.GetParameterNameString()}}", result)];
+				    			}
+				    """
+				: $$"""
+				    if (!{{x.GetParameterNameString()}}.Check(verify{{x.GetCamelCaseNameString()}}, out result))
+				    			{
+				    				verifyResults = verifyResults is not null
+				    					? [..verifyResults, ("{{x.GetParameterNameString()}}", result)]
+				    					: [("{{x.GetParameterNameString()}}", result)];
+				    			}
+				    """;
+		}));
+		var verifyItemParameterAssignments = string.Join(Environment.NewLine + Environment.NewLine + "\t\t\t", types.Select(static x =>
+		{
+			var name = x.GetParameterNameString();
+			var camelCase = x.GetCamelCaseNameString();
 
 			return
 				$$"""
 				  try
 				  			{
-				  				_param{{index}} = param{{index}};
-				  				_jsonSnapshotParam{{index}} = System.Text.Json.JsonSerializer.Serialize(param{{index}});
+				  				_{{name}} = {{name}};
+				  				_jsonSnapshot{{camelCase}} = System.Text.Json.JsonSerializer.Serialize({{name}});
 				  			}
 				  			catch
 				  			{
@@ -409,38 +428,36 @@ public abstract class TestsBase
 				  			}
 				  """;
 		}));
-		var verifyItemGetParameterFunctions = string.Join(Environment.NewLine + Environment.NewLine + "\t\t", types.Select(static (x, i) =>
+		var verifyItemGetParameterFunctions = string.Join(Environment.NewLine + Environment.NewLine + "\t\t", types.Select(static x =>
 		{
-			var index = i + 1;
 			var typeString = x.GetTypeString();
 
 			return
 				$$"""
-				  public {{typeString}} GetParam{{index}}(SetupType setupType)
+				  public {{typeString}} Get{{x.GetCamelCaseNameString()}}(SetupType setupType)
 				  		{
-				  			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParam{{index}})
-				  				? System.Text.Json.JsonSerializer.Deserialize<{{typeString}}>(_jsonSnapshotParam{{index}})
-				  				: _param{{index}};
+				  			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshot{{x.GetCamelCaseNameString()}})
+				  				? System.Text.Json.JsonSerializer.Deserialize<{{typeString}}>(_jsonSnapshot{{x.GetCamelCaseNameString()}})
+				  				: _{{x.GetParameterNameString()}};
 				  		}
 				  """;
 		}));
-		var verifyItemParameterToString = string.Join(Environment.NewLine + Environment.NewLine + "\t\t\t", types.Select(static (_, i) =>
+		var verifyItemParameterToString = string.Join(Environment.NewLine + Environment.NewLine + "\t\t\t", types.Select(static (x, i) =>
 		{
-			var index = i + 1;
 			var stringBuilderClear = i > 0
 				? Environment.NewLine + "\t\t\tstringBuilder.Clear();"
 				: string.Empty;
 
 			return
 				$$"""
-				  // param{{index}}{{stringBuilderClear}}
-				  			if (!string.IsNullOrEmpty(_invocation._prefixParam{{index}}))
-				  				stringBuilder.Append($"{_invocation._prefixParam{{index}}} ");
-				  			if (!string.IsNullOrEmpty(_jsonSnapshotParam{{index}}))
-				  				stringBuilder.Append(_jsonSnapshotParam{{index}});
+				  // {{x.GetParameterNameString()}}{{stringBuilderClear}}
+				  			if (!string.IsNullOrEmpty(_invocation._prefix{{x.GetCamelCaseNameString()}}))
+				  				stringBuilder.Append($"{_invocation._prefix{{x.GetCamelCaseNameString()}}} ");
+				  			if (!string.IsNullOrEmpty(_jsonSnapshot{{x.GetCamelCaseNameString()}}))
+				  				stringBuilder.Append(_jsonSnapshot{{x.GetCamelCaseNameString()}});
 				  			else
-				  				stringBuilder.Append(_param{{index}});
-				  			var param{{index}} = stringBuilder.ToString();
+				  				stringBuilder.Append(_{{x.GetParameterNameString()}});
+				  			var {{x.GetParameterNameString()}} = stringBuilder.ToString();
 				  """;
 		}));
 
@@ -448,7 +465,7 @@ public abstract class TestsBase
 			$$"""
 			  namespace MyNihongo.Mock;
 
-			  public sealed class Invocation{{className}} : IInvocationVerify
+			  public sealed class Invocation{{classNameGenerics}} : IInvocationVerify
 			  {
 			  	private readonly string _name;
 			  	private readonly string? {{prefixes}};
@@ -479,10 +496,6 @@ public abstract class TestsBase
 			  			{{verifyParameters}}
 			  			(string, ComparisonResult?)[]? verifyResults = null;
 
-			  			if (!param1.Check(verifyParam1, out var result))
-			  			{
-			  				verifyResults = [("param1", result)];
-			  			}
 			  			{{verifyChecks}}
 
 			  			if (verifyResults is not null)
@@ -516,10 +529,6 @@ public abstract class TestsBase
 			  			{{verifyParameters}}
 			  			(string, ComparisonResult?)[]? verifyResults = null;
 
-			  			if (!param1.Check(verifyParam1, out var result))
-			  			{
-			  				verifyResults = [("param1", result)];
-			  			}
 			  			{{verifyChecks}}
 
 			  			if (verifyResults is not null)
@@ -565,9 +574,9 @@ public abstract class TestsBase
 			  	{
 			  		{{parameterFields}}
 			  		private readonly string? {{jsonSnapshots}};
-			  		private readonly Invocation{{className}} _invocation;
+			  		private readonly Invocation{{classNameGenerics}} _invocation;
 
-			  		public Item(long index, {{parameters}}, Invocation{{className}} invocation)
+			  		public Item(long index, {{parameters}}, Invocation{{classNameGenerics}} invocation)
 			  		{
 			  			_invocation = invocation;
 			  			Index = index;
@@ -594,8 +603,10 @@ public abstract class TestsBase
 			  }
 			  """;
 
+		var sanitizedClassName = classNameGenerics.Replace('<', '_').Replace('>', '_').Replace(", ", "_");
+
 		return (
-			$"Invocation{className}.g.cs",
+			$"Invocation{sanitizedClassName}.g.cs",
 			sourceCode
 		);
 	}
@@ -611,13 +622,10 @@ file static class SourceFileCollectionEx
 		}
 	}
 
-	public static string GetTypeString(this string type)
+	public static TypeModel[] ToTypeModels(this string[] @this)
 	{
-		return type switch
-		{
-			"Int32" => "int",
-			"Single" => "float",
-			_ => throw new NotImplementedException($"Unsupported type: `{type}`"),
-		};
+		return @this
+			.Select(static (x, i) => new TypeModel(x, i + 1))
+			.ToArray();
 	}
 }

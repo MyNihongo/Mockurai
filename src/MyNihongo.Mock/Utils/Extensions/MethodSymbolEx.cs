@@ -281,7 +281,7 @@ internal static class MethodSymbolEx
 		{
 			return @this
 				.Append("SetupWith")
-				.AppendRefKind(parameterSymbol.RefKind)
+				.AppendRefKindPrefix(parameterSymbol.RefKind)
 				.Append("Parameter<")
 				.AppendType(parameterSymbol.Type);
 		}
@@ -364,7 +364,7 @@ internal static class MethodSymbolEx
 				.AppendPropertyName(methodName);
 		}
 
-		private StringBuilder AppendItParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false)
+		private StringBuilder AppendItParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride = null)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
@@ -373,7 +373,7 @@ internal static class MethodSymbolEx
 
 				@this
 					.Append("in It")
-					.AppendRefKind(parameters[i].RefKind)
+					.AppendRefKindPrefix(parameters[i].RefKind)
 					.Append('<')
 					.AppendType(parameters[i].Type)
 					.Append("> ")
@@ -386,16 +386,18 @@ internal static class MethodSymbolEx
 			return @this;
 		}
 
-		public StringBuilder AppendItSetupParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, bool isNullable = false)
+		public StringBuilder AppendItSetupParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, bool isNullable = false, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride = null)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
 				if (!appendComma && i > 0)
 					@this.Append(", ");
 
+				var typeOverride = parameterTypeOverride?.GetValueOrDefault(parameters[i]);
+
 				@this
 					.Append("in ")
-					.AppendItSetupType(parameters[i].Type, isNullable)
+					.AppendItSetupType(parameters[i].Type, isNullable, typeOverride)
 					.Append(' ')
 					.AppendParameterName(parameters[i].Name);
 
@@ -524,23 +526,39 @@ internal static class MethodSymbolEx
 			if (methodSymbol.Parameters.Length == 0)
 				return;
 
-			var appendParameterNumber = methodSymbol.Parameters.Length > 1;
-
-			for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+			var customPrefixName = methodSymbol.Parameters.Length >= 2;
+			foreach (var parameter in methodSymbol.Parameters)
 			{
-				var refKindString = methodSymbol.Parameters[i].RefKind.GetString(pascalCase: false);
+				var refKindString = parameter.RefKind.GetString(pascalCase: false);
 				if (string.IsNullOrEmpty(refKindString))
 					continue;
 
-				@this.Append(", prefix");
-				if (appendParameterNumber)
-					@this.Append(i + 1);
+				@this.Append(", ");
+
+				if (customPrefixName)
+					@this.AppendPrefixParameter(parameter.Name);
+				else
+					@this.Append(MockGeneratorConst.Suffixes.Prefix);
 
 				@this
 					.Append(": \"")
 					.Append(refKindString)
 					.Append('"');
 			}
+		}
+
+		public StringBuilder AppendPrefixField(string name)
+		{
+			return @this
+				.AppendFieldName(MockGeneratorConst.Suffixes.Prefix)
+				.AppendPropertyName(name);
+		}
+
+		public StringBuilder AppendPrefixParameter(string name)
+		{
+			return @this
+				.AppendParameterName(MockGeneratorConst.Suffixes.Prefix)
+				.AppendPropertyName(name);
 		}
 	}
 }
