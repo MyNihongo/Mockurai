@@ -24,7 +24,7 @@ public sealed class GenericSetup : TestsBase
 		var types = new TypeModel[]
 		{
 			new("Int32", 1),
-			new("T1", 2, isGeneric: true),
+			new("T1", "returnValue", isGeneric: true),
 		};
 
 		GeneratedSources generatedSources =
