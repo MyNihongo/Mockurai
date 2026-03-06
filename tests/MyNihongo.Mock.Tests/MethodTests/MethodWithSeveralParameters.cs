@@ -380,7 +380,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
 	}
-	
+
 	[Fact]
 	public async Task GenerateInterfaceReturnGeneric2()
 	{
@@ -421,6 +421,147 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		[
 			new("Int32", 1),
 			new("T1", 2, isGeneric: true),
+		];
+		var testCode = CreateInterfaceTestCode(method);
+		var setupCode = CreateSetupReturnsCode(types);
+		var invocationCode = CreateInvocationCode(types);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, setupCode, invocationCode);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateInterfaceWithIn()
+	{
+		const string method = "void Invoke(in int param1, float param2);";
+
+		const string methods =
+			"""
+			// Invoke
+			private SetupInInt32Single? _invoke0;
+			private InvocationInInt32Single? _invoke0Invocation;
+
+			public SetupInInt32Single SetupInvoke(in ItIn<int> param1, in It<float> param2)
+			{
+				_invoke0 ??= new SetupInInt32Single();
+				_invoke0.SetupParameters(param1.ValueSetup, param2.ValueSetup);
+				return _invoke0;
+			}
+
+			public void VerifyInvoke(in ItIn<int> param1, in It<float> param2, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationInInt32Single("IInterface.Invoke({0}, {1})", prefixParam1: "in");
+				_invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke(in ItIn<int> param1, in It<float> param2, long index)
+			{
+				_invoke0Invocation ??= new InvocationInInt32Single("IInterface.Invoke({0}, {1})", prefixParam1: "in");
+				return _invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy = "public void Invoke(in int param1, float param2) {}";
+
+		TypeModel[] types =
+		[
+			new("Int32", 1, refType: "in"),
+			new("Single", 2),
+		];
+		var testCode = CreateInterfaceTestCode(method);
+		var setupCode = CreateSetupCode(types);
+		var invocationCode = CreateInvocationCode(types);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, setupCode, invocationCode);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateInterfaceWithInOut()
+	{
+		const string method = "void Invoke(in int param1, out float param2);";
+
+		const string methods =
+			"""
+			// Invoke
+			private SetupInInt32OutSingle? _invoke0;
+			private InvocationInInt32OutSingle? _invoke0Invocation;
+
+			public SetupInInt32OutSingle SetupInvoke(in ItIn<int> param1, in ItOut<float> param2)
+			{
+				_invoke0 ??= new SetupInInt32OutSingle();
+				_invoke0.SetupParameter(param1.ValueSetup);
+				return _invoke0;
+			}
+
+			public void VerifyInvoke(in ItIn<int> param1, in ItOut<float> param2, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationInInt32OutSingle("IInterface.Invoke({0}, {1})", prefixParam1: "in", prefixParam2: "out");
+				_invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke(in ItIn<int> param1, in ItOut<float> param2, long index)
+			{
+				_invoke0Invocation ??= new InvocationInInt32OutSingle("IInterface.Invoke({0}, {1})", prefixParam1: "in", prefixParam2: "out");
+				return _invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy = "public void Invoke(in int param1, out float param2) {param2 = default;}";
+
+		TypeModel[] types =
+		[
+			new("Int32", 1, refType: "in"),
+			new("Single", 2, refType: "out"),
+		];
+		var testCode = CreateInterfaceTestCode(method);
+		var setupCode = CreateSetupCode(types);
+		var invocationCode = CreateInvocationCode(types);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, setupCode, invocationCode);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+	
+	[Fact]
+	public async Task GenerateInterfaceReturnOutRef()
+	{
+		const string method = "decimal Invoke(out int param1, ref float param2);";
+
+		const string methods =
+			"""
+			// Invoke
+			private SetupOutInt32RefSingle<decimal>? _invoke0;
+			private InvocationOutInt32RefSingle? _invoke0Invocation;
+
+			public SetupOutInt32RefSingle<decimal> SetupInvoke(in ItOut<int> param1, in ItRef<float> param2)
+			{
+				_invoke0 ??= new SetupOutInt32RefSingle<decimal>();
+				_invoke0.SetupParameter(param2.ValueSetup);
+				return _invoke0;
+			}
+
+			public void VerifyInvoke(in ItOut<int> param1, in ItRef<float> param2, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationOutInt32RefSingle("IInterface.Invoke({0}, {1})", prefixParam1: "out", prefixParam2: "ref");
+				_invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke(in ItOut<int> param1, in ItRef<float> param2, long index)
+			{
+				_invoke0Invocation ??= new InvocationOutInt32RefSingle("IInterface.Invoke({0}, {1})", prefixParam1: "out", prefixParam2: "ref");
+				return _invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy = "public decimal Invoke(out int param1, ref float param2) {param1 = default;return default;}";
+
+		TypeModel[] types =
+		[
+			new("Int32", 1, refType: "out"),
+			new("Single", 2, refType: "ref"),
 		];
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupReturnsCode(types);
