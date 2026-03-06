@@ -4,11 +4,11 @@ public static class SetupIntIntEx
 {
 	public static void And(this SetupIntInt @this)
 	{
-		((ISetupCallbackJoin<Action<int, int>>)@this).And();
+		((ISetupCallbackJoin<SetupIntInt.CallbackDelegate>)@this).And();
 	}
 
 	public static void And<T>(this SetupIntInt<T> @this)
 	{
-		((ISetupCallbackJoin<Action<int, int>, T, Func<int, int, T?>>)@this).And();
+		((ISetupCallbackJoin<SetupIntInt<T>.CallbackDelegate, T, SetupIntInt<T>.ReturnsCallbackDelegate>)@this).And();
 	}
 }
