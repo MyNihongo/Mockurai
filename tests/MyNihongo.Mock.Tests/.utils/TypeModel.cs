@@ -72,5 +72,7 @@ public static class TypeModelEx
 				_ => throw new NotImplementedException($"Unsupported type: `{@this}`"),
 			};
 		}
+
+		public bool IsInputParameter => !"out".Equals(@this.RefType, StringComparison.InvariantCultureIgnoreCase);
 	}
 }

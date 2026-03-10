@@ -6,6 +6,12 @@ internal static class ParameterSymbolEx
 	{
 		public bool TryGetInputParameters(out ImmutableArray<IParameterSymbol> parameters)
 		{
+			parameters = @this.GetInputParameters();
+			return parameters.Length > 0;
+		}
+
+		public ImmutableArray<IParameterSymbol> GetInputParameters()
+		{
 			var builder = ImmutableArray.CreateBuilder<IParameterSymbol>();
 
 			foreach (var parameter in @this)
@@ -14,8 +20,7 @@ internal static class ParameterSymbolEx
 					builder.Add(parameter);
 			}
 
-			parameters = builder.ToImmutable();
-			return builder.Count > 0;
+			return builder.ToImmutable();
 		}
 	}
 

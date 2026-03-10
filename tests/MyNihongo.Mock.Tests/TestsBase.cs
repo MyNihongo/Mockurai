@@ -56,7 +56,8 @@ public abstract class TestsBase
 		var parameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString()));
 		var discardedParameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString(typeNameOverride: "_")));
 		var parameterNames = string.Join(", ", types.Select(static x => x.GetParameterNameString()));
-		var setupParameters = (bool isNullable) => string.Join(", ", types.Select(x => $"in ItSetup<{x.GetTypeString()}>{(isNullable ? "?" : string.Empty)} {x.GetParameterNameString()}"));
+		var inputParameterNames = string.Join(", ", types.Where(static x => x.IsInputParameter).Select(static x => x.GetParameterNameString()));
+		var setupParameters = (bool isNullable) => string.Join(", ", types.Where(static x => x.IsInputParameter).Select(x => $"in ItSetup<{x.GetTypeString()}>{(isNullable ? "?" : string.Empty)} {x.GetParameterNameString()}"));
 		var invoke = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x =>
 		{
 			return
@@ -65,8 +66,8 @@ public abstract class TestsBase
 				 				continue;
 				 """;
 		}));
-		var itemSetupFields = string.Join(Environment.NewLine + "\t\t", types.Select(static x => { return $"public readonly ItSetup<{x.GetTypeString()}>? {x.GetCamelCaseNameString()};"; }));
-		var itemSetupParameterAssign = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x => { return $"{x.GetCamelCaseNameString()} = {x.GetParameterNameString()};"; }));
+		var itemSetupFields = string.Join(Environment.NewLine + "\t\t", types.Where(static x => x.IsInputParameter).Select(static x => { return $"public readonly ItSetup<{x.GetTypeString()}>? {x.GetCamelCaseNameString()};"; }));
+		var itemSetupParameterAssign = string.Join(Environment.NewLine + "\t\t\t", types.Where(static x => x.IsInputParameter).Select(static x => { return $"{x.GetCamelCaseNameString()} = {x.GetParameterNameString()};"; }));
 		var itemSetupComparer = (string item) =>
 		{
 			return string.Join(Environment.NewLine + "\t\t\t\t", types.Select(x =>
@@ -211,7 +212,7 @@ public abstract class TestsBase
 
 			  	public void SetupParameters({{setupParameters(false)}})
 			  	{
-			  		_currentSetup = new Item({{parameterNames}});
+			  		_currentSetup = new Item({{inputParameterNames}});
 
 			  		_setups ??= new SetupContainer<Item>(SortComparer);
 			  		_setups.Add(_currentSetup);
