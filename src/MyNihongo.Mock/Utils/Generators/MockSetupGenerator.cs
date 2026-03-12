@@ -169,12 +169,16 @@ internal static class MockSetupGenerator
 		{
 			stringBuilder
 				.AppendLine()
-				.AppendSetupParametersMethod(parameterSplit.InputParameters, genericTypeOverride, indent)
-				.AppendLine();
+				.AppendSetupParametersMethod(parameterSplit.InputParameters, genericTypeOverride, indent);
 		}
 
 		if (returnType is not null)
-			stringBuilder.AppendReturnsMethods(methodSymbol, parameterSplit.OutputParameters, indent).AppendLine();
+		{
+			stringBuilder
+				.AppendLine()
+				.AppendReturnsMethods(methodSymbol, parameterSplit.OutputParameters, indent)
+				.AppendLine();
+		}
 
 		return stringBuilder
 			.AppendCallbackMethod(indent).AppendLine()
@@ -581,8 +585,10 @@ file static class Extensions
 					.AppendLine("continue;");
 			}
 
+			if (!parameterSplit.InputParameters.IsDefaultOrEmpty)
+				stringBuilder.AppendLine();
+
 			stringBuilder
-				.AppendLine()
 				.Indent(indent)
 				.AppendLine("var x = setup.GetSetup();");
 

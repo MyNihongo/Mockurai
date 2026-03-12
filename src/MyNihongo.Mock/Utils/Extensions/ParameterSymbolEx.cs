@@ -207,7 +207,7 @@ internal static class ParameterSymbolEx
 				: @this;
 		}
 
-		private StringBuilder AppendParameterRefKinds(ImmutableArray<IParameterSymbol> parameters, out ImmutableArray<IParameterSymbol> genericParameters)
+		private void AppendParameterRefKinds(ImmutableArray<IParameterSymbol> parameters, out ImmutableArray<IParameterSymbol> genericParameters)
 		{
 			ImmutableArray<IParameterSymbol>.Builder? builder = null;
 
@@ -231,7 +231,6 @@ internal static class ParameterSymbolEx
 			}
 
 			genericParameters = builder?.ToImmutable() ?? ImmutableArray<IParameterSymbol>.Empty;
-			return @this;
 		}
 
 		private StringBuilder AppendGenericSetupInvocationParameters(
