@@ -102,13 +102,12 @@ public abstract class TestsBase
 
 			    """ + "\t\t\t"
 			: string.Empty;
-		var defaultReturns = useReturns
+		var defaultReturns = useReturns || outTypes.Length > 0
 			? $"""
 
 
-			   		Default:
-			   		{returnValue} = default;{(outTypes.Length > 0 ? string.Concat(outTypes.Select(static x => Environment.NewLine + $"\t\t{x.GetParameterNameString()} = default;")) : string.Empty)}
-			   		return false;
+			   		Default:{(useReturns ? Environment.NewLine + $"\t\t{returnValue} = default;" : string.Empty)}{(outTypes.Length > 0 ? string.Concat(outTypes.Select(static x => Environment.NewLine + $"\t\t{x.GetParameterNameString()} = default;")) : string.Empty)}
+			   		return{(useReturns ? " false" : string.Empty)};
 			   """
 			: string.Empty;
 
@@ -198,7 +197,7 @@ public abstract class TestsBase
 			  	{{invokeFunction}}
 			  	{
 			  		if (_setups is null)
-			  			{{(useReturns ? "goto Default" : "return")}};
+			  			{{(useReturns || outTypes.Length > 0 ? "goto Default" : "return")}};
 
 			  		foreach (var setup in _setups)
 			  		{
@@ -210,7 +209,7 @@ public abstract class TestsBase
 			  			if (x.Exception is not null)
 			  				throw x.Exception;
 
-			  			{{(useReturns ? $"{checkReturns}goto Default" : "return")}};
+			  			{{(useReturns ? $"{checkReturns}goto Default" : outTypes.Length > 0 ? "goto Default" : "return")}};
 			  		}{{defaultReturns}}
 			  	}
 
