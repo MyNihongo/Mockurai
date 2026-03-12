@@ -58,6 +58,7 @@ public abstract class TestsBase
 		var parameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString()));
 		var discardedParameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString(typeNameOverride: "_")));
 		var parameterNamesWithRef = string.Join(", ", types.Select(static x => x.GetParameterNameString(appendRefKind: true)));
+		var returnsValue = outTypes.Length > 0 ? Environment.NewLine + "\t\t{" + string.Concat(outTypes.Select(static x => $"{Environment.NewLine}\t\t\t{x.GetParameterNameString()} = default;")) + $"{Environment.NewLine}\t\t\treturn returns;{Environment.NewLine}" + "\t\t}" : " returns";
 		var inputParameterNames = string.Join(", ", inputParameters.Select(static x => x.GetParameterNameString()));
 		var setupParametersName = inputParameters.Length > 1 ? "SetupParameters" : "SetupParameter";
 		var setupParameters = (bool isNullable) => string.Join(", ", inputParameters.Select(x => $"in ItSetup<{x.GetTypeString()}>{(isNullable ? "?" : string.Empty)} {x.GetParameterNameString()}"));
@@ -117,7 +118,7 @@ public abstract class TestsBase
 
 			    	public void Returns(TReturns? returns)
 			    	{
-			    		Returns(({{discardedParameters}}) => returns);
+			    		Returns(({{discardedParameters}}) =>{{returnsValue}});
 			    	}
 
 			    	public void Returns(in ReturnsCallbackDelegate returns)

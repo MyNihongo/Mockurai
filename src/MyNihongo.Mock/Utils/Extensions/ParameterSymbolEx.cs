@@ -92,23 +92,36 @@ internal static class ParameterSymbolEx
 			return @this;
 		}
 
-		public StringBuilder AppendDiscardParameterNames(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false)
+		public StringBuilder AppendDiscardParameterNames(ImmutableArray<IParameterSymbol> parameters, out ImmutableArray<IParameterSymbol> outParameters, bool appendComma = false)
 		{
+			var builder = ImmutableArray.CreateBuilder<IParameterSymbol>();
+
 			for (var i = 0; i < parameters.Length; i++)
 			{
 				if (!appendComma && i > 0)
 					@this.Append(", ");
 
-				var refKindString = parameters[i].RefKind.GetString();
+				var refKind = parameters[i].RefKind;
+				var refKindString = refKind.GetString();
 				if (!string.IsNullOrEmpty(refKindString))
 					@this.Append(refKindString).Append(' ');
 
-				@this.Append('_');
+				// It is not possible to discard `out` parameters and their values must be assigned in any case (CS0177)
+				if (refKind == RefKind.Out)
+				{
+					builder.Add(parameters[i]);
+					@this.Append(parameters[i].Name);
+				}
+				else
+				{
+					@this.Append('_');
+				}
 
 				if (appendComma)
 					@this.Append(", ");
 			}
 
+			outParameters = builder.ToImmutable();
 			return @this;
 		}
 

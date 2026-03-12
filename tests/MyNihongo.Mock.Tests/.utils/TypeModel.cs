@@ -54,9 +54,9 @@ public static class TypeModelEx
 
 		public string GetParameterDeclarationString(string? typeNameOverride = null, bool appendRefKind = true)
 		{
-			var result = string.IsNullOrEmpty(typeNameOverride)
-				? $"{@this.GetTypeString()} {@this.GetParameterNameString()}"
-				: typeNameOverride;
+			var result = !string.IsNullOrEmpty(typeNameOverride)
+				? @this.RefType == "out" ? @this.GetParameterNameString() : typeNameOverride
+				: $"{@this.GetTypeString()} {@this.GetParameterNameString()}";
 
 			return appendRefKind && !string.IsNullOrEmpty(@this.RefType)
 				? $"{@this.RefType} {result}"

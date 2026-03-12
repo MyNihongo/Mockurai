@@ -521,10 +521,11 @@ internal static class MockSetupGenerator
 
 file static class Extensions
 {
+	private const string DefaultAssign = " = default;";
+
 	extension(StringBuilder stringBuilder)
 	{
-		public StringBuilder AppendInvokeExecuteMethod(
-			IMethodSymbol methodSymbol,
+		public void AppendInvokeExecuteMethod(IMethodSymbol methodSymbol,
 			ITypeSymbol? returnType,
 			string returnValueName,
 			ImmutableArray<IParameterSymbol> inputParameters,
@@ -637,12 +638,10 @@ file static class Extensions
 			// Method body - return value
 			if (returnType is not null)
 			{
-				const string defaultAssign = " = default;";
-
 				stringBuilder
 					.AppendLine()
 					.Indent(indent).AppendLine("Default:")
-					.Indent(indent).Append(returnValueName).AppendLine(defaultAssign);
+					.Indent(indent).Append(returnValueName).AppendLine(DefaultAssign);
 
 				foreach (var parameter in methodSymbol.Parameters)
 				{
@@ -650,14 +649,14 @@ file static class Extensions
 						continue;
 
 					stringBuilder
-						.Indent(indent).Append(parameter.Name).AppendLine(defaultAssign);
+						.Indent(indent).Append(parameter.Name).AppendLine(DefaultAssign);
 				}
 
 				stringBuilder
 					.Indent(indent).AppendLine("return false;");
 			}
 
-			return stringBuilder
+			stringBuilder
 				.Indent(--indent)
 				.AppendLine("}");
 		}
@@ -718,8 +717,34 @@ file static class Extensions
 			stringBuilder
 				.Indent(indent).AppendLine($"public void Returns({MockGeneratorConst.Suffixes.GenericReturnParameter}? returns)")
 				.Indent(indent).AppendLine("{")
-				.Indent(indent + 1).Append("Returns((").AppendDiscardParameterNames(methodSymbol.Parameters).AppendLine(") => returns);")
-				.Indent(indent).AppendLine("}").AppendLine();
+				.Indent(++indent).Append("Returns((").AppendDiscardParameterNames(methodSymbol.Parameters, out var outParameters).Append(") =>");
+
+			if (outParameters.IsDefaultOrEmpty)
+			{
+				stringBuilder.Append(" returns");
+			}
+			else
+			{
+				stringBuilder
+					.AppendLine()
+					.Indent(indent++).AppendLine("{");
+
+				foreach (var outParameter in outParameters)
+				{
+					stringBuilder
+						.Indent(indent)
+						.Append(outParameter.Name)
+						.AppendLine(" = default;");
+				}
+
+				stringBuilder
+					.Indent(indent).AppendLine("return returns;")
+					.Indent(--indent).Append('}');
+			}
+
+			stringBuilder
+				.AppendLine(");")
+				.Indent(--indent).AppendLine("}").AppendLine();
 
 			// Delegate method
 			return stringBuilder
