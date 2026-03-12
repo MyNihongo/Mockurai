@@ -6,21 +6,26 @@ internal static class ParameterSymbolEx
 	{
 		public bool TryGetInputParameters(out ImmutableArray<IParameterSymbol> parameters)
 		{
-			parameters = @this.GetInputParameters();
+			parameters = @this.SplitParameters().InputParameters;
 			return parameters.Length > 0;
 		}
 
-		public ImmutableArray<IParameterSymbol> GetInputParameters()
+		public ParameterSplit SplitParameters()
 		{
-			var builder = ImmutableArray.CreateBuilder<IParameterSymbol>();
-
+			ImmutableArray<IParameterSymbol>.Builder? inputBuilder = null, outputBuilder = null;
+			
 			foreach (var parameter in @this)
 			{
-				if (parameter.RefKind != RefKind.Out)
-					builder.Add(parameter);
+				if (parameter.RefKind == RefKind.Out)
+					(outputBuilder ??= ImmutableArray.CreateBuilder<IParameterSymbol>()).Add(parameter);
+				else
+					(inputBuilder ??= ImmutableArray.CreateBuilder<IParameterSymbol>()).Add(parameter);
 			}
 
-			return builder.ToImmutable();
+			return new ParameterSplit(
+				inputParameters: inputBuilder?.ToImmutable() ?? ImmutableArray<IParameterSymbol>.Empty,
+				outputParameters: outputBuilder?.ToImmutable() ?? ImmutableArray<IParameterSymbol>.Empty
+			);
 		}
 	}
 
@@ -92,10 +97,8 @@ internal static class ParameterSymbolEx
 			return @this;
 		}
 
-		public StringBuilder AppendDiscardParameterNames(ImmutableArray<IParameterSymbol> parameters, out ImmutableArray<IParameterSymbol> outParameters, bool appendComma = false)
+		public StringBuilder AppendDiscardParameterNames(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false)
 		{
-			var builder = ImmutableArray.CreateBuilder<IParameterSymbol>();
-
 			for (var i = 0; i < parameters.Length; i++)
 			{
 				if (!appendComma && i > 0)
@@ -108,20 +111,14 @@ internal static class ParameterSymbolEx
 
 				// It is not possible to discard `out` parameters and their values must be assigned in any case (CS0177)
 				if (refKind == RefKind.Out)
-				{
-					builder.Add(parameters[i]);
 					@this.Append(parameters[i].Name);
-				}
 				else
-				{
 					@this.Append('_');
-				}
 
 				if (appendComma)
 					@this.Append(", ");
 			}
 
-			outParameters = builder.ToImmutable();
 			return @this;
 		}
 

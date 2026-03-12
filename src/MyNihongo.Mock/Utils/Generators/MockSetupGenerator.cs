@@ -8,7 +8,7 @@ internal static class MockSetupGenerator
 		var className = CreateSetupClassName(stringBuilder, methodSymbol, out var genericTypeOverride);
 		var returnType = methodSymbol.TryGetReturnType();
 		var returnValueName = GetReturnValueName(methodSymbol.Parameters);
-		var inputParameters = methodSymbol.Parameters.GetInputParameters();
+		var parameterSplit = methodSymbol.Parameters.SplitParameters();
 
 		var source =
 			$$"""
@@ -21,7 +21,7 @@ internal static class MockSetupGenerator
 			  	private Item? _currentSetup;
 
 			  {{CreateDelegates(stringBuilder, methodSymbol, returnType, genericTypeOverride, indent: 1)}}
-			  {{CreateMethodImplementations(stringBuilder, methodSymbol, returnType, returnValueName, inputParameters, genericTypeOverride, indent: 1)}}
+			  {{CreateMethodImplementations(stringBuilder, methodSymbol, returnType, returnValueName, parameterSplit, genericTypeOverride, indent: 1)}}
 			  {{CreateInterfaceMethodImplementations(stringBuilder, methodSymbol, returnType, indent: 1)}}
 
 			  	private sealed class Item
@@ -30,7 +30,7 @@ internal static class MockSetupGenerator
 			  		private ItemSetup? _currentSetup;
 			  		public bool AndContinue;
 
-			  {{CreateItemDeclaration(stringBuilder, methodSymbol, returnType, inputParameters, genericTypeOverride, indent: 2)}}
+			  {{CreateItemDeclaration(stringBuilder, methodSymbol, returnType, parameterSplit.InputParameters, genericTypeOverride, indent: 2)}}
 
 			  		public void Add(in CallbackDelegate callback)
 			  		{
@@ -91,12 +91,12 @@ internal static class MockSetupGenerator
 
 			  			if (x is not null)
 			  			{
-			  {{CreateCompareDeclaration(stringBuilder, inputParameters, item: "x", indent: 4)}}
+			  {{CreateCompareDeclaration(stringBuilder, parameterSplit.InputParameters, item: "x", indent: 4)}}
 			  			}
 
 			  			if (y is not null)
 			  			{
-			  {{CreateCompareDeclaration(stringBuilder, inputParameters, item: "y", indent: 4)}}
+			  {{CreateCompareDeclaration(stringBuilder, parameterSplit.InputParameters, item: "y", indent: 4)}}
 			  			}
 
 			  			return xSort.CompareTo(ySort);
@@ -158,23 +158,23 @@ internal static class MockSetupGenerator
 		IMethodSymbol methodSymbol,
 		ITypeSymbol? returnType,
 		string returnValueName,
-		ImmutableArray<IParameterSymbol> inputParameters,
+		ParameterSplit parameterSplit,
 		ImmutableDictionary<IParameterSymbol, string> genericTypeOverride,
 		int indent)
 	{
 		stringBuilder.Clear();
-		stringBuilder.AppendInvokeExecuteMethod(methodSymbol, returnType, returnValueName, inputParameters, genericTypeOverride, indent);
+		stringBuilder.AppendInvokeExecuteMethod(methodSymbol, returnType, returnValueName, parameterSplit.InputParameters, genericTypeOverride, indent);
 
-		if (!inputParameters.IsDefaultOrEmpty)
+		if (!parameterSplit.InputParameters.IsDefaultOrEmpty)
 		{
 			stringBuilder
 				.AppendLine()
-				.AppendSetupParametersMethod(inputParameters, genericTypeOverride, indent)
+				.AppendSetupParametersMethod(parameterSplit.InputParameters, genericTypeOverride, indent)
 				.AppendLine();
 		}
 
 		if (returnType is not null)
-			stringBuilder.AppendReturnsMethods(methodSymbol, indent).AppendLine();
+			stringBuilder.AppendReturnsMethods(methodSymbol, parameterSplit.OutputParameters, indent).AppendLine();
 
 		return stringBuilder
 			.AppendCallbackMethod(indent).AppendLine()
@@ -711,15 +711,15 @@ file static class Extensions
 				.Indent(--indent).AppendLine("}");
 		}
 
-		public StringBuilder AppendReturnsMethods(IMethodSymbol methodSymbol, int indent)
+		public StringBuilder AppendReturnsMethods(IMethodSymbol methodSymbol, ImmutableArray<IParameterSymbol> outputParameters, int indent)
 		{
 			// Value method
 			stringBuilder
 				.Indent(indent).AppendLine($"public void Returns({MockGeneratorConst.Suffixes.GenericReturnParameter}? returns)")
 				.Indent(indent).AppendLine("{")
-				.Indent(++indent).Append("Returns((").AppendDiscardParameterNames(methodSymbol.Parameters, out var outParameters).Append(") =>");
+				.Indent(++indent).Append("Returns((").AppendDiscardParameterNames(methodSymbol.Parameters).Append(") =>");
 
-			if (outParameters.IsDefaultOrEmpty)
+			if (outputParameters.IsDefaultOrEmpty)
 			{
 				stringBuilder.Append(" returns");
 			}
@@ -729,7 +729,7 @@ file static class Extensions
 					.AppendLine()
 					.Indent(indent++).AppendLine("{");
 
-				foreach (var outParameter in outParameters)
+				foreach (var outParameter in outputParameters)
 				{
 					stringBuilder
 						.Indent(indent)
