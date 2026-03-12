@@ -388,6 +388,7 @@ public abstract class TestsBase
 		var jsonSnapshots = string.Join(", ", types.Select(static x => $"_jsonSnapshot{x.GetCamelCaseNameString()}"));
 		var prefixParameters = string.Join(", ", types.Select(static x => $"string? prefix{x.GetCamelCaseNameString()} = null"));
 		var parameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString()));
+		var parametersWithoutRef = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString(appendRefKind: false)));
 		var parameterNames = string.Join(", ", types.Select(static x => x.GetParameterNameString()));
 		var prefixAssignemnts = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"_prefix{x.GetCamelCaseNameString()} = prefix{x.GetCamelCaseNameString()};"));
 		var setupParameters = string.Join(", ", types.Select(static x => $"in ItSetup<{x.GetTypeString()}> {x.GetParameterNameString()}"));
@@ -481,7 +482,7 @@ public abstract class TestsBase
 			  		{{prefixAssignemnts}}
 			  	}
 
-			  	public void Register(in InvocationIndex.Counter index, {{parameters}})
+			  	public void Register(in InvocationIndex.Counter index, {{parametersWithoutRef}})
 			  	{
 			  		var invokedIndex = index.Increment();
 			  		_invocations.Add(new Item(invokedIndex, {{parameterNames}}, invocation: this));
@@ -580,7 +581,7 @@ public abstract class TestsBase
 			  		private readonly string? {{jsonSnapshots}};
 			  		private readonly Invocation{{classNameGenerics}} _invocation;
 
-			  		public Item(long index, {{parameters}}, Invocation{{classNameGenerics}} invocation)
+			  		public Item(long index, {{parametersWithoutRef}}, Invocation{{classNameGenerics}} invocation)
 			  		{
 			  			_invocation = invocation;
 			  			Index = index;

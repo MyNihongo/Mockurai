@@ -27,7 +27,7 @@ internal static class ParameterSymbolEx
 	// TODO: when there is more time try to optimize appending instead of appending strings of ITypeSymbol, IPropertySymbol, etc
 	extension(StringBuilder @this)
 	{
-		public StringBuilder AppendParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride = null)
+		public StringBuilder AppendParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride = null, bool appendRefKind = true)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
@@ -35,7 +35,7 @@ internal static class ParameterSymbolEx
 					@this.Append(", ");
 
 				var typeOverride = parameterTypeOverride?.GetValueOrDefault(parameters[i]);
-				@this.AppendParameter(parameters[i], typeOverride);
+				@this.AppendParameter(parameters[i], typeOverride, appendRefKind);
 
 				if (appendComma)
 					@this.Append(", ");
@@ -51,11 +51,14 @@ internal static class ParameterSymbolEx
 				: @this;
 		}
 
-		private StringBuilder AppendParameter(IParameterSymbol parameter, string? typeOverride = null)
+		private StringBuilder AppendParameter(IParameterSymbol parameter, string? typeOverride = null, bool appendRefKind = true)
 		{
-			var refKindString = parameter.RefKind.GetString();
-			if (!string.IsNullOrEmpty(refKindString))
-				@this.Append(refKindString).Append(' ');
+			if (appendRefKind)
+			{
+				var refKindString = parameter.RefKind.GetString();
+				if (!string.IsNullOrEmpty(refKindString))
+					@this.Append(refKindString).Append(' ');
+			}
 
 			return @this
 				.AppendType(parameter.Type, typeOverride)

@@ -52,13 +52,13 @@ public static class TypeModelEx
 			return char.ToUpperInvariant(parameterName[0]) + parameterName[1..];
 		}
 
-		public string GetParameterDeclarationString(string? typeNameOverride = null)
+		public string GetParameterDeclarationString(string? typeNameOverride = null, bool appendRefKind = true)
 		{
 			var result = string.IsNullOrEmpty(typeNameOverride)
 				? $"{@this.GetTypeString()} {@this.GetParameterNameString()}"
 				: typeNameOverride;
 
-			return !string.IsNullOrEmpty(@this.RefType)
+			return appendRefKind && !string.IsNullOrEmpty(@this.RefType)
 				? $"{@this.RefType} {result}"
 				: result;
 		}

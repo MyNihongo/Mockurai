@@ -1011,7 +1011,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		public void Invoke(out int result)
 		{
 			_mock._invokeInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService.Invoke({0})", prefix: "out");
-			_mock._invokeInvocation2.Register(_mock._invocationIndex, 0);
+			_mock._invokeInvocation2.Register(_mock._invocationIndex, default);
 			if (_mock._invoke2 is not null)
 				_mock._invoke2.Invoke(out result);
 			else
