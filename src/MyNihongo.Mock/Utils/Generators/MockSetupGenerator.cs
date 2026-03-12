@@ -30,7 +30,7 @@ internal static class MockSetupGenerator
 			  		private ItemSetup? _currentSetup;
 			  		public bool AndContinue;
 
-			  {{CreateItemDeclaration(stringBuilder, methodSymbol, returnType, parameterSplit.InputParameters, genericTypeOverride, indent: 2)}}
+			  {{CreateItemDeclaration(stringBuilder, returnType, parameterSplit.InputParameters, genericTypeOverride, indent: 2)}}
 
 			  		public void Add(in CallbackDelegate callback)
 			  		{
@@ -198,7 +198,6 @@ internal static class MockSetupGenerator
 
 	private static string CreateItemDeclaration(
 		StringBuilder stringBuilder,
-		IMethodSymbol methodSymbol,
 		ITypeSymbol? returnType,
 		ImmutableArray<IParameterSymbol> inputParameters,
 		ImmutableDictionary<IParameterSymbol, string> genericTypeOverride,
