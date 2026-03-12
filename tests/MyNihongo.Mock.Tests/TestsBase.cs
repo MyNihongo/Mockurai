@@ -49,16 +49,19 @@ public abstract class TestsBase
 
 		const string returns = "TReturns";
 		var genericTypes = types.Where(x => x.IsGeneric).Select(x => x.Type).ToList();
+		var outTypes = types.Where(x => x.RefType == "out").ToArray();
+		var inputParameters = types.Where(static x => x.IsInputParameter).ToArray();
 		if (useReturns) genericTypes.Add(returns);
 
 		var returnsGenericType = genericTypes.Count > 0 ? $"<{string.Join(", ", genericTypes)}>" : string.Empty;
 		var classNameReturns = string.Join(null, types) + returnsGenericType;
 		var parameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString()));
 		var discardedParameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString(typeNameOverride: "_")));
-		var parameterNames = string.Join(", ", types.Select(static x => x.GetParameterNameString()));
-		var inputParameterNames = string.Join(", ", types.Where(static x => x.IsInputParameter).Select(static x => x.GetParameterNameString()));
-		var setupParameters = (bool isNullable) => string.Join(", ", types.Where(static x => x.IsInputParameter).Select(x => $"in ItSetup<{x.GetTypeString()}>{(isNullable ? "?" : string.Empty)} {x.GetParameterNameString()}"));
-		var invoke = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x =>
+		var parameterNamesWithRef = string.Join(", ", types.Select(static x => x.GetParameterNameString(appendRefKind: true)));
+		var inputParameterNames = string.Join(", ", inputParameters.Select(static x => x.GetParameterNameString()));
+		var setupParametersName = inputParameters.Length > 1 ? "SetupParameters" : "SetupParameter";
+		var setupParameters = (bool isNullable) => string.Join(", ", inputParameters.Select(x => $"in ItSetup<{x.GetTypeString()}>{(isNullable ? "?" : string.Empty)} {x.GetParameterNameString()}"));
+		var invoke = string.Join(Environment.NewLine + "\t\t\t", inputParameters.Select(static x =>
 		{
 			return
 				$"""
@@ -66,11 +69,11 @@ public abstract class TestsBase
 				 				continue;
 				 """;
 		}));
-		var itemSetupFields = string.Join(Environment.NewLine + "\t\t", types.Where(static x => x.IsInputParameter).Select(static x => { return $"public readonly ItSetup<{x.GetTypeString()}>? {x.GetCamelCaseNameString()};"; }));
-		var itemSetupParameterAssign = string.Join(Environment.NewLine + "\t\t\t", types.Where(static x => x.IsInputParameter).Select(static x => { return $"{x.GetCamelCaseNameString()} = {x.GetParameterNameString()};"; }));
+		var itemSetupFields = string.Join(Environment.NewLine + "\t\t", inputParameters.Select(static x => { return $"public readonly ItSetup<{x.GetTypeString()}>? {x.GetCamelCaseNameString()};"; }));
+		var itemSetupParameterAssign = string.Join(Environment.NewLine + "\t\t\t", inputParameters.Select(static x => { return $"{x.GetCamelCaseNameString()} = {x.GetParameterNameString()};"; }));
 		var itemSetupComparer = (string item) =>
 		{
-			return string.Join(Environment.NewLine + "\t\t\t\t", types.Select(x =>
+			return string.Join(Environment.NewLine + "\t\t\t\t", inputParameters.Select(x =>
 			{
 				return
 					$"""
@@ -91,7 +94,7 @@ public abstract class TestsBase
 			? $$"""
 			    if (x.Returns is not null)
 			    			{
-			    				{{returnValue}} = x.Returns({{parameterNames}});
+			    				{{returnValue}} = x.Returns({{parameterNamesWithRef}});
 			    				return true;
 			    			}
 
@@ -103,7 +106,7 @@ public abstract class TestsBase
 
 
 			   		Default:
-			   		{returnValue} = default;
+			   		{returnValue} = default;{(outTypes.Length > 0 ? string.Concat(outTypes.Select(static x => Environment.NewLine + $"\t\t{x.GetParameterNameString()} = default;")) : string.Empty)}
 			   		return false;
 			   """
 			: string.Empty;
@@ -201,7 +204,7 @@ public abstract class TestsBase
 			  			{{invoke}}
 
 			  			var x = setup.GetSetup();
-			  			x.Callback?.Invoke({{parameterNames}});
+			  			x.Callback?.Invoke({{parameterNamesWithRef}});
 
 			  			if (x.Exception is not null)
 			  				throw x.Exception;
@@ -210,7 +213,7 @@ public abstract class TestsBase
 			  		}{{defaultReturns}}
 			  	}
 
-			  	public void SetupParameters({{setupParameters(false)}})
+			  	public void {{setupParametersName}}({{setupParameters(false)}})
 			  	{
 			  		_currentSetup = new Item({{inputParameterNames}});
 

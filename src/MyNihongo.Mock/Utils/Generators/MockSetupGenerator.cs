@@ -91,12 +91,12 @@ internal static class MockSetupGenerator
 
 			  			if (x is not null)
 			  			{
-			  {{CreateCompareDeclaration(stringBuilder, methodSymbol, item: "x", indent: 4)}}
+			  {{CreateCompareDeclaration(stringBuilder, inputParameters, item: "x", indent: 4)}}
 			  			}
 
 			  			if (y is not null)
 			  			{
-			  {{CreateCompareDeclaration(stringBuilder, methodSymbol, item: "y", indent: 4)}}
+			  {{CreateCompareDeclaration(stringBuilder, inputParameters, item: "y", indent: 4)}}
 			  			}
 
 			  			return xSort.CompareTo(ySort);
@@ -163,7 +163,7 @@ internal static class MockSetupGenerator
 		int indent)
 	{
 		stringBuilder.Clear();
-		stringBuilder.AppendInvokeExecuteMethod(methodSymbol, returnType, returnValueName, genericTypeOverride, indent);
+		stringBuilder.AppendInvokeExecuteMethod(methodSymbol, returnType, returnValueName, inputParameters, genericTypeOverride, indent);
 
 		if (!inputParameters.IsDefaultOrEmpty)
 		{
@@ -303,13 +303,13 @@ internal static class MockSetupGenerator
 			.ToString();
 	}
 
-	private static string CreateCompareDeclaration(StringBuilder stringBuilder, IMethodSymbol methodSymbol, string item, int indent)
+	private static string CreateCompareDeclaration(StringBuilder stringBuilder, ImmutableArray<IParameterSymbol> inputParameters, string item, int indent)
 	{
 		stringBuilder.Clear();
 
-		for (int i = 0, lastIndex = methodSymbol.Parameters.Length - 1; i < methodSymbol.Parameters.Length; i++)
+		for (int i = 0, lastIndex = inputParameters.Length - 1; i < inputParameters.Length; i++)
 		{
-			var parameterName = methodSymbol.Parameters[i].Name;
+			var parameterName = inputParameters[i].Name;
 
 			stringBuilder
 				.Indent(indent)
@@ -523,7 +523,13 @@ file static class Extensions
 {
 	extension(StringBuilder stringBuilder)
 	{
-		public StringBuilder AppendInvokeExecuteMethod(IMethodSymbol methodSymbol, ITypeSymbol? returnType, string returnValueName, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
+		public StringBuilder AppendInvokeExecuteMethod(
+			IMethodSymbol methodSymbol,
+			ITypeSymbol? returnType,
+			string returnValueName,
+			ImmutableArray<IParameterSymbol> inputParameters,
+			ImmutableDictionary<IParameterSymbol, string> genericTypeOverride,
+			int indent)
 		{
 			stringBuilder.Indent(indent);
 
@@ -558,7 +564,7 @@ file static class Extensions
 				.Indent(indent).AppendLine("foreach (var setup in _setups)")
 				.Indent(indent++).AppendLine("{");
 
-			foreach (var parameter in methodSymbol.Parameters)
+			foreach (var parameter in inputParameters)
 			{
 				stringBuilder
 					.Indent(indent)
@@ -583,7 +589,7 @@ file static class Extensions
 			stringBuilder
 				.Indent(indent)
 				.Append("x.Callback?.Invoke(")
-				.AppendParameterNames(methodSymbol.Parameters)
+				.AppendParameterNames(methodSymbol.Parameters, appendRefModifier: true)
 				.AppendLine(");").AppendLine();
 
 			stringBuilder
@@ -603,7 +609,7 @@ file static class Extensions
 					.Indent(indent)
 					.Append(returnValueName)
 					.Append(" = x.Returns(")
-					.AppendParameterNames(methodSymbol.Parameters)
+					.AppendParameterNames(methodSymbol.Parameters, appendRefModifier: true)
 					.AppendLine(");");
 
 				stringBuilder
@@ -631,10 +637,23 @@ file static class Extensions
 			// Method body - return value
 			if (returnType is not null)
 			{
+				const string defaultAssign = " = default;";
+
 				stringBuilder
 					.AppendLine()
 					.Indent(indent).AppendLine("Default:")
-					.Indent(indent).Append(returnValueName).AppendLine(" = default;")
+					.Indent(indent).Append(returnValueName).AppendLine(defaultAssign);
+
+				foreach (var parameter in methodSymbol.Parameters)
+				{
+					if (parameter.RefKind != RefKind.Out)
+						continue;
+
+					stringBuilder
+						.Indent(indent).Append(parameter.Name).AppendLine(defaultAssign);
+				}
+
+				stringBuilder
 					.Indent(indent).AppendLine("return false;");
 			}
 
@@ -647,7 +666,9 @@ file static class Extensions
 		{
 			stringBuilder
 				.Indent(indent)
-				.Append("public void SetupParameters(")
+				.Append("public void ")
+				.AppendSetupParametersMethodName(inputParameters)
+				.Append('(')
 				.AppendItSetupParameters(inputParameters, parameterTypeOverride: genericTypeOverride)
 				.AppendLine(")");
 

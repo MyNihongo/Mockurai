@@ -16,15 +16,30 @@ internal static class EnumValuesEx
 		};
 	}
 
-	public static string GetString(this RefKind @this, bool pascalCase = false)
+	extension(RefKind @this)
 	{
-		return @this switch
+		public string GetString(bool pascalCase = false)
 		{
-			RefKind.Ref => "ref",
-			RefKind.Out => "out",
-			RefKind.In => "in",
-			RefKind.RefReadOnlyParameter => !pascalCase ? "ref readonly" : "refReadOnly",
-			_ => string.Empty,
-		};
+			return @this switch
+			{
+				RefKind.Ref => "ref",
+				RefKind.Out => "out",
+				RefKind.In => "in",
+				RefKind.RefReadOnlyParameter => !pascalCase ? "ref readonly" : "refReadOnly",
+				_ => string.Empty,
+			};
+		}
+
+		public string GetModifierString()
+		{
+			return @this switch
+			{
+				RefKind.Ref => "ref",
+				RefKind.RefReadOnlyParameter => "ref",
+				RefKind.Out => "out",
+				RefKind.In => "in",
+				_ => string.Empty,
+			};
+		}
 	}
 }

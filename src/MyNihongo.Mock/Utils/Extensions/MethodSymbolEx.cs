@@ -134,12 +134,8 @@ internal static class MethodSymbolEx
 				@this
 					.Indent(indent)
 					.AppendVariableName(memberSymbol.MemberName, methodSymbol.MethodKind, isField: genericTypeNames.IsDefaultOrEmpty)
-					.Append(".SetupParameter");
-
-				if (parameters.Length > 1)
-					@this.Append('s');
-
-				@this
+					.Append('.')
+					.AppendSetupParametersMethodName(parameters)
 					.Append('(')
 					.AppendParameterNames(parameters, suffix: MockGeneratorConst.Suffixes.ValueSetup)
 					.AppendLine(");");
@@ -151,6 +147,16 @@ internal static class MethodSymbolEx
 				.AppendVariableName(memberSymbol.MemberName, methodSymbol.MethodKind, isField: genericTypeNames.IsDefaultOrEmpty)
 				.AppendLine(";")
 				.Indent(--indent).Append('}');
+		}
+
+		public StringBuilder AppendSetupParametersMethodName(ImmutableArray<IParameterSymbol> parameters)
+		{
+			@this.Append("SetupParameter");
+
+			if (parameters.Length > 1)
+				@this.Append('s');
+
+			return @this;
 		}
 
 		public void AppendVerifyMethods(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)

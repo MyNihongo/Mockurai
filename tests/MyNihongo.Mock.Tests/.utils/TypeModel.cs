@@ -35,11 +35,15 @@ public static class TypeModelEx
 {
 	extension(TypeModel @this)
 	{
-		public string GetParameterNameString()
+		public string GetParameterNameString(bool appendRefKind = false)
 		{
-			return string.IsNullOrEmpty(@this.Name)
+			var name = string.IsNullOrEmpty(@this.Name)
 				? $"param{@this.Index}"
 				: @this.Name;
+
+			return appendRefKind && !string.IsNullOrEmpty(@this.RefType)
+				? $"{@this.RefType} {name}"
+				: name;
 		}
 
 		public string GetCamelCaseNameString()

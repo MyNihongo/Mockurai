@@ -63,12 +63,19 @@ internal static class ParameterSymbolEx
 				.Append(parameter.Name);
 		}
 
-		public StringBuilder AppendParameterNames(ImmutableArray<IParameterSymbol> parameters, string? suffix = null, bool appendComma = false)
+		public StringBuilder AppendParameterNames(ImmutableArray<IParameterSymbol> parameters, string? suffix = null, bool appendComma = false, bool appendRefModifier = false)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
 				if (!appendComma && i > 0)
 					@this.Append(", ");
+
+				if (appendRefModifier)
+				{
+					var refModifier = parameters[i].RefKind.GetModifierString();
+					if (!string.IsNullOrEmpty(refModifier))
+						@this.Append(refModifier).Append(' ');
+				}
 
 				@this.Append(parameters[i].Name);
 
