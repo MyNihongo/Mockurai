@@ -163,7 +163,7 @@ internal static class MockSetupGenerator
 		int indent)
 	{
 		stringBuilder.Clear();
-		stringBuilder.AppendInvokeExecuteMethod(methodSymbol, returnType, returnValueName, parameterSplit.InputParameters, genericTypeOverride, indent);
+		stringBuilder.AppendInvokeExecuteMethod(methodSymbol, returnType, returnValueName, parameterSplit, genericTypeOverride, indent);
 
 		if (!parameterSplit.InputParameters.IsDefaultOrEmpty)
 		{
@@ -527,7 +527,7 @@ file static class Extensions
 		public void AppendInvokeExecuteMethod(IMethodSymbol methodSymbol,
 			ITypeSymbol? returnType,
 			string returnValueName,
-			ImmutableArray<IParameterSymbol> inputParameters,
+			ParameterSplit parameterSplit,
 			ImmutableDictionary<IParameterSymbol, string> genericTypeOverride,
 			int indent)
 		{
@@ -557,14 +557,14 @@ file static class Extensions
 			// Method body - early return
 			stringBuilder
 				.Indent(indent).AppendLine("if (_setups is null)")
-				.Indent(indent + 1).AppendLine(returnType is null ? "return;" : "goto Default;").AppendLine();
+				.Indent(indent + 1).AppendLine(returnType is not null || !parameterSplit.OutputParameters.IsDefaultOrEmpty ? "goto Default;" : "return;").AppendLine();
 
 			// Method body - setup check
 			stringBuilder
 				.Indent(indent).AppendLine("foreach (var setup in _setups)")
 				.Indent(indent++).AppendLine("{");
 
-			foreach (var parameter in inputParameters)
+			foreach (var parameter in parameterSplit.InputParameters)
 			{
 				stringBuilder
 					.Indent(indent)
@@ -625,9 +625,13 @@ file static class Extensions
 			}
 			else
 			{
+				var returnLine = !parameterSplit.OutputParameters.IsDefaultOrEmpty
+					? "goto Default;"
+					: "return;";
+
 				stringBuilder
 					.AppendLine()
-					.Indent(indent).AppendLine("return;");
+					.Indent(indent).AppendLine(returnLine);
 			}
 
 			stringBuilder
@@ -635,24 +639,36 @@ file static class Extensions
 				.AppendLine("}");
 
 			// Method body - return value
-			if (returnType is not null)
+			if (returnType is not null || !parameterSplit.OutputParameters.IsDefaultOrEmpty)
 			{
 				stringBuilder
 					.AppendLine()
-					.Indent(indent).AppendLine("Default:")
-					.Indent(indent).Append(returnValueName).AppendLine(DefaultAssign);
+					.Indent(indent).AppendLine("Default:");
 
-				foreach (var parameter in methodSymbol.Parameters)
+				if (returnType is not null)
 				{
-					if (parameter.RefKind != RefKind.Out)
-						continue;
-
 					stringBuilder
-						.Indent(indent).Append(parameter.Name).AppendLine(DefaultAssign);
+						.Indent(indent)
+						.Append(returnValueName)
+						.AppendLine(DefaultAssign);
+				}
+
+				foreach (var parameter in parameterSplit.OutputParameters)
+				{
+					stringBuilder
+						.Indent(indent)
+						.Append(parameter.Name)
+						.AppendLine(DefaultAssign);
 				}
 
 				stringBuilder
-					.Indent(indent).AppendLine("return false;");
+					.Indent(indent)
+					.Append("return");
+
+				if (returnType is not null)
+					stringBuilder.Append(" false");
+
+				stringBuilder.AppendLine(";");
 			}
 
 			stringBuilder
