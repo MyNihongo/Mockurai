@@ -16,13 +16,11 @@ internal static class MockSetupGenerator
 
 			  public sealed class {{className}} : {{CreateInterfaceDerivedFrom(stringBuilder, methodSymbol, returnType)}}
 			  {
-			  	private static readonly Comparer SortComparer = new();
-			  	private SetupContainer<Item>? _setups;
-			  	private Item? _currentSetup;
+			  {{CreateFields(stringBuilder, parameterSplit, indent: 1)}}
 
 			  {{CreateDelegates(stringBuilder, methodSymbol, returnType, genericTypeOverride, indent: 1)}}
 			  {{CreateMethodImplementations(stringBuilder, methodSymbol, returnType, returnValueName, parameterSplit, genericTypeOverride, indent: 1)}}
-			  {{CreateInterfaceMethodImplementations(stringBuilder, methodSymbol, returnType, indent: 1)}}
+			  {{CreateInterfaceMethodImplementations(stringBuilder, methodSymbol, returnType, parameterSplit.InputParameters, indent: 1)}}
 
 			  	private sealed class Item
 			  	{
@@ -133,6 +131,27 @@ internal static class MockSetupGenerator
 			.ToString();
 	}
 
+	private static string CreateFields(StringBuilder stringBuilder, ParameterSplit parameterSplit, int indent)
+	{
+		stringBuilder.Clear();
+
+		if (parameterSplit.InputParameters.IsDefaultOrEmpty)
+		{
+			stringBuilder
+				.Indent(indent)
+				.Append("private readonly Item _currentSetup = new();");
+		}
+		else
+		{
+			stringBuilder
+				.Indent(indent).AppendLine("private static readonly Comparer SortComparer = new();")
+				.Indent(indent).AppendLine("private SetupContainer<Item>? _setups;")
+				.Indent(indent).Append("private Item? _currentSetup;");
+		}
+
+		return stringBuilder.ToString();
+	}
+
 	private static string CreateDelegates(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
 	{
 		stringBuilder.Clear();
@@ -176,17 +195,17 @@ internal static class MockSetupGenerator
 		{
 			stringBuilder
 				.AppendLine()
-				.AppendReturnsMethods(methodSymbol, parameterSplit.OutputParameters, indent);
+				.AppendReturnsMethods(methodSymbol, parameterSplit, indent);
 		}
 
 		return stringBuilder
 			.AppendLine()
-			.AppendCallbackMethod(indent).AppendLine()
-			.AppendThrowsMethod(indent)
+			.AppendCallbackMethod(parameterSplit.InputParameters, indent).AppendLine()
+			.AppendThrowsMethod(parameterSplit.InputParameters, indent)
 			.ToString();
 	}
 
-	private static string CreateInterfaceMethodImplementations(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, int indent)
+	private static string CreateInterfaceMethodImplementations(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, ImmutableArray<IParameterSymbol> inputParameters, int indent)
 	{
 		stringBuilder.Clear();
 
@@ -196,7 +215,7 @@ internal static class MockSetupGenerator
 		return stringBuilder
 			.AppendCallbackInterfaceImplementation(methodSymbol, returnType, indent)
 			.AppendThrowsInterfaceImplementation(methodSymbol, returnType, indent)
-			.AppendAndInterfaceImplementation(methodSymbol, returnType, indent)
+			.AppendAndInterfaceImplementation(methodSymbol, returnType, inputParameters, indent)
 			.ToString();
 	}
 
@@ -476,9 +495,12 @@ internal static class MockSetupGenerator
 			}
 		}
 
-		private StringBuilder AppendAndInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, int indent)
+		private StringBuilder AppendAndInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, ImmutableArray<IParameterSymbol> inputParameters, int indent)
 		{
-			const string methodDeclaration = ".And()", methodCall = "_currentSetup?.AndContinue = true;";
+			const string methodDeclaration = ".And()";
+			var methodCall = inputParameters.IsDefaultOrEmpty
+				? "_currentSetup.AndContinue = true;"
+				: "_currentSetup?.AndContinue = true;";
 
 			string setupThrowsJoin, setupThrowsReset;
 			if (returnTypeSymbol is null)
@@ -682,7 +704,7 @@ file static class Extensions
 				.AppendLine("}");
 		}
 
-		public StringBuilder AppendSetupParametersMethod(ImmutableArray<IParameterSymbol> inputParameters, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
+		public void AppendSetupParametersMethod(ImmutableArray<IParameterSymbol> inputParameters, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
 		{
 			stringBuilder
 				.Indent(indent)
@@ -704,35 +726,33 @@ file static class Extensions
 				.Indent(indent).AppendLine("_setups ??= new SetupContainer<Item>(SortComparer);")
 				.Indent(indent).AppendLine("_setups.Add(_currentSetup);");
 
-			return stringBuilder
+			stringBuilder
 				.Indent(--indent).AppendLine("}");
 		}
 
-		public StringBuilder AppendCallbackMethod(int indent)
+		public StringBuilder AppendCallbackMethod(ImmutableArray<IParameterSymbol> inputParameters, int indent)
 		{
 			stringBuilder
 				.Indent(indent).AppendLine("public void Callback(in CallbackDelegate callback)")
 				.Indent(indent++).AppendLine("{")
-				.Indent(indent).AppendLine("if (_currentSetup is null)")
-				.Indent(indent + 1).AppendLine("""throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");""").AppendLine()
+				.TryAppendCurrentSetupCheck(inputParameters, indent)
 				.Indent(indent).AppendLine("_currentSetup.Add(callback);");
 
 			return stringBuilder
 				.Indent(--indent).AppendLine("}");
 		}
 
-		public StringBuilder AppendThrowsMethod(int indent)
+		public StringBuilder AppendThrowsMethod(ImmutableArray<IParameterSymbol> inputParameters, int indent)
 		{
 			return stringBuilder
 				.Indent(indent).AppendLine("public void Throws(in System.Exception exception)")
 				.Indent(indent++).AppendLine("{")
-				.Indent(indent).AppendLine("if (_currentSetup is null)")
-				.Indent(indent + 1).AppendLine("""throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");""").AppendLine()
+				.TryAppendCurrentSetupCheck(inputParameters, indent)
 				.Indent(indent).AppendLine("_currentSetup.Add(exception);")
 				.Indent(--indent).AppendLine("}");
 		}
 
-		public StringBuilder AppendReturnsMethods(IMethodSymbol methodSymbol, ImmutableArray<IParameterSymbol> outputParameters, int indent)
+		public void AppendReturnsMethods(IMethodSymbol methodSymbol, ParameterSplit parameterSplit, int indent)
 		{
 			// Value method
 			stringBuilder
@@ -740,7 +760,7 @@ file static class Extensions
 				.Indent(indent).AppendLine("{")
 				.Indent(++indent).Append("Returns((").AppendDiscardParameterNames(methodSymbol.Parameters).Append(") =>");
 
-			if (outputParameters.IsDefaultOrEmpty)
+			if (parameterSplit.OutputParameters.IsDefaultOrEmpty)
 			{
 				stringBuilder.Append(" returns");
 			}
@@ -750,7 +770,7 @@ file static class Extensions
 					.AppendLine()
 					.Indent(indent++).AppendLine("{");
 
-				foreach (var outParameter in outputParameters)
+				foreach (var outParameter in parameterSplit.OutputParameters)
 				{
 					stringBuilder
 						.Indent(indent)
@@ -768,13 +788,24 @@ file static class Extensions
 				.Indent(--indent).AppendLine("}").AppendLine();
 
 			// Delegate method
-			return stringBuilder
+			stringBuilder
 				.Indent(indent).AppendLine("public void Returns(in ReturnsCallbackDelegate returns)")
 				.Indent(indent++).AppendLine("{")
-				.Indent(indent).AppendLine("if (_currentSetup is null)")
-				.Indent(indent + 1).AppendLine("""throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");""").AppendLine()
+				.TryAppendCurrentSetupCheck(parameterSplit.InputParameters, indent)
 				.Indent(indent).AppendLine("_currentSetup.Add(returns);")
 				.Indent(--indent).AppendLine("}");
+		}
+
+		private StringBuilder TryAppendCurrentSetupCheck(ImmutableArray<IParameterSymbol> inputParameters, int indent)
+		{
+			if (!inputParameters.IsDefaultOrEmpty)
+			{
+				stringBuilder
+					.Indent(indent).AppendLine("if (_currentSetup is null)")
+					.Indent(indent + 1).AppendLine("""throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");""").AppendLine();
+			}
+
+			return stringBuilder;
 		}
 	}
 }

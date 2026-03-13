@@ -580,12 +580,12 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		const string methods =
 			"""
 			// Invoke
-			private SetupOutInt32OutSingle<decimal>? _invoke0;
+			private SetupOutInt32OutSingle? _invoke0;
 			private InvocationOutInt32OutSingle? _invoke0Invocation;
 
-			public SetupOutInt32OutSingle<decimal> SetupInvoke(in ItOut<int> param1, in ItOut<float> param2)
+			public SetupOutInt32OutSingle SetupInvoke(in ItOut<int> param1, in ItOut<float> param2)
 			{
-				_invoke0 ??= new SetupOutInt32OutSingle<decimal>();
+				_invoke0 ??= new SetupOutInt32OutSingle();
 				return _invoke0;
 			}
 
@@ -602,7 +602,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 			}
 			""";
 
-		const string proxy = "public decimal Invoke(out int param1, out float param2) {param1 = default;param2 = default;return default;}";
+		const string proxy = "public void Invoke(out int param1, out float param2) {param1 = default;param2 = default;}";
 
 		TypeModel[] types =
 		[
@@ -610,7 +610,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 			new("Single", 2, refType: "out"),
 		];
 		var testCode = CreateInterfaceTestCode(method);
-		var setupCode = CreateSetupReturnsCode(types);
+		var setupCode = CreateSetupCode(types);
 		var invocationCode = CreateInvocationCode(types);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, setupCode, invocationCode);
 

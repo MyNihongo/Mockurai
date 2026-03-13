@@ -62,14 +62,16 @@ public abstract class TestsBase
 		var inputParameterNames = string.Join(", ", inputParameters.Select(static x => x.GetParameterNameString()));
 		var setupParametersName = inputParameters.Length > 1 ? "SetupParameters" : "SetupParameter";
 		var setupParameters = (bool isNullable) => string.Join(", ", inputParameters.Select(x => $"in ItSetup<{x.GetTypeString()}>{(isNullable ? "?" : string.Empty)} {x.GetParameterNameString()}"));
-		var invoke = string.Join(Environment.NewLine + "\t\t\t", inputParameters.Select(static x =>
-		{
-			return
-				$"""
-				 if (setup.{x.GetCamelCaseNameString()}.HasValue && !setup.{x.GetCamelCaseNameString()}.Value.Check({x.GetParameterNameString()}))
-				 				continue;
-				 """;
-		}));
+		var invoke = inputParameters.Length > 0
+			? Environment.NewLine + string.Join(Environment.NewLine + "\t\t\t", inputParameters.Select(static x =>
+			{
+				return
+					$"""
+					 if (setup.{x.GetCamelCaseNameString()}.HasValue && !setup.{x.GetCamelCaseNameString()}.Value.Check({x.GetParameterNameString()}))
+					 				continue;
+					 """;
+			})) + Environment.NewLine
+			: string.Empty;
 		var itemSetupFields = string.Join(Environment.NewLine + "\t\t", inputParameters.Select(static x => { return $"public readonly ItSetup<{x.GetTypeString()}>? {x.GetCamelCaseNameString()};"; }));
 		var itemSetupParameterAssign = string.Join(Environment.NewLine + "\t\t\t", inputParameters.Select(static x => { return $"{x.GetCamelCaseNameString()} = {x.GetParameterNameString()};"; }));
 		var itemSetupComparer = (string item) =>
@@ -200,9 +202,7 @@ public abstract class TestsBase
 			  			{{(useReturns || outTypes.Length > 0 ? "goto Default" : "return")}};
 
 			  		foreach (var setup in _setups)
-			  		{
-			  			{{invoke}}
-
+			  		{{{invoke}}
 			  			var x = setup.GetSetup();
 			  			x.Callback?.Invoke({{parameterNamesWithRef}});
 
