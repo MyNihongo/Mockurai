@@ -580,39 +580,45 @@ file static class Extensions
 			stringBuilder
 				.Indent(indent++).AppendLine("{");
 
-			// Method body - early return
-			stringBuilder
-				.Indent(indent).AppendLine("if (_setups is null)")
-				.Indent(indent + 1).AppendLine(returnType is not null || !parameterSplit.OutputParameters.IsDefaultOrEmpty ? "goto Default;" : "return;").AppendLine();
+			var hasMultipleSetups = !parameterSplit.InputParameters.IsDefaultOrEmpty;
 
-			// Method body - setup check
-			stringBuilder
-				.Indent(indent).AppendLine("foreach (var setup in _setups)")
-				.Indent(indent++).AppendLine("{");
-
-			foreach (var parameter in parameterSplit.InputParameters)
+			if (hasMultipleSetups)
 			{
+				// Method body - early return
 				stringBuilder
-					.Indent(indent)
-					.Append("if (setup.")
-					.AppendPropertyName(parameter.Name)
-					.Append(".HasValue && !setup.")
-					.AppendPropertyName(parameter.Name)
-					.Append(".Value.Check(")
-					.Append(parameter.Name)
-					.AppendLine("))");
+					.Indent(indent).AppendLine("if (_setups is null)")
+					.Indent(indent + 1).AppendLine(returnType is not null || !parameterSplit.OutputParameters.IsDefaultOrEmpty ? "goto Default;" : "return;").AppendLine();
 
+				// Method body - setup check
 				stringBuilder
-					.Indent(indent + 1)
-					.AppendLine("continue;");
-			}
+					.Indent(indent).AppendLine("foreach (var setup in _setups)")
+					.Indent(indent++).AppendLine("{");
 
-			if (!parameterSplit.InputParameters.IsDefaultOrEmpty)
+				foreach (var parameter in parameterSplit.InputParameters)
+				{
+					stringBuilder
+						.Indent(indent)
+						.Append("if (setup.")
+						.AppendPropertyName(parameter.Name)
+						.Append(".HasValue && !setup.")
+						.AppendPropertyName(parameter.Name)
+						.Append(".Value.Check(")
+						.Append(parameter.Name)
+						.AppendLine("))");
+
+					stringBuilder
+						.Indent(indent + 1)
+						.AppendLine("continue;");
+				}
+
 				stringBuilder.AppendLine();
+			}
 
 			stringBuilder
 				.Indent(indent)
-				.AppendLine("var x = setup.GetSetup();");
+				.Append("var x = ")
+				.Append(hasMultipleSetups ? "setup" : "_currentSetup")
+				.AppendLine(".GetSetup();");
 
 			if (parameterSplit.OutputParameters.IsDefaultOrEmpty)
 			{
@@ -679,24 +685,28 @@ file static class Extensions
 				stringBuilder
 					.Indent(--indent).AppendLine("}");
 
+				// Here we want to keep values assigned by the callback
 				stringBuilder
 					.AppendLine()
 					.Indent(indent).Append(returnValueName).AppendLine(DefaultAssign)
 					.Indent(indent).AppendLine("return false;");
 			}
-			else
+			else if (hasMultipleSetups)
 			{
 				stringBuilder
 					.AppendLine()
 					.Indent(indent).AppendLine("return;");
 			}
 
-			stringBuilder
-				.Indent(--indent)
-				.AppendLine("}");
+			if (hasMultipleSetups)
+			{
+				stringBuilder
+					.Indent(--indent)
+					.AppendLine("}");
+			}
 
 			// Method body - return value
-			if (returnType is not null || !parameterSplit.OutputParameters.IsDefaultOrEmpty)
+			if (hasMultipleSetups && (returnType is not null || !parameterSplit.OutputParameters.IsDefaultOrEmpty))
 			{
 				stringBuilder
 					.AppendLine()
