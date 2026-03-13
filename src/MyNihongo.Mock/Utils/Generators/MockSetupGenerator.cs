@@ -27,9 +27,7 @@ internal static class MockSetupGenerator
 			  		private readonly System.Collections.Generic.Queue<ItemSetup> _queue = [];
 			  		private ItemSetup? _currentSetup;
 			  		public bool AndContinue;
-
 			  {{CreateItemDeclaration(stringBuilder, returnType, parameterSplit.InputParameters, genericTypeOverride, indent: 2)}}
-
 			  		public void Add(in CallbackDelegate callback)
 			  		{
 			  			if (AndContinue && _currentSetup is not null)
@@ -226,7 +224,11 @@ internal static class MockSetupGenerator
 		ImmutableDictionary<IParameterSymbol, string> genericTypeOverride,
 		int indent)
 	{
+		if (inputParameters.IsDefaultOrEmpty)
+			return string.Empty;
+
 		stringBuilder.Clear();
+		stringBuilder.AppendLine();
 
 		// fields
 		foreach (var parameter in inputParameters)
@@ -287,7 +289,9 @@ internal static class MockSetupGenerator
 				.Indent(--indent).Append('}');
 		}
 
-		return stringBuilder.ToString();
+		return stringBuilder
+			.AppendLine()
+			.ToString();
 	}
 
 	private static string CreateItemSetupDeclaration(StringBuilder stringBuilder, ITypeSymbol? returnType, int indent)
