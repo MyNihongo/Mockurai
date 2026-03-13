@@ -176,11 +176,11 @@ internal static class MockSetupGenerator
 		{
 			stringBuilder
 				.AppendLine()
-				.AppendReturnsMethods(methodSymbol, parameterSplit.OutputParameters, indent)
-				.AppendLine();
+				.AppendReturnsMethods(methodSymbol, parameterSplit.OutputParameters, indent);
 		}
 
 		return stringBuilder
+			.AppendLine()
 			.AppendCallbackMethod(indent).AppendLine()
 			.AppendThrowsMethod(indent)
 			.ToString();
