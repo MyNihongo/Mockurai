@@ -614,13 +614,45 @@ file static class Extensions
 				.Indent(indent)
 				.AppendLine("var x = setup.GetSetup();");
 
-			stringBuilder
-				.Indent(indent)
-				.Append("x.Callback?.Invoke(")
-				.AppendParameterNames(methodSymbol.Parameters, appendRefModifier: true)
-				.AppendLine(");").AppendLine();
+			if (parameterSplit.OutputParameters.IsDefaultOrEmpty)
+			{
+				stringBuilder
+					.Indent(indent)
+					.Append("x.Callback?.Invoke(")
+					.AppendParameterNames(methodSymbol.Parameters, appendRefModifier: true)
+					.AppendLine(");");
+			}
+			else
+			{
+				stringBuilder
+					.Indent(indent).AppendLine("if (x.Callback is not null)")
+					.Indent(indent).AppendLine("{");
+
+				stringBuilder
+					.Indent(indent + 1)
+					.Append("x.Callback.Invoke(")
+					.AppendParameterNames(methodSymbol.Parameters, appendRefModifier: true)
+					.AppendLine(");");
+
+				stringBuilder
+					.Indent(indent).AppendLine("}")
+					.Indent(indent).AppendLine("else")
+					.Indent(indent).AppendLine("{");
+
+				foreach (var outputParameter in parameterSplit.OutputParameters)
+				{
+					stringBuilder
+						.Indent(indent + 1)
+						.Append(outputParameter.Name)
+						.AppendLine(DefaultAssign);
+				}
+
+				stringBuilder
+					.Indent(indent).AppendLine("}");
+			}
 
 			stringBuilder
+				.AppendLine()
 				.Indent(indent)
 				.AppendLine("if (x.Exception is not null)")
 				.Indent(indent + 1).AppendLine("throw x.Exception;");
@@ -649,7 +681,8 @@ file static class Extensions
 
 				stringBuilder
 					.AppendLine()
-					.Indent(indent).AppendLine("goto Default;");
+					.Indent(indent).Append(returnValueName).AppendLine(DefaultAssign)
+					.Indent(indent).AppendLine("return false;");
 			}
 			else
 			{
