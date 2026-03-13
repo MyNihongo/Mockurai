@@ -63,11 +63,12 @@ public abstract class TestsBase
 		var setupParametersName = inputParameters.Length > 1 ? "SetupParameters" : "SetupParameter";
 		var setupParameters = (bool isNullable) => string.Join(", ", inputParameters.Select(x => $"in ItSetup<{x.GetTypeString()}>{(isNullable ? "?" : string.Empty)} {x.GetParameterNameString()}"));
 		var invoke = inputParameters.Length > 0
-			? Environment.NewLine + string.Join(Environment.NewLine + "\t\t\t", inputParameters.Select(static x =>
+			? string.Concat(inputParameters.Select(static x =>
 			{
 				return
 					$"""
-					 if (setup.{x.GetCamelCaseNameString()}.HasValue && !setup.{x.GetCamelCaseNameString()}.Value.Check({x.GetParameterNameString()}))
+					 
+					 			if (setup.{x.GetCamelCaseNameString()}.HasValue && !setup.{x.GetCamelCaseNameString()}.Value.Check({x.GetParameterNameString()}))
 					 				continue;
 					 """;
 			})) + Environment.NewLine

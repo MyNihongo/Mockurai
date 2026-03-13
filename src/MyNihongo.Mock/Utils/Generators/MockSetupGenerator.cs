@@ -653,13 +653,9 @@ file static class Extensions
 			}
 			else
 			{
-				var returnLine = !parameterSplit.OutputParameters.IsDefaultOrEmpty
-					? "goto Default;"
-					: "return;";
-
 				stringBuilder
 					.AppendLine()
-					.Indent(indent).AppendLine(returnLine);
+					.Indent(indent).AppendLine("return;");
 			}
 
 			stringBuilder
