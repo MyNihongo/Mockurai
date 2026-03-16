@@ -67,7 +67,7 @@ public abstract class TestsBase
 			{
 				return
 					$"""
-					 
+
 					 			if (setup.{x.GetCamelCaseNameString()}.HasValue && !setup.{x.GetCamelCaseNameString()}.Value.Check({x.GetParameterNameString()}))
 					 				continue;
 					 """;
@@ -185,6 +185,19 @@ public abstract class TestsBase
 		var returnsItemSetupConstructorParameter = useReturns ? "in ReturnsCallbackDelegate? returns = null, " : string.Empty;
 		var returnsItemSetupConstructorAssign = useReturns ? Environment.NewLine + "\t\t\tReturns = returns;" : string.Empty;
 
+		var callbackInvoke = outTypes.Length == 0
+			? $"x.Callback?.Invoke({parameterNamesWithRef});"
+			: $$"""
+			    if (x.Callback is not null)
+			    			{
+			    				x.Callback.Invoke({{parameterNamesWithRef}});
+			    			}
+			    			else
+			    			{
+			    				{{string.Join(Environment.NewLine + "\t\t\t\t", outTypes.Select(x => $"{x.GetParameterNameString()} = default;"))}}
+			    			}
+			    """;
+
 		var sourceCode =
 			$$"""
 			  namespace MyNihongo.Mock;
@@ -205,12 +218,12 @@ public abstract class TestsBase
 			  		foreach (var setup in _setups)
 			  		{{{invoke}}
 			  			var x = setup.GetSetup();
-			  			x.Callback?.Invoke({{parameterNamesWithRef}});
+			  			{{callbackInvoke}}
 
 			  			if (x.Exception is not null)
 			  				throw x.Exception;
 
-			  			{{(useReturns ? $"{checkReturns}goto Default" : outTypes.Length > 0 ? "goto Default" : "return")}};
+			  			{{(useReturns ? $"{checkReturns}goto Default" : "return")}};
 			  		}{{defaultReturns}}
 			  	}
 
