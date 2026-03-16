@@ -109,15 +109,25 @@ public abstract class TestsBase
 		var returnsDelegate = useReturns ? Environment.NewLine + $"\tpublic delegate {returns}? ReturnsCallbackDelegate({parameters});" : string.Empty;
 		var invokeFunction = useReturns ? $"public bool Execute({parameters}, out {returns}? {returnValue})" : $"public void Invoke({parameters})";
 		var checkReturns = useReturns
-			? $$"""
-			    if (x.Returns is not null)
-			    			{
-			    				{{returnValue}} = x.Returns({{parameterNamesWithRef}});
-			    				return true;
-			    			}
+			? inputParameters.Length > 0
+				? $$"""
+				    if (x.Returns is not null)
+				    			{
+				    				{{returnValue}} = x.Returns({{parameterNamesWithRef}});
+				    				return true;
+				    			}
 
 
-			    """ + "\t\t\t"
+				    """ + "\t\t\t"
+				: $$"""
+				    if (x.Returns is not null)
+				    		{
+				    			{{returnValue}} = x.Returns({{parameterNamesWithRef}});
+				    			return true;
+				    		}
+
+
+				    """ + "\t\t"
 			: string.Empty;
 		var defaultReturns = useReturns || outTypes.Length > 0
 			? $"""
@@ -302,7 +312,7 @@ public abstract class TestsBase
 			    		{{callbackInvoke}}
 
 			    		if (x.Exception is not null)
-			    			throw x.Exception;{{(useReturns ? checkReturns + (outTypes.Length > 0 ? $"returnValue = default;{Environment.NewLine}\t\t\treturn false;" : "goto Default;") : string.Empty)}}
+			    			throw x.Exception;{{(useReturns ? $"{Environment.NewLine + Environment.NewLine}\t\t" + checkReturns + (outTypes.Length > 0 ? $"returnValue = default;{Environment.NewLine}\t\treturn false;" : "goto Default;") : string.Empty)}}
 			    	}
 			    """;
 
@@ -369,7 +379,7 @@ public abstract class TestsBase
 			  	{
 			  		private readonly System.Collections.Generic.Queue<ItemSetup> _queue = [];
 			  		private ItemSetup? _currentSetup;
-			  		public bool AndContinue;{{itemFieldAndConstructor}}{{returnsItemAdd}}
+			  		public bool AndContinue;{{itemFieldAndConstructor}}
 
 			  		public void Add(in CallbackDelegate callback)
 			  		{
@@ -384,7 +394,7 @@ public abstract class TestsBase
 			  				_currentSetup = new ItemSetup(callback: callback);
 			  				_queue.Enqueue(_currentSetup);
 			  			}
-			  		}
+			  		}{{returnsItemAdd}}
 
 			  		public void Add(in System.Exception exception)
 			  		{

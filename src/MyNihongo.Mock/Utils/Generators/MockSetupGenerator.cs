@@ -27,7 +27,7 @@ internal static class MockSetupGenerator
 			  		private readonly System.Collections.Generic.Queue<ItemSetup> _queue = [];
 			  		private ItemSetup? _currentSetup;
 			  		public bool AndContinue;
-			  {{CreateItemDeclaration(stringBuilder, returnType, parameterSplit.InputParameters, genericTypeOverride, indent: 2)}}
+			  {{CreateItemDeclaration(stringBuilder, parameterSplit.InputParameters, genericTypeOverride, indent: 2)}}
 			  		public void Add(in CallbackDelegate callback)
 			  		{
 			  			if (AndContinue && _currentSetup is not null)
@@ -42,7 +42,7 @@ internal static class MockSetupGenerator
 			  				_queue.Enqueue(_currentSetup);
 			  			}
 			  		}
-
+			  {{CreateItemReturnsMethod(stringBuilder, returnType, indent: 2)}}
 			  		public void Add(in System.Exception exception)
 			  		{
 			  			if (AndContinue && _currentSetup is not null)
@@ -198,7 +198,6 @@ internal static class MockSetupGenerator
 
 	private static string CreateItemDeclaration(
 		StringBuilder stringBuilder,
-		ITypeSymbol? returnType,
 		ImmutableArray<IParameterSymbol> inputParameters,
 		ImmutableDictionary<IParameterSymbol, string> genericTypeOverride,
 		int indent)
@@ -241,35 +240,34 @@ internal static class MockSetupGenerator
 				.AppendLine(";");
 		}
 
-		stringBuilder
-			.Indent(--indent).Append('}');
+		return stringBuilder
+			.Indent(--indent).AppendLine("}")
+			.ToString();
+	}
 
-		// add return
-		if (returnType is not null)
-		{
-			stringBuilder
-				.AppendLine()
-				.AppendLine();
+	private static string CreateItemReturnsMethod(StringBuilder stringBuilder, ITypeSymbol? returnType, int indent)
+	{
+		if (returnType is null)
+			return string.Empty;
 
-			stringBuilder
-				.Indent(indent).AppendLine("public void Add(in ReturnsCallbackDelegate returns)")
-				.Indent(indent++).AppendLine("{")
-				.Indent(indent).AppendLine("if (AndContinue && _currentSetup is not null)")
-				.Indent(indent++).AppendLine("{")
-				.Indent(indent).AppendLine("_currentSetup.Returns = returns;")
-				.Indent(indent).AppendLine("AndContinue = false;")
-				.Indent(indent).AppendLine("_currentSetup = null;")
-				.Indent(--indent).AppendLine("}")
-				.Indent(indent).AppendLine("else")
-				.Indent(indent++).AppendLine("{")
-				.Indent(indent).AppendLine("_currentSetup = new ItemSetup(returns: returns);")
-				.Indent(indent).AppendLine("_queue.Enqueue(_currentSetup);")
-				.Indent(--indent).AppendLine("}")
-				.Indent(--indent).Append('}');
-		}
+		stringBuilder.Clear();
 
 		return stringBuilder
 			.AppendLine()
+			.Indent(indent).AppendLine("public void Add(in ReturnsCallbackDelegate returns)")
+			.Indent(indent++).AppendLine("{")
+			.Indent(indent).AppendLine("if (AndContinue && _currentSetup is not null)")
+			.Indent(indent++).AppendLine("{")
+			.Indent(indent).AppendLine("_currentSetup.Returns = returns;")
+			.Indent(indent).AppendLine("AndContinue = false;")
+			.Indent(indent).AppendLine("_currentSetup = null;")
+			.Indent(--indent).AppendLine("}")
+			.Indent(indent).AppendLine("else")
+			.Indent(indent++).AppendLine("{")
+			.Indent(indent).AppendLine("_currentSetup = new ItemSetup(returns: returns);")
+			.Indent(indent).AppendLine("_queue.Enqueue(_currentSetup);")
+			.Indent(--indent).AppendLine("}")
+			.Indent(--indent).AppendLine("}")
 			.ToString();
 	}
 
