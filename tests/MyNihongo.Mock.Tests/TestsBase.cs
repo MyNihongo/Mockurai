@@ -223,7 +223,7 @@ public abstract class TestsBase
 			  			if (x.Exception is not null)
 			  				throw x.Exception;
 
-			  			{{(useReturns ? $"{checkReturns}goto Default" : "return")}};
+			  			{{(useReturns ? checkReturns + (outTypes.Length > 0 ? $"returnValue = default;{Environment.NewLine}\t\t\treturn false" : "goto Default") : "return")}};
 			  		}{{defaultReturns}}
 			  	}
 
