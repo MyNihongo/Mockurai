@@ -80,12 +80,12 @@ public abstract class TestsBase
 			? $$"""
 
 
-			    {{itemSetupFields}}
+			    		{{itemSetupFields}}
 
-			    public Item({{setupParameters(true)}})
-			    {
-			    	{{itemSetupParameterAssign}}
-			    }
+			    		public Item({{setupParameters(true)}})
+			    		{
+			    			{{itemSetupParameterAssign}}
+			    		}
 			    """
 			: string.Empty;
 
@@ -131,8 +131,8 @@ public abstract class TestsBase
 		var currentSetupCheck = inputParameters.Length > 0
 			? """
 
-			    		if (_currentSetup is null)
-			    			throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
+			  		if (_currentSetup is null)
+			  			throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
 
 			  """
 			: string.Empty;
@@ -207,16 +207,27 @@ public abstract class TestsBase
 
 		var callbackInvoke = outTypes.Length == 0
 			? $"x.Callback?.Invoke({parameterNamesWithRef});"
-			: $$"""
-			    if (x.Callback is not null)
-			    			{
-			    				x.Callback.Invoke({{parameterNamesWithRef}});
-			    			}
-			    			else
-			    			{
-			    				{{string.Join(Environment.NewLine + "\t\t\t\t", outTypes.Select(x => $"{x.GetParameterNameString()} = default;"))}}
-			    			}
-			    """;
+			: inputParameters.Length > 0
+				? $$"""
+				    if (x.Callback is not null)
+				    			{
+				    				x.Callback.Invoke({{parameterNamesWithRef}});
+				    			}
+				    			else
+				    			{
+				    				{{string.Join(Environment.NewLine + "\t\t\t\t", outTypes.Select(x => $"{x.GetParameterNameString()} = default;"))}}
+				    			}
+				    """
+				: $$"""
+				    if (x.Callback is not null)
+				    		{
+				    			x.Callback.Invoke({{parameterNamesWithRef}});
+				    		}
+				    		else
+				    		{
+				    			{{string.Join(Environment.NewLine + "\t\t\t", outTypes.Select(x => $"{x.GetParameterNameString()} = default;"))}}
+				    		}
+				    """;
 
 		var setupFields = inputParameters.Length > 0
 			? """
@@ -267,6 +278,34 @@ public abstract class TestsBase
 			    """
 			: string.Empty;
 
+		var invokeFunctionBody = inputParameters.Length > 0
+			? $$"""
+			    {
+			    		if (_setups is null)
+			    			{{(useReturns || outTypes.Length > 0 ? "goto Default" : "return")}};
+
+			    		foreach (var setup in _setups)
+			    		{{{invoke}}
+			    			var x = setup.GetSetup();
+			    			{{callbackInvoke}}
+
+			    			if (x.Exception is not null)
+			    				throw x.Exception;
+
+			    			{{(useReturns ? checkReturns + (outTypes.Length > 0 ? $"returnValue = default;{Environment.NewLine}\t\t\treturn false" : "goto Default") : "return")}};
+			    		}{{defaultReturns}}
+			    	}
+			    """
+			: $$"""
+			    {{{invoke}}
+			    		var x = _currentSetup.GetSetup();
+			    		{{callbackInvoke}}
+
+			    		if (x.Exception is not null)
+			    			throw x.Exception;{{(useReturns ? checkReturns + (outTypes.Length > 0 ? $"returnValue = default;{Environment.NewLine}\t\t\treturn false;" : "goto Default;") : string.Empty)}}
+			    	}
+			    """;
+
 		var sourceCode =
 			$$"""
 			  namespace MyNihongo.Mock;
@@ -278,21 +317,7 @@ public abstract class TestsBase
 			  	public delegate void CallbackDelegate({{parameters}});{{returnsDelegate}}
 
 			  	{{invokeFunction}}
-			  	{
-			  		if (_setups is null)
-			  			{{(useReturns || outTypes.Length > 0 ? "goto Default" : "return")}};
-
-			  		foreach (var setup in _setups)
-			  		{{{invoke}}
-			  			var x = setup.GetSetup();
-			  			{{callbackInvoke}}
-
-			  			if (x.Exception is not null)
-			  				throw x.Exception;
-
-			  			{{(useReturns ? checkReturns + (outTypes.Length > 0 ? $"returnValue = default;{Environment.NewLine}\t\t\treturn false" : "goto Default") : "return")}};
-			  		}{{defaultReturns}}
-			  	}{{setupMethod}}{{returnsMethods}}
+			  	{{invokeFunctionBody}}{{setupMethod}}{{returnsMethods}}
 
 			  	public void Callback(in CallbackDelegate callback)
 			  	{{{currentSetupCheck}}
