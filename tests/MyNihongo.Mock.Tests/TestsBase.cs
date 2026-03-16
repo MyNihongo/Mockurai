@@ -114,6 +114,15 @@ public abstract class TestsBase
 			   """
 			: string.Empty;
 
+		var currentSetupCheck = inputParameters.Length > 0
+			? """
+
+			    		if (_currentSetup is null)
+			    			throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
+
+			  """
+			: string.Empty;
+
 		var returnsMethods = useReturns
 			? $$"""
 
@@ -124,10 +133,7 @@ public abstract class TestsBase
 			    	}
 
 			    	public void Returns(in ReturnsCallbackDelegate returns)
-			    	{
-			    		if (_currentSetup is null)
-			    			throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
-
+			    	{{{currentSetupCheck}}
 			    		_currentSetup.Add(returns);
 			    	}
 			    """
@@ -198,15 +204,35 @@ public abstract class TestsBase
 			    			}
 			    """;
 
+		var setupFields = inputParameters.Length > 0
+			? """
+			  private static readonly Comparer SortComparer = new();
+			  	private SetupContainer<Item>? _setups;
+			  	private Item? _currentSetup;
+			  """
+			: "private readonly Item _currentSetup = new();";
+
+		var setupMethod = inputParameters.Length > 0
+			? $$"""
+
+
+			    	public void {{setupParametersName}}({{setupParameters(false)}})
+			    	{
+			    		_currentSetup = new Item({{inputParameterNames}});
+
+			    		_setups ??= new SetupContainer<Item>(SortComparer);
+			    		_setups.Add(_currentSetup);
+			    	}
+			    """
+			: string.Empty;
+
 		var sourceCode =
 			$$"""
 			  namespace MyNihongo.Mock;
 
 			  public sealed class Setup{{classNameReturns}} : ISetupCallbackJoin<{{interfaceGeneric}}>, ISetupCallbackReset<{{interfaceGeneric}}>, {{iSetupThrowsJoin}}<{{interfaceGeneric}}>, {{iSetupThrowsReset}}<{{interfaceGeneric}}>
 			  {
-			  	private static readonly Comparer SortComparer = new();
-			  	private SetupContainer<Item>? _setups;
-			  	private Item? _currentSetup;
+			  	{{setupFields}}
 
 			  	public delegate void CallbackDelegate({{parameters}});{{returnsDelegate}}
 
@@ -225,29 +251,15 @@ public abstract class TestsBase
 
 			  			{{(useReturns ? checkReturns + (outTypes.Length > 0 ? $"returnValue = default;{Environment.NewLine}\t\t\treturn false" : "goto Default") : "return")}};
 			  		}{{defaultReturns}}
-			  	}
-
-			  	public void {{setupParametersName}}({{setupParameters(false)}})
-			  	{
-			  		_currentSetup = new Item({{inputParameterNames}});
-
-			  		_setups ??= new SetupContainer<Item>(SortComparer);
-			  		_setups.Add(_currentSetup);
-			  	}{{returnsMethods}}
+			  	}{{setupMethod}}{{returnsMethods}}
 
 			  	public void Callback(in CallbackDelegate callback)
-			  	{
-			  		if (_currentSetup is null)
-			  			throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
-
+			  	{{{currentSetupCheck}}
 			  		_currentSetup.Add(callback);
 			  	}
 
 			  	public void Throws(in System.Exception exception)
-			  	{
-			  		if (_currentSetup is null)
-			  			throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
-
+			  	{{{currentSetupCheck}}
 			  		_currentSetup.Add(exception);
 			  	}{{returnsInterfaceMethods}}
 
