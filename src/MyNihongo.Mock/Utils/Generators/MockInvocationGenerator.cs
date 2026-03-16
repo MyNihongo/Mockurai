@@ -131,7 +131,7 @@ internal static class MockInvocationGenerator
 		stringBuilder
 			.Indent(indent)
 			.Append("public void Register(in InvocationIndex.Counter index, ")
-			.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride)
+			.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride, appendRefKind: false)
 			.AppendLine(")");
 
 		stringBuilder
@@ -394,7 +394,7 @@ internal static class MockInvocationGenerator
 		stringBuilder
 			.Indent(indent)
 			.Append("public Item(long index, ")
-			.AppendParameters(methodSymbol.Parameters, appendComma: true, parameterTypeOverride: genericTypeOverride)
+			.AppendParameters(methodSymbol.Parameters, appendComma: true, parameterTypeOverride: genericTypeOverride, appendRefKind: false)
 			.AppendInvocationClassName(methodSymbol.Parameters, appendGenericDeclaration: true)
 			.AppendLine(" invocation)");
 

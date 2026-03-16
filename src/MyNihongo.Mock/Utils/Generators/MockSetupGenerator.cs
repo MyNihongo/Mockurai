@@ -8,6 +8,7 @@ internal static class MockSetupGenerator
 		var className = CreateSetupClassName(stringBuilder, methodSymbol, out var genericTypeOverride);
 		var returnType = methodSymbol.TryGetReturnType();
 		var returnValueName = GetReturnValueName(methodSymbol.Parameters);
+		var parameterSplit = methodSymbol.Parameters.SplitParameters();
 
 		var source =
 			$$"""
@@ -15,22 +16,18 @@ internal static class MockSetupGenerator
 
 			  public sealed class {{className}} : {{CreateInterfaceDerivedFrom(stringBuilder, methodSymbol, returnType)}}
 			  {
-			  	private static readonly Comparer SortComparer = new();
-			  	private SetupContainer<Item>? _setups;
-			  	private Item? _currentSetup;
+			  {{CreateFields(stringBuilder, parameterSplit, indent: 1)}}
 
 			  {{CreateDelegates(stringBuilder, methodSymbol, returnType, genericTypeOverride, indent: 1)}}
-			  {{CreateMethodImplementations(stringBuilder, methodSymbol, returnType, returnValueName, genericTypeOverride, indent: 1)}}
-			  {{CreateInterfaceMethodImplementations(stringBuilder, methodSymbol, returnType, indent: 1)}}
+			  {{CreateMethodImplementations(stringBuilder, methodSymbol, returnType, returnValueName, parameterSplit, genericTypeOverride, indent: 1)}}
+			  {{CreateInterfaceMethodImplementations(stringBuilder, methodSymbol, returnType, parameterSplit.InputParameters, indent: 1)}}
 
 			  	private sealed class Item
 			  	{
 			  		private readonly System.Collections.Generic.Queue<ItemSetup> _queue = [];
 			  		private ItemSetup? _currentSetup;
 			  		public bool AndContinue;
-
-			  {{CreateItemDeclaration(stringBuilder, methodSymbol, returnType, genericTypeOverride, indent: 2)}}
-
+			  {{CreateItemDeclaration(stringBuilder, parameterSplit.InputParameters, genericTypeOverride, indent: 2)}}
 			  		public void Add(in CallbackDelegate callback)
 			  		{
 			  			if (AndContinue && _currentSetup is not null)
@@ -45,7 +42,7 @@ internal static class MockSetupGenerator
 			  				_queue.Enqueue(_currentSetup);
 			  			}
 			  		}
-
+			  {{CreateItemReturnsMethod(stringBuilder, returnType, indent: 2)}}
 			  		public void Add(in System.Exception exception)
 			  		{
 			  			if (AndContinue && _currentSetup is not null)
@@ -79,28 +76,7 @@ internal static class MockSetupGenerator
 			  		public CallbackDelegate? Callback;
 			  		public System.Exception? Exception;
 			  {{CreateItemSetupDeclaration(stringBuilder, returnType, indent: 2)}}
-			  	}
-
-			  	private sealed class Comparer: System.Collections.Generic.IComparer<Item>
-			  	{
-			  		public int Compare(Item? x, Item? y)
-			  		{
-			  			var xSort = 0;
-			  			var ySort = 0;
-
-			  			if (x is not null)
-			  			{
-			  {{CreateCompareDeclaration(stringBuilder, methodSymbol, item: "x", indent: 4)}}
-			  			}
-
-			  			if (y is not null)
-			  			{
-			  {{CreateCompareDeclaration(stringBuilder, methodSymbol, item: "y", indent: 4)}}
-			  			}
-
-			  			return xSort.CompareTo(ySort);
-			  		}
-			  	}
+			  	}{{CreateComparer(stringBuilder, parameterSplit.InputParameters, indent: 1)}}
 			  }
 			  """;
 
@@ -132,6 +108,27 @@ internal static class MockSetupGenerator
 			.ToString();
 	}
 
+	private static string CreateFields(StringBuilder stringBuilder, ParameterSplit parameterSplit, int indent)
+	{
+		stringBuilder.Clear();
+
+		if (parameterSplit.InputParameters.IsDefaultOrEmpty)
+		{
+			stringBuilder
+				.Indent(indent)
+				.Append("private readonly Item _currentSetup = new();");
+		}
+		else
+		{
+			stringBuilder
+				.Indent(indent).AppendLine("private static readonly Comparer SortComparer = new();")
+				.Indent(indent).AppendLine("private SetupContainer<Item>? _setups;")
+				.Indent(indent).Append("private Item? _currentSetup;");
+		}
+
+		return stringBuilder.ToString();
+	}
+
 	private static string CreateDelegates(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
 	{
 		stringBuilder.Clear();
@@ -152,24 +149,40 @@ internal static class MockSetupGenerator
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateMethodImplementations(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, string returnValueName, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
+	private static string CreateMethodImplementations(
+		StringBuilder stringBuilder,
+		IMethodSymbol methodSymbol,
+		ITypeSymbol? returnType,
+		string returnValueName,
+		ParameterSplit parameterSplit,
+		ImmutableDictionary<IParameterSymbol, string> genericTypeOverride,
+		int indent)
 	{
 		stringBuilder.Clear();
+		stringBuilder.AppendInvokeExecuteMethod(methodSymbol, returnType, returnValueName, parameterSplit, genericTypeOverride, indent);
 
-		stringBuilder
-			.AppendInvokeExecuteMethod(methodSymbol, returnType, returnValueName, genericTypeOverride, indent).AppendLine()
-			.AppendSetupParametersMethod(methodSymbol, genericTypeOverride, indent).AppendLine();
+		if (!parameterSplit.InputParameters.IsDefaultOrEmpty)
+		{
+			stringBuilder
+				.AppendLine()
+				.AppendSetupParametersMethod(parameterSplit.InputParameters, genericTypeOverride, indent);
+		}
 
 		if (returnType is not null)
-			stringBuilder.AppendReturnsMethods(methodSymbol, indent).AppendLine();
+		{
+			stringBuilder
+				.AppendLine()
+				.AppendReturnsMethods(methodSymbol, parameterSplit, indent);
+		}
 
 		return stringBuilder
-			.AppendCallbackMethod(indent).AppendLine()
-			.AppendThrowsMethod(indent)
+			.AppendLine()
+			.AppendCallbackMethod(parameterSplit.InputParameters, indent).AppendLine()
+			.AppendThrowsMethod(parameterSplit.InputParameters, indent)
 			.ToString();
 	}
 
-	private static string CreateInterfaceMethodImplementations(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, int indent)
+	private static string CreateInterfaceMethodImplementations(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, ImmutableArray<IParameterSymbol> inputParameters, int indent)
 	{
 		stringBuilder.Clear();
 
@@ -179,19 +192,27 @@ internal static class MockSetupGenerator
 		return stringBuilder
 			.AppendCallbackInterfaceImplementation(methodSymbol, returnType, indent)
 			.AppendThrowsInterfaceImplementation(methodSymbol, returnType, indent)
-			.AppendAndInterfaceImplementation(methodSymbol, returnType, indent)
+			.AppendAndInterfaceImplementation(methodSymbol, returnType, inputParameters, indent)
 			.ToString();
 	}
 
-	private static string CreateItemDeclaration(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
+	private static string CreateItemDeclaration(
+		StringBuilder stringBuilder,
+		ImmutableArray<IParameterSymbol> inputParameters,
+		ImmutableDictionary<IParameterSymbol, string> genericTypeOverride,
+		int indent)
 	{
+		if (inputParameters.IsDefaultOrEmpty)
+			return string.Empty;
+
 		stringBuilder.Clear();
+		stringBuilder.AppendLine();
 
 		// fields
-		foreach (var parameter in methodSymbol.Parameters)
+		foreach (var parameter in inputParameters)
 		{
 			var typeOverride = genericTypeOverride.GetValueOrDefault(parameter);
-			
+
 			stringBuilder
 				.Indent(indent)
 				.Append("public readonly ")
@@ -205,11 +226,11 @@ internal static class MockSetupGenerator
 		stringBuilder
 			.AppendLine()
 			.Indent(indent).Append("public Item(")
-			.AppendItSetupParameters(methodSymbol.Parameters, isNullable: true, parameterTypeOverride: genericTypeOverride)
+			.AppendItSetupParameters(inputParameters, isNullable: true, parameterTypeOverride: genericTypeOverride)
 			.AppendLine(")")
 			.Indent(indent++).AppendLine("{");
 
-		foreach (var parameter in methodSymbol.Parameters)
+		foreach (var parameter in inputParameters)
 		{
 			stringBuilder
 				.Indent(indent)
@@ -219,34 +240,35 @@ internal static class MockSetupGenerator
 				.AppendLine(";");
 		}
 
-		stringBuilder
-			.Indent(--indent).Append('}');
+		return stringBuilder
+			.Indent(--indent).AppendLine("}")
+			.ToString();
+	}
 
-		// add return
-		if (returnType is not null)
-		{
-			stringBuilder
-				.AppendLine()
-				.AppendLine();
+	private static string CreateItemReturnsMethod(StringBuilder stringBuilder, ITypeSymbol? returnType, int indent)
+	{
+		if (returnType is null)
+			return string.Empty;
 
-			stringBuilder
-				.Indent(indent).AppendLine("public void Add(in ReturnsCallbackDelegate returns)")
-				.Indent(indent++).AppendLine("{")
-				.Indent(indent).AppendLine("if (AndContinue && _currentSetup is not null)")
-				.Indent(indent++).AppendLine("{")
-				.Indent(indent).AppendLine("_currentSetup.Returns = returns;")
-				.Indent(indent).AppendLine("AndContinue = false;")
-				.Indent(indent).AppendLine("_currentSetup = null;")
-				.Indent(--indent).AppendLine("}")
-				.Indent(indent).AppendLine("else")
-				.Indent(indent++).AppendLine("{")
-				.Indent(indent).AppendLine("_currentSetup = new ItemSetup(returns: returns);")
-				.Indent(indent).AppendLine("_queue.Enqueue(_currentSetup);")
-				.Indent(--indent).AppendLine("}")
-				.Indent(--indent).Append('}');
-		}
+		stringBuilder.Clear();
 
-		return stringBuilder.ToString();
+		return stringBuilder
+			.AppendLine()
+			.Indent(indent).AppendLine("public void Add(in ReturnsCallbackDelegate returns)")
+			.Indent(indent++).AppendLine("{")
+			.Indent(indent).AppendLine("if (AndContinue && _currentSetup is not null)")
+			.Indent(indent++).AppendLine("{")
+			.Indent(indent).AppendLine("_currentSetup.Returns = returns;")
+			.Indent(indent).AppendLine("AndContinue = false;")
+			.Indent(indent).AppendLine("_currentSetup = null;")
+			.Indent(--indent).AppendLine("}")
+			.Indent(indent).AppendLine("else")
+			.Indent(indent++).AppendLine("{")
+			.Indent(indent).AppendLine("_currentSetup = new ItemSetup(returns: returns);")
+			.Indent(indent).AppendLine("_queue.Enqueue(_currentSetup);")
+			.Indent(--indent).AppendLine("}")
+			.Indent(--indent).AppendLine("}")
+			.ToString();
 	}
 
 	private static string CreateItemSetupDeclaration(StringBuilder stringBuilder, ITypeSymbol? returnType, int indent)
@@ -284,36 +306,38 @@ internal static class MockSetupGenerator
 			.ToString();
 	}
 
-	private static string CreateCompareDeclaration(StringBuilder stringBuilder, IMethodSymbol methodSymbol, string item, int indent)
+	private static string CreateComparer(StringBuilder stringBuilder, ImmutableArray<IParameterSymbol> inputParameters, int indent)
 	{
-		stringBuilder.Clear();
+		if (inputParameters.IsDefaultOrEmpty)
+			return string.Empty;
 
-		for (int i = 0, lastIndex = methodSymbol.Parameters.Length - 1; i < methodSymbol.Parameters.Length; i++)
-		{
-			var parameterName = methodSymbol.Parameters[i].Name;
+		stringBuilder
+			.Clear()
+			.AppendLine()
+			.AppendLine();
 
-			stringBuilder
-				.Indent(indent)
-				.Append("if (")
-				.Append(item)
-				.Append('.')
-				.AppendPropertyName(parameterName)
-				.AppendLine(".HasValue)");
-
-			stringBuilder
-				.Indent(indent + 1)
-				.Append(item)
-				.Append("Sort += ")
-				.Append(item)
-				.Append('.')
-				.AppendPropertyName(parameterName)
-				.Append(".Value.Sort;");
-
-			if (i < lastIndex)
-				stringBuilder.AppendLine();
-		}
-
-		return stringBuilder.ToString();
+		return stringBuilder
+			.Indent(indent).AppendLine("private sealed class Comparer: System.Collections.Generic.IComparer<Item>")
+			.Indent(indent++).AppendLine("{")
+			.Indent(indent).AppendLine("public int Compare(Item? x, Item? y)")
+			.Indent(indent++).AppendLine("{")
+			.Indent(indent).AppendLine("var xSort = 0;")
+			.Indent(indent).AppendLine("var ySort = 0;")
+			.AppendLine()
+			.Indent(indent).AppendLine("if (x is not null)")
+			.Indent(indent++).AppendLine("{")
+			.AppendComparerDeclaration(inputParameters, item: "x", indent)
+			.Indent(--indent).AppendLine("}")
+			.AppendLine()
+			.Indent(indent).AppendLine("if (y is not null)")
+			.Indent(indent++).AppendLine("{")
+			.AppendComparerDeclaration(inputParameters, item: "y", indent)
+			.Indent(--indent).AppendLine("}")
+			.AppendLine()
+			.Indent(indent).AppendLine("return xSort.CompareTo(ySort);")
+			.Indent(--indent).AppendLine("}")
+			.Indent(--indent).Append('}')
+			.ToString();
 	}
 
 	private static string CreateSetupClassName(StringBuilder stringBuilder, IMethodSymbol methodSymbol, out ImmutableDictionary<IParameterSymbol, string> genericTypeOverride)
@@ -454,9 +478,12 @@ internal static class MockSetupGenerator
 			}
 		}
 
-		private StringBuilder AppendAndInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, int indent)
+		private StringBuilder AppendAndInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, ImmutableArray<IParameterSymbol> inputParameters, int indent)
 		{
-			const string methodDeclaration = ".And()", methodCall = "_currentSetup?.AndContinue = true;";
+			const string methodDeclaration = ".And()";
+			var methodCall = inputParameters.IsDefaultOrEmpty
+				? "_currentSetup.AndContinue = true;"
+				: "_currentSetup?.AndContinue = true;";
 
 			string setupThrowsJoin, setupThrowsReset;
 			if (returnTypeSymbol is null)
@@ -497,14 +524,48 @@ internal static class MockSetupGenerator
 				? @this.AppendLine("}").AppendLine()
 				: @this.Append('}');
 		}
+
+		private StringBuilder AppendComparerDeclaration(ImmutableArray<IParameterSymbol> inputParameters, string item, int indent)
+		{
+			foreach (var parameter in inputParameters)
+			{
+				var parameterName = parameter.Name;
+
+				@this
+					.Indent(indent)
+					.Append("if (")
+					.Append(item)
+					.Append('.')
+					.AppendPropertyName(parameterName)
+					.AppendLine(".HasValue)");
+
+				@this
+					.Indent(indent + 1)
+					.Append(item)
+					.Append("Sort += ")
+					.Append(item)
+					.Append('.')
+					.AppendPropertyName(parameterName)
+					.AppendLine(".Value.Sort;");
+			}
+
+			return @this;
+		}
 	}
 }
 
 file static class Extensions
 {
+	private const string DefaultAssign = " = default;";
+
 	extension(StringBuilder stringBuilder)
 	{
-		public StringBuilder AppendInvokeExecuteMethod(IMethodSymbol methodSymbol, ITypeSymbol? returnType, string returnValueName, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
+		public void AppendInvokeExecuteMethod(IMethodSymbol methodSymbol,
+			ITypeSymbol? returnType,
+			string returnValueName,
+			ParameterSplit parameterSplit,
+			ImmutableDictionary<IParameterSymbol, string> genericTypeOverride,
+			int indent)
 		{
 			stringBuilder.Indent(indent);
 
@@ -529,45 +590,85 @@ file static class Extensions
 			stringBuilder
 				.Indent(indent++).AppendLine("{");
 
-			// Method body - early return
-			stringBuilder
-				.Indent(indent).AppendLine("if (_setups is null)")
-				.Indent(indent + 1).AppendLine(returnType is null ? "return;" : "goto Default;").AppendLine();
+			var hasMultipleSetups = !parameterSplit.InputParameters.IsDefaultOrEmpty;
 
-			// Method body - setup check
-			stringBuilder
-				.Indent(indent).AppendLine("foreach (var setup in _setups)")
-				.Indent(indent++).AppendLine("{");
+			if (hasMultipleSetups)
+			{
+				// Method body - early return
+				stringBuilder
+					.Indent(indent).AppendLine("if (_setups is null)")
+					.Indent(indent + 1).AppendLine(returnType is not null || !parameterSplit.OutputParameters.IsDefaultOrEmpty ? "goto Default;" : "return;").AppendLine();
 
-			foreach (var parameter in methodSymbol.Parameters)
+				// Method body - setup check
+				stringBuilder
+					.Indent(indent).AppendLine("foreach (var setup in _setups)")
+					.Indent(indent++).AppendLine("{");
+
+				foreach (var parameter in parameterSplit.InputParameters)
+				{
+					stringBuilder
+						.Indent(indent)
+						.Append("if (setup.")
+						.AppendPropertyName(parameter.Name)
+						.Append(".HasValue && !setup.")
+						.AppendPropertyName(parameter.Name)
+						.Append(".Value.Check(")
+						.Append(parameter.Name)
+						.AppendLine("))");
+
+					stringBuilder
+						.Indent(indent + 1)
+						.AppendLine("continue;");
+				}
+
+				stringBuilder.AppendLine();
+			}
+
+			stringBuilder
+				.Indent(indent)
+				.Append("var x = ")
+				.Append(hasMultipleSetups ? "setup" : "_currentSetup")
+				.AppendLine(".GetSetup();");
+
+			if (parameterSplit.OutputParameters.IsDefaultOrEmpty)
 			{
 				stringBuilder
 					.Indent(indent)
-					.Append("if (setup.")
-					.AppendPropertyName(parameter.Name)
-					.Append(".HasValue && !setup.")
-					.AppendPropertyName(parameter.Name)
-					.Append(".Value.Check(")
-					.Append(parameter.Name)
-					.AppendLine("))");
+					.Append("x.Callback?.Invoke(")
+					.AppendParameterNames(methodSymbol.Parameters, appendRefModifier: true)
+					.AppendLine(");");
+			}
+			else
+			{
+				stringBuilder
+					.Indent(indent).AppendLine("if (x.Callback is not null)")
+					.Indent(indent).AppendLine("{");
 
 				stringBuilder
 					.Indent(indent + 1)
-					.AppendLine("continue;");
+					.Append("x.Callback.Invoke(")
+					.AppendParameterNames(methodSymbol.Parameters, appendRefModifier: true)
+					.AppendLine(");");
+
+				stringBuilder
+					.Indent(indent).AppendLine("}")
+					.Indent(indent).AppendLine("else")
+					.Indent(indent).AppendLine("{");
+
+				foreach (var outputParameter in parameterSplit.OutputParameters)
+				{
+					stringBuilder
+						.Indent(indent + 1)
+						.Append(outputParameter.Name)
+						.AppendLine(DefaultAssign);
+				}
+
+				stringBuilder
+					.Indent(indent).AppendLine("}");
 			}
 
 			stringBuilder
 				.AppendLine()
-				.Indent(indent)
-				.AppendLine("var x = setup.GetSetup();");
-
-			stringBuilder
-				.Indent(indent)
-				.Append("x.Callback?.Invoke(")
-				.AppendParameterNames(methodSymbol.Parameters)
-				.AppendLine(");").AppendLine();
-
-			stringBuilder
 				.Indent(indent)
 				.AppendLine("if (x.Exception is not null)")
 				.Indent(indent + 1).AppendLine("throw x.Exception;");
@@ -584,7 +685,7 @@ file static class Extensions
 					.Indent(indent)
 					.Append(returnValueName)
 					.Append(" = x.Returns(")
-					.AppendParameterNames(methodSymbol.Parameters)
+					.AppendParameterNames(methodSymbol.Parameters, appendRefModifier: true)
 					.AppendLine(");");
 
 				stringBuilder
@@ -592,44 +693,82 @@ file static class Extensions
 					.AppendLine("return true;");
 
 				stringBuilder
-					.Indent(--indent).AppendLine("}");
+					.Indent(--indent).AppendLine("}")
+					.AppendLine();
 
-				stringBuilder
-					.AppendLine()
-					.Indent(indent).AppendLine("goto Default;");
+				if (parameterSplit.OutputParameters.IsDefaultOrEmpty)
+				{
+					stringBuilder
+						.Indent(indent).AppendLine("goto Default;");
+				}
+				else
+				{
+					// Here we want to keep values assigned by the callback
+					stringBuilder
+						.Indent(indent).Append(returnValueName).AppendLine(DefaultAssign)
+						.Indent(indent).AppendLine("return false;");
+				}
 			}
-			else
+			else if (hasMultipleSetups)
 			{
 				stringBuilder
 					.AppendLine()
 					.Indent(indent).AppendLine("return;");
 			}
 
-			stringBuilder
-				.Indent(--indent)
-				.AppendLine("}");
+			if (hasMultipleSetups)
+			{
+				stringBuilder
+					.Indent(--indent)
+					.AppendLine("}");
+			}
 
 			// Method body - return value
-			if (returnType is not null)
+			if (hasMultipleSetups && (returnType is not null || !parameterSplit.OutputParameters.IsDefaultOrEmpty))
 			{
 				stringBuilder
 					.AppendLine()
-					.Indent(indent).AppendLine("Default:")
-					.Indent(indent).Append(returnValueName).AppendLine(" = default;")
-					.Indent(indent).AppendLine("return false;");
+					.Indent(indent).AppendLine("Default:");
+
+				if (returnType is not null)
+				{
+					stringBuilder
+						.Indent(indent)
+						.Append(returnValueName)
+						.AppendLine(DefaultAssign);
+				}
+
+				foreach (var parameter in parameterSplit.OutputParameters)
+				{
+					stringBuilder
+						.Indent(indent)
+						.Append(parameter.Name)
+						.AppendLine(DefaultAssign);
+				}
+
+				stringBuilder
+					.Indent(indent)
+					.Append("return");
+
+				if (returnType is not null)
+					stringBuilder.Append(" false");
+
+				stringBuilder.AppendLine(";");
 			}
 
-			return stringBuilder
+			stringBuilder
 				.Indent(--indent)
 				.AppendLine("}");
 		}
 
-		public StringBuilder AppendSetupParametersMethod(IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
+		public void AppendSetupParametersMethod(ImmutableArray<IParameterSymbol> inputParameters, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
 		{
 			stringBuilder
 				.Indent(indent)
-				.Append("public void SetupParameters(")
-				.AppendItSetupParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride)
+				.Append("public void ")
+				.AppendSetupParametersMethodName(inputParameters)
+				.Append('(')
+				.AppendItSetupParameters(inputParameters, parameterTypeOverride: genericTypeOverride)
 				.AppendLine(")");
 
 			stringBuilder
@@ -637,58 +776,93 @@ file static class Extensions
 
 			stringBuilder
 				.Indent(indent).Append("_currentSetup = new Item(")
-				.AppendParameterNames(methodSymbol.Parameters)
+				.AppendParameterNames(inputParameters)
 				.AppendLine(");").AppendLine();
 
 			stringBuilder
 				.Indent(indent).AppendLine("_setups ??= new SetupContainer<Item>(SortComparer);")
 				.Indent(indent).AppendLine("_setups.Add(_currentSetup);");
 
-			return stringBuilder
+			stringBuilder
 				.Indent(--indent).AppendLine("}");
 		}
 
-		public StringBuilder AppendCallbackMethod(int indent)
+		public StringBuilder AppendCallbackMethod(ImmutableArray<IParameterSymbol> inputParameters, int indent)
 		{
 			stringBuilder
 				.Indent(indent).AppendLine("public void Callback(in CallbackDelegate callback)")
 				.Indent(indent++).AppendLine("{")
-				.Indent(indent).AppendLine("if (_currentSetup is null)")
-				.Indent(indent + 1).AppendLine("""throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");""").AppendLine()
+				.TryAppendCurrentSetupCheck(inputParameters, indent)
 				.Indent(indent).AppendLine("_currentSetup.Add(callback);");
 
 			return stringBuilder
 				.Indent(--indent).AppendLine("}");
 		}
 
-		public StringBuilder AppendThrowsMethod(int indent)
+		public StringBuilder AppendThrowsMethod(ImmutableArray<IParameterSymbol> inputParameters, int indent)
 		{
 			return stringBuilder
 				.Indent(indent).AppendLine("public void Throws(in System.Exception exception)")
 				.Indent(indent++).AppendLine("{")
-				.Indent(indent).AppendLine("if (_currentSetup is null)")
-				.Indent(indent + 1).AppendLine("""throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");""").AppendLine()
+				.TryAppendCurrentSetupCheck(inputParameters, indent)
 				.Indent(indent).AppendLine("_currentSetup.Add(exception);")
 				.Indent(--indent).AppendLine("}");
 		}
 
-		public StringBuilder AppendReturnsMethods(IMethodSymbol methodSymbol, int indent)
+		public void AppendReturnsMethods(IMethodSymbol methodSymbol, ParameterSplit parameterSplit, int indent)
 		{
 			// Value method
 			stringBuilder
 				.Indent(indent).AppendLine($"public void Returns({MockGeneratorConst.Suffixes.GenericReturnParameter}? returns)")
 				.Indent(indent).AppendLine("{")
-				.Indent(indent + 1).Append("Returns((").AppendDiscardParameterNames(methodSymbol.Parameters).AppendLine(") => returns);")
-				.Indent(indent).AppendLine("}").AppendLine();
+				.Indent(++indent).Append("Returns((").AppendDiscardParameterNames(methodSymbol.Parameters).Append(") =>");
+
+			if (parameterSplit.OutputParameters.IsDefaultOrEmpty)
+			{
+				stringBuilder.Append(" returns");
+			}
+			else
+			{
+				stringBuilder
+					.AppendLine()
+					.Indent(indent++).AppendLine("{");
+
+				foreach (var outParameter in parameterSplit.OutputParameters)
+				{
+					stringBuilder
+						.Indent(indent)
+						.Append(outParameter.Name)
+						.AppendLine(" = default;");
+				}
+
+				stringBuilder
+					.Indent(indent).AppendLine("return returns;")
+					.Indent(--indent).Append('}');
+			}
+
+			stringBuilder
+				.AppendLine(");")
+				.Indent(--indent).AppendLine("}").AppendLine();
 
 			// Delegate method
-			return stringBuilder
+			stringBuilder
 				.Indent(indent).AppendLine("public void Returns(in ReturnsCallbackDelegate returns)")
 				.Indent(indent++).AppendLine("{")
-				.Indent(indent).AppendLine("if (_currentSetup is null)")
-				.Indent(indent + 1).AppendLine("""throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");""").AppendLine()
+				.TryAppendCurrentSetupCheck(parameterSplit.InputParameters, indent)
 				.Indent(indent).AppendLine("_currentSetup.Add(returns);")
 				.Indent(--indent).AppendLine("}");
+		}
+
+		private StringBuilder TryAppendCurrentSetupCheck(ImmutableArray<IParameterSymbol> inputParameters, int indent)
+		{
+			if (!inputParameters.IsDefaultOrEmpty)
+			{
+				stringBuilder
+					.Indent(indent).AppendLine("if (_currentSetup is null)")
+					.Indent(indent + 1).AppendLine("""throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");""").AppendLine();
+			}
+
+			return stringBuilder;
 		}
 	}
 }

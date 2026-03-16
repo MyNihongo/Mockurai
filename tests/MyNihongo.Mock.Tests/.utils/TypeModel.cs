@@ -35,11 +35,15 @@ public static class TypeModelEx
 {
 	extension(TypeModel @this)
 	{
-		public string GetParameterNameString()
+		public string GetParameterNameString(bool appendRefKind = false)
 		{
-			return string.IsNullOrEmpty(@this.Name)
+			var name = string.IsNullOrEmpty(@this.Name)
 				? $"param{@this.Index}"
 				: @this.Name;
+
+			return appendRefKind && !string.IsNullOrEmpty(@this.RefType)
+				? $"{@this.RefType} {name}"
+				: name;
 		}
 
 		public string GetCamelCaseNameString()
@@ -48,13 +52,13 @@ public static class TypeModelEx
 			return char.ToUpperInvariant(parameterName[0]) + parameterName[1..];
 		}
 
-		public string GetParameterDeclarationString(string? typeNameOverride = null)
+		public string GetParameterDeclarationString(string? typeNameOverride = null, bool appendRefKind = true)
 		{
-			var result = string.IsNullOrEmpty(typeNameOverride)
-				? $"{@this.GetTypeString()} {@this.GetParameterNameString()}"
-				: typeNameOverride;
+			var result = !string.IsNullOrEmpty(typeNameOverride)
+				? @this.RefType == "out" ? @this.GetParameterNameString() : typeNameOverride
+				: $"{@this.GetTypeString()} {@this.GetParameterNameString()}";
 
-			return !string.IsNullOrEmpty(@this.RefType)
+			return appendRefKind && !string.IsNullOrEmpty(@this.RefType)
 				? $"{@this.RefType} {result}"
 				: result;
 		}
@@ -67,9 +71,12 @@ public static class TypeModelEx
 				"Single" => "float",
 				"Int64" => "long",
 				"Double" => "double",
-				"T1" or "T2" or "T3" => @this.Type,
+				"String" => "string",
+				"T" or "T1" or "T2" or "T3" => @this.Type,
 				_ => throw new NotImplementedException($"Unsupported type: `{@this}`"),
 			};
 		}
+
+		public bool IsInputParameter => !"out".Equals(@this.RefType, StringComparison.InvariantCultureIgnoreCase);
 	}
 }

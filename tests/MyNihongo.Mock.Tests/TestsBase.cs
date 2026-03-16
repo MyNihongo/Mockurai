@@ -49,27 +49,49 @@ public abstract class TestsBase
 
 		const string returns = "TReturns";
 		var genericTypes = types.Where(x => x.IsGeneric).Select(x => x.Type).ToList();
+		var outTypes = types.Where(x => x.RefType == "out").ToArray();
+		var inputParameters = types.Where(static x => x.IsInputParameter).ToArray();
 		if (useReturns) genericTypes.Add(returns);
 
 		var returnsGenericType = genericTypes.Count > 0 ? $"<{string.Join(", ", genericTypes)}>" : string.Empty;
 		var classNameReturns = string.Join(null, types) + returnsGenericType;
 		var parameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString()));
 		var discardedParameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString(typeNameOverride: "_")));
-		var parameterNames = string.Join(", ", types.Select(static x => x.GetParameterNameString()));
-		var setupParameters = (bool isNullable) => string.Join(", ", types.Select(x => $"in ItSetup<{x.GetTypeString()}>{(isNullable ? "?" : string.Empty)} {x.GetParameterNameString()}"));
-		var invoke = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x =>
-		{
-			return
-				$"""
-				 if (setup.{x.GetCamelCaseNameString()}.HasValue && !setup.{x.GetCamelCaseNameString()}.Value.Check({x.GetParameterNameString()}))
-				 				continue;
-				 """;
-		}));
-		var itemSetupFields = string.Join(Environment.NewLine + "\t\t", types.Select(static x => { return $"public readonly ItSetup<{x.GetTypeString()}>? {x.GetCamelCaseNameString()};"; }));
-		var itemSetupParameterAssign = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x => { return $"{x.GetCamelCaseNameString()} = {x.GetParameterNameString()};"; }));
+		var parameterNamesWithRef = string.Join(", ", types.Select(static x => x.GetParameterNameString(appendRefKind: true)));
+		var returnsValue = outTypes.Length > 0 ? Environment.NewLine + "\t\t{" + string.Concat(outTypes.Select(static x => $"{Environment.NewLine}\t\t\t{x.GetParameterNameString()} = default;")) + $"{Environment.NewLine}\t\t\treturn returns;{Environment.NewLine}" + "\t\t}" : " returns";
+		var inputParameterNames = string.Join(", ", inputParameters.Select(static x => x.GetParameterNameString()));
+		var setupParametersName = inputParameters.Length > 1 ? "SetupParameters" : "SetupParameter";
+		var setupParameters = (bool isNullable) => string.Join(", ", inputParameters.Select(x => $"in ItSetup<{x.GetTypeString()}>{(isNullable ? "?" : string.Empty)} {x.GetParameterNameString()}"));
+		var invoke = inputParameters.Length > 0
+			? string.Concat(inputParameters.Select(static x =>
+			{
+				return
+					$"""
+
+					 			if (setup.{x.GetCamelCaseNameString()}.HasValue && !setup.{x.GetCamelCaseNameString()}.Value.Check({x.GetParameterNameString()}))
+					 				continue;
+					 """;
+			})) + Environment.NewLine
+			: string.Empty;
+		var itemSetupFields = string.Join(Environment.NewLine + "\t\t", inputParameters.Select(static x => { return $"public readonly ItSetup<{x.GetTypeString()}>? {x.GetCamelCaseNameString()};"; }));
+		var itemSetupParameterAssign = string.Join(Environment.NewLine + "\t\t\t", inputParameters.Select(static x => { return $"{x.GetCamelCaseNameString()} = {x.GetParameterNameString()};"; }));
+
+		var itemFieldAndConstructor = inputParameters.Length > 0
+			? $$"""
+
+
+			    		{{itemSetupFields}}
+
+			    		public Item({{setupParameters(true)}})
+			    		{
+			    			{{itemSetupParameterAssign}}
+			    		}
+			    """
+			: string.Empty;
+
 		var itemSetupComparer = (string item) =>
 		{
-			return string.Join(Environment.NewLine + "\t\t\t\t", types.Select(x =>
+			return string.Join(Environment.NewLine + "\t\t\t\t", inputParameters.Select(x =>
 			{
 				return
 					$"""
@@ -87,24 +109,42 @@ public abstract class TestsBase
 		var returnsDelegate = useReturns ? Environment.NewLine + $"\tpublic delegate {returns}? ReturnsCallbackDelegate({parameters});" : string.Empty;
 		var invokeFunction = useReturns ? $"public bool Execute({parameters}, out {returns}? {returnValue})" : $"public void Invoke({parameters})";
 		var checkReturns = useReturns
-			? $$"""
-			    if (x.Returns is not null)
-			    			{
-			    				{{returnValue}} = x.Returns({{parameterNames}});
-			    				return true;
-			    			}
+			? inputParameters.Length > 0
+				? $$"""
+				    if (x.Returns is not null)
+				    			{
+				    				{{returnValue}} = x.Returns({{parameterNamesWithRef}});
+				    				return true;
+				    			}
 
 
-			    """ + "\t\t\t"
+				    """ + "\t\t\t"
+				: $$"""
+				    if (x.Returns is not null)
+				    		{
+				    			{{returnValue}} = x.Returns({{parameterNamesWithRef}});
+				    			return true;
+				    		}
+
+
+				    """ + "\t\t"
 			: string.Empty;
-		var defaultReturns = useReturns
+		var defaultReturns = useReturns || outTypes.Length > 0
 			? $"""
 
 
-			   		Default:
-			   		{returnValue} = default;
-			   		return false;
+			   		Default:{(useReturns ? Environment.NewLine + $"\t\t{returnValue} = default;" : string.Empty)}{(outTypes.Length > 0 ? string.Concat(outTypes.Select(static x => Environment.NewLine + $"\t\t{x.GetParameterNameString()} = default;")) : string.Empty)}
+			   		return{(useReturns ? " false" : string.Empty)};
 			   """
+			: string.Empty;
+
+		var currentSetupCheck = inputParameters.Length > 0
+			? """
+
+			  		if (_currentSetup is null)
+			  			throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
+
+			  """
 			: string.Empty;
 
 		var returnsMethods = useReturns
@@ -113,14 +153,11 @@ public abstract class TestsBase
 
 			    	public void Returns(TReturns? returns)
 			    	{
-			    		Returns(({{discardedParameters}}) => returns);
+			    		Returns(({{discardedParameters}}) =>{{returnsValue}});
 			    	}
 
 			    	public void Returns(in ReturnsCallbackDelegate returns)
-			    	{
-			    		if (_currentSetup is null)
-			    			throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
-
+			    	{{{currentSetupCheck}}
 			    		_currentSetup.Add(returns);
 			    	}
 			    """
@@ -178,58 +215,127 @@ public abstract class TestsBase
 		var returnsItemSetupConstructorParameter = useReturns ? "in ReturnsCallbackDelegate? returns = null, " : string.Empty;
 		var returnsItemSetupConstructorAssign = useReturns ? Environment.NewLine + "\t\t\tReturns = returns;" : string.Empty;
 
+		var callbackInvoke = outTypes.Length == 0
+			? $"x.Callback?.Invoke({parameterNamesWithRef});"
+			: inputParameters.Length > 0
+				? $$"""
+				    if (x.Callback is not null)
+				    			{
+				    				x.Callback.Invoke({{parameterNamesWithRef}});
+				    			}
+				    			else
+				    			{
+				    				{{string.Join(Environment.NewLine + "\t\t\t\t", outTypes.Select(x => $"{x.GetParameterNameString()} = default;"))}}
+				    			}
+				    """
+				: $$"""
+				    if (x.Callback is not null)
+				    		{
+				    			x.Callback.Invoke({{parameterNamesWithRef}});
+				    		}
+				    		else
+				    		{
+				    			{{string.Join(Environment.NewLine + "\t\t\t", outTypes.Select(x => $"{x.GetParameterNameString()} = default;"))}}
+				    		}
+				    """;
+
+		var setupFields = inputParameters.Length > 0
+			? """
+			  private static readonly Comparer SortComparer = new();
+			  	private SetupContainer<Item>? _setups;
+			  	private Item? _currentSetup;
+			  """
+			: "private readonly Item _currentSetup = new();";
+
+		var setupMethod = inputParameters.Length > 0
+			? $$"""
+
+
+			    	public void {{setupParametersName}}({{setupParameters(false)}})
+			    	{
+			    		_currentSetup = new Item({{inputParameterNames}});
+
+			    		_setups ??= new SetupContainer<Item>(SortComparer);
+			    		_setups.Add(_currentSetup);
+			    	}
+			    """
+			: string.Empty;
+
+		var comparer = inputParameters.Length > 0
+			? $$"""
+
+
+			    	private sealed class Comparer: System.Collections.Generic.IComparer<Item>
+			    	{
+			    		public int Compare(Item? x, Item? y)
+			    		{
+			    			var xSort = 0;
+			    			var ySort = 0;
+
+			    			if (x is not null)
+			    			{
+			    				{{itemSetupComparer("x")}}
+			    			}
+
+			    			if (y is not null)
+			    			{
+			    				{{itemSetupComparer("y")}}
+			    			}
+
+			    			return xSort.CompareTo(ySort);
+			    		}
+			    	}
+			    """
+			: string.Empty;
+
+		var invokeFunctionBody = inputParameters.Length > 0
+			? $$"""
+			    {
+			    		if (_setups is null)
+			    			{{(useReturns || outTypes.Length > 0 ? "goto Default" : "return")}};
+
+			    		foreach (var setup in _setups)
+			    		{{{invoke}}
+			    			var x = setup.GetSetup();
+			    			{{callbackInvoke}}
+
+			    			if (x.Exception is not null)
+			    				throw x.Exception;
+
+			    			{{(useReturns ? checkReturns + (outTypes.Length > 0 ? $"returnValue = default;{Environment.NewLine}\t\t\treturn false" : "goto Default") : "return")}};
+			    		}{{defaultReturns}}
+			    	}
+			    """
+			: $$"""
+			    {{{invoke}}
+			    		var x = _currentSetup.GetSetup();
+			    		{{callbackInvoke}}
+
+			    		if (x.Exception is not null)
+			    			throw x.Exception;{{(useReturns ? $"{Environment.NewLine + Environment.NewLine}\t\t" + checkReturns + (outTypes.Length > 0 ? $"returnValue = default;{Environment.NewLine}\t\treturn false;" : "goto Default;") : string.Empty)}}
+			    	}
+			    """;
+
 		var sourceCode =
 			$$"""
 			  namespace MyNihongo.Mock;
 
 			  public sealed class Setup{{classNameReturns}} : ISetupCallbackJoin<{{interfaceGeneric}}>, ISetupCallbackReset<{{interfaceGeneric}}>, {{iSetupThrowsJoin}}<{{interfaceGeneric}}>, {{iSetupThrowsReset}}<{{interfaceGeneric}}>
 			  {
-			  	private static readonly Comparer SortComparer = new();
-			  	private SetupContainer<Item>? _setups;
-			  	private Item? _currentSetup;
+			  	{{setupFields}}
 
 			  	public delegate void CallbackDelegate({{parameters}});{{returnsDelegate}}
 
 			  	{{invokeFunction}}
-			  	{
-			  		if (_setups is null)
-			  			{{(useReturns ? "goto Default" : "return")}};
-
-			  		foreach (var setup in _setups)
-			  		{
-			  			{{invoke}}
-
-			  			var x = setup.GetSetup();
-			  			x.Callback?.Invoke({{parameterNames}});
-
-			  			if (x.Exception is not null)
-			  				throw x.Exception;
-
-			  			{{(useReturns ? $"{checkReturns}goto Default" : "return")}};
-			  		}{{defaultReturns}}
-			  	}
-
-			  	public void SetupParameters({{setupParameters(false)}})
-			  	{
-			  		_currentSetup = new Item({{parameterNames}});
-
-			  		_setups ??= new SetupContainer<Item>(SortComparer);
-			  		_setups.Add(_currentSetup);
-			  	}{{returnsMethods}}
+			  	{{invokeFunctionBody}}{{setupMethod}}{{returnsMethods}}
 
 			  	public void Callback(in CallbackDelegate callback)
-			  	{
-			  		if (_currentSetup is null)
-			  			throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
-
+			  	{{{currentSetupCheck}}
 			  		_currentSetup.Add(callback);
 			  	}
 
 			  	public void Throws(in System.Exception exception)
-			  	{
-			  		if (_currentSetup is null)
-			  			throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
-
+			  	{{{currentSetupCheck}}
 			  		_currentSetup.Add(exception);
 			  	}{{returnsInterfaceMethods}}
 
@@ -259,13 +365,13 @@ public abstract class TestsBase
 
 			  	ISetupCallbackReset<{{interfaceGeneric}}> {{iSetupThrowsJoin}}<{{interfaceGeneric}}>.And()
 			  	{
-			  		_currentSetup?.AndContinue = true;
+			  		_currentSetup{{(inputParameters.Length > 0 ? "?" : string.Empty)}}.AndContinue = true;
 			  		return this;
 			  	}
 
 			  	{{iSetupThrowsReset}}<{{interfaceGeneric}}> ISetupCallbackJoin<{{interfaceGeneric}}>.And()
 			  	{
-			  		_currentSetup?.AndContinue = true;
+			  		_currentSetup{{(inputParameters.Length > 0 ? "?" : string.Empty)}}.AndContinue = true;
 			  		return this;
 			  	}
 
@@ -273,14 +379,7 @@ public abstract class TestsBase
 			  	{
 			  		private readonly System.Collections.Generic.Queue<ItemSetup> _queue = [];
 			  		private ItemSetup? _currentSetup;
-			  		public bool AndContinue;
-
-			  		{{itemSetupFields}}
-
-			  		public Item({{setupParameters(true)}})
-			  		{
-			  			{{itemSetupParameterAssign}}
-			  		}{{returnsItemAdd}}
+			  		public bool AndContinue;{{itemFieldAndConstructor}}
 
 			  		public void Add(in CallbackDelegate callback)
 			  		{
@@ -295,7 +394,7 @@ public abstract class TestsBase
 			  				_currentSetup = new ItemSetup(callback: callback);
 			  				_queue.Enqueue(_currentSetup);
 			  			}
-			  		}
+			  		}{{returnsItemAdd}}
 
 			  		public void Add(in System.Exception exception)
 			  		{
@@ -335,28 +434,7 @@ public abstract class TestsBase
 			  			Callback = callback;
 			  			Exception = exception;
 			  		}
-			  	}
-
-			  	private sealed class Comparer: System.Collections.Generic.IComparer<Item>
-			  	{
-			  		public int Compare(Item? x, Item? y)
-			  		{
-			  			var xSort = 0;
-			  			var ySort = 0;
-
-			  			if (x is not null)
-			  			{
-			  				{{itemSetupComparer("x")}}
-			  			}
-
-			  			if (y is not null)
-			  			{
-			  				{{itemSetupComparer("y")}}
-			  			}
-
-			  			return xSort.CompareTo(ySort);
-			  		}
-			  	}
+			  	}{{comparer}}
 			  }
 			  """;
 
@@ -384,6 +462,7 @@ public abstract class TestsBase
 		var jsonSnapshots = string.Join(", ", types.Select(static x => $"_jsonSnapshot{x.GetCamelCaseNameString()}"));
 		var prefixParameters = string.Join(", ", types.Select(static x => $"string? prefix{x.GetCamelCaseNameString()} = null"));
 		var parameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString()));
+		var parametersWithoutRef = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString(appendRefKind: false)));
 		var parameterNames = string.Join(", ", types.Select(static x => x.GetParameterNameString()));
 		var prefixAssignemnts = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"_prefix{x.GetCamelCaseNameString()} = prefix{x.GetCamelCaseNameString()};"));
 		var setupParameters = string.Join(", ", types.Select(static x => $"in ItSetup<{x.GetTypeString()}> {x.GetParameterNameString()}"));
@@ -477,7 +556,7 @@ public abstract class TestsBase
 			  		{{prefixAssignemnts}}
 			  	}
 
-			  	public void Register(in InvocationIndex.Counter index, {{parameters}})
+			  	public void Register(in InvocationIndex.Counter index, {{parametersWithoutRef}})
 			  	{
 			  		var invokedIndex = index.Increment();
 			  		_invocations.Add(new Item(invokedIndex, {{parameterNames}}, invocation: this));
@@ -576,7 +655,7 @@ public abstract class TestsBase
 			  		private readonly string? {{jsonSnapshots}};
 			  		private readonly Invocation{{classNameGenerics}} _invocation;
 
-			  		public Item(long index, {{parameters}}, Invocation{{classNameGenerics}} invocation)
+			  		public Item(long index, {{parametersWithoutRef}}, Invocation{{classNameGenerics}} invocation)
 			  		{
 			  			_invocation = invocation;
 			  			Index = index;

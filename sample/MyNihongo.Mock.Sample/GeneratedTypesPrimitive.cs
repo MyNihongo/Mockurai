@@ -1011,7 +1011,7 @@ public sealed class PrimitiveDependencyServiceMock : IMock<IPrimitiveDependencyS
 		public void Invoke(out int result)
 		{
 			_mock._invokeInvocation2 ??= new Invocation<int>("IPrimitiveDependencyService.Invoke({0})", prefix: "out");
-			_mock._invokeInvocation2.Register(_mock._invocationIndex, 0);
+			_mock._invokeInvocation2.Register(_mock._invocationIndex, default);
 			if (_mock._invoke2 is not null)
 				_mock._invoke2.Invoke(out result);
 			else
@@ -1399,7 +1399,7 @@ public static partial class MockExtensions
 			((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithParameterAsync(parameter, times());
 
 		// InvokeWithSeveralParameters
-		public ISetup<Action<int, int>> SetupInvokeWithSeveralParameters(in It<int> parameter1 = default, in It<int> parameter2 = default) =>
+		public ISetup<SetupIntInt.CallbackDelegate> SetupInvokeWithSeveralParameters(in It<int> parameter1 = default, in It<int> parameter2 = default) =>
 			((PrimitiveDependencyServiceMock)@this).SetupInvokeWithSeveralParameters(parameter1, parameter2);
 
 		public void VerifyInvokeWithSeveralParameters(in It<int> parameter1, in It<int> parameter2, in Times times) =>
@@ -1476,7 +1476,7 @@ public static partial class MockExtensions
 			((PrimitiveDependencyServiceMock)@this).VerifyInvokeWithSeveralParameters(parameter1, parameter2, times());
 
 		// InvokeWithSeveralParameters
-		public ISetup<Action<int, int>> SetupInvokeWithSeveralParametersAsync(in It<int> parameter1 = default, in It<int> parameter2 = default) =>
+		public ISetup<SetupIntInt.CallbackDelegate> SetupInvokeWithSeveralParametersAsync(in It<int> parameter1 = default, in It<int> parameter2 = default) =>
 			((PrimitiveDependencyServiceMock)@this).SetupInvokeWithSeveralParametersAsync(parameter1, parameter2);
 
 		public void VerifyInvokeWithSeveralParametersAsync(in It<int> parameter1, in It<int> parameter2, in Times times) =>
@@ -1575,7 +1575,7 @@ public static partial class MockExtensions
 			((PrimitiveDependencyServiceMock)@this).VerifyReturnWithParameterAsync(parameter, times());
 
 		// ReturnWithSeveralParameters
-		public ISetup<Action<int, int>, decimal, Func<int, int, decimal>> SetupReturnWithSeveralParameters(in It<int> parameter1 = default, in It<int> parameter2 = default) =>
+		public ISetup<SetupIntInt<decimal>.CallbackDelegate, decimal, SetupIntInt<decimal>.ReturnsCallbackDelegate> SetupReturnWithSeveralParameters(in It<int> parameter1 = default, in It<int> parameter2 = default) =>
 			((PrimitiveDependencyServiceMock)@this).SetupReturnWithSeveralParameters(parameter1, parameter2);
 
 		public void VerifyReturnWithSeveralParameters(in It<int> parameter1, in It<int> parameter2, in Times times) =>
@@ -1649,7 +1649,7 @@ public static partial class MockExtensions
 			((PrimitiveDependencyServiceMock)@this).VerifyReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ItRef<TParameter1>.Value(parameter1), parameter2, times());
 
 		// ReturnWithSeveralParameters
-		public ISetup<Action<int, int>, decimal, Func<int, int, decimal>> SetupReturnWithSeveralParametersAsync(in It<int> parameter1 = default, in It<int> parameter2 = default) =>
+		public ISetup<SetupIntInt<decimal>.CallbackDelegate, decimal, SetupIntInt<decimal>.ReturnsCallbackDelegate> SetupReturnWithSeveralParametersAsync(in It<int> parameter1 = default, in It<int> parameter2 = default) =>
 			((PrimitiveDependencyServiceMock)@this).SetupReturnWithSeveralParametersAsync(parameter1, parameter2);
 
 		public void VerifyReturnWithSeveralParametersAsync(in It<int> parameter1, in It<int> parameter2, in Times times) =>

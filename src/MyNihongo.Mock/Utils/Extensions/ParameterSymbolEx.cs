@@ -6,23 +6,33 @@ internal static class ParameterSymbolEx
 	{
 		public bool TryGetInputParameters(out ImmutableArray<IParameterSymbol> parameters)
 		{
-			var builder = ImmutableArray.CreateBuilder<IParameterSymbol>();
+			parameters = @this.SplitParameters().InputParameters;
+			return parameters.Length > 0;
+		}
 
+		public ParameterSplit SplitParameters()
+		{
+			ImmutableArray<IParameterSymbol>.Builder? inputBuilder = null, outputBuilder = null;
+			
 			foreach (var parameter in @this)
 			{
-				if (parameter.RefKind != RefKind.Out)
-					builder.Add(parameter);
+				if (parameter.RefKind == RefKind.Out)
+					(outputBuilder ??= ImmutableArray.CreateBuilder<IParameterSymbol>()).Add(parameter);
+				else
+					(inputBuilder ??= ImmutableArray.CreateBuilder<IParameterSymbol>()).Add(parameter);
 			}
 
-			parameters = builder.ToImmutable();
-			return builder.Count > 0;
+			return new ParameterSplit(
+				inputParameters: inputBuilder?.ToImmutable() ?? ImmutableArray<IParameterSymbol>.Empty,
+				outputParameters: outputBuilder?.ToImmutable() ?? ImmutableArray<IParameterSymbol>.Empty
+			);
 		}
 	}
 
 	// TODO: when there is more time try to optimize appending instead of appending strings of ITypeSymbol, IPropertySymbol, etc
 	extension(StringBuilder @this)
 	{
-		public StringBuilder AppendParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride = null)
+		public StringBuilder AppendParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride = null, bool appendRefKind = true)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
@@ -30,7 +40,7 @@ internal static class ParameterSymbolEx
 					@this.Append(", ");
 
 				var typeOverride = parameterTypeOverride?.GetValueOrDefault(parameters[i]);
-				@this.AppendParameter(parameters[i], typeOverride);
+				@this.AppendParameter(parameters[i], typeOverride, appendRefKind);
 
 				if (appendComma)
 					@this.Append(", ");
@@ -46,11 +56,14 @@ internal static class ParameterSymbolEx
 				: @this;
 		}
 
-		private StringBuilder AppendParameter(IParameterSymbol parameter, string? typeOverride = null)
+		private StringBuilder AppendParameter(IParameterSymbol parameter, string? typeOverride = null, bool appendRefKind = true)
 		{
-			var refKindString = parameter.RefKind.GetString();
-			if (!string.IsNullOrEmpty(refKindString))
-				@this.Append(refKindString).Append(' ');
+			if (appendRefKind)
+			{
+				var refKindString = parameter.RefKind.GetString();
+				if (!string.IsNullOrEmpty(refKindString))
+					@this.Append(refKindString).Append(' ');
+			}
 
 			return @this
 				.AppendType(parameter.Type, typeOverride)
@@ -58,12 +71,19 @@ internal static class ParameterSymbolEx
 				.Append(parameter.Name);
 		}
 
-		public StringBuilder AppendParameterNames(ImmutableArray<IParameterSymbol> parameters, string? suffix = null, bool appendComma = false)
+		public StringBuilder AppendParameterNames(ImmutableArray<IParameterSymbol> parameters, string? suffix = null, bool appendComma = false, bool appendRefModifier = false)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
 				if (!appendComma && i > 0)
 					@this.Append(", ");
+
+				if (appendRefModifier)
+				{
+					var refModifier = parameters[i].RefKind.GetModifierString();
+					if (!string.IsNullOrEmpty(refModifier))
+						@this.Append(refModifier).Append(' ');
+				}
 
 				@this.Append(parameters[i].Name);
 
@@ -84,11 +104,16 @@ internal static class ParameterSymbolEx
 				if (!appendComma && i > 0)
 					@this.Append(", ");
 
-				var refKindString = parameters[i].RefKind.GetString();
+				var refKind = parameters[i].RefKind;
+				var refKindString = refKind.GetString();
 				if (!string.IsNullOrEmpty(refKindString))
 					@this.Append(refKindString).Append(' ');
 
-				@this.Append('_');
+				// It is not possible to discard `out` parameters and their values must be assigned in any case (CS0177)
+				if (refKind == RefKind.Out)
+					@this.Append(parameters[i].Name);
+				else
+					@this.Append('_');
 
 				if (appendComma)
 					@this.Append(", ");
@@ -182,7 +207,7 @@ internal static class ParameterSymbolEx
 				: @this;
 		}
 
-		private StringBuilder AppendParameterRefKinds(ImmutableArray<IParameterSymbol> parameters, out ImmutableArray<IParameterSymbol> genericParameters)
+		private void AppendParameterRefKinds(ImmutableArray<IParameterSymbol> parameters, out ImmutableArray<IParameterSymbol> genericParameters)
 		{
 			ImmutableArray<IParameterSymbol>.Builder? builder = null;
 
@@ -206,7 +231,6 @@ internal static class ParameterSymbolEx
 			}
 
 			genericParameters = builder?.ToImmutable() ?? ImmutableArray<IParameterSymbol>.Empty;
-			return @this;
 		}
 
 		private StringBuilder AppendGenericSetupInvocationParameters(
