@@ -76,28 +76,7 @@ internal static class MockSetupGenerator
 			  		public CallbackDelegate? Callback;
 			  		public System.Exception? Exception;
 			  {{CreateItemSetupDeclaration(stringBuilder, returnType, indent: 2)}}
-			  	}
-
-			  	private sealed class Comparer: System.Collections.Generic.IComparer<Item>
-			  	{
-			  		public int Compare(Item? x, Item? y)
-			  		{
-			  			var xSort = 0;
-			  			var ySort = 0;
-
-			  			if (x is not null)
-			  			{
-			  {{CreateCompareDeclaration(stringBuilder, parameterSplit.InputParameters, item: "x", indent: 4)}}
-			  			}
-
-			  			if (y is not null)
-			  			{
-			  {{CreateCompareDeclaration(stringBuilder, parameterSplit.InputParameters, item: "y", indent: 4)}}
-			  			}
-
-			  			return xSort.CompareTo(ySort);
-			  		}
-			  	}
+			  	}{{CreateComparer(stringBuilder, parameterSplit.InputParameters, indent: 1)}}
 			  }
 			  """;
 
@@ -329,36 +308,38 @@ internal static class MockSetupGenerator
 			.ToString();
 	}
 
-	private static string CreateCompareDeclaration(StringBuilder stringBuilder, ImmutableArray<IParameterSymbol> inputParameters, string item, int indent)
+	private static string CreateComparer(StringBuilder stringBuilder, ImmutableArray<IParameterSymbol> inputParameters, int indent)
 	{
-		stringBuilder.Clear();
+		if (inputParameters.IsDefaultOrEmpty)
+			return string.Empty;
 
-		for (int i = 0, lastIndex = inputParameters.Length - 1; i < inputParameters.Length; i++)
-		{
-			var parameterName = inputParameters[i].Name;
+		stringBuilder
+			.Clear()
+			.AppendLine()
+			.AppendLine();
 
-			stringBuilder
-				.Indent(indent)
-				.Append("if (")
-				.Append(item)
-				.Append('.')
-				.AppendPropertyName(parameterName)
-				.AppendLine(".HasValue)");
-
-			stringBuilder
-				.Indent(indent + 1)
-				.Append(item)
-				.Append("Sort += ")
-				.Append(item)
-				.Append('.')
-				.AppendPropertyName(parameterName)
-				.Append(".Value.Sort;");
-
-			if (i < lastIndex)
-				stringBuilder.AppendLine();
-		}
-
-		return stringBuilder.ToString();
+		return stringBuilder
+			.Indent(indent).AppendLine("private sealed class Comparer: System.Collections.Generic.IComparer<Item>")
+			.Indent(indent++).AppendLine("{")
+			.Indent(indent).AppendLine("public int Compare(Item? x, Item? y)")
+			.Indent(indent++).AppendLine("{")
+			.Indent(indent).AppendLine("var xSort = 0;")
+			.Indent(indent).AppendLine("var ySort = 0;")
+			.AppendLine()
+			.Indent(indent).AppendLine("if (x is not null)")
+			.Indent(indent++).AppendLine("{")
+			.AppendComparerDeclaration(inputParameters, item: "x", indent)
+			.Indent(--indent).AppendLine("}")
+			.AppendLine()
+			.Indent(indent).AppendLine("if (y is not null)")
+			.Indent(indent++).AppendLine("{")
+			.AppendComparerDeclaration(inputParameters, item: "y", indent)
+			.Indent(--indent).AppendLine("}")
+			.AppendLine()
+			.Indent(indent).AppendLine("return xSort.CompareTo(ySort);")
+			.Indent(--indent).AppendLine("}")
+			.Indent(--indent).Append('}')
+			.ToString();
 	}
 
 	private static string CreateSetupClassName(StringBuilder stringBuilder, IMethodSymbol methodSymbol, out ImmutableDictionary<IParameterSymbol, string> genericTypeOverride)
@@ -544,6 +525,33 @@ internal static class MockSetupGenerator
 			return appendFinalLines
 				? @this.AppendLine("}").AppendLine()
 				: @this.Append('}');
+		}
+
+		private StringBuilder AppendComparerDeclaration(ImmutableArray<IParameterSymbol> inputParameters, string item, int indent)
+		{
+			foreach (var parameter in inputParameters)
+			{
+				var parameterName = parameter.Name;
+
+				@this
+					.Indent(indent)
+					.Append("if (")
+					.Append(item)
+					.Append('.')
+					.AppendPropertyName(parameterName)
+					.AppendLine(".HasValue)");
+
+				@this
+					.Indent(indent + 1)
+					.Append(item)
+					.Append("Sort += ")
+					.Append(item)
+					.Append('.')
+					.AppendPropertyName(parameterName)
+					.AppendLine(".Value.Sort;");
+			}
+
+			return @this;
 		}
 	}
 }
