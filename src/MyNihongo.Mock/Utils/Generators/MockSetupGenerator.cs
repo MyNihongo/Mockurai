@@ -695,13 +695,21 @@ file static class Extensions
 					.AppendLine("return true;");
 
 				stringBuilder
-					.Indent(--indent).AppendLine("}");
+					.Indent(--indent).AppendLine("}")
+					.AppendLine();
 
-				// Here we want to keep values assigned by the callback
-				stringBuilder
-					.AppendLine()
-					.Indent(indent).Append(returnValueName).AppendLine(DefaultAssign)
-					.Indent(indent).AppendLine("return false;");
+				if (parameterSplit.OutputParameters.IsDefaultOrEmpty)
+				{
+					stringBuilder
+						.Indent(indent).AppendLine("goto Default;");
+				}
+				else
+				{
+					// Here we want to keep values assigned by the callback
+					stringBuilder
+						.Indent(indent).Append(returnValueName).AppendLine(DefaultAssign)
+						.Indent(indent).AppendLine("return false;");
+				}
 			}
 			else if (hasMultipleSetups)
 			{
