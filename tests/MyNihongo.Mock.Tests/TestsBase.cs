@@ -75,6 +75,20 @@ public abstract class TestsBase
 			: string.Empty;
 		var itemSetupFields = string.Join(Environment.NewLine + "\t\t", inputParameters.Select(static x => { return $"public readonly ItSetup<{x.GetTypeString()}>? {x.GetCamelCaseNameString()};"; }));
 		var itemSetupParameterAssign = string.Join(Environment.NewLine + "\t\t\t", inputParameters.Select(static x => { return $"{x.GetCamelCaseNameString()} = {x.GetParameterNameString()};"; }));
+
+		var itemFieldAndConstructor = inputParameters.Length > 0
+			? $$"""
+
+
+			    {{itemSetupFields}}
+
+			    public Item({{setupParameters(true)}})
+			    {
+			    	{{itemSetupParameterAssign}}
+			    }
+			    """
+			: string.Empty;
+
 		var itemSetupComparer = (string item) =>
 		{
 			return string.Join(Environment.NewLine + "\t\t\t\t", inputParameters.Select(x =>
@@ -226,6 +240,33 @@ public abstract class TestsBase
 			    """
 			: string.Empty;
 
+		var comparer = inputParameters.Length > 0
+			? $$"""
+
+
+			    	private sealed class Comparer: System.Collections.Generic.IComparer<Item>
+			    	{
+			    		public int Compare(Item? x, Item? y)
+			    		{
+			    			var xSort = 0;
+			    			var ySort = 0;
+
+			    			if (x is not null)
+			    			{
+			    				{{itemSetupComparer("x")}}
+			    			}
+
+			    			if (y is not null)
+			    			{
+			    				{{itemSetupComparer("y")}}
+			    			}
+
+			    			return xSort.CompareTo(ySort);
+			    		}
+			    	}
+			    """
+			: string.Empty;
+
 		var sourceCode =
 			$$"""
 			  namespace MyNihongo.Mock;
@@ -289,13 +330,13 @@ public abstract class TestsBase
 
 			  	ISetupCallbackReset<{{interfaceGeneric}}> {{iSetupThrowsJoin}}<{{interfaceGeneric}}>.And()
 			  	{
-			  		_currentSetup?.AndContinue = true;
+			  		_currentSetup{{(inputParameters.Length > 0 ? "?" : string.Empty)}}.AndContinue = true;
 			  		return this;
 			  	}
 
 			  	{{iSetupThrowsReset}}<{{interfaceGeneric}}> ISetupCallbackJoin<{{interfaceGeneric}}>.And()
 			  	{
-			  		_currentSetup?.AndContinue = true;
+			  		_currentSetup{{(inputParameters.Length > 0 ? "?" : string.Empty)}}.AndContinue = true;
 			  		return this;
 			  	}
 
@@ -303,14 +344,7 @@ public abstract class TestsBase
 			  	{
 			  		private readonly System.Collections.Generic.Queue<ItemSetup> _queue = [];
 			  		private ItemSetup? _currentSetup;
-			  		public bool AndContinue;
-
-			  		{{itemSetupFields}}
-
-			  		public Item({{setupParameters(true)}})
-			  		{
-			  			{{itemSetupParameterAssign}}
-			  		}{{returnsItemAdd}}
+			  		public bool AndContinue;{{itemFieldAndConstructor}}{{returnsItemAdd}}
 
 			  		public void Add(in CallbackDelegate callback)
 			  		{
@@ -365,28 +399,7 @@ public abstract class TestsBase
 			  			Callback = callback;
 			  			Exception = exception;
 			  		}
-			  	}
-
-			  	private sealed class Comparer: System.Collections.Generic.IComparer<Item>
-			  	{
-			  		public int Compare(Item? x, Item? y)
-			  		{
-			  			var xSort = 0;
-			  			var ySort = 0;
-
-			  			if (x is not null)
-			  			{
-			  				{{itemSetupComparer("x")}}
-			  			}
-
-			  			if (y is not null)
-			  			{
-			  				{{itemSetupComparer("y")}}
-			  			}
-
-			  			return xSort.CompareTo(ySort);
-			  		}
-			  	}
+			  	}{{comparer}}
 			  }
 			  """;
 
