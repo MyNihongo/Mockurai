@@ -123,5 +123,10 @@ internal static class StringBuilderEx
 
 			return @this;
 		}
+
+		public StringBuilder AppendVerifyNoOtherCallsInvocation()
+		{
+			return @this.Append("?.VerifyNoOtherCalls(_invocationProviders)");
+		}
 	}
 }

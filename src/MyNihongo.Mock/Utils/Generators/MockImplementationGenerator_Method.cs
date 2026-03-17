@@ -2,7 +2,7 @@
 
 internal static class MockImplementationMethodGenerator
 {
-	public static IMethodSymbol? AppendPropertyMockMethod(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
+	public static IMethodSymbol? AppendMethodMockMethod(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 	{
 		if (memberSymbol.Symbol is not IMethodSymbol methodSymbol)
 			return null;
@@ -19,6 +19,14 @@ internal static class MockImplementationMethodGenerator
 		return methodSymbol.Parameters.Length >= 2
 			? methodSymbol
 			: null;
+	}
+
+	public static void AppendMethodVerifyNoOtherCalls(StringBuilder stringBuilder, MockedMemberSymbol memberSymbol, int indent)
+	{
+		if (memberSymbol.Symbol is not IMethodSymbol methodSymbol)
+			return;
+
+		stringBuilder.AppendVerifyNoOtherCallsInvocation(memberSymbol, methodSymbol, indent);
 	}
 
 	extension(StringBuilder stringBuilder)

@@ -31,6 +31,17 @@ internal static class MockImplementationPropertyGenerator
 		return null;
 	}
 
+	public static void AppendPropertyVerifyNoOtherCalls(StringBuilder stringBuilder, MockedMemberSymbol memberSymbol, int indent)
+	{
+		if (memberSymbol.Symbol is not IPropertySymbol propertySymbol)
+			return;
+
+		if (propertySymbol.GetMethod is not null)
+			stringBuilder.AppendVerifyNoOtherCallsInvocation(memberSymbol, propertySymbol.GetMethod, indent);
+		if (propertySymbol.SetMethod is not null)
+			stringBuilder.AppendVerifyNoOtherCallsInvocation(memberSymbol, propertySymbol.SetMethod, indent);
+	}
+
 	extension(StringBuilder stringBuilder)
 	{
 		private void AppendMethods(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)

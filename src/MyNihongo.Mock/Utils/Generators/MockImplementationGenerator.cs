@@ -125,7 +125,7 @@ internal static class MockImplementationGenerator
 			{
 				SymbolKind.Event => MockImplementationEventGenerator.AppendEventMockMethod,
 				SymbolKind.Property => MockImplementationPropertyGenerator.AppendPropertyMockMethod,
-				SymbolKind.Method => MockImplementationMethodGenerator.AppendPropertyMockMethod,
+				SymbolKind.Method => MockImplementationMethodGenerator.AppendMethodMockMethod,
 				_ => null,
 			};
 
@@ -143,7 +143,7 @@ internal static class MockImplementationGenerator
 				methodSymbolList ??= [];
 				methodSymbolList.Add(methodSymbol);
 			}
-			
+
 			generateCount++;
 		}
 
@@ -154,6 +154,20 @@ internal static class MockImplementationGenerator
 	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, IReadOnlyList<MockedMemberSymbol> members, int indent)
 	{
 		stringBuilder.Clear();
+
+		foreach (var member in members)
+		{
+			Action<StringBuilder, MockedMemberSymbol, int>? handler = member.Symbol.Kind switch
+			{
+				SymbolKind.Event => MockImplementationEventGenerator.AppendEventVerifyNoOtherCalls,
+				SymbolKind.Property => MockImplementationPropertyGenerator.AppendPropertyVerifyNoOtherCalls,
+				SymbolKind.Method => MockImplementationMethodGenerator.AppendMethodVerifyNoOtherCalls,
+				_ => null,
+			};
+
+			handler?.Invoke(stringBuilder, member, indent);
+		}
+
 		return stringBuilder.ToString();
 	}
 
