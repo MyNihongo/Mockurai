@@ -13,10 +13,10 @@ public abstract class EventGenericTestsBase : TestsGenericBase
 		return CreateInterfaceTestCode(@event, CustomCode);
 	}
 
-	protected static GeneratedSources CreateInterfaceGeneratedSources(string methods, string proxy)
+	protected static GeneratedSources CreateInterfaceGeneratedSources(string methods, string proxy, string verifyNoOtherCalls)
 	{
 		var testsBase = GetInterfaceTestsBase();
-		var mock = GetInterfaceMock(methods, proxy);
+		var mock = GetInterfaceMock(methods, proxy, verifyNoOtherCalls);
 
 		return
 		[
@@ -33,7 +33,7 @@ public abstract class EventGenericTestsBase : TestsGenericBase
 	protected static GeneratedSources CreateClassGeneratedSources(string methods, string proxy)
 	{
 		var testsBase = GetClassTestsBase();
-		var mock = GetClassMock(methods, proxy);
+		var mock = GetClassMock(methods, proxy, string.Empty);
 
 		return
 		[

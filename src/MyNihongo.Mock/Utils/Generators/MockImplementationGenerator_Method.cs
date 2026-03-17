@@ -21,12 +21,10 @@ internal static class MockImplementationMethodGenerator
 			: null;
 	}
 
-	public static void AppendMethodVerifyNoOtherCalls(StringBuilder stringBuilder, MockedMemberSymbol memberSymbol, int indent)
+	public static IEnumerable<IMethodSymbol> GetMethodVerifyNoOtherCallMethods(MockedMemberSymbol memberSymbol)
 	{
-		if (memberSymbol.Symbol is not IMethodSymbol methodSymbol)
-			return;
-
-		stringBuilder.AppendVerifyNoOtherCallsInvocation(memberSymbol, methodSymbol, indent);
+		if (memberSymbol.Symbol is IMethodSymbol methodSymbol)
+			yield return methodSymbol;
 	}
 
 	extension(StringBuilder stringBuilder)

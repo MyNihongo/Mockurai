@@ -155,17 +155,28 @@ internal static class MockImplementationGenerator
 	{
 		stringBuilder.Clear();
 
+		var methodIndex = 0;
 		foreach (var member in members)
 		{
-			Action<StringBuilder, MockedMemberSymbol, int>? handler = member.Symbol.Kind switch
+			Func<MockedMemberSymbol, IEnumerable<IMethodSymbol>>? methods = member.Symbol.Kind switch
 			{
-				SymbolKind.Event => MockImplementationEventGenerator.AppendEventVerifyNoOtherCalls,
-				SymbolKind.Property => MockImplementationPropertyGenerator.AppendPropertyVerifyNoOtherCalls,
-				SymbolKind.Method => MockImplementationMethodGenerator.AppendMethodVerifyNoOtherCalls,
+				SymbolKind.Event => MockImplementationEventGenerator.GetEventVerifyNoOtherCallMethods,
+				SymbolKind.Property => MockImplementationPropertyGenerator.GetPropertyVerifyNoOtherCallMethods,
+				SymbolKind.Method => MockImplementationMethodGenerator.GetMethodVerifyNoOtherCallMethods,
 				_ => null,
 			};
 
-			handler?.Invoke(stringBuilder, member, indent);
+			if (methods is null)
+				continue;
+
+			foreach (var method in methods(member))
+			{
+				if (methodIndex > 0)
+					stringBuilder.AppendLine();
+
+				stringBuilder.AppendVerifyNoOtherCallsInvocation(member, method, indent);
+				methodIndex++;
+			}
 		}
 
 		return stringBuilder.ToString();

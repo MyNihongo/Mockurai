@@ -71,7 +71,7 @@ public abstract class TestsGenericBase : TestsBase
 		return ("TestsBase.g.cs", testsBase);
 	}
 
-	protected static GeneratedSource GetInterfaceMock(string methods, string proxy)
+	protected static GeneratedSource GetInterfaceMock(string methods, string proxy, string verifyNoOtherCalls)
 	{
 		var mock =
 			$$"""
@@ -95,7 +95,7 @@ public abstract class TestsGenericBase : TestsBase
 
 			  	public void VerifyNoOtherCalls()
 			  	{
-
+			  {{verifyNoOtherCalls.Indent(2)}}
 			  	}
 
 			  	private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
@@ -207,7 +207,7 @@ public abstract class TestsGenericBase : TestsBase
 		return ("TestsBase.g.cs", testsBase);
 	}
 
-	protected static GeneratedSource GetClassMock(string methods, string proxy)
+	protected static GeneratedSource GetClassMock(string methods, string proxy, string verifyNoOtherCalls)
 	{
 		var mock =
 			$$"""
@@ -231,7 +231,7 @@ public abstract class TestsGenericBase : TestsBase
 
 			  	public void VerifyNoOtherCalls()
 			  	{
-
+			  {{verifyNoOtherCalls}}
 			  	}
 
 			  	private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()

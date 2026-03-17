@@ -573,7 +573,7 @@ internal static class MethodSymbolEx
 				.Indent(indent)
 				.AppendInvocationFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
 				.AppendVerifyNoOtherCallsInvocation()
-				.AppendLine(";");
+				.Append(';');
 		}
 	}
 }

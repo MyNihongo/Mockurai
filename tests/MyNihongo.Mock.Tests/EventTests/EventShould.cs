@@ -44,10 +44,16 @@ public sealed class EventShould : EventGenericTestsBase
 			}
 			""";
 
+		const string verifyNoOtherCalls =
+			"""
+			_handlerEvent0AddInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			_handlerEvent0RemoveInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			""";
+
 		const string proxy = $"public {@event}";
 
 		var testCode = CreateInterfaceTestCode(@event);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -95,10 +101,16 @@ public sealed class EventShould : EventGenericTestsBase
 			}
 			""";
 
+		const string verifyNoOtherCalls =
+			"""
+			_handlerEvent0AddInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			_handlerEvent0RemoveInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			""";
+
 		const string proxy = $"public {@event}";
 
 		var testCode = CreateInterfaceTestCode(@event);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -146,10 +158,16 @@ public sealed class EventShould : EventGenericTestsBase
 			}
 			""";
 
+		const string verifyNoOtherCalls =
+			"""
+			_handlerEvent0AddInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			_handlerEvent0RemoveInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			""";
+
 		const string proxy = $"public {@event}";
 
 		var testCode = CreateInterfaceTestCode(@event);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();

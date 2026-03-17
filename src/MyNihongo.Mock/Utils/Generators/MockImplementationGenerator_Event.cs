@@ -56,15 +56,15 @@ internal static class MockImplementationEventGenerator
 		return null;
 	}
 
-	public static void AppendEventVerifyNoOtherCalls(StringBuilder stringBuilder, MockedMemberSymbol memberSymbol, int indent)
+	public static IEnumerable<IMethodSymbol> GetEventVerifyNoOtherCallMethods(MockedMemberSymbol memberSymbol)
 	{
 		if (memberSymbol.Symbol is not IEventSymbol eventSymbol)
-			return;
+			yield break;
 
 		if (eventSymbol.AddMethod is not null)
-			stringBuilder.AppendVerifyNoOtherCallsInvocation(memberSymbol, eventSymbol.AddMethod, indent);
+			yield return eventSymbol.AddMethod;
 		if (eventSymbol.RemoveMethod is not null)
-			stringBuilder.AppendVerifyNoOtherCallsInvocation(memberSymbol, eventSymbol.RemoveMethod, indent);
+			yield return eventSymbol.RemoveMethod;
 	}
 
 	extension(StringBuilder stringBuilder)
