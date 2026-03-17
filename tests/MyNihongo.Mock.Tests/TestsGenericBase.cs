@@ -71,7 +71,7 @@ public abstract class TestsGenericBase : TestsBase
 		return ("TestsBase.g.cs", testsBase);
 	}
 
-	protected static GeneratedSource GetInterfaceMock(string methods, string proxy, string verifyNoOtherCalls)
+	protected static GeneratedSource GetInterfaceMock(string methods, string proxy, string verifyNoOtherCalls, string invocations)
 	{
 		var mock =
 			$$"""
@@ -100,7 +100,7 @@ public abstract class TestsGenericBase : TestsBase
 
 			  	private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
 			  	{
-			  		yield break;
+			  {{invocations.Indent(2)}}
 			  	}
 
 			  	private sealed class Proxy : MyNihongo.Mock.Tests.IInterface<T>

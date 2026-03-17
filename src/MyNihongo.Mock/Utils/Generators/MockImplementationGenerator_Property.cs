@@ -31,7 +31,7 @@ internal static class MockImplementationPropertyGenerator
 		return null;
 	}
 
-	public static IEnumerable<IMethodSymbol> GetPropertyVerifyNoOtherCallMethods(MockedMemberSymbol memberSymbol)
+	public static IEnumerable<IMethodSymbol> GetPropertyMethods(MockedMemberSymbol memberSymbol)
 	{
 		if (memberSymbol.Symbol is not IPropertySymbol propertySymbol)
 			yield break;

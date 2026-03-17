@@ -566,14 +566,5 @@ internal static class MethodSymbolEx
 				.AppendParameterName(MockGeneratorConst.Suffixes.Prefix)
 				.AppendPropertyName(name);
 		}
-
-		public void AppendVerifyNoOtherCallsInvocation(MockedMemberSymbol memberSymbol, IMethodSymbol methodSymbol, int indent)
-		{
-			@this
-				.Indent(indent)
-				.AppendInvocationFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
-				.AppendVerifyNoOtherCallsInvocation()
-				.Append(';');
-		}
 	}
 }

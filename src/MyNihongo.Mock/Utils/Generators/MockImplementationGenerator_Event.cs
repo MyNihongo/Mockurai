@@ -56,7 +56,7 @@ internal static class MockImplementationEventGenerator
 		return null;
 	}
 
-	public static IEnumerable<IMethodSymbol> GetEventVerifyNoOtherCallMethods(MockedMemberSymbol memberSymbol)
+	public static IEnumerable<IMethodSymbol> GetEventMethods(MockedMemberSymbol memberSymbol)
 	{
 		if (memberSymbol.Symbol is not IEventSymbol eventSymbol)
 			yield break;

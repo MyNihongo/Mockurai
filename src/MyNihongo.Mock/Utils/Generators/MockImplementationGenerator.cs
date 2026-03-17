@@ -39,7 +39,7 @@ internal static class MockImplementationGenerator
 
 			  	private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
 			  	{
-			  {{CreateGetInvocations(stringBuilder, mockableMembers, indent: 2)}}
+			  {{CreateGetInvocations(stringBuilder, mockedTypeSymbol, mockableMembers, indent: 2)}}
 			  	}
 
 			  	private sealed class Proxy : {{typeString}}
@@ -160,9 +160,9 @@ internal static class MockImplementationGenerator
 		{
 			Func<MockedMemberSymbol, IEnumerable<IMethodSymbol>>? methods = member.Symbol.Kind switch
 			{
-				SymbolKind.Event => MockImplementationEventGenerator.GetEventVerifyNoOtherCallMethods,
-				SymbolKind.Property => MockImplementationPropertyGenerator.GetPropertyVerifyNoOtherCallMethods,
-				SymbolKind.Method => MockImplementationMethodGenerator.GetMethodVerifyNoOtherCallMethods,
+				SymbolKind.Event => MockImplementationEventGenerator.GetEventMethods,
+				SymbolKind.Property => MockImplementationPropertyGenerator.GetPropertyMethods,
+				SymbolKind.Method => MockImplementationMethodGenerator.GetMethodMethods,
 				_ => null,
 			};
 
@@ -174,7 +174,12 @@ internal static class MockImplementationGenerator
 				if (methodIndex > 0)
 					stringBuilder.AppendLine();
 
-				stringBuilder.AppendVerifyNoOtherCallsInvocation(member, method, indent);
+				stringBuilder
+					.Indent(indent)
+					.AppendInvocationFieldName(member.MemberName, method.MethodKind)
+					.AppendVerifyNoOtherCallsInvocation()
+					.Append(';');
+
 				methodIndex++;
 			}
 		}
@@ -182,7 +187,7 @@ internal static class MockImplementationGenerator
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateGetInvocations(StringBuilder stringBuilder, IReadOnlyList<MockedMemberSymbol> members, int indent)
+	private static string CreateGetInvocations(StringBuilder stringBuilder, MockedTypeSymbol typeSymbol, IReadOnlyList<MockedMemberSymbol> members, int indent)
 	{
 		stringBuilder.Clear();
 
@@ -195,11 +200,36 @@ internal static class MockImplementationGenerator
 			return stringBuilder.ToString();
 		}
 
-		// TODO: implement
-		return stringBuilder
-			.Indent(indent)
-			.Append("yield break;")
-			.ToString();
+		var methodIndex = 0;
+		foreach (var member in members)
+		{
+			Func<MockedMemberSymbol, IEnumerable<IMethodSymbol>>? methods = member.Symbol.Kind switch
+			{
+				SymbolKind.Event => MockImplementationEventGenerator.GetEventMethods,
+				SymbolKind.Property => MockImplementationPropertyGenerator.GetPropertyMethods,
+				SymbolKind.Method => MockImplementationMethodGenerator.GetMethodMethods,
+				_ => null,
+			};
+
+			if (methods is null)
+				continue;
+
+			foreach (var method in methods(member))
+			{
+				if (methodIndex > 0)
+					stringBuilder.AppendLine();
+
+				stringBuilder
+					.Indent(indent)
+					.Append("yield return ")
+					.AppendInvocationFieldName(member.MemberName, method.MethodKind)
+					.Append(';');
+
+				methodIndex++;
+			}
+		}
+
+		return stringBuilder.ToString();
 	}
 
 	private static string CreateProxyMethods(StringBuilder stringBuilder, ITypeSymbol typeSymbol, IReadOnlyList<MockedMemberSymbol> members, int indent)

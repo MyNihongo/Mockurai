@@ -21,7 +21,7 @@ internal static class MockImplementationMethodGenerator
 			: null;
 	}
 
-	public static IEnumerable<IMethodSymbol> GetMethodVerifyNoOtherCallMethods(MockedMemberSymbol memberSymbol)
+	public static IEnumerable<IMethodSymbol> GetMethodMethods(MockedMemberSymbol memberSymbol)
 	{
 		if (memberSymbol.Symbol is IMethodSymbol methodSymbol)
 			yield return methodSymbol;

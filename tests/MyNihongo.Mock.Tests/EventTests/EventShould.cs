@@ -50,10 +50,16 @@ public sealed class EventShould : EventGenericTestsBase
 			_handlerEvent0RemoveInvocation?.VerifyNoOtherCalls(_invocationProviders);
 			""";
 
+		const string invocations =
+			"""
+			yield return _handlerEvent0AddInvocation;
+			yield return _handlerEvent0RemoveInvocation;
+			""";
+
 		const string proxy = $"public {@event}";
 
 		var testCode = CreateInterfaceTestCode(@event);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -107,10 +113,16 @@ public sealed class EventShould : EventGenericTestsBase
 			_handlerEvent0RemoveInvocation?.VerifyNoOtherCalls(_invocationProviders);
 			""";
 
+		const string invocations =
+			"""
+			yield return _handlerEvent0AddInvocation;
+			yield return _handlerEvent0RemoveInvocation;
+			""";
+
 		const string proxy = $"public {@event}";
 
 		var testCode = CreateInterfaceTestCode(@event);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -164,10 +176,16 @@ public sealed class EventShould : EventGenericTestsBase
 			_handlerEvent0RemoveInvocation?.VerifyNoOtherCalls(_invocationProviders);
 			""";
 
+		const string invocations =
+			"""
+			yield return _handlerEvent0AddInvocation;
+			yield return _handlerEvent0RemoveInvocation;
+			""";
+
 		const string proxy = $"public {@event}";
 
 		var testCode = CreateInterfaceTestCode(@event);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
