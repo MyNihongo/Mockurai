@@ -67,6 +67,11 @@ internal static class MockImplementationEventGenerator
 			yield return eventSymbol.RemoveMethod;
 	}
 
+	public static void AppendProxyEventImplementation(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
+	{
+		
+	}
+
 	extension(StringBuilder stringBuilder)
 	{
 		private void AppendMethod(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
