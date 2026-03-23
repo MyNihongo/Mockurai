@@ -414,7 +414,7 @@ internal static class MethodSymbolEx
 			return @this;
 		}
 
-		private StringBuilder AppendInvocationDeclaration(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
+		public StringBuilder AppendInvocationDeclaration(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 		{
 			@this
 				.AppendInvocationFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)

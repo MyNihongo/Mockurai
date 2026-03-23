@@ -49,9 +49,9 @@ internal static class MockImplementationEventGenerator
 
 		// Verify methods
 		if (eventSymbol.AddMethod is not null)
-			stringBuilder.AppendMethod(eventSymbol.AddMethod, mockedTypeSymbol, memberSymbol, indent);
+			stringBuilder.AppendMockMethods(eventSymbol.AddMethod, mockedTypeSymbol, memberSymbol, indent);
 		if (eventSymbol.RemoveMethod is not null)
-			stringBuilder.AppendMethod(eventSymbol.RemoveMethod, mockedTypeSymbol, memberSymbol, indent);
+			stringBuilder.AppendMockMethods(eventSymbol.RemoveMethod, mockedTypeSymbol, memberSymbol, indent);
 
 		return null;
 	}
@@ -69,16 +69,77 @@ internal static class MockImplementationEventGenerator
 
 	public static void AppendProxyEventImplementation(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 	{
-		
+		if (memberSymbol.Symbol is not IEventSymbol eventSymbol)
+			return;
+
+		stringBuilder
+			.Indent(indent)
+			.Append("public event ")
+			.AppendType(eventSymbol.Type)
+			.Append(' ')
+			.AppendLine(eventSymbol.Name);
+
+		stringBuilder
+			.Indent(indent++).AppendLine("{");
+
+		if (eventSymbol.AddMethod is not null)
+			stringBuilder.AppendProxyImplementation(eventSymbol.AddMethod, mockedTypeSymbol, memberSymbol, indent);
+		if (eventSymbol.RemoveMethod is not null)
+			stringBuilder.AppendProxyImplementation(eventSymbol.RemoveMethod, mockedTypeSymbol, memberSymbol, indent);
+
+		stringBuilder
+			.Indent(--indent).Append('}');
 	}
 
 	extension(StringBuilder stringBuilder)
 	{
-		private void AppendMethod(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
+		private void AppendMockMethods(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 		{
 			stringBuilder
 				.AppendLine().AppendLine()
 				.AppendVerifyMethods(methodSymbol, mockedTypeSymbol, memberSymbol, indent);
+		}
+
+		private void AppendProxyImplementation(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
+		{
+			const string mockPrefix = "_mock.";
+
+			(string Name, string Command)? methodProps = methodSymbol.MethodKind switch
+			{
+				MethodKind.EventAdd => ("add", "+="),
+				MethodKind.EventRemove => ("remove", "-="),
+				_ => null,
+			};
+
+			if (!methodProps.HasValue)
+				return;
+
+			stringBuilder
+				.Indent(indent).AppendLine(methodProps.Value.Name)
+				.Indent(indent++).AppendLine("{");
+
+			stringBuilder
+				.Indent(indent)
+				.Append(mockPrefix)
+				.AppendInvocationDeclaration(methodSymbol, mockedTypeSymbol, memberSymbol, indent)
+				.AppendLine();
+
+			stringBuilder
+				.Indent(indent)
+				.Append(mockPrefix)
+				.AppendInvocationFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
+				.AppendLine(".Register(_mock._invocationIndex, value);");
+
+			stringBuilder
+				.Indent(indent)
+				.Append(mockPrefix)
+				.AppendFieldName(memberSymbol.MemberName)
+				.Append(' ')
+				.Append(methodProps.Value.Command)
+				.AppendLine(" value;");
+
+			stringBuilder
+				.Indent(--indent).AppendLine("}");
 		}
 	}
 }
