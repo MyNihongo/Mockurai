@@ -43,6 +43,11 @@ internal static class MockImplementationMethodGenerator
 			.Indent(indent)
 			.AppendRegisterMethod(methodSymbol, memberSymbol, genericTypeNames)
 			.AppendLine();
+
+		stringBuilder
+			.Indent(indent)
+			.AppendInvokeMethod(methodSymbol, memberSymbol, genericTypeNames, indent)
+			.AppendLine();
 	}
 
 	extension(StringBuilder stringBuilder)
@@ -72,6 +77,62 @@ internal static class MockImplementationMethodGenerator
 
 			return stringBuilder
 				.Append(".Register(_mock._invocationIndex, default);");
+		}
+
+		private StringBuilder AppendInvokeMethod(IMethodSymbol methodSymbol, MockedMemberSymbol memberSymbol, ImmutableArray<string> genericTypeNames, int indent)
+		{
+			var parameterSplit = methodSymbol.Parameters.SplitParameters();
+
+			if (!parameterSplit.OutputParameters.IsDefaultOrEmpty)
+			{
+				stringBuilder
+					.Append("if (")
+					.Append(FieldPrefix)
+					.AppendFieldName(memberSymbol.MemberName)
+					.AppendLine(" is not null)");
+
+				stringBuilder
+					.Indent(indent++).AppendLine("{")
+					.Indent(indent).AppendInvokeExecuteCall(methodSymbol, memberSymbol, indent).AppendLine()
+					.Indent(--indent).AppendLine("}")
+					.Indent(indent).AppendLine("else")
+					.Indent(indent++).AppendLine("{");
+
+				foreach (var parameter in parameterSplit.OutputParameters)
+				{
+					stringBuilder
+						.Indent(indent)
+						.Append(parameter.Name)
+						.AppendLine(MockGeneratorConst.Suffixes.DefaultAssign);
+				}
+
+				stringBuilder
+					.Indent(--indent).Append('}');
+			}
+			else
+			{
+				stringBuilder.AppendInvokeExecuteCall(methodSymbol, memberSymbol, indent);
+			}
+
+			return stringBuilder;
+		}
+
+		private StringBuilder AppendInvokeExecuteCall(IMethodSymbol methodSymbol, MockedMemberSymbol memberSymbol, int indent)
+		{
+			var hasReturnType = methodSymbol.TryGetReturnType() is not null;
+
+			return stringBuilder
+				.AppendIf(hasReturnType, "return ")
+				.Append(FieldPrefix)
+				.AppendFieldName(memberSymbol.MemberName)
+				.Append("?.")
+				.Append(hasReturnType ? "Execute" : "Invoke")
+				.Append('(')
+				.AppendParameterNames(methodSymbol.Parameters, appendRefModifier: true, appendComma: hasReturnType)
+				.AppendIf(hasReturnType, "out var returnValue")
+				.Append(")")
+				.AppendIf(hasReturnType, " == true ? returnValue! : default")
+				.Append(';');
 		}
 	}
 }

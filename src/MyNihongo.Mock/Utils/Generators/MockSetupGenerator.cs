@@ -556,7 +556,7 @@ internal static class MockSetupGenerator
 
 file static class Extensions
 {
-	private const string DefaultAssign = " = default;";
+	private const string DefaultAssign = MockGeneratorConst.Suffixes.DefaultAssign;
 
 	extension(StringBuilder stringBuilder)
 	{
@@ -832,7 +832,7 @@ file static class Extensions
 					stringBuilder
 						.Indent(indent)
 						.Append(outParameter.Name)
-						.AppendLine(" = default;");
+						.AppendLine(DefaultAssign);
 				}
 
 				stringBuilder

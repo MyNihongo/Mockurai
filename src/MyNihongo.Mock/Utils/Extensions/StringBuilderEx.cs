@@ -141,5 +141,12 @@ internal static class StringBuilderEx
 				? @this.Append(value)
 				: @this;
 		}
+
+		public StringBuilder AppendIf(bool condition, string value)
+		{
+			return condition
+				? @this.Append(value)
+				: @this;
+		}
 	}
 }

@@ -316,7 +316,7 @@ internal static class MockImplementationGenerator
 
 						stringBuilder
 							.Append(parameter.Name)
-							.Append(" = default;");
+							.Append(MockGeneratorConst.Suffixes.DefaultAssign);
 					}
 
 					// TODO: appropriate check
