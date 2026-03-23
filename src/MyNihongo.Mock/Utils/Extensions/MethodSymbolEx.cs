@@ -416,12 +416,18 @@ internal static class MethodSymbolEx
 
 		public StringBuilder AppendInvocationDeclaration(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 		{
+			return @this.AppendInvocationDeclaration(methodSymbol, mockedTypeSymbol, memberSymbol, fieldPrefix: null, indent, out _);
+		}
+
+		public StringBuilder AppendInvocationDeclaration(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, string? fieldPrefix, int indent, out ImmutableArray<string> genericTypeNames)
+		{
 			@this
+				.AppendIfNotNullOrEmpty(fieldPrefix)
 				.AppendInvocationFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
 				.Append(" ??= new ")
 				.AppendInvocationType(methodSymbol, mockedTypeSymbol);
 
-			if (methodSymbol.TryGetGenericTypeNames(mockedTypeSymbol, out var genericTypeNames))
+			if (methodSymbol.TryGetGenericTypeNames(mockedTypeSymbol, out genericTypeNames))
 			{
 				@this.AppendLine("();");
 
@@ -432,6 +438,7 @@ internal static class MethodSymbolEx
 					.Append(" = (")
 					.AppendInvocationType(methodSymbol)
 					.Append(')')
+					.AppendIfNotNullOrEmpty(fieldPrefix)
 					.AppendInvocationFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
 					.Append(".GetOrAdd(")
 					.AppendTypesDeclaration(genericTypeNames)

@@ -243,6 +243,7 @@ internal static class MockImplementationGenerator
 			{
 				SymbolKind.Event => MockImplementationEventGenerator.AppendProxyEventImplementation,
 				SymbolKind.Property => MockImplementationPropertyGenerator.AppendProxyPropertyImplementation,
+				SymbolKind.Method => MockImplementationMethodGenerator.AppendProxyMethodImplementation,
 				_ => null,
 			};
 

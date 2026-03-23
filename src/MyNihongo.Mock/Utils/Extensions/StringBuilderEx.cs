@@ -134,5 +134,12 @@ internal static class StringBuilderEx
 			var declaredAccessibility = symbol.DeclaredAccessibility.GetString();
 			return @this.Append(declaredAccessibility);
 		}
+
+		public StringBuilder AppendIfNotNullOrEmpty(string? value)
+		{
+			return !string.IsNullOrEmpty(value)
+				? @this.Append(value)
+				: @this;
+		}
 	}
 }
