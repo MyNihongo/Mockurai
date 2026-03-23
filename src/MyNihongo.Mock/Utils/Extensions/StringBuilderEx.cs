@@ -128,5 +128,11 @@ internal static class StringBuilderEx
 		{
 			return @this.Append("?.VerifyNoOtherCalls(_invocationProviders)");
 		}
+
+		public StringBuilder AppendDeclaredAccessibility(ISymbol symbol)
+		{
+			var declaredAccessibility = symbol.DeclaredAccessibility.GetString();
+			return @this.Append(declaredAccessibility);
+		}
 	}
 }

@@ -242,6 +242,7 @@ internal static class MockImplementationGenerator
 			Action<StringBuilder, MockedTypeSymbol, MockedMemberSymbol, int>? handler = member.Symbol.Kind switch
 			{
 				SymbolKind.Event => MockImplementationEventGenerator.AppendProxyEventImplementation,
+				SymbolKind.Property => MockImplementationPropertyGenerator.AppendProxyPropertyImplementation,
 				_ => null,
 			};
 

@@ -74,7 +74,8 @@ internal static class MockImplementationEventGenerator
 
 		stringBuilder
 			.Indent(indent)
-			.Append("public event ")
+			.AppendDeclaredAccessibility(eventSymbol)
+			.Append(" event ")
 			.AppendType(eventSymbol.Type)
 			.Append(' ')
 			.AppendLine(eventSymbol.Name);
@@ -102,7 +103,7 @@ internal static class MockImplementationEventGenerator
 
 		private void AppendProxyImplementation(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 		{
-			const string mockPrefix = "_mock.";
+			const string mockPrefix = MockGeneratorConst.Suffixes.MockVariableCall;
 
 			(string Name, string Command)? methodProps = methodSymbol.MethodKind switch
 			{
