@@ -220,7 +220,7 @@ internal static class MockImplementationMethodGenerator
 			if (hasGenericTypes)
 			{
 				stringBuilder
-					.Append("GetValueOrDefault(")
+					.Append("ValueOrDefault(")
 					.AppendTypesDeclaration(genericTypeNames)
 					.Append("))?.");
 			}
