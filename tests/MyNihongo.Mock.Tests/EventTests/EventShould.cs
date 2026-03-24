@@ -124,10 +124,39 @@ public sealed class EventShould : EventTestsBase
 			}
 			""";
 
-		const string proxy = $"public {@event}";
+		const string proxy =
+			"""
+			public event System.EventHandler<string>? HandlerEvent
+			{
+				add
+				{
+					_mock._handlerEvent0AddInvocation ??= new Invocation<System.EventHandler<string>?>("IInterface.HandlerEvent.add += {0}");
+					_mock._handlerEvent0AddInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent0 += value;
+				}
+				remove
+				{
+					_mock._handlerEvent0RemoveInvocation ??= new Invocation<System.EventHandler<string>?>("IInterface.HandlerEvent.remove -= {0}");
+					_mock._handlerEvent0RemoveInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent0 -= value;
+				}
+			}
+			""";
+
+		const string verifyNoOtherCalls =
+			"""
+			_handlerEvent0AddInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			_handlerEvent0RemoveInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			""";
+
+		const string invocations =
+			"""
+			yield return _handlerEvent0AddInvocation;
+			yield return _handlerEvent0RemoveInvocation;
+			""";
 
 		var testCode = CreateInterfaceTestCode(@event);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, string.Empty, string.Empty);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -215,12 +244,57 @@ public sealed class EventShould : EventTestsBase
 
 		const string proxy =
 			"""
-			public event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent1;
-			public event System.EventHandler<string>? HandlerEvent2;
+			public event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent1
+			{
+				add
+				{
+					_mock._handlerEvent10AddInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("IInterface.HandlerEvent1.add += {0}");
+					_mock._handlerEvent10AddInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent10 += value;
+				}
+				remove
+				{
+					_mock._handlerEvent10RemoveInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("IInterface.HandlerEvent1.remove -= {0}");
+					_mock._handlerEvent10RemoveInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent10 -= value;
+				}
+			}
+
+			public event System.EventHandler<string>? HandlerEvent2
+			{
+				add
+				{
+					_mock._handlerEvent20AddInvocation ??= new Invocation<System.EventHandler<string>?>("IInterface.HandlerEvent2.add += {0}");
+					_mock._handlerEvent20AddInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent20 += value;
+				}
+				remove
+				{
+					_mock._handlerEvent20RemoveInvocation ??= new Invocation<System.EventHandler<string>?>("IInterface.HandlerEvent2.remove -= {0}");
+					_mock._handlerEvent20RemoveInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent20 -= value;
+				}
+			}
+			""";
+
+		const string verifyNoOtherCalls =
+			"""
+			_handlerEvent10AddInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			_handlerEvent10RemoveInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			_handlerEvent20AddInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			_handlerEvent20RemoveInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			""";
+
+		const string invocations =
+			"""
+			yield return _handlerEvent10AddInvocation;
+			yield return _handlerEvent10RemoveInvocation;
+			yield return _handlerEvent20AddInvocation;
+			yield return _handlerEvent20RemoveInvocation;
 			""";
 
 		var testCode = CreateInterfaceTestCode(@event);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, string.Empty, string.Empty);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -273,10 +347,39 @@ public sealed class EventShould : EventTestsBase
 			}
 			""";
 
-		const string proxy = "public override event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent;";
+		const string proxy =
+			"""
+			public override event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent
+			{
+				add
+				{
+					_mock._handlerEvent0AddInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class.HandlerEvent.add += {0}");
+					_mock._handlerEvent0AddInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent0 += value;
+				}
+				remove
+				{
+					_mock._handlerEvent0RemoveInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class.HandlerEvent.remove -= {0}");
+					_mock._handlerEvent0RemoveInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent0 -= value;
+				}
+			}
+			""";
+
+		const string verifyNoOtherCalls =
+			"""
+			_handlerEvent0AddInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			_handlerEvent0RemoveInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			""";
+
+		const string invocations =
+			"""
+			yield return _handlerEvent0AddInvocation;
+			yield return _handlerEvent0RemoveInvocation;
+			""";
 
 		var testCode = CreateClassTestCode(@event);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -364,12 +467,57 @@ public sealed class EventShould : EventTestsBase
 
 		const string proxy =
 			"""
-			public override event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent;
-			public override event System.EventHandler<string>? HandlerAnotherEvent;
+			public override event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent
+			{
+				add
+				{
+					_mock._handlerEvent0AddInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class.HandlerEvent.add += {0}");
+					_mock._handlerEvent0AddInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent0 += value;
+				}
+				remove
+				{
+					_mock._handlerEvent0RemoveInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class.HandlerEvent.remove -= {0}");
+					_mock._handlerEvent0RemoveInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent0 -= value;
+				}
+			}
+
+			public override event System.EventHandler<string>? HandlerAnotherEvent
+			{
+				add
+				{
+					_mock._handlerAnotherEvent0AddInvocation ??= new Invocation<System.EventHandler<string>?>("Class.HandlerAnotherEvent.add += {0}");
+					_mock._handlerAnotherEvent0AddInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerAnotherEvent0 += value;
+				}
+				remove
+				{
+					_mock._handlerAnotherEvent0RemoveInvocation ??= new Invocation<System.EventHandler<string>?>("Class.HandlerAnotherEvent.remove -= {0}");
+					_mock._handlerAnotherEvent0RemoveInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerAnotherEvent0 -= value;
+				}
+			}
+			""";
+
+		const string verifyNoOtherCalls =
+			"""
+			_handlerEvent0AddInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			_handlerEvent0RemoveInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			_handlerAnotherEvent0AddInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			_handlerAnotherEvent0RemoveInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			""";
+
+		const string invocations =
+			"""
+			yield return _handlerEvent0AddInvocation;
+			yield return _handlerEvent0RemoveInvocation;
+			yield return _handlerAnotherEvent0AddInvocation;
+			yield return _handlerAnotherEvent0RemoveInvocation;
 			""";
 
 		var testCode = CreateClassTestCode(@event, isAbstract: true);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();

@@ -75,7 +75,9 @@ internal static class MockImplementationEventGenerator
 		stringBuilder
 			.Indent(indent)
 			.AppendDeclaredAccessibility(eventSymbol)
-			.Append(" event ")
+			.Append(' ')
+			.TryAppendOverride(memberSymbol.Symbol)
+			.Append("event ")
 			.AppendType(eventSymbol.Type)
 			.Append(' ')
 			.AppendLine(eventSymbol.Name);

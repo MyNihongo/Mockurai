@@ -26,10 +26,10 @@ public abstract class EventTestsBase : TestsNonGenericBase
 		return CreateClassTestCode(@event, CustomCode, isAbstract);
 	}
 
-	protected static GeneratedSources CreateClassGeneratedSources(string methods, string proxy)
+	protected static GeneratedSources CreateClassGeneratedSources(string methods, string proxy, string verifyNoOtherCalls, string invocations)
 	{
 		var testsBase = GetClassTestsBase();
-		var mock = GetClassMock(methods, proxy);
+		var mock = GetClassMock(methods, proxy, verifyNoOtherCalls, invocations);
 
 		return
 		[
