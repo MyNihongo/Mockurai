@@ -13,7 +13,7 @@ internal static class ParameterSymbolEx
 		public ParameterSplit SplitParameters()
 		{
 			ImmutableArray<IParameterSymbol>.Builder? inputBuilder = null, outputBuilder = null;
-			
+
 			foreach (var parameter in @this)
 			{
 				if (parameter.RefKind == RefKind.Out)
@@ -71,7 +71,7 @@ internal static class ParameterSymbolEx
 				.Append(parameter.Name);
 		}
 
-		public StringBuilder AppendParameterNames(ImmutableArray<IParameterSymbol> parameters, string? suffix = null, bool appendComma = false, bool appendRefModifier = false)
+		public StringBuilder AppendParameterNames(ImmutableArray<IParameterSymbol> parameters, string? suffix = null, bool appendComma = false, bool appendRefModifier = false, bool outAsDefault = false)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
@@ -85,7 +85,10 @@ internal static class ParameterSymbolEx
 						@this.Append(refModifier).Append(' ');
 				}
 
-				@this.Append(parameters[i].Name);
+				if (outAsDefault && parameters[i].RefKind == RefKind.Out)
+					@this.Append("default");
+				else
+					@this.Append(parameters[i].Name);
 
 				if (!string.IsNullOrEmpty(suffix))
 					@this.Append(suffix);

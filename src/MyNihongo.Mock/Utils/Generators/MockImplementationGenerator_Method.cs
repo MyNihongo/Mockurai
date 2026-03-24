@@ -36,6 +36,12 @@ internal static class MockImplementationMethodGenerator
 
 		stringBuilder
 			.Indent(indent)
+			.AppendMethodDeclaration(methodSymbol)
+			.AppendLine()
+			.Indent(indent++).AppendLine("{");
+
+		stringBuilder
+			.Indent(indent)
 			.AppendInvocationDeclaration(methodSymbol, mockedTypeSymbol, memberSymbol, FieldPrefix, indent, out var genericTypeNames)
 			.AppendLine();
 
@@ -48,6 +54,9 @@ internal static class MockImplementationMethodGenerator
 			.Indent(indent)
 			.AppendInvokeMethod(methodSymbol, memberSymbol, genericTypeNames, indent)
 			.AppendLine();
+
+		stringBuilder
+			.Indent(--indent).Append('}');
 	}
 
 	public static void AppendProxyMethodDummyImplementation(StringBuilder stringBuilder, ISymbol memberSymbol, int indent)
@@ -57,16 +66,8 @@ internal static class MockImplementationMethodGenerator
 
 		stringBuilder
 			.Indent(indent)
-			.AppendDeclaredAccessibility(methodSymbol)
-			.Append(' ')
-			.TryAppendOverride(methodSymbol)
-			.Append(methodSymbol.ReturnType)
-			.Append(' ')
-			.Append(methodSymbol.Name)
-			.AppendGenericTypes(methodSymbol.TypeArguments)
-			.Append("(")
-			.AppendParameters(methodSymbol.Parameters)
-			.Append(") {");
+			.AppendMethodDeclaration(methodSymbol)
+			.Append(" {");
 
 		foreach (var parameter in methodSymbol.Parameters)
 		{
@@ -121,6 +122,21 @@ internal static class MockImplementationMethodGenerator
 				.AppendVerifyMethods(methodSymbol, mockedTypeSymbol, memberSymbol, indent);
 		}
 
+		private StringBuilder AppendMethodDeclaration(IMethodSymbol methodSymbol)
+		{
+			return stringBuilder
+				.AppendDeclaredAccessibility(methodSymbol)
+				.Append(' ')
+				.TryAppendOverride(methodSymbol)
+				.Append(methodSymbol.ReturnType)
+				.Append(' ')
+				.Append(methodSymbol.Name)
+				.AppendGenericTypes(methodSymbol.TypeArguments)
+				.Append('(')
+				.AppendParameters(methodSymbol.Parameters)
+				.Append(')');
+		}
+
 		private StringBuilder AppendRegisterMethod(IMethodSymbol methodSymbol, MockedMemberSymbol memberSymbol, ImmutableArray<string> genericTypeNames)
 		{
 			if (genericTypeNames.IsDefaultOrEmpty)
@@ -136,7 +152,9 @@ internal static class MockImplementationMethodGenerator
 			}
 
 			return stringBuilder
-				.Append(".Register(_mock._invocationIndex, default);");
+				.Append(".Register(_mock._invocationIndex, ")
+				.AppendParameterNames(methodSymbol.Parameters, outAsDefault: true)
+				.Append(");");
 		}
 
 		private StringBuilder AppendInvokeMethod(IMethodSymbol methodSymbol, MockedMemberSymbol memberSymbol, ImmutableArray<string> genericTypeNames, int indent)

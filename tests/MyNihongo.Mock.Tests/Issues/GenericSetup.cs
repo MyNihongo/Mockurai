@@ -118,12 +118,12 @@ public sealed class GenericSetup : TestsBase
 
 					public void VerifyNoOtherCalls()
 					{
-
+						_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);
 					}
 
 					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
 					{
-						yield break;
+						yield return _invoke0Invocation;
 					}
 
 					private sealed class Proxy : MyNihongo.Mock.Tests.IInterface
@@ -135,8 +135,13 @@ public sealed class GenericSetup : TestsBase
 							_mock = mock;
 						}
 
-						public TReturns Invoke<TReturns>(int param1, TReturns returnValue) {return default;}
-
+						public TReturns Invoke<TReturns>(int param1, TReturns returnValue)
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationInt32T1<TReturns>)_mock._invoke0Invocation.GetOrAdd(typeof(TReturns), static key => new InvocationInt32T1<TReturns>($"IInterface.Invoke<{key.Name}>({0}, {1})"));
+							invoke0Invocation.Register(_mock._invocationIndex, param1, returnValue);
+							return ((SetupInt32T1<TReturns, TReturns>?)_mock._invoke0?.GetValueOrDefault(typeof(TReturns))).?Execute(param1, returnValue, out var returnValue) == true ? returnValue! : default;
+						}
 					}
 				}
 
