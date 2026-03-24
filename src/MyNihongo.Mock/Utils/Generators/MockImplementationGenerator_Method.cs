@@ -152,9 +152,25 @@ internal static class MockImplementationMethodGenerator
 			}
 
 			return stringBuilder
-				.Append(".Register(_mock._invocationIndex, ")
-				.AppendParameterNames(methodSymbol.Parameters, outAsDefault: true)
+				.Append(".Register(_mock._invocationIndex")
+				.AppendParameterNamesOrDefault(methodSymbol.Parameters)
 				.Append(");");
+		}
+
+		private StringBuilder AppendParameterNamesOrDefault(ImmutableArray<IParameterSymbol> parameters)
+		{
+			foreach (var parameter in parameters)
+			{
+				stringBuilder.Append(", ");
+
+				var parameterName = parameter.RefKind == RefKind.Out
+					? "default"
+					: parameter.Name;
+
+				stringBuilder.Append(parameterName);
+			}
+
+			return stringBuilder;
 		}
 
 		private StringBuilder AppendInvokeMethod(IMethodSymbol methodSymbol, MockedMemberSymbol memberSymbol, ImmutableArray<string> genericTypeNames, int indent)

@@ -141,7 +141,7 @@ public sealed class MultipleDeclarations : TestsBase
 						public void Invoke()
 						{
 							_mock._invoke0Invocation ??= new Invocation("IInterface.Invoke()");
-							_mock._invoke0Invocation.Register(_mock._invocationIndex, );
+							_mock._invoke0Invocation.Register(_mock._invocationIndex);
 							_mock._invoke0?.Invoke();
 						}
 					}
@@ -347,7 +347,7 @@ public sealed class MultipleDeclarations : TestsBase
 						public void Invoke()
 						{
 							_mock._invoke0Invocation ??= new Invocation("IInterface.Invoke()");
-							_mock._invoke0Invocation.Register(_mock._invocationIndex, );
+							_mock._invoke0Invocation.Register(_mock._invocationIndex);
 							_mock._invoke0?.Invoke();
 						}
 					}

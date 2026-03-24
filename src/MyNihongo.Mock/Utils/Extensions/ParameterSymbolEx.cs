@@ -27,7 +27,7 @@ internal static class ParameterSymbolEx
 				outputParameters: outputBuilder?.ToImmutable() ?? ImmutableArray<IParameterSymbol>.Empty
 			);
 		}
-		
+
 		public string GetReturnValueName()
 		{
 			var parameterNames = @this
@@ -90,7 +90,7 @@ internal static class ParameterSymbolEx
 				.Append(parameter.Name);
 		}
 
-		public StringBuilder AppendParameterNames(ImmutableArray<IParameterSymbol> parameters, string? suffix = null, bool appendComma = false, bool appendRefModifier = false, bool outAsDefault = false)
+		public StringBuilder AppendParameterNames(ImmutableArray<IParameterSymbol> parameters, string? suffix = null, bool appendComma = false, bool appendRefModifier = false)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
@@ -104,10 +104,7 @@ internal static class ParameterSymbolEx
 						@this.Append(refModifier).Append(' ');
 				}
 
-				if (outAsDefault && parameters[i].RefKind == RefKind.Out)
-					@this.Append("default");
-				else
-					@this.Append(parameters[i].Name);
+				@this.Append(parameters[i].Name);
 
 				if (!string.IsNullOrEmpty(suffix))
 					@this.Append(suffix);
