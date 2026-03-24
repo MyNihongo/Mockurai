@@ -141,6 +141,22 @@ internal static class ParameterSymbolEx
 			return @this;
 		}
 
+		public StringBuilder AppendParameterNamesOrDefault(ImmutableArray<IParameterSymbol> parameters)
+		{
+			foreach (var parameter in parameters)
+			{
+				@this.Append(", ");
+
+				var parameterName = parameter.RefKind == RefKind.Out
+					? "default"
+					: parameter.Name;
+
+				@this.Append(parameterName);
+			}
+
+			return @this;
+		}
+
 		public StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol, bool useOverriddenGenericNames)
 		{
 			var parameters = methodSymbol.Parameters;

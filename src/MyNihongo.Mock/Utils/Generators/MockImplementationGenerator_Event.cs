@@ -73,16 +73,7 @@ internal static class MockImplementationEventGenerator
 			return;
 
 		stringBuilder
-			.Indent(indent)
-			.AppendDeclaredAccessibility(eventSymbol)
-			.Append(' ')
-			.TryAppendOverride(memberSymbol.Symbol)
-			.Append("event ")
-			.AppendType(eventSymbol.Type)
-			.Append(' ')
-			.AppendLine(eventSymbol.Name);
-
-		stringBuilder
+			.Indent(indent).AppendEventDeclaration(eventSymbol).AppendLine()
 			.Indent(indent++).AppendLine("{");
 
 		if (eventSymbol.AddMethod is not null)
@@ -101,17 +92,24 @@ internal static class MockImplementationEventGenerator
 
 		stringBuilder
 			.Indent(indent)
-			.AppendDeclaredAccessibility(eventSymbol).Append(' ')
-			.TryAppendOverride(eventSymbol)
-			.Append("event ")
-			.Append(eventSymbol.Type)
-			.Append(' ')
-			.Append(eventSymbol.Name)
+			.AppendEventDeclaration(eventSymbol)
 			.Append(';');
 	}
 
 	extension(StringBuilder stringBuilder)
 	{
+		private StringBuilder AppendEventDeclaration(IEventSymbol eventSymbol)
+		{
+			return stringBuilder
+				.AppendDeclaredAccessibility(eventSymbol)
+				.Append(' ')
+				.TryAppendOverride(eventSymbol)
+				.Append("event ")
+				.AppendType(eventSymbol.Type)
+				.Append(' ')
+				.Append(eventSymbol.Name);
+		}
+
 		private void AppendMockMethods(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 		{
 			stringBuilder

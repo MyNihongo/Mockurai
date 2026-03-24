@@ -35,7 +35,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		const string proxy = $"public {property}";
 
 		var testCode = CreateInterfaceTestCode(property);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, string.Empty, string.Empty);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -75,7 +75,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		const string proxy = "public int Property { get; set; }";
 
 		var testCode = CreateInterfaceTestCode(property);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, string.Empty, string.Empty);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -115,7 +115,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		const string proxy = "public int Property { get; init; }";
 
 		var testCode = CreateInterfaceTestCode(property);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, string.Empty, string.Empty);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -175,7 +175,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		const string proxy = "public int Property { get; set; }";
 
 		var testCode = CreateInterfaceTestCode(property);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, string.Empty, string.Empty);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -235,7 +235,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		const string proxy = "public int Property { get; init; }";
 
 		var testCode = CreateInterfaceTestCode(property);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, string.Empty, string.Empty);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -295,7 +295,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		const string proxy = "public T Property { get; init; }";
 
 		var testCode = CreateInterfaceTestCode(property);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, string.Empty, string.Empty);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -355,7 +355,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		const string proxy = "public T? Property { get; set; }";
 
 		var testCode = CreateInterfaceTestCode(property);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, string.Empty, string.Empty);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -412,10 +412,39 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			}
 			""";
 
-		const string proxy = "public override MyNihongo.Mock.Tests.Record<T?> Property { get; set; }";
+		const string proxy =
+			"""
+			public override MyNihongo.Mock.Tests.Record<T?> Property
+			{
+				get
+				{
+					_mock._property0GetInvocation ??= new Invocation("Class<T>.Property.get");
+					_mock._property0GetInvocation.Register(_mock._invocationIndex);
+					return _mock._property0Get?.Execute(out var returnValue) == true ? returnValue! : default!;
+				}
+				set
+				{
+					_mock._property0SetInvocation ??= new Invocation<MyNihongo.Mock.Tests.Record<T?>>("Class<T>.Property.set = {0}");
+					_mock._property0SetInvocation.Register(_mock._invocationIndex, value);
+					_mock._property0Set?.Invoke(value);
+				}
+			}
+			""";
+
+		const string verifyNoOtherCalls =
+			"""
+			_property0GetInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			_property0SetInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			""";
+
+		const string invocations =
+			"""
+			yield return _property0GetInvocation;
+			yield return _property0SetInvocation;
+			""";
 
 		var testCode = CreateClassTestCode(property, isAbstract: true);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();

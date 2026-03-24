@@ -48,14 +48,7 @@ internal static class MockImplementationPropertyGenerator
 			return;
 
 		stringBuilder
-			.Indent(indent)
-			.AppendDeclaredAccessibility(propertySymbol)
-			.Append(' ')
-			.AppendType(propertySymbol.Type)
-			.Append(' ')
-			.AppendLine(propertySymbol.Name);
-
-		stringBuilder
+			.Indent(indent).AppendPropertyDeclaration(propertySymbol).AppendLine()
 			.Indent(indent++).AppendLine("{");
 
 		if (propertySymbol.GetMethod is not null)
@@ -74,11 +67,7 @@ internal static class MockImplementationPropertyGenerator
 
 		stringBuilder
 			.Indent(indent)
-			.Append("public ")
-			.TryAppendOverride(propertySymbol)
-			.Append(propertySymbol.Type)
-			.Append(' ')
-			.Append(propertySymbol.Name)
+			.AppendPropertyDeclaration(propertySymbol)
 			.Append(" { get; ");
 
 		if (propertySymbol.SetMethod is not null)
@@ -96,6 +85,17 @@ internal static class MockImplementationPropertyGenerator
 
 	extension(StringBuilder stringBuilder)
 	{
+		private StringBuilder AppendPropertyDeclaration(IPropertySymbol propertySymbol)
+		{
+			return stringBuilder
+				.AppendDeclaredAccessibility(propertySymbol)
+				.Append(' ')
+				.TryAppendOverride(propertySymbol)
+				.AppendType(propertySymbol.Type)
+				.Append(' ')
+				.Append(propertySymbol.Name);
+		}
+
 		private void AppendMethods(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 		{
 			stringBuilder
@@ -133,7 +133,9 @@ internal static class MockImplementationPropertyGenerator
 				.Indent(indent)
 				.Append(mockPrefix)
 				.AppendInvocationFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
-				.AppendLine(".Register(_mock._invocationIndex, value);");
+				.Append(".Register(_mock._invocationIndex")
+				.AppendParameterNamesOrDefault(methodSymbol.Parameters)
+				.AppendLine(");");
 
 			stringBuilder
 				.Indent(indent)
@@ -156,7 +158,7 @@ internal static class MockImplementationPropertyGenerator
 				.Append("return ")
 				.Append(MockGeneratorConst.Suffixes.MockVariableCall)
 				.AppendFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
-				.Append("?.Execute(out var returnValue) == true ? returnValue! : default");
+				.Append("?.Execute(out var returnValue) == true ? returnValue! : default!");
 		}
 
 		private void AppendSetImplementation(IMethodSymbol methodSymbol, MockedMemberSymbol memberSymbol)
