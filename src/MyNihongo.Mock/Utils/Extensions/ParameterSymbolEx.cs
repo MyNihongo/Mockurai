@@ -27,6 +27,25 @@ internal static class ParameterSymbolEx
 				outputParameters: outputBuilder?.ToImmutable() ?? ImmutableArray<IParameterSymbol>.Empty
 			);
 		}
+		
+		public string GetReturnValueName()
+		{
+			var parameterNames = @this
+				.Select(static x => x.Name)
+				.ToImmutableHashSet();
+
+			var returnValue = "returnValue";
+
+			for (var i = 0; i < 4; i++)
+			{
+				if (!parameterNames.Contains(returnValue))
+					return returnValue;
+
+				returnValue = '_' + returnValue;
+			}
+
+			return $"__{Guid.NewGuid():N}__";
+		}
 	}
 
 	// TODO: when there is more time try to optimize appending instead of appending strings of ITypeSymbol, IPropertySymbol, etc

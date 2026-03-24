@@ -222,16 +222,31 @@ internal static class MockImplementationMethodGenerator
 				stringBuilder
 					.Append("GetValueOrDefault(")
 					.AppendTypesDeclaration(genericTypeNames)
-					.Append(")).?");
+					.Append("))?.");
+			}
+
+			stringBuilder
+				.Append(hasReturnType ? "Execute" : "Invoke")
+				.Append('(')
+				.AppendParameterNames(methodSymbol.Parameters, appendRefModifier: true, appendComma: hasReturnType);
+
+			if (hasReturnType)
+			{
+				var returnValueName = methodSymbol.Parameters.GetReturnValueName();
+
+				stringBuilder
+					.Append("out var ")
+					.Append(returnValueName)
+					.Append(") == true ? ")
+					.Append(returnValueName)
+					.Append("! : default");
+			}
+			else
+			{
+				stringBuilder.Append(')');
 			}
 
 			return stringBuilder
-				.Append(hasReturnType ? "Execute" : "Invoke")
-				.Append('(')
-				.AppendParameterNames(methodSymbol.Parameters, appendRefModifier: true, appendComma: hasReturnType)
-				.AppendIf(hasReturnType, "out var returnValue")
-				.Append(")")
-				.AppendIf(hasReturnType, " == true ? returnValue! : default")
 				.Append(';');
 		}
 	}

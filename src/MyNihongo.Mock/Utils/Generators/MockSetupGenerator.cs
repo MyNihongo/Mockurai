@@ -7,7 +7,7 @@ internal static class MockSetupGenerator
 		var stringBuilder = new StringBuilder();
 		var className = CreateSetupClassName(stringBuilder, methodSymbol, out var genericTypeOverride);
 		var returnType = methodSymbol.TryGetReturnType();
-		var returnValueName = GetReturnValueName(methodSymbol.Parameters);
+		var returnValueName = methodSymbol.Parameters.GetReturnValueName();
 		var parameterSplit = methodSymbol.Parameters.SplitParameters();
 
 		var source =
@@ -347,25 +347,6 @@ internal static class MockSetupGenerator
 		return stringBuilder
 			.AppendSetupClassName(methodSymbol, out genericTypeOverride)
 			.ToString();
-	}
-
-	private static string GetReturnValueName(ImmutableArray<IParameterSymbol> parameterSymbols)
-	{
-		var parameterNames = parameterSymbols
-			.Select(static x => x.Name)
-			.ToImmutableHashSet();
-
-		var returnValue = "returnValue";
-
-		for (var i = 0; i < 100; i++)
-		{
-			if (!parameterNames.Contains(returnValue))
-				break;
-
-			returnValue = '_' + returnValue;
-		}
-
-		return returnValue;
 	}
 
 	extension(StringBuilder @this)
