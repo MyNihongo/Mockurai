@@ -241,7 +241,7 @@ internal static class MethodSymbolEx
 				: @this.AppendSetupType(methodSymbol);
 		}
 
-		private StringBuilder AppendSetupType(IMethodSymbol methodSymbol)
+		public StringBuilder AppendSetupType(IMethodSymbol methodSymbol)
 		{
 			var returnType = methodSymbol.TryGetReturnType();
 			if (returnType is null)
@@ -341,7 +341,7 @@ internal static class MethodSymbolEx
 			return @this.Append(')');
 		}
 
-		private StringBuilder AppendTypesDeclaration(ImmutableArray<string> typeNames)
+		public StringBuilder AppendTypesDeclaration(ImmutableArray<string> typeNames)
 		{
 			if (typeNames.Length == 1)
 				return @this.Append("typeof(").Append(typeNames[0]).Append(')');

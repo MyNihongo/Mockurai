@@ -93,7 +93,7 @@ internal static class MockImplementationMethodGenerator
 
 				stringBuilder
 					.Indent(indent++).AppendLine("{")
-					.Indent(indent).AppendInvokeExecuteCall(methodSymbol, memberSymbol, indent).AppendLine()
+					.Indent(indent).AppendInvokeExecuteCall(methodSymbol, memberSymbol, genericTypeNames, appendNullCheck: false).AppendLine()
 					.Indent(--indent).AppendLine("}")
 					.Indent(indent).AppendLine("else")
 					.Indent(indent++).AppendLine("{");
@@ -111,21 +111,43 @@ internal static class MockImplementationMethodGenerator
 			}
 			else
 			{
-				stringBuilder.AppendInvokeExecuteCall(methodSymbol, memberSymbol, indent);
+				stringBuilder.AppendInvokeExecuteCall(methodSymbol, memberSymbol, genericTypeNames, appendNullCheck: true);
 			}
 
 			return stringBuilder;
 		}
 
-		private StringBuilder AppendInvokeExecuteCall(IMethodSymbol methodSymbol, MockedMemberSymbol memberSymbol, int indent)
+		private StringBuilder AppendInvokeExecuteCall(IMethodSymbol methodSymbol, MockedMemberSymbol memberSymbol, ImmutableArray<string> genericTypeNames, bool appendNullCheck)
 		{
 			var hasReturnType = methodSymbol.TryGetReturnType() is not null;
+			var hasGenericTypes = !genericTypeNames.IsDefaultOrEmpty;
 
-			return stringBuilder
-				.AppendIf(hasReturnType, "return ")
+			stringBuilder
+				.AppendIf(hasReturnType, "return ");
+
+			if (hasGenericTypes)
+			{
+				stringBuilder
+					.Append("((")
+					.AppendSetupType(methodSymbol)
+					.Append("?)");
+			}
+
+			stringBuilder
 				.Append(FieldPrefix)
 				.AppendFieldName(memberSymbol.MemberName)
-				.Append("?.")
+				.AppendIf(appendNullCheck, "?")
+				.Append('.');
+
+			if (hasGenericTypes)
+			{
+				stringBuilder
+					.Append("GetValueOrDefault(")
+					.AppendTypesDeclaration(genericTypeNames)
+					.Append(")).?");
+			}
+
+			return stringBuilder
 				.Append(hasReturnType ? "Execute" : "Invoke")
 				.Append('(')
 				.AppendParameterNames(methodSymbol.Parameters, appendRefModifier: true, appendComma: hasReturnType)
