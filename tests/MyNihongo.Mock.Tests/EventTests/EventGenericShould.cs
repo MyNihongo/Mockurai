@@ -44,6 +44,25 @@ public sealed class EventGenericShould : EventGenericTestsBase
 			}
 			""";
 
+		const string proxy =
+			"""
+			public override event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent
+			{
+				add
+				{
+					_mock._handlerEvent0AddInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class.HandlerEvent.add += {0}");
+					_mock._handlerEvent0AddInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent0 += value;
+				}
+				remove
+				{
+					_mock._handlerEvent0RemoveInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class.HandlerEvent.remove -= {0}");
+					_mock._handlerEvent0RemoveInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent0 -= value;
+				}
+			}
+			""";
+
 		const string verifyNoOtherCalls =
 			"""
 			_handlerEvent0AddInvocation?.VerifyNoOtherCalls(_invocationProviders);
@@ -55,8 +74,6 @@ public sealed class EventGenericShould : EventGenericTestsBase
 			yield return _handlerEvent0AddInvocation;
 			yield return _handlerEvent0RemoveInvocation;
 			""";
-
-		const string proxy = $"public {@event}";
 
 		var testCode = CreateInterfaceTestCode(@event);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -107,6 +124,25 @@ public sealed class EventGenericShould : EventGenericTestsBase
 			}
 			""";
 
+		const string proxy =
+			"""
+			public override event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent
+			{
+				add
+				{
+					_mock._handlerEvent0AddInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class.HandlerEvent.add += {0}");
+					_mock._handlerEvent0AddInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent0 += value;
+				}
+				remove
+				{
+					_mock._handlerEvent0RemoveInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class.HandlerEvent.remove -= {0}");
+					_mock._handlerEvent0RemoveInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent0 -= value;
+				}
+			}
+			""";
+
 		const string verifyNoOtherCalls =
 			"""
 			_handlerEvent0AddInvocation?.VerifyNoOtherCalls(_invocationProviders);
@@ -118,8 +154,6 @@ public sealed class EventGenericShould : EventGenericTestsBase
 			yield return _handlerEvent0AddInvocation;
 			yield return _handlerEvent0RemoveInvocation;
 			""";
-
-		const string proxy = $"public {@event}";
 
 		var testCode = CreateInterfaceTestCode(@event);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -170,6 +204,25 @@ public sealed class EventGenericShould : EventGenericTestsBase
 			}
 			""";
 
+		const string proxy =
+			"""
+			public override event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent
+			{
+				add
+				{
+					_mock._handlerEvent0AddInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class.HandlerEvent.add += {0}");
+					_mock._handlerEvent0AddInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent0 += value;
+				}
+				remove
+				{
+					_mock._handlerEvent0RemoveInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class.HandlerEvent.remove -= {0}");
+					_mock._handlerEvent0RemoveInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent0 -= value;
+				}
+			}
+			""";
+
 		const string verifyNoOtherCalls =
 			"""
 			_handlerEvent0AddInvocation?.VerifyNoOtherCalls(_invocationProviders);
@@ -181,8 +234,6 @@ public sealed class EventGenericShould : EventGenericTestsBase
 			yield return _handlerEvent0AddInvocation;
 			yield return _handlerEvent0RemoveInvocation;
 			""";
-
-		const string proxy = $"public {@event}";
 
 		var testCode = CreateInterfaceTestCode(@event);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -238,10 +289,39 @@ public sealed class EventGenericShould : EventGenericTestsBase
 			}
 			""";
 
-		const string proxy = "public override event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent;";
+		const string proxy =
+			"""
+			public override event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent
+			{
+				add
+				{
+					_mock._handlerEvent0AddInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class<T>.HandlerEvent.add += {0}");
+					_mock._handlerEvent0AddInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent0 += value;
+				}
+				remove
+				{
+					_mock._handlerEvent0RemoveInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class<T>.HandlerEvent.remove -= {0}");
+					_mock._handlerEvent0RemoveInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent0 -= value;
+				}
+			}
+			""";
+
+		const string verifyNoOtherCalls =
+			"""
+			_handlerEvent0AddInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			_handlerEvent0RemoveInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			""";
+
+		const string invocations =
+			"""
+			yield return _handlerEvent0AddInvocation;
+			yield return _handlerEvent0RemoveInvocation;
+			""";
 
 		var testCode = CreateClassTestCode(@event);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -296,12 +376,39 @@ public sealed class EventGenericShould : EventGenericTestsBase
 
 		const string proxy =
 			"""
-			public override event System.EventHandler<T>? HandlerEvent;
+			public override event System.EventHandler<T>? HandlerEvent
+			{
+				add
+				{
+					_mock._handlerEvent0AddInvocation ??= new Invocation<System.EventHandler<T>?>("Class<T>.HandlerEvent.add += {0}");
+					_mock._handlerEvent0AddInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent0 += value;
+				}
+				remove
+				{
+					_mock._handlerEvent0RemoveInvocation ??= new Invocation<System.EventHandler<T>?>("Class<T>.HandlerEvent.remove -= {0}");
+					_mock._handlerEvent0RemoveInvocation.Register(_mock._invocationIndex, value);
+					_mock._handlerEvent0 -= value;
+				}
+			}
+
 			protected override event System.EventHandler<T>? ProtectedNotOverriden;
 			""";
 
+		const string verifyNoOtherCalls =
+			"""
+			_handlerEvent0AddInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			_handlerEvent0RemoveInvocation?.VerifyNoOtherCalls(_invocationProviders);
+			""";
+
+		const string invocations =
+			"""
+			yield return _handlerEvent0AddInvocation;
+			yield return _handlerEvent0RemoveInvocation;
+			""";
+
 		var testCode = CreateClassTestCode(@event, isAbstract: true);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();

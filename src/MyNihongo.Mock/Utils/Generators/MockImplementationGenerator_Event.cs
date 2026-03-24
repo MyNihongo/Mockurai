@@ -94,6 +94,22 @@ internal static class MockImplementationEventGenerator
 			.Indent(--indent).Append('}');
 	}
 
+	public static void AppendProxyEventDummyImplementation(StringBuilder stringBuilder, ISymbol memberSymbol, int indent)
+	{
+		if (memberSymbol is not IEventSymbol eventSymbol)
+			return;
+
+		stringBuilder
+			.Indent(indent)
+			.AppendDeclaredAccessibility(eventSymbol).Append(' ')
+			.TryAppendOverride(eventSymbol)
+			.Append("event ")
+			.Append(eventSymbol.Type)
+			.Append(' ')
+			.Append(eventSymbol.Name)
+			.Append(';');
+	}
+
 	extension(StringBuilder stringBuilder)
 	{
 		private void AppendMockMethods(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)

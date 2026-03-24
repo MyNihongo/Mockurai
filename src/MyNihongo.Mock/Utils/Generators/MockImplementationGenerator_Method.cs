@@ -50,6 +50,66 @@ internal static class MockImplementationMethodGenerator
 			.AppendLine();
 	}
 
+	public static void AppendProxyMethodDummyImplementation(StringBuilder stringBuilder, ISymbol memberSymbol, int indent)
+	{
+		if (memberSymbol is not IMethodSymbol methodSymbol)
+			return;
+
+		stringBuilder
+			.Indent(indent)
+			.AppendDeclaredAccessibility(methodSymbol)
+			.Append(' ')
+			.TryAppendOverride(methodSymbol)
+			.Append(methodSymbol.ReturnType)
+			.Append(' ')
+			.Append(methodSymbol.Name)
+			.AppendGenericTypes(methodSymbol.TypeArguments)
+			.Append("(")
+			.AppendParameters(methodSymbol.Parameters)
+			.Append(") {");
+
+		foreach (var parameter in methodSymbol.Parameters)
+		{
+			if (parameter.RefKind != RefKind.Out)
+				continue;
+
+			stringBuilder
+				.Append(parameter.Name)
+				.Append(MockGeneratorConst.Suffixes.DefaultAssign);
+		}
+
+		if (methodSymbol is { ReturnsVoid: false, ReturnType: INamedTypeSymbol returnType })
+		{
+			if (returnType.Name is "Task" or "ValueTask")
+			{
+				stringBuilder
+					.Append("return ")
+					.Append(returnType.ContainingNamespace)
+					.Append('.')
+					.Append(returnType.Name);
+
+				if (returnType.TypeArguments.IsDefaultOrEmpty)
+				{
+					stringBuilder.Append(".CompletedTask;");
+				}
+				else
+				{
+					stringBuilder
+						.Append(".FromResult")
+						.AppendGenericTypes(returnType.TypeArguments)
+						.Append("(default);");
+				}
+			}
+			else
+			{
+				stringBuilder.Append("return default;");
+			}
+		}
+
+		stringBuilder
+			.AppendLine("}");
+	}
+
 	extension(StringBuilder stringBuilder)
 	{
 		private void AppendMethods(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)

@@ -236,9 +236,9 @@ internal static class MockImplementationGenerator
 	{
 		stringBuilder.Clear();
 
-		for (int i = 0, generateCount = 0; i < members.Count; i++)
+		var generatedCount = 0;
+		foreach (var member in members)
 		{
-			var member = members[i];
 			Action<StringBuilder, MockedTypeSymbol, MockedMemberSymbol, int>? handler = member.Symbol.Kind switch
 			{
 				SymbolKind.Event => MockImplementationEventGenerator.AppendProxyEventImplementation,
@@ -250,7 +250,7 @@ internal static class MockImplementationGenerator
 			if (handler is null)
 				continue;
 
-			if (generateCount > 0)
+			if (generatedCount > 0)
 			{
 				stringBuilder
 					.AppendLine()
@@ -258,93 +258,31 @@ internal static class MockImplementationGenerator
 			}
 
 			handler(stringBuilder, typeSymbol, member, indent);
-			generateCount++;
+			generatedCount++;
 		}
 
-		// TODO: extract
 		foreach (var member in typeSymbol.TypeSymbol.GetIrrelevantOverridableMembers().FilterMockableSymbols())
 		{
-			switch (member.Kind)
+			Action<StringBuilder, ISymbol, int>? handler = member.Kind switch
 			{
-				case SymbolKind.Event:
-					stringBuilder.Indent(indent)
-						.Append(member.DeclaredAccessibility.GetString()).Append(' ')
-						.TryAppendOverride(member)
-						.Append("event ")
-						.Append(((IEventSymbol)member).Type)
-						.Append(' ')
-						.Append(member.Name)
-						.AppendLine(";");
-					break;
-				case SymbolKind.Property:
-					stringBuilder
-						.Indent(indent)
-						.Append("public ")
-						.TryAppendOverride(member)
-						.Append(((IPropertySymbol)member).Type)
-						.Append(' ')
-						.Append(member.Name)
-						.Append(" { get; ");
+				SymbolKind.Event => MockImplementationEventGenerator.AppendProxyEventDummyImplementation,
+				SymbolKind.Property => MockImplementationPropertyGenerator.AppendProxyPropertyDummyImplementation,
+				SymbolKind.Method => MockImplementationMethodGenerator.AppendProxyMethodDummyImplementation,
+				_ => null,
+			};
 
-					if (((IPropertySymbol)member).SetMethod is not null)
-					{
-						var name = ((IPropertySymbol)member).SetMethod!.IsInitOnly ? "init; " : "set; ";
-						stringBuilder.Append(name);
-					}
+			if (handler is null)
+				continue;
 
-					stringBuilder
-						.AppendLine("}");
-					break;
-				case SymbolKind.Method:
-					stringBuilder
-						.Indent(indent)
-						.Append(member.DeclaredAccessibility.GetString())
-						.Append(" ")
-						.TryAppendOverride(member)
-						.Append(((IMethodSymbol)member).ReturnType)
-						.Append(' ')
-						.Append(member.Name)
-						.AppendGenericTypes(((IMethodSymbol)member).TypeArguments)
-						.Append("(")
-						.AppendParameters(((IMethodSymbol)member).Parameters)
-						.Append(") {");
-
-					foreach (var parameter in ((IMethodSymbol)member).Parameters)
-					{
-						if (parameter.RefKind != RefKind.Out)
-							continue;
-
-						stringBuilder
-							.Append(parameter.Name)
-							.Append(MockGeneratorConst.Suffixes.DefaultAssign);
-					}
-
-					// TODO: appropriate check
-					if (!((IMethodSymbol)member).ReturnsVoid && ((IMethodSymbol)member).ReturnType is INamedTypeSymbol returnType)
-					{
-						if (returnType.Name is "Task" or "ValueTask")
-						{
-							stringBuilder
-								.Append("return ")
-								.Append(returnType.ContainingNamespace)
-								.Append('.')
-								.Append(returnType.Name);
-
-							if (returnType.TypeArguments.IsDefaultOrEmpty)
-								stringBuilder.Append(".CompletedTask;");
-							else
-								stringBuilder.Append(".FromResult").AppendGenericTypes(returnType.TypeArguments).Append("(default);");
-						}
-						else
-						{
-							stringBuilder.Append("return default;");
-						}
-					}
-
-					stringBuilder
-						.AppendLine("}");
-					break;
+			if (generatedCount > 0)
+			{
+				stringBuilder
+					.AppendLine()
+					.AppendLine();
 			}
+
+			handler(stringBuilder, member, indent);
+			generatedCount++;
 		}
 
 		return stringBuilder.ToString();

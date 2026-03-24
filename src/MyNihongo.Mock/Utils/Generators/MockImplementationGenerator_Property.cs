@@ -67,6 +67,33 @@ internal static class MockImplementationPropertyGenerator
 			.Indent(--indent).Append('}');
 	}
 
+	public static void AppendProxyPropertyDummyImplementation(StringBuilder stringBuilder, ISymbol memberSymbol, int indent)
+	{
+		if (memberSymbol is not IPropertySymbol propertySymbol)
+			return;
+
+		stringBuilder
+			.Indent(indent)
+			.Append("public ")
+			.TryAppendOverride(propertySymbol)
+			.Append(propertySymbol.Type)
+			.Append(' ')
+			.Append(propertySymbol.Name)
+			.Append(" { get; ");
+
+		if (propertySymbol.SetMethod is not null)
+		{
+			var name = propertySymbol.SetMethod.IsInitOnly ? "init" : "set";
+
+			stringBuilder
+				.Append(name)
+				.Append("; ");
+		}
+
+		stringBuilder
+			.Append('}');
+	}
+
 	extension(StringBuilder stringBuilder)
 	{
 		private void AppendMethods(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
