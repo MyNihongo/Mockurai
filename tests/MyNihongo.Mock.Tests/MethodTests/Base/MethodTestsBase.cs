@@ -12,7 +12,7 @@ public abstract class MethodTestsBase : TestsNonGenericBase
 	protected static GeneratedSources CreateInterfaceGeneratedSources(string methods, string proxy, params ReadOnlySpan<GeneratedSource> generatedSources)
 	{
 		var testsBase = GetInterfaceTestsBase();
-		var mock = GetInterfaceMock(methods, proxy);
+		var mock = GetInterfaceMock(methods, proxy, string.Empty, string.Empty);
 
 		return
 		[
