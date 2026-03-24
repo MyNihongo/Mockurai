@@ -113,7 +113,6 @@ public abstract class TestsGenericBase : TestsBase
 			  		}
 
 			  {{proxy.Indent(2)}}
-
 			  	}
 			  }
 

@@ -46,17 +46,17 @@ public sealed class EventGenericShould : EventGenericTestsBase
 
 		const string proxy =
 			"""
-			public override event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent
+			public event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent
 			{
 				add
 				{
-					_mock._handlerEvent0AddInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class.HandlerEvent.add += {0}");
+					_mock._handlerEvent0AddInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("IInterface<T>.HandlerEvent.add += {0}");
 					_mock._handlerEvent0AddInvocation.Register(_mock._invocationIndex, value);
 					_mock._handlerEvent0 += value;
 				}
 				remove
 				{
-					_mock._handlerEvent0RemoveInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class.HandlerEvent.remove -= {0}");
+					_mock._handlerEvent0RemoveInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("IInterface<T>.HandlerEvent.remove -= {0}");
 					_mock._handlerEvent0RemoveInvocation.Register(_mock._invocationIndex, value);
 					_mock._handlerEvent0 -= value;
 				}
@@ -126,17 +126,17 @@ public sealed class EventGenericShould : EventGenericTestsBase
 
 		const string proxy =
 			"""
-			public override event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent
+			public event System.EventHandler<string>? HandlerEvent
 			{
 				add
 				{
-					_mock._handlerEvent0AddInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class.HandlerEvent.add += {0}");
+					_mock._handlerEvent0AddInvocation ??= new Invocation<System.EventHandler<string>?>("IInterface<T>.HandlerEvent.add += {0}");
 					_mock._handlerEvent0AddInvocation.Register(_mock._invocationIndex, value);
 					_mock._handlerEvent0 += value;
 				}
 				remove
 				{
-					_mock._handlerEvent0RemoveInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class.HandlerEvent.remove -= {0}");
+					_mock._handlerEvent0RemoveInvocation ??= new Invocation<System.EventHandler<string>?>("IInterface<T>.HandlerEvent.remove -= {0}");
 					_mock._handlerEvent0RemoveInvocation.Register(_mock._invocationIndex, value);
 					_mock._handlerEvent0 -= value;
 				}
@@ -206,17 +206,17 @@ public sealed class EventGenericShould : EventGenericTestsBase
 
 		const string proxy =
 			"""
-			public override event MyNihongo.Mock.Tests.SampleHandler1? HandlerEvent
+			public event System.EventHandler<T>? HandlerEvent
 			{
 				add
 				{
-					_mock._handlerEvent0AddInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class.HandlerEvent.add += {0}");
+					_mock._handlerEvent0AddInvocation ??= new Invocation<System.EventHandler<T>?>("IInterface<T>.HandlerEvent.add += {0}");
 					_mock._handlerEvent0AddInvocation.Register(_mock._invocationIndex, value);
 					_mock._handlerEvent0 += value;
 				}
 				remove
 				{
-					_mock._handlerEvent0RemoveInvocation ??= new Invocation<MyNihongo.Mock.Tests.SampleHandler1?>("Class.HandlerEvent.remove -= {0}");
+					_mock._handlerEvent0RemoveInvocation ??= new Invocation<System.EventHandler<T>?>("IInterface<T>.HandlerEvent.remove -= {0}");
 					_mock._handlerEvent0RemoveInvocation.Register(_mock._invocationIndex, value);
 					_mock._handlerEvent0 -= value;
 				}
