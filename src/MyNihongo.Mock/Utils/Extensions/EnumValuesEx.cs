@@ -35,7 +35,7 @@ internal static class EnumValuesEx
 			return @this switch
 			{
 				RefKind.Ref => "ref",
-				RefKind.RefReadOnlyParameter => "ref",
+				RefKind.RefReadOnlyParameter => "in",
 				RefKind.Out => "out",
 				RefKind.In => "in",
 				_ => string.Empty,

@@ -460,7 +460,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_mock._invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "ref readonly");
 				_mock._invoke0Invocation.Register(_mock._invocationIndex, result);
-				_mock._invoke0?.Invoke(ref result);
+				_mock._invoke0?.Invoke(in result);
 			}
 			""";
 
@@ -511,7 +511,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_mock._invoke0Invocation ??= new Invocation<int>("IInterface.Invoke({0})", prefix: "ref readonly");
 				_mock._invoke0Invocation.Register(_mock._invocationIndex, result);
-				return _mock._invoke0?.Execute(ref result, out var returnValue) == true ? returnValue! : default!;
+				return _mock._invoke0?.Execute(in result, out var returnValue) == true ? returnValue! : default!;
 			}
 			""";
 
@@ -1019,7 +1019,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 				_mock._invoke0Invocation ??= new InvocationDictionary();
 				var invoke0Invocation = (Invocation<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "ref readonly"));
 				invoke0Invocation.Register(_mock._invocationIndex, value);
-				((SetupWithRefReadOnlyParameter<T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Invoke(ref value);
+				((SetupWithRefReadOnlyParameter<T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Invoke(in value);
 			}
 			""";
 
@@ -1074,7 +1074,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
 				var invoke0Invocation = (Invocation<T1>)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref readonly"));
 				invoke0Invocation.Register(_mock._invocationIndex, result);
-				return ((SetupWithRefReadOnlyParameter<T1, T2>?)_mock._invoke0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(ref result, out var returnValue) == true ? returnValue! : default!;
+				return ((SetupWithRefReadOnlyParameter<T1, T2>?)_mock._invoke0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(in result, out var returnValue) == true ? returnValue! : default!;
 			}
 			""";
 

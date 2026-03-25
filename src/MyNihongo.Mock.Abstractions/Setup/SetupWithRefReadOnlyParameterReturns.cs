@@ -2,7 +2,7 @@
 
 public sealed class SetupWithRefReadOnlyParameter<TParameter, TReturns> : SetupWithParameterBase<TParameter, ActionRefReadOnly<TParameter>, TReturns, FuncRefReadOnly<TParameter, TReturns?>>
 {
-	public bool Execute(ref TParameter parameter, out TReturns? returnValue)
+	public bool Execute(ref readonly TParameter parameter, out TReturns? returnValue)
 	{
 		if (Setups is null)
 			goto Default;
@@ -13,14 +13,14 @@ public sealed class SetupWithRefReadOnlyParameter<TParameter, TReturns> : SetupW
 				continue;
 
 			var x = setup.GetSetup();
-			x.Callback?.Invoke(ref parameter);
+			x.Callback?.Invoke(in parameter);
 
 			if (x.Exception is not null)
 				throw x.Exception;
 
 			if (x.Returns is not null)
 			{
-				returnValue = x.Returns(ref parameter);
+				returnValue = x.Returns(in parameter);
 				return true;
 			}
 
