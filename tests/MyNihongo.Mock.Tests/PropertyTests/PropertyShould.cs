@@ -38,30 +38,15 @@ public sealed class PropertyShould : PropertyTestsBase
 			{
 				get
 				{
-					_mock._property0GetInvocation ??= new Invocation("IInterface<T>.Property.get");
+					_mock._property0GetInvocation ??= new Invocation("IInterface.Property.get");
 					_mock._property0GetInvocation.Register(_mock._invocationIndex);
 					return _mock._property0Get?.Execute(out var returnValue) == true ? returnValue! : default!;
-				}
-				set
-				{
-					_mock._property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
-					_mock._property0SetInvocation.Register(_mock._invocationIndex, value);
-					_mock._property0Set?.Invoke(value);
 				}
 			}
 			""";
 
-		const string verifyNoOtherCalls =
-			"""
-			_property0GetInvocation?.VerifyNoOtherCalls(_invocationProviders);
-			_property0SetInvocation?.VerifyNoOtherCalls(_invocationProviders);
-			""";
-
-		const string invocations =
-			"""
-			yield return _property0GetInvocation;
-			yield return _property0SetInvocation;
-			""";
+		const string verifyNoOtherCalls = "_property0GetInvocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _property0GetInvocation;";
 
 		var testCode = CreateInterfaceTestCode(property);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -105,32 +90,17 @@ public sealed class PropertyShould : PropertyTestsBase
 			"""
 			public int Property
 			{
-				get
-				{
-					_mock._property0GetInvocation ??= new Invocation("IInterface<T>.Property.get");
-					_mock._property0GetInvocation.Register(_mock._invocationIndex);
-					return _mock._property0Get?.Execute(out var returnValue) == true ? returnValue! : default!;
-				}
 				set
 				{
-					_mock._property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
+					_mock._property0SetInvocation ??= new Invocation<int>("IInterface.Property.set = {0}");
 					_mock._property0SetInvocation.Register(_mock._invocationIndex, value);
 					_mock._property0Set?.Invoke(value);
 				}
 			}
 			""";
 
-		const string verifyNoOtherCalls =
-			"""
-			_property0GetInvocation?.VerifyNoOtherCalls(_invocationProviders);
-			_property0SetInvocation?.VerifyNoOtherCalls(_invocationProviders);
-			""";
-
-		const string invocations =
-			"""
-			yield return _property0GetInvocation;
-			yield return _property0SetInvocation;
-			""";
+		const string verifyNoOtherCalls = "_property0SetInvocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _property0SetInvocation;";
 
 		var testCode = CreateInterfaceTestCode(property);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -174,32 +144,17 @@ public sealed class PropertyShould : PropertyTestsBase
 			"""
 			public int Property
 			{
-				get
+				init
 				{
-					_mock._property0GetInvocation ??= new Invocation("IInterface<T>.Property.get");
-					_mock._property0GetInvocation.Register(_mock._invocationIndex);
-					return _mock._property0Get?.Execute(out var returnValue) == true ? returnValue! : default!;
-				}
-				set
-				{
-					_mock._property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
+					_mock._property0SetInvocation ??= new Invocation<int>("IInterface.Property.set = {0}");
 					_mock._property0SetInvocation.Register(_mock._invocationIndex, value);
 					_mock._property0Set?.Invoke(value);
 				}
 			}
 			""";
 
-		const string verifyNoOtherCalls =
-			"""
-			_property0GetInvocation?.VerifyNoOtherCalls(_invocationProviders);
-			_property0SetInvocation?.VerifyNoOtherCalls(_invocationProviders);
-			""";
-
-		const string invocations =
-			"""
-			yield return _property0GetInvocation;
-			yield return _property0SetInvocation;
-			""";
+		const string verifyNoOtherCalls = "_property0SetInvocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _property0SetInvocation;";
 
 		var testCode = CreateInterfaceTestCode(property);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -265,13 +220,13 @@ public sealed class PropertyShould : PropertyTestsBase
 			{
 				get
 				{
-					_mock._property0GetInvocation ??= new Invocation("IInterface<T>.Property.get");
+					_mock._property0GetInvocation ??= new Invocation("IInterface.Property.get");
 					_mock._property0GetInvocation.Register(_mock._invocationIndex);
 					return _mock._property0Get?.Execute(out var returnValue) == true ? returnValue! : default!;
 				}
 				set
 				{
-					_mock._property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
+					_mock._property0SetInvocation ??= new Invocation<int>("IInterface.Property.set = {0}");
 					_mock._property0SetInvocation.Register(_mock._invocationIndex, value);
 					_mock._property0Set?.Invoke(value);
 				}
@@ -354,13 +309,13 @@ public sealed class PropertyShould : PropertyTestsBase
 			{
 				get
 				{
-					_mock._property0GetInvocation ??= new Invocation("IInterface<T>.Property.get");
+					_mock._property0GetInvocation ??= new Invocation("IInterface.Property.get");
 					_mock._property0GetInvocation.Register(_mock._invocationIndex);
 					return _mock._property0Get?.Execute(out var returnValue) == true ? returnValue! : default!;
 				}
-				set
+				init
 				{
-					_mock._property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
+					_mock._property0SetInvocation ??= new Invocation<int>("IInterface.Property.set = {0}");
 					_mock._property0SetInvocation.Register(_mock._invocationIndex, value);
 					_mock._property0Set?.Invoke(value);
 				}
@@ -439,17 +394,17 @@ public sealed class PropertyShould : PropertyTestsBase
 
 		const string proxy =
 			"""
-			public int Property
+			public override MyNihongo.Mock.Tests.Record Property
 			{
 				get
 				{
-					_mock._property0GetInvocation ??= new Invocation("IInterface<T>.Property.get");
+					_mock._property0GetInvocation ??= new Invocation("Class.Property.get");
 					_mock._property0GetInvocation.Register(_mock._invocationIndex);
 					return _mock._property0Get?.Execute(out var returnValue) == true ? returnValue! : default!;
 				}
 				set
 				{
-					_mock._property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
+					_mock._property0SetInvocation ??= new Invocation<MyNihongo.Mock.Tests.Record>("Class.Property.set = {0}");
 					_mock._property0SetInvocation.Register(_mock._invocationIndex, value);
 					_mock._property0Set?.Invoke(value);
 				}
