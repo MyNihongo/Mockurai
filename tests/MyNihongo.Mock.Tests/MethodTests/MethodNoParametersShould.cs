@@ -568,7 +568,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 		const string proxy = "public override void Invoke() {}";
 
 		var testCode = CreateClassTestCode(method);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, "", "");
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -611,12 +611,21 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override int Invoke() {return default;}
+			public override int Invoke()
+			{
+				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex);
+				return _mock._invoke0?.Execute(out var returnValue) == true ? returnValue! : default;
+			}
+			
 			protected override decimal Invoke2() {return default;}
 			""";
 
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
 		var testCode = CreateClassTestCode(method, isAbstract: true);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();

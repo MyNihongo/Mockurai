@@ -108,7 +108,7 @@ internal static class MockImplementationMethodGenerator
 		}
 
 		stringBuilder
-			.AppendLine("}");
+			.Append('}');
 	}
 
 	extension(StringBuilder stringBuilder)
