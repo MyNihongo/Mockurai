@@ -154,6 +154,7 @@ internal static class MockImplementationMethodGenerator
 
 		private StringBuilder AppendInvokeMethod(IMethodSymbol methodSymbol, MockedMemberSymbol memberSymbol, ImmutableArray<string> genericTypeNames, int indent)
 		{
+			var setupVariableName = methodSymbol.Parameters.GetSafeVariableName("setup");
 			var returnTypeMetadata = methodSymbol.GetReturnTypeMetadata();
 			var parameterSplit = methodSymbol.Parameters.SplitParameters();
 
@@ -162,12 +163,25 @@ internal static class MockImplementationMethodGenerator
 				stringBuilder
 					.Append("if (")
 					.Append(FieldPrefix)
-					.AppendFieldName(memberSymbol.MemberName)
-					.AppendLine(" is not null)");
+					.AppendFieldName(memberSymbol.MemberName);
+
+				if (genericTypeNames.IsDefaultOrEmpty)
+				{
+					stringBuilder.AppendLine(" is not null)");
+				}
+				else
+				{
+					stringBuilder
+						.Append("?.TryGetValue(")
+						.AppendTypesDeclaration(genericTypeNames)
+						.Append(", out var ")
+						.Append(setupVariableName)
+						.AppendLine(") == true)");
+				}
 
 				stringBuilder
 					.Indent(indent++).AppendLine("{")
-					.Indent(indent).AppendInvokeExecuteCall(methodSymbol, memberSymbol, genericTypeNames, returnTypeMetadata, appendNullCheck: false, indent).AppendLine()
+					.Indent(indent).AppendInvokeExecuteCall(methodSymbol, memberSymbol, genericTypeNames, returnTypeMetadata, parameterSplit, setupVariableName, appendNullCheck: false, indent).AppendLine()
 					.Indent(--indent).AppendLine("}")
 					.Indent(indent).AppendLine("else")
 					.Indent(indent++).AppendLine("{");
@@ -191,7 +205,7 @@ internal static class MockImplementationMethodGenerator
 			}
 			else
 			{
-				stringBuilder.AppendInvokeExecuteCall(methodSymbol, memberSymbol, genericTypeNames, returnTypeMetadata, appendNullCheck: true, indent);
+				stringBuilder.AppendInvokeExecuteCall(methodSymbol, memberSymbol, genericTypeNames, returnTypeMetadata, parameterSplit, setupVariableName, appendNullCheck: true, indent);
 			}
 
 			return stringBuilder;
@@ -202,11 +216,14 @@ internal static class MockImplementationMethodGenerator
 			MockedMemberSymbol memberSymbol,
 			ImmutableArray<string> genericTypeNames,
 			ReturnTypeMetadata returnTypeMetadata,
+			ParameterSplit parameterSplit,
+			string setupVariableName,
 			bool appendNullCheck,
 			int indent)
 		{
 			var hasReturnType = returnTypeMetadata.ReturnType is not null;
 			var hasGenericTypes = !genericTypeNames.IsDefaultOrEmpty;
+			var hasGenericAndOut = !parameterSplit.OutputParameters.IsDefaultOrEmpty && hasGenericTypes;
 
 			if (returnTypeMetadata.ReturnType is not null)
 			{
@@ -225,21 +242,31 @@ internal static class MockImplementationMethodGenerator
 				stringBuilder
 					.Append("((")
 					.AppendSetupType(methodSymbol)
-					.Append("?)");
+					.AppendIf(!hasGenericAndOut, "?")
+					.Append(")");
 			}
 
-			stringBuilder
-				.Append(FieldPrefix)
-				.AppendFieldName(memberSymbol.MemberName)
-				.AppendIf(appendNullCheck, "?")
-				.Append('.');
-
-			if (hasGenericTypes)
+			if (hasGenericAndOut)
 			{
 				stringBuilder
-					.Append("ValueOrDefault(")
-					.AppendTypesDeclaration(genericTypeNames)
-					.Append("))?.");
+					.Append(setupVariableName)
+					.Append(").");
+			}
+			else
+			{
+				stringBuilder
+					.Append(FieldPrefix)
+					.AppendFieldName(memberSymbol.MemberName)
+					.AppendIf(appendNullCheck, "?")
+					.Append('.');
+
+				if (hasGenericTypes)
+				{
+					stringBuilder
+						.Append("ValueOrDefault(")
+						.AppendTypesDeclaration(genericTypeNames)
+						.Append("))?.");
+				}
 			}
 
 			stringBuilder
@@ -291,7 +318,7 @@ internal static class MockImplementationMethodGenerator
 				.AppendGenericTypes([returnType]);
 		}
 
-		public StringBuilder AppendCompletedTask(string staticInitializer)
+		private StringBuilder AppendCompletedTask(string staticInitializer)
 		{
 			return stringBuilder
 				.Append(staticInitializer)

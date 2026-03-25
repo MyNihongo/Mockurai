@@ -30,18 +30,21 @@ internal static class ParameterSymbolEx
 
 		public string GetReturnValueName()
 		{
+			return @this.GetSafeVariableName("returnValue");
+		}
+
+		public string GetSafeVariableName(string variableName)
+		{
 			var parameterNames = @this
 				.Select(static x => x.Name)
 				.ToImmutableHashSet();
 
-			var returnValue = "returnValue";
-
 			for (var i = 0; i < 4; i++)
 			{
-				if (!parameterNames.Contains(returnValue))
-					return returnValue;
+				if (!parameterNames.Contains(variableName))
+					return variableName;
 
-				returnValue = '_' + returnValue;
+				variableName = '_' + variableName;
 			}
 
 			return $"__{Guid.NewGuid():N}__";

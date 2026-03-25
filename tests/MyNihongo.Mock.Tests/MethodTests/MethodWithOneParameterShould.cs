@@ -675,9 +675,9 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 				_mock._invoke0Invocation ??= new InvocationDictionary();
 				var invoke0Invocation = (Invocation<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.Invoke<{key.Name}>({0})", prefix: "out"));
 				invoke0Invocation.Register(_mock._invocationIndex, default);
-				if (_mock._invoke0 is not null)
+				if (_mock._invoke0?.TryGetValue(typeof(T), out var setup) == true)
 				{
-					((SetupWithOutParameter<T>?)_mock._invoke0.ValueOrDefault(typeof(T)))?.Invoke(out value);
+					((SetupWithOutParameter<T>)setup).Invoke(out value);
 				}
 				else
 				{
@@ -736,9 +736,9 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
 				var invoke0Invocation = (Invocation<T1>)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "out"));
 				invoke0Invocation.Register(_mock._invocationIndex, default);
-				if (_mock._invoke0 is not null)
+				if (_mock._invoke0?.TryGetValue((typeof(T1), typeof(T2)), out var setup) == true)
 				{
-					return ((SetupWithOutParameter<T1, T2>?)_mock._invoke0.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(out result, out var returnValue) == true ? returnValue! : default!;
+					return ((SetupWithOutParameter<T1, T2>)setup).Execute(out result, out var returnValue) == true ? returnValue! : default!;
 				}
 				else
 				{
