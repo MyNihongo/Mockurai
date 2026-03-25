@@ -35,16 +35,17 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public System.Threading.Tasks.Task InvokeAsync(int param)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invokeAsync0Invocation ??= new Invocation<int>("IInterface.InvokeAsync({0})");
+				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex, param);
+				_mock._invokeAsync0?.Invoke(param);
+				return System.Threading.Tasks.Task.CompletedTask;
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);

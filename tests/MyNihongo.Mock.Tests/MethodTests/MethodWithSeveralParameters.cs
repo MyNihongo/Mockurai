@@ -35,11 +35,11 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public void Invoke(int param1, float param2)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
+				_mock._invoke0?.Invoke(param1, param2);
 			}
 			""";
 
@@ -89,11 +89,11 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public decimal Invoke(float param1, int param2)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invoke0Invocation ??= new InvocationSingleInt32("IInterface.Invoke({0}, {1})");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
+				return _mock._invoke0?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 			}
 			""";
 
@@ -143,11 +143,11 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public void Invoke(int param1, float param2, string param3)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invoke0Invocation ??= new InvocationInt32SingleString("IInterface.Invoke({0}, {1}, {2})");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, param1, param2, param3);
+				_mock._invoke0?.Invoke(param1, param2, param3);
 			}
 			""";
 
@@ -200,11 +200,12 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public void Invoke<T>(T param1, float param2)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (InvocationT1Single<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationT1Single<T>($"IInterface.Invoke<{key.Name}>({0}, {1})"));
+				invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
+				((SetupT1Single<T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Invoke(param1, param2);
 			}
 			""";
 
@@ -261,11 +262,12 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public void Invoke<T>(int param1, T param2)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (InvocationInt32T1<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationInt32T1<T>($"IInterface.Invoke<{key.Name}>({0}, {1})"));
+				invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
+				((SetupInt32T1<T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Invoke(param1, param2);
 			}
 			""";
 
@@ -322,11 +324,12 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public void Invoke<T>(T param1, T param2)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (InvocationT1T2<T, T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationT1T2<T, T>($"IInterface.Invoke<{key.Name}>({0}, {1})"));
+				invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
+				((SetupT1T2<T, T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Invoke(param1, param2);
 			}
 			""";
 
@@ -383,11 +386,12 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public void Invoke<T2, T1>(T1 param1, float param2)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (InvocationT1Single<T1>)_mock._invoke0Invocation.GetOrAdd((typeof(T2), typeof(T1)), static key => new InvocationT1Single<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({0}, {1})"));
+				invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
+				((SetupT1Single<T1>?)_mock._invoke0?.ValueOrDefault((typeof(T2), typeof(T1))))?.Invoke(param1, param2);
 			}
 			""";
 
@@ -444,11 +448,12 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public T Invoke<T>(T param1, T param2)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (InvocationT1T2<T, T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationT1T2<T, T>($"IInterface.Invoke<{key.Name}>({0}, {1})"));
+				invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
+				return ((SetupT1T2<T, T, T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 			}
 			""";
 
@@ -505,11 +510,12 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public decimal Invoke<T>(int param1, T param2)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (InvocationInt32T1<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationInt32T1<T>($"IInterface.Invoke<{key.Name}>({0}, {1})"));
+				invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
+				return ((SetupInt32T1<T, decimal>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 			}
 			""";
 
@@ -563,11 +569,11 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public void Invoke(in int param1, float param2)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invoke0Invocation ??= new InvocationInInt32Single("IInterface.Invoke({0}, {1})", prefixParam1: "in");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
+				_mock._invoke0?.Invoke(in param1, param2);
 			}
 			""";
 
@@ -621,11 +627,18 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public void Invoke(in int param1, out float param2)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invoke0Invocation ??= new InvocationInInt32OutSingle("IInterface.Invoke({0}, {1})", prefixParam1: "in", prefixParam2: "out");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, param1, default);
+				if (_mock._invoke0 is not null)
+				{
+					_mock._invoke0.Invoke(in param1, out param2);
+				}
+				else
+				{
+					param2 = default;
+				}
 			}
 			""";
 
@@ -679,11 +692,19 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public decimal Invoke(out int param1, ref float param2)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invoke0Invocation ??= new InvocationOutInt32RefSingle("IInterface.Invoke({0}, {1})", prefixParam1: "out", prefixParam2: "ref");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, default, param2);
+				if (_mock._invoke0 is not null)
+				{
+					return _mock._invoke0.Execute(out param1, ref param2, out var returnValue) == true ? returnValue! : default!;
+				}
+				else
+				{
+					param1 = default;
+					return default;
+				}
 			}
 			""";
 
@@ -736,11 +757,19 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public void Invoke(out int param1, out float param2)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invoke0Invocation ??= new InvocationOutInt32OutSingle("IInterface.Invoke({0}, {1})", prefixParam1: "out", prefixParam2: "out");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, default, default);
+				if (_mock._invoke0 is not null)
+				{
+					_mock._invoke0.Invoke(out param1, out param2);
+				}
+				else
+				{
+					param1 = default;
+					param2 = default;
+				}
 			}
 			""";
 
@@ -793,11 +822,20 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public decimal Invoke(out int param1, out float param2)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invoke0Invocation ??= new InvocationOutInt32OutSingle("IInterface.Invoke({0}, {1})", prefixParam1: "out", prefixParam2: "out");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, default, default);
+				if (_mock._invoke0 is not null)
+				{
+					return _mock._invoke0.Execute(out param1, out param2, out var returnValue) == true ? returnValue! : default!;
+				}
+				else
+				{
+					param1 = default;
+					param2 = default;
+					return default;
+				}
 			}
 			""";
 
