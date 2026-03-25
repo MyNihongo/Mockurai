@@ -538,14 +538,14 @@ public sealed class MultipleDeclarations : TestsBase
 							_mock._invoke0Invocation ??= new InvocationDictionary();
 							var invoke0Invocation = (InvocationInt32Int64)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationInt32Int64($"IInterface.Invoke<{key.Name}>({0}, {1})"));
 							invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
-							return ((SetupInt32Int64<T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default;
+							return ((SetupInt32Int64<T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 						}
 
 						public decimal Invoke2(int param2, long param1)
 						{
 							_mock._invoke20Invocation ??= new InvocationInt32Int64("IInterface.Invoke2({0}, {1})");
 							_mock._invoke20Invocation.Register(_mock._invocationIndex, param2, param1);
-							return _mock._invoke20?.Execute(param2, param1, out var returnValue) == true ? returnValue! : default;
+							return _mock._invoke20?.Execute(param2, param1, out var returnValue) == true ? returnValue! : default!;
 						}
 					}
 				}
@@ -738,14 +738,14 @@ public sealed class MultipleDeclarations : TestsBase
 							_mock._invoke0Invocation ??= new InvocationDictionary();
 							var invoke0Invocation = (InvocationInt32Int64)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationInt32Int64($"IInterface.Invoke<{key.Name}>({0}, {1})"));
 							invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
-							return ((SetupInt32Int64<T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default;
+							return ((SetupInt32Int64<T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 						}
 
 						public decimal Invoke2(long param2, int param1)
 						{
 							_mock._invoke20Invocation ??= new InvocationInt64Int32("IInterface.Invoke2({0}, {1})");
 							_mock._invoke20Invocation.Register(_mock._invocationIndex, param2, param1);
-							return _mock._invoke20?.Execute(param2, param1, out var returnValue) == true ? returnValue! : default;
+							return _mock._invoke20?.Execute(param2, param1, out var returnValue) == true ? returnValue! : default!;
 						}
 					}
 				}
@@ -940,14 +940,14 @@ public sealed class MultipleDeclarations : TestsBase
 							_mock._invoke0Invocation ??= new InvocationDictionary();
 							var invoke0Invocation = (InvocationInt32Int64)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationInt32Int64($"IInterface.Invoke<{key.Name}>({0}, {1})"));
 							invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
-							return ((SetupInt32Int64<T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default;
+							return ((SetupInt32Int64<T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 						}
 
 						public decimal Invoke2(int param1, in long param2)
 						{
 							_mock._invoke20Invocation ??= new InvocationInt32InInt64("IInterface.Invoke2({0}, {1})", prefixParam2: "in");
 							_mock._invoke20Invocation.Register(_mock._invocationIndex, param1, param2);
-							return _mock._invoke20?.Execute(param1, in param2, out var returnValue) == true ? returnValue! : default;
+							return _mock._invoke20?.Execute(param1, in param2, out var returnValue) == true ? returnValue! : default!;
 						}
 					}
 				}

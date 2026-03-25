@@ -50,18 +50,27 @@ internal static class MethodSymbolEx
 
 		public ITypeSymbol? TryGetReturnType()
 		{
+			return @this.GetReturnTypeMetadata().ReturnType;
+		}
+
+		public ReturnTypeMetadata GetReturnTypeMetadata()
+		{
 			if (@this.ReturnsVoid)
-				return null;
+				return default;
 
 			var returnType = @this.ReturnType;
 			if (returnType.Name is "Task" or "ValueTask" && returnType.ContainingNamespace.ToString() == "System.Threading.Tasks" && returnType is INamedTypeSymbol returnTypeNamedSymbol)
 			{
-				return !returnTypeNamedSymbol.TypeArguments.IsDefaultOrEmpty
+				var name = $"{returnType.ContainingNamespace}.{returnType.Name}";
+
+				returnType = !returnTypeNamedSymbol.TypeArguments.IsDefaultOrEmpty
 					? returnTypeNamedSymbol.TypeArguments[0]
 					: null;
+
+				return new ReturnTypeMetadata(returnType, name);
 			}
 
-			return returnType;
+			return new ReturnTypeMetadata(returnType, staticInitializer: null);
 		}
 	}
 

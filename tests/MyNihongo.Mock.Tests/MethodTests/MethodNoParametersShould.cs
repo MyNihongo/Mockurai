@@ -34,9 +34,9 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public void Invoke()
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
+				_mock._invoke0Invocation ??= new Invocation("IInterface.Invoke()");
 				_mock._invoke0Invocation.Register(_mock._invocationIndex);
 				_mock._invoke0?.Invoke();
 			}
@@ -84,11 +84,11 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public decimal Invoke()
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
+				_mock._invoke0Invocation ??= new Invocation("IInterface.Invoke()");
 				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				return _mock._invoke0?.Execute(out var returnValue) == true ? returnValue! : default!;
 			}
 			""";
 
@@ -137,11 +137,12 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public TReturn Invoke<T, TReturn>()
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation)_mock._invoke0Invocation.GetOrAdd((typeof(T), typeof(TReturn)), static key => new Invocation($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>()"));
+				invoke0Invocation.Register(_mock._invocationIndex);
+				return ((Setup<TReturn>?)_mock._invoke0?.ValueOrDefault((typeof(T), typeof(TReturn))))?.Execute(out var returnValue) == true ? returnValue! : default!;
 			}
 			""";
 
@@ -293,16 +294,17 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public System.Threading.Tasks.Task InvokeAsync()
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invokeAsync0Invocation ??= new Invocation("IInterface.InvokeAsync()");
+				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex);
+				_mock._invokeAsync0?.Invoke();
+				return System.Threading.Tasks.Task.CompletedTask;
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -769,7 +771,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			{
 				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
 				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				return _mock._invoke0?.Execute(out var returnValue) == true ? returnValue! : default;
+				return _mock._invoke0?.Execute(out var returnValue) == true ? returnValue! : default!;
 			}
 			
 			protected override decimal Invoke2() {return default;}

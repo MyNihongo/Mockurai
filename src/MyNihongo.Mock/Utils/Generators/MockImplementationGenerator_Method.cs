@@ -79,32 +79,27 @@ internal static class MockImplementationMethodGenerator
 				.Append(MockGeneratorConst.Suffixes.DefaultAssign);
 		}
 
-		if (methodSymbol is { ReturnsVoid: false, ReturnType: INamedTypeSymbol returnType })
+		var returnTypeMetadata = methodSymbol.GetReturnTypeMetadata();
+		if (!string.IsNullOrEmpty(returnTypeMetadata.StaticInitializer))
 		{
-			if (returnType.Name is "Task" or "ValueTask")
+			stringBuilder.Append("return ");
+
+			if (returnTypeMetadata.ReturnType is not null)
 			{
 				stringBuilder
-					.Append("return ")
-					.Append(returnType.ContainingNamespace)
-					.Append('.')
-					.Append(returnType.Name);
-
-				if (returnType.TypeArguments.IsDefaultOrEmpty)
-				{
-					stringBuilder.Append(".CompletedTask;");
-				}
-				else
-				{
-					stringBuilder
-						.Append(".FromResult")
-						.AppendGenericTypes(returnType.TypeArguments)
-						.Append("(default);");
-				}
+					.AppendFromResult(returnTypeMetadata.StaticInitializer!, returnTypeMetadata.ReturnType)
+					.Append("(default);");
 			}
 			else
 			{
-				stringBuilder.Append("return default;");
+				stringBuilder
+					.AppendCompletedTask(returnTypeMetadata.StaticInitializer!)
+					.Append(';');
 			}
+		}
+		else if (returnTypeMetadata.ReturnType is not null)
+		{
+			stringBuilder.Append("return default;");
 		}
 
 		stringBuilder
@@ -171,7 +166,7 @@ internal static class MockImplementationMethodGenerator
 
 				stringBuilder
 					.Indent(indent++).AppendLine("{")
-					.Indent(indent).AppendInvokeExecuteCall(methodSymbol, memberSymbol, genericTypeNames, appendNullCheck: false).AppendLine()
+					.Indent(indent).AppendInvokeExecuteCall(methodSymbol, memberSymbol, genericTypeNames, appendNullCheck: false, indent).AppendLine()
 					.Indent(--indent).AppendLine("}")
 					.Indent(indent).AppendLine("else")
 					.Indent(indent++).AppendLine("{");
@@ -189,19 +184,29 @@ internal static class MockImplementationMethodGenerator
 			}
 			else
 			{
-				stringBuilder.AppendInvokeExecuteCall(methodSymbol, memberSymbol, genericTypeNames, appendNullCheck: true);
+				stringBuilder.AppendInvokeExecuteCall(methodSymbol, memberSymbol, genericTypeNames, appendNullCheck: true, indent);
 			}
 
 			return stringBuilder;
 		}
 
-		private StringBuilder AppendInvokeExecuteCall(IMethodSymbol methodSymbol, MockedMemberSymbol memberSymbol, ImmutableArray<string> genericTypeNames, bool appendNullCheck)
+		private StringBuilder AppendInvokeExecuteCall(IMethodSymbol methodSymbol, MockedMemberSymbol memberSymbol, ImmutableArray<string> genericTypeNames, bool appendNullCheck, int indent)
 		{
-			var hasReturnType = methodSymbol.TryGetReturnType() is not null;
+			var returnTypeMetadata = methodSymbol.GetReturnTypeMetadata();
+			var hasReturnType = returnTypeMetadata.ReturnType is not null;
 			var hasGenericTypes = !genericTypeNames.IsDefaultOrEmpty;
 
-			stringBuilder
-				.AppendIf(hasReturnType, "return ");
+			if (returnTypeMetadata.ReturnType is not null)
+			{
+				stringBuilder.Append("return ");
+
+				if (!string.IsNullOrEmpty(returnTypeMetadata.StaticInitializer))
+				{
+					stringBuilder
+						.AppendFromResult(returnTypeMetadata.StaticInitializer!, returnTypeMetadata.ReturnType)
+						.Append('(');
+				}
+			}
 
 			if (hasGenericTypes)
 			{
@@ -239,15 +244,46 @@ internal static class MockImplementationMethodGenerator
 					.Append(returnValueName)
 					.Append(") == true ? ")
 					.Append(returnValueName)
-					.Append("! : default");
+					.Append("! : default!");
 			}
 			else
 			{
 				stringBuilder.Append(')');
 			}
 
+			if (!string.IsNullOrEmpty(returnTypeMetadata.StaticInitializer))
+			{
+				if (hasReturnType)
+				{
+					stringBuilder.Append(')');
+				}
+				else
+				{
+					stringBuilder
+						.AppendLine(";")
+						.Indent(indent)
+						.Append("return ")
+						.AppendCompletedTask(returnTypeMetadata.StaticInitializer!);
+				}
+			}
+
 			return stringBuilder
 				.Append(';');
+		}
+
+		private StringBuilder AppendFromResult(string staticInitializer, ITypeSymbol returnType)
+		{
+			return stringBuilder
+				.Append(staticInitializer)
+				.Append(".FromResult")
+				.AppendGenericTypes([returnType]);
+		}
+
+		public StringBuilder AppendCompletedTask(string staticInitializer)
+		{
+			return stringBuilder
+				.Append(staticInitializer)
+				.Append(".CompletedTask");
 		}
 	}
 }

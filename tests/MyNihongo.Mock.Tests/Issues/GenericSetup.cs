@@ -140,7 +140,7 @@ public sealed class GenericSetup : TestsBase
 							_mock._invoke0Invocation ??= new InvocationDictionary();
 							var invoke0Invocation = (InvocationInt32T1<TReturns>)_mock._invoke0Invocation.GetOrAdd(typeof(TReturns), static key => new InvocationInt32T1<TReturns>($"IInterface.Invoke<{key.Name}>({0}, {1})"));
 							invoke0Invocation.Register(_mock._invocationIndex, param1, returnValue);
-							return ((SetupInt32T1<TReturns, TReturns>?)_mock._invoke0?.ValueOrDefault(typeof(TReturns)))?.Execute(param1, returnValue, out var _returnValue) == true ? _returnValue! : default;
+							return ((SetupInt32T1<TReturns, TReturns>?)_mock._invoke0?.ValueOrDefault(typeof(TReturns)))?.Execute(param1, returnValue, out var _returnValue) == true ? _returnValue! : default!;
 						}
 					}
 				}
