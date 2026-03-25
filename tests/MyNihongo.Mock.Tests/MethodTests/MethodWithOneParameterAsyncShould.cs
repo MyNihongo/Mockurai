@@ -87,16 +87,17 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public System.Threading.Tasks.ValueTask InvokeAsync(int param)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invokeAsync0Invocation ??= new Invocation<int>("IInterface.InvokeAsync({0})");
+				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex, param);
+				_mock._invokeAsync0?.Invoke(param);
+				return System.Threading.Tasks.ValueTask.CompletedTask;
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -146,8 +147,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -197,8 +198,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -247,8 +248,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -297,8 +298,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -347,8 +348,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -397,8 +398,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -448,8 +449,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -499,8 +500,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -550,8 +551,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -601,8 +602,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -652,8 +653,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -703,8 +704,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -754,8 +755,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -805,8 +806,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -856,8 +857,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -907,8 +908,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -958,8 +959,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -1009,8 +1010,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -1063,8 +1064,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -1117,8 +1118,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -1163,16 +1164,17 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public System.Threading.Tasks.Task<T2> InvokeAsync<T1, T2>(T1 param)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})"));
+				invokeAsync0Invocation.Register(_mock._invocationIndex, param);
+				return System.Threading.Tasks.Task.FromResult<T2>(((SetupWithParameter<T1, T2>?)_mock._invokeAsync0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(param, out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -1225,8 +1227,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -1278,8 +1280,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -1331,8 +1333,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -1384,8 +1386,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -1437,8 +1439,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -1491,8 +1493,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -1545,8 +1547,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -1599,8 +1601,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -1653,8 +1655,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -1707,8 +1709,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -1761,8 +1763,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -1815,8 +1817,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -1869,8 +1871,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -1923,8 +1925,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -1977,8 +1979,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -2031,8 +2033,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
@@ -2085,8 +2087,8 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			}
 			""";
 
-		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
-		const string invocations = "yield return _invoke0Invocation;";
+		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invokeAsync0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
