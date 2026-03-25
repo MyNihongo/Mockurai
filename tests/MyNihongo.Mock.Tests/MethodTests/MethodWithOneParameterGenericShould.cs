@@ -33,10 +33,22 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke(int param) {}";
+		const string proxy =
+			"""
+			public void Invoke<T1, T2>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>()"));
+				invoke0Invocation.Register(_mock._invocationIndex);
+				((Setup?)_mock._invoke0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Invoke();
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -73,10 +85,22 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
-		const string proxy = "public float Invoke(int param) {return default;}";
+		const string proxy =
+			"""
+			public void Invoke<T1, T2>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>()"));
+				invoke0Invocation.Register(_mock._invocationIndex);
+				((Setup?)_mock._invoke0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Invoke();
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();

@@ -32,10 +32,21 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke() {}";
+		const string proxy =
+			"""
+			public void Invoke()
+			{
+				_mock._invoke0Invocation ??= new Invocation("IInterface<T>.Invoke()");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex);
+				_mock._invoke0?.Invoke();
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -71,10 +82,21 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			}
 			""";
 
-		const string proxy = "public decimal Invoke() {return default;}";
+		const string proxy =
+			"""
+			public decimal Invoke()
+			{
+				_mock._invoke0Invocation ??= new Invocation("IInterface<T>.Invoke()");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex);
+				return _mock._invoke0?.Execute(out var returnValue) == true ? returnValue! : default!;
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -113,10 +135,22 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			}
 			""";
 
-		const string proxy = "public void Invoke<TInvoke>() {}";
+		const string proxy =
+			"""
+			public void Invoke<TInvoke>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation)_mock._invoke0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation($"IInterface<T>.Invoke<{key.Name}>()"));
+				invoke0Invocation.Register(_mock._invocationIndex);
+				((Setup?)_mock._invoke0?.ValueOrDefault(typeof(TInvoke)))?.Invoke();
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -152,10 +186,21 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			}
 			""";
 
-		const string proxy = "public T Invoke() {return default;}";
+		const string proxy =
+			"""
+			public T Invoke()
+			{
+				_mock._invoke0Invocation ??= new Invocation("IInterface<T>.Invoke()");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex);
+				return _mock._invoke0?.Execute(out var returnValue) == true ? returnValue! : default!;
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -194,10 +239,22 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			}
 			""";
 
-		const string proxy = "public TReturn Invoke<TReturn>() {return default;}";
+		const string proxy =
+			"""
+			public TReturn Invoke<TReturn>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation)_mock._invoke0Invocation.GetOrAdd(typeof(TReturn), static key => new Invocation($"IInterface<T>.Invoke<{key.Name}>()"));
+				invoke0Invocation.Register(_mock._invocationIndex);
+				return ((Setup<TReturn>?)_mock._invoke0?.ValueOrDefault(typeof(TReturn)))?.Execute(out var returnValue) == true ? returnValue! : default!;
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
 
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
