@@ -154,6 +154,7 @@ internal static class MockImplementationMethodGenerator
 
 		private StringBuilder AppendInvokeMethod(IMethodSymbol methodSymbol, MockedMemberSymbol memberSymbol, ImmutableArray<string> genericTypeNames, int indent)
 		{
+			var returnTypeMetadata = methodSymbol.GetReturnTypeMetadata();
 			var parameterSplit = methodSymbol.Parameters.SplitParameters();
 
 			if (!parameterSplit.OutputParameters.IsDefaultOrEmpty)
@@ -166,7 +167,7 @@ internal static class MockImplementationMethodGenerator
 
 				stringBuilder
 					.Indent(indent++).AppendLine("{")
-					.Indent(indent).AppendInvokeExecuteCall(methodSymbol, memberSymbol, genericTypeNames, appendNullCheck: false, indent).AppendLine()
+					.Indent(indent).AppendInvokeExecuteCall(methodSymbol, memberSymbol, genericTypeNames, returnTypeMetadata, appendNullCheck: false, indent).AppendLine()
 					.Indent(--indent).AppendLine("}")
 					.Indent(indent).AppendLine("else")
 					.Indent(indent++).AppendLine("{");
@@ -179,20 +180,31 @@ internal static class MockImplementationMethodGenerator
 						.AppendLine(MockGeneratorConst.Suffixes.DefaultAssign);
 				}
 
+				if (returnTypeMetadata.ReturnType is not null)
+				{
+					stringBuilder
+						.Indent(indent).AppendLine("return default;");
+				}
+
 				stringBuilder
 					.Indent(--indent).Append('}');
 			}
 			else
 			{
-				stringBuilder.AppendInvokeExecuteCall(methodSymbol, memberSymbol, genericTypeNames, appendNullCheck: true, indent);
+				stringBuilder.AppendInvokeExecuteCall(methodSymbol, memberSymbol, genericTypeNames, returnTypeMetadata, appendNullCheck: true, indent);
 			}
 
 			return stringBuilder;
 		}
 
-		private StringBuilder AppendInvokeExecuteCall(IMethodSymbol methodSymbol, MockedMemberSymbol memberSymbol, ImmutableArray<string> genericTypeNames, bool appendNullCheck, int indent)
+		private StringBuilder AppendInvokeExecuteCall(
+			IMethodSymbol methodSymbol,
+			MockedMemberSymbol memberSymbol,
+			ImmutableArray<string> genericTypeNames,
+			ReturnTypeMetadata returnTypeMetadata,
+			bool appendNullCheck,
+			int indent)
 		{
-			var returnTypeMetadata = methodSymbol.GetReturnTypeMetadata();
 			var hasReturnType = returnTypeMetadata.ReturnType is not null;
 			var hasGenericTypes = !genericTypeNames.IsDefaultOrEmpty;
 
