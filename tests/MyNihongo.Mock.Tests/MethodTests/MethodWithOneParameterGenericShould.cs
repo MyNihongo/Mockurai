@@ -35,12 +35,11 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 
 		const string proxy =
 			"""
-			public void Invoke<T1, T2>()
+			public void Invoke(int param)
 			{
-				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invoke0Invocation = (Invocation)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>()"));
-				invoke0Invocation.Register(_mock._invocationIndex);
-				((Setup?)_mock._invoke0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Invoke();
+				_mock._invoke0Invocation ??= new Invocation<int>("IInterface<T>.Invoke({0})");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, param);
+				_mock._invoke0?.Invoke(param);
 			}
 			""";
 
@@ -87,12 +86,11 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 
 		const string proxy =
 			"""
-			public void Invoke<T1, T2>()
+			public float Invoke(int param)
 			{
-				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invoke0Invocation = (Invocation)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>()"));
-				invoke0Invocation.Register(_mock._invocationIndex);
-				((Setup?)_mock._invoke0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Invoke();
+				_mock._invoke0Invocation ??= new Invocation<int>("IInterface<T>.Invoke({0})");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, param);
+				return _mock._invoke0?.Execute(param, out var returnValue) == true ? returnValue! : default!;
 			}
 			""";
 
