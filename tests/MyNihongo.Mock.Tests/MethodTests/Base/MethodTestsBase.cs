@@ -30,7 +30,7 @@ public abstract class MethodTestsBase : TestsNonGenericBase
 	protected static GeneratedSources CreateClassGeneratedSources(string methods, string proxy, string verifyNoOtherCalls, string invocations)
 	{
 		var testsBase = GetClassTestsBase();
-		var mock = GetClassMock(methods, proxy, verifyNoOtherCalls, invocations);
+		var mock = GetClassMock(methods, proxy, verifyNoOtherCalls, invocations, string.Empty);
 
 		return
 		[

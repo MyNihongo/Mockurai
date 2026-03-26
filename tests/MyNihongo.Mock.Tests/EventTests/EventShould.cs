@@ -378,8 +378,27 @@ public sealed class EventShould : EventTestsBase
 			yield return _handlerEvent0RemoveInvocation;
 			""";
 
+		const string extensions =
+			"""
+			// HandlerEvent
+			public void RaiseHandlerEvent(int value) =>
+				((ClassMock)@this).RaiseHandlerEvent(value);
+
+			public void VerifyAddHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, in Times times) =>
+				((ClassMock)@this).VerifyAddHandlerEvent(value, times);
+
+			public long VerifyAddHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, long index) =>
+				((ClassMock)@this).VerifyAddHandlerEvent(value, index);
+
+			public void VerifyRemoveHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, in Times times) =>
+				((ClassMock)@this).VerifyRemoveHandlerEvent(value, times);
+
+			public long VerifyRemoveHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, long index) =>
+				((ClassMock)@this).VerifyRemoveHandlerEvent(value, index);
+			""";
+
 		var testCode = CreateClassTestCode(@event);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -517,7 +536,7 @@ public sealed class EventShould : EventTestsBase
 			""";
 
 		var testCode = CreateClassTestCode(@event, isAbstract: true);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, string.Empty);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
