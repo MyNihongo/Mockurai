@@ -29,14 +29,7 @@ internal static class MockImplementationEventGenerator
 		// Raise method
 		stringBuilder
 			.AppendLine()
-			.Indent(indent)
-			.Append("public void Raise")
-			.AppendPropertyName(memberSymbol.Symbol.Name)
-			.Append('(')
-			.TryAppendParameter(parameterSymbol)
-			.AppendLine(")");
-
-		stringBuilder
+			.Indent(indent).AppendRaiseMethodDeclaration(memberSymbol, parameterSymbol).AppendLine()
 			.Indent(indent++).AppendLine("{")
 			.Indent(indent)
 			.AppendFieldName(memberSymbol.MemberName)
@@ -96,8 +89,52 @@ internal static class MockImplementationEventGenerator
 			.Append(';');
 	}
 
+	public static void AppendEventMockExtensions(StringBuilder stringBuilder, MockedMemberSymbol memberSymbol, string mockClassName, int indent)
+	{
+		if (memberSymbol.Symbol is not IEventSymbol eventSymbol)
+			return;
+
+		var parameterSymbol = eventSymbol.GetDelegateParameter();
+
+		stringBuilder
+			.Indent(indent)
+			.AppendRaiseMethodDeclaration(memberSymbol, parameterSymbol)
+			.AppendLine(" =>");
+
+		stringBuilder
+			.Indent(indent + 1)
+			.AppendCastCall(mockClassName)
+			.AppendRaiseMethodName(memberSymbol)
+			.Append('(')
+			.AppendParameterNames([parameterSymbol])
+			.Append(");");
+
+		if (eventSymbol.AddMethod is not null)
+			stringBuilder.AppendEventVerifyExtensionMethods(eventSymbol.AddMethod, mockClassName, indent);
+
+		if (eventSymbol.RemoveMethod is not null)
+			stringBuilder.AppendEventVerifyExtensionMethods(eventSymbol.RemoveMethod, mockClassName, indent);
+	}
+
 	extension(StringBuilder stringBuilder)
 	{
+		private StringBuilder AppendRaiseMethodDeclaration(MockedMemberSymbol memberSymbol, IParameterSymbol? parameterSymbol)
+		{
+			return stringBuilder
+				.Append("public void ")
+				.AppendRaiseMethodName(memberSymbol)
+				.Append('(')
+				.TryAppendParameter(parameterSymbol)
+				.Append(")");
+		}
+
+		private StringBuilder AppendRaiseMethodName(MockedMemberSymbol memberSymbol)
+		{
+			return stringBuilder
+				.Append("Raise")
+				.AppendPropertyName(memberSymbol.Symbol.Name);
+		}
+
 		private StringBuilder AppendEventDeclaration(IEventSymbol eventSymbol)
 		{
 			return stringBuilder
@@ -157,6 +194,14 @@ internal static class MockImplementationEventGenerator
 
 			stringBuilder
 				.Indent(--indent).AppendLine("}");
+		}
+
+		private void AppendEventVerifyExtensionMethods(IMethodSymbol methodSymbol, string mockClassName, int indent)
+		{
+			stringBuilder
+				.AppendLine()
+				.AppendLine()
+				.AppendVerifyExtensionMethods(methodSymbol, mockClassName, indent);
 		}
 	}
 }

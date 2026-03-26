@@ -174,13 +174,7 @@ internal static class MethodSymbolEx
 
 			// Verify times
 			@this
-				.Indent(indent)
-				.Append("public void Verify")
-				.AppendMethodName(methodSymbol)
-				.AppendGenericTypes(methodSymbol.TypeArguments)
-				.Append('(')
-				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
-				.AppendLine("in Times times)")
+				.Indent(indent).AppendVerifyTimesMethodDeclaration(methodSymbol).AppendLine()
 				.Indent(indent++).AppendLine("{");
 
 			@this
@@ -203,9 +197,8 @@ internal static class MethodSymbolEx
 			// Verify index
 			@this
 				.Indent(indent)
-				.Append("public long Verify")
-				.AppendMethodName(methodSymbol)
-				.AppendGenericTypes(methodSymbol.TypeArguments)
+				.Append("public long ")
+				.AppendVerifyMethodName(methodSymbol)
 				.Append('(')
 				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
 				.AppendLine("long index)")
@@ -227,6 +220,43 @@ internal static class MethodSymbolEx
 			@this
 				.Indent(--indent)
 				.Append('}');
+		}
+
+		public void AppendVerifyExtensionMethods(IMethodSymbol methodSymbol, string castName, int indent)
+		{
+			// Verify times
+			@this
+				.Indent(indent)
+				.AppendVerifyTimesMethodDeclaration(methodSymbol)
+				.AppendLine(" =>");
+
+			@this
+				.Indent(indent + 1)
+				.AppendCastCall(castName)
+				.AppendVerifyMethodName(methodSymbol)
+				.Append('(')
+				.AppendParameterNames(methodSymbol.Parameters, appendComma: true)
+				.Append("times);");
+			
+			// Verify index
+		}
+
+		public StringBuilder AppendVerifyTimesMethodDeclaration(IMethodSymbol methodSymbol)
+		{
+			return @this
+				.Append("public void ")
+				.AppendVerifyMethodName(methodSymbol)
+				.Append('(')
+				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
+				.Append("in Times times)");
+		}
+
+		public StringBuilder AppendVerifyMethodName(IMethodSymbol methodSymbol)
+		{
+			return @this
+				.Append("Verify")
+				.AppendMethodName(methodSymbol)
+				.AppendGenericTypes(methodSymbol.TypeArguments);
 		}
 
 		private StringBuilder AppendVariableName(string? name, MethodKind? methodKind, bool isField)

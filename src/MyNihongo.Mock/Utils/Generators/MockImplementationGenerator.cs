@@ -62,7 +62,7 @@ internal static class MockImplementationGenerator
 			  		public void VerifyNoOtherCalls() =>
 			  			(({{mockClassName}})@this).VerifyNoOtherCalls();
 
-			  		{{CreateMockExtensions(stringBuilder, mockableMembers, indent: 2)}}
+			  {{CreateMockExtensions(stringBuilder, mockedTypeSymbol, mockableMembers, mockClassName, indent: 2)}}
 			  	}
 			  }
 
@@ -70,7 +70,7 @@ internal static class MockImplementationGenerator
 			  {
 			  	extension{{genericTypes}}(IMockSequence<{{typeString}}> @this)
 			  	{
-			  	{{CreateMockSequenceExtensions(stringBuilder, mockableMembers, indent: 2)}}
+			  {{CreateMockSequenceExtensions(stringBuilder, mockableMembers, indent: 2)}}
 			  	}
 			  }
 			  """;
@@ -288,9 +288,35 @@ internal static class MockImplementationGenerator
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateMockExtensions(StringBuilder stringBuilder, IReadOnlyList<MockedMemberSymbol> members, int indent)
+	private static string CreateMockExtensions(StringBuilder stringBuilder, MockedTypeSymbol typeSymbol, IReadOnlyList<MockedMemberSymbol> members, string mockClassName, int indent)
 	{
 		stringBuilder.Clear();
+
+		var generatedCount = 0;
+		foreach (var member in members)
+		{
+			stringBuilder.AppendNameComment(member, indent);
+			
+			Action<StringBuilder, MockedMemberSymbol, string, int>? handler = member.Symbol.Kind switch
+			{
+				SymbolKind.Event => MockImplementationEventGenerator.AppendEventMockExtensions,
+				_ => null,
+			};
+
+			if (handler is null)
+				continue;
+
+			if (generatedCount > 0)
+			{
+				stringBuilder
+					.AppendLine()
+					.AppendLine();
+			}
+
+			handler(stringBuilder, member, mockClassName, indent);
+			generatedCount++;
+		}
+		
 		return stringBuilder.ToString();
 	}
 

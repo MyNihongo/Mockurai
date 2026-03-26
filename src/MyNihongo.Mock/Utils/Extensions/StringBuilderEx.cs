@@ -135,6 +135,14 @@ internal static class StringBuilderEx
 			return @this.Append(declaredAccessibility);
 		}
 
+		public StringBuilder AppendCastCall(string name)
+		{
+			return @this
+				.Append("((")
+				.Append(name)
+				.Append(")@this).");
+		}
+
 		public StringBuilder AppendIfNotNullOrEmpty(string? value)
 		{
 			return !string.IsNullOrEmpty(value)
