@@ -197,11 +197,7 @@ internal static class MethodSymbolEx
 			// Verify index
 			@this
 				.Indent(indent)
-				.Append("public long ")
-				.AppendVerifyMethodName(methodSymbol)
-				.Append('(')
-				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
-				.AppendLine("long index)")
+				.AppendVerifyIndexMethodDeclaration(methodSymbol).AppendLine()
 				.Indent(indent++).AppendLine("{");
 
 			@this
@@ -236,12 +232,25 @@ internal static class MethodSymbolEx
 				.AppendVerifyMethodName(methodSymbol)
 				.Append('(')
 				.AppendParameterNames(methodSymbol.Parameters, appendComma: true)
-				.Append("times);");
-			
+				.AppendLine("times);")
+				.AppendLine();
+
 			// Verify index
+			@this
+				.Indent(indent)
+				.AppendVerifyIndexMethodDeclaration(methodSymbol)
+				.AppendLine(" =>");
+
+			@this
+				.Indent(indent + 1)
+				.AppendCastCall(castName)
+				.AppendVerifyMethodName(methodSymbol)
+				.Append('(')
+				.AppendParameterNames(methodSymbol.Parameters, appendComma: true)
+				.Append("index);");
 		}
 
-		public StringBuilder AppendVerifyTimesMethodDeclaration(IMethodSymbol methodSymbol)
+		private StringBuilder AppendVerifyTimesMethodDeclaration(IMethodSymbol methodSymbol)
 		{
 			return @this
 				.Append("public void ")
@@ -251,7 +260,17 @@ internal static class MethodSymbolEx
 				.Append("in Times times)");
 		}
 
-		public StringBuilder AppendVerifyMethodName(IMethodSymbol methodSymbol)
+		private StringBuilder AppendVerifyIndexMethodDeclaration(IMethodSymbol methodSymbol)
+		{
+			return @this
+				.Append("public long ")
+				.AppendVerifyMethodName(methodSymbol)
+				.Append('(')
+				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
+				.Append("long index)");
+		}
+
+		private StringBuilder AppendVerifyMethodName(IMethodSymbol methodSymbol)
 		{
 			return @this
 				.Append("Verify")
