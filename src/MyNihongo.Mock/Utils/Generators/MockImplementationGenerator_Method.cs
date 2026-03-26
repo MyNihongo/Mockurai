@@ -82,7 +82,7 @@ internal static class MockImplementationMethodGenerator
 		var returnTypeMetadata = methodSymbol.GetReturnTypeMetadata();
 
 		stringBuilder
-			.TryAppendDefaultReturn(returnTypeMetadata)
+			.TryAppendDefaultReturn(returnTypeMetadata, indent: null)
 			.Append('}');
 	}
 
@@ -175,7 +175,7 @@ internal static class MockImplementationMethodGenerator
 				}
 
 				stringBuilder
-					.Indent(indent).TryAppendDefaultReturn(returnTypeMetadata).AppendLine()
+					.TryAppendDefaultReturn(returnTypeMetadata, indent)
 					.Indent(--indent).Append('}');
 			}
 			else
@@ -285,10 +285,13 @@ internal static class MockImplementationMethodGenerator
 				.Append(';');
 		}
 
-		private StringBuilder TryAppendDefaultReturn(ReturnTypeMetadata returnTypeMetadata)
+		private StringBuilder TryAppendDefaultReturn(ReturnTypeMetadata returnTypeMetadata, int? indent)
 		{
 			if (!string.IsNullOrEmpty(returnTypeMetadata.StaticInitializer))
 			{
+				if (indent.HasValue)
+					stringBuilder.Indent(indent.Value);
+
 				stringBuilder.Append("return ");
 
 				if (returnTypeMetadata.ReturnType is not null)
@@ -303,10 +306,19 @@ internal static class MockImplementationMethodGenerator
 						.AppendCompletedTask(returnTypeMetadata.StaticInitializer!)
 						.Append(';');
 				}
+
+				if (indent.HasValue)
+					stringBuilder.AppendLine();
 			}
 			else if (returnTypeMetadata.ReturnType is not null)
 			{
+				if (indent.HasValue)
+					stringBuilder.Indent(indent.Value);
+
 				stringBuilder.Append("return default;");
+
+				if (indent.HasValue)
+					stringBuilder.AppendLine();
 			}
 
 			return stringBuilder;
