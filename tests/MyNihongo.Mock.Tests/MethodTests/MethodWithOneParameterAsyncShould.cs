@@ -1056,11 +1056,13 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public System.Threading.Tasks.Task InvokeAsync<T>(T param)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
+				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})"));
+				invokeAsync0Invocation.Register(_mock._invocationIndex, param);
+				((SetupWithParameter<T>?)_mock._invokeAsync0?.ValueOrDefault(typeof(T)))?.Invoke(param);
+				return System.Threading.Tasks.Task.CompletedTask;
 			}
 			""";
 
@@ -1110,11 +1112,13 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public System.Threading.Tasks.ValueTask InvokeAsync<T>(T param)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
+				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})"));
+				invokeAsync0Invocation.Register(_mock._invocationIndex, param);
+				((SetupWithParameter<T>?)_mock._invokeAsync0?.ValueOrDefault(typeof(T)))?.Invoke(param);
+				return System.Threading.Tasks.ValueTask.CompletedTask;
 			}
 			""";
 
@@ -1219,11 +1223,12 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public System.Threading.Tasks.ValueTask<T2> InvokeAsync<T1, T2>(T1 param)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})"));
+				invokeAsync0Invocation.Register(_mock._invocationIndex, param);
+				return System.Threading.Tasks.ValueTask.FromResult<T2>(((SetupWithParameter<T1, T2>?)_mock._invokeAsync0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(param, out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
@@ -1272,11 +1277,21 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public System.Threading.Tasks.Task InvokeAsync<T>(out T value)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
+				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "out"));
+				invokeAsync0Invocation.Register(_mock._invocationIndex, default);
+				if (_mock._invokeAsync0?.TryGetValue(typeof(T), out var setup) == true)
+				{
+					((SetupWithOutParameter<T>)setup).Invoke(out value);
+					return System.Threading.Tasks.Task.CompletedTask;
+				}
+				else
+				{
+					value = default;
+					return System.Threading.Tasks.Task.CompletedTask;
+				}
 			}
 			""";
 
@@ -1325,11 +1340,21 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public System.Threading.Tasks.ValueTask InvokeAsync<T>(out T value)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
+				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "out"));
+				invokeAsync0Invocation.Register(_mock._invocationIndex, default);
+				if (_mock._invokeAsync0?.TryGetValue(typeof(T), out var setup) == true)
+				{
+					((SetupWithOutParameter<T>)setup).Invoke(out value);
+					return System.Threading.Tasks.ValueTask.CompletedTask;
+				}
+				else
+				{
+					value = default;
+					return System.Threading.Tasks.ValueTask.CompletedTask;
+				}
 			}
 			""";
 
@@ -1485,11 +1510,13 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public System.Threading.Tasks.Task InvokeAsync<T>(in T value)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
+				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "in"));
+				invokeAsync0Invocation.Register(_mock._invocationIndex, value);
+				((SetupWithInParameter<T>?)_mock._invokeAsync0?.ValueOrDefault(typeof(T)))?.Invoke(in value);
+				return System.Threading.Tasks.Task.CompletedTask;
 			}
 			""";
 
@@ -1539,11 +1566,13 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 
 		const string proxy =
 			"""
-			public override void Invoke()
+			public System.Threading.Tasks.ValueTask InvokeAsync<T>(in T value)
 			{
-				_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
-				_mock._invoke0Invocation.Register(_mock._invocationIndex);
-				_mock._invoke0?.Invoke();
+				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
+				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "in"));
+				invokeAsync0Invocation.Register(_mock._invocationIndex, value);
+				((SetupWithInParameter<T>?)_mock._invokeAsync0?.ValueOrDefault(typeof(T)))?.Invoke(in value);
+				return System.Threading.Tasks.ValueTask.CompletedTask;
 			}
 			""";
 

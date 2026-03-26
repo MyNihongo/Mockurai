@@ -80,29 +80,9 @@ internal static class MockImplementationMethodGenerator
 		}
 
 		var returnTypeMetadata = methodSymbol.GetReturnTypeMetadata();
-		if (!string.IsNullOrEmpty(returnTypeMetadata.StaticInitializer))
-		{
-			stringBuilder.Append("return ");
-
-			if (returnTypeMetadata.ReturnType is not null)
-			{
-				stringBuilder
-					.AppendFromResult(returnTypeMetadata.StaticInitializer!, returnTypeMetadata.ReturnType)
-					.Append("(default);");
-			}
-			else
-			{
-				stringBuilder
-					.AppendCompletedTask(returnTypeMetadata.StaticInitializer!)
-					.Append(';');
-			}
-		}
-		else if (returnTypeMetadata.ReturnType is not null)
-		{
-			stringBuilder.Append("return default;");
-		}
 
 		stringBuilder
+			.TryAppendDefaultReturn(returnTypeMetadata)
 			.Append('}');
 	}
 
@@ -194,13 +174,8 @@ internal static class MockImplementationMethodGenerator
 						.AppendLine(MockGeneratorConst.Suffixes.DefaultAssign);
 				}
 
-				if (returnTypeMetadata.ReturnType is not null)
-				{
-					stringBuilder
-						.Indent(indent).AppendLine("return default;");
-				}
-
 				stringBuilder
+					.Indent(indent).TryAppendDefaultReturn(returnTypeMetadata).AppendLine()
 					.Indent(--indent).Append('}');
 			}
 			else
@@ -308,6 +283,33 @@ internal static class MockImplementationMethodGenerator
 
 			return stringBuilder
 				.Append(';');
+		}
+
+		private StringBuilder TryAppendDefaultReturn(ReturnTypeMetadata returnTypeMetadata)
+		{
+			if (!string.IsNullOrEmpty(returnTypeMetadata.StaticInitializer))
+			{
+				stringBuilder.Append("return ");
+
+				if (returnTypeMetadata.ReturnType is not null)
+				{
+					stringBuilder
+						.AppendFromResult(returnTypeMetadata.StaticInitializer!, returnTypeMetadata.ReturnType)
+						.Append("(default);");
+				}
+				else
+				{
+					stringBuilder
+						.AppendCompletedTask(returnTypeMetadata.StaticInitializer!)
+						.Append(';');
+				}
+			}
+			else if (returnTypeMetadata.ReturnType is not null)
+			{
+				stringBuilder.Append("return default;");
+			}
+
+			return stringBuilder;
 		}
 
 		private StringBuilder AppendFromResult(string staticInitializer, ITypeSymbol returnType)
