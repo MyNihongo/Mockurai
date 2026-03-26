@@ -295,7 +295,7 @@ internal static class MockImplementationMethodGenerator
 				{
 					stringBuilder
 						.AppendFromResult(returnTypeMetadata.StaticInitializer!, returnTypeMetadata.ReturnType)
-						.Append("(default);");
+						.Append("(default!);");
 				}
 				else
 				{
