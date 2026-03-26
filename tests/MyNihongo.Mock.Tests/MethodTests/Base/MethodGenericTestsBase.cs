@@ -9,10 +9,10 @@ public abstract class MethodGenericTestsBase : TestsGenericBase
 		return CreateInterfaceTestCode(method, CustomCode);
 	}
 
-	protected static GeneratedSources CreateInterfaceGeneratedSources(string methods, string proxy, params ReadOnlySpan<GeneratedSource> generatedSources)
+	protected static GeneratedSources CreateInterfaceGeneratedSources(string methods, string proxy, string verifyNoOtherCalls, string invocations, params ReadOnlySpan<GeneratedSource> generatedSources)
 	{
 		var testsBase = GetInterfaceTestsBase();
-		var mock = GetInterfaceMock(methods, proxy);
+		var mock = GetInterfaceMock(methods, proxy, verifyNoOtherCalls, invocations);
 
 		return
 		[
@@ -30,7 +30,7 @@ public abstract class MethodGenericTestsBase : TestsGenericBase
 	protected static GeneratedSources CreateClassGeneratedSources(string methods, string proxy)
 	{
 		var testsBase = GetClassTestsBase();
-		var mock = GetClassMock(methods, proxy);
+		var mock = GetClassMock(methods, proxy, string.Empty, string.Empty);
 
 		return
 		[

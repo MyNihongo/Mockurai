@@ -7,7 +7,7 @@ internal static class MockSetupGenerator
 		var stringBuilder = new StringBuilder();
 		var className = CreateSetupClassName(stringBuilder, methodSymbol, out var genericTypeOverride);
 		var returnType = methodSymbol.TryGetReturnType();
-		var returnValueName = GetReturnValueName(methodSymbol.Parameters);
+		var returnValueName = methodSymbol.Parameters.GetReturnValueName();
 		var parameterSplit = methodSymbol.Parameters.SplitParameters();
 
 		var source =
@@ -349,25 +349,6 @@ internal static class MockSetupGenerator
 			.ToString();
 	}
 
-	private static string GetReturnValueName(ImmutableArray<IParameterSymbol> parameterSymbols)
-	{
-		var parameterNames = parameterSymbols
-			.Select(static x => x.Name)
-			.ToImmutableHashSet();
-
-		var returnValue = "returnValue";
-
-		for (var i = 0; i < 100; i++)
-		{
-			if (!parameterNames.Contains(returnValue))
-				break;
-
-			returnValue = '_' + returnValue;
-		}
-
-		return returnValue;
-	}
-
 	extension(StringBuilder @this)
 	{
 		private StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol)
@@ -556,7 +537,7 @@ internal static class MockSetupGenerator
 
 file static class Extensions
 {
-	private const string DefaultAssign = " = default;";
+	private const string DefaultAssign = MockGeneratorConst.Suffixes.DefaultAssign;
 
 	extension(StringBuilder stringBuilder)
 	{
@@ -832,7 +813,7 @@ file static class Extensions
 					stringBuilder
 						.Indent(indent)
 						.Append(outParameter.Name)
-						.AppendLine(" = default;");
+						.AppendLine(DefaultAssign);
 				}
 
 				stringBuilder

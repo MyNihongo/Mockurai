@@ -2,7 +2,7 @@
 
 public class SetupWithRefReadOnlyParameter<TParameter> : SetupWithParameterBase<TParameter, ActionRefReadOnly<TParameter>>
 {
-	public void Invoke(ref TParameter parameter)
+	public void Invoke(ref readonly TParameter parameter)
 	{
 		if (Setups is null)
 			return;
@@ -13,7 +13,7 @@ public class SetupWithRefReadOnlyParameter<TParameter> : SetupWithParameterBase<
 				continue;
 
 			var x = setup.GetSetup();
-			x.Callback?.Invoke(ref parameter);
+			x.Callback?.Invoke(in parameter);
 
 			if (x.Exception is not null)
 				throw x.Exception;

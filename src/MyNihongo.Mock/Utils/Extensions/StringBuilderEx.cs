@@ -123,5 +123,38 @@ internal static class StringBuilderEx
 
 			return @this;
 		}
+
+		public StringBuilder AppendVerifyNoOtherCallsInvocation()
+		{
+			return @this.Append("?.VerifyNoOtherCalls(_invocationProviders)");
+		}
+
+		public StringBuilder AppendDeclaredAccessibility(ISymbol symbol)
+		{
+			var declaredAccessibility = symbol.DeclaredAccessibility.GetString();
+			return @this.Append(declaredAccessibility);
+		}
+
+		public StringBuilder AppendCastCall(string name)
+		{
+			return @this
+				.Append("((")
+				.Append(name)
+				.Append(")@this).");
+		}
+
+		public StringBuilder AppendIfNotNullOrEmpty(string? value)
+		{
+			return !string.IsNullOrEmpty(value)
+				? @this.Append(value)
+				: @this;
+		}
+
+		public StringBuilder AppendIf(bool condition, string value)
+		{
+			return condition
+				? @this.Append(value)
+				: @this;
+		}
 	}
 }

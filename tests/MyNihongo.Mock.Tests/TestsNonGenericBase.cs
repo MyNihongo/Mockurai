@@ -7,7 +7,7 @@ public abstract class TestsNonGenericBase : TestsBase
 		return
 			$$"""
 			  using System.Threading.Tasks;
-			  
+
 			  namespace MyNihongo.Mock.Tests;
 
 			  {{customCode}}
@@ -71,7 +71,7 @@ public abstract class TestsNonGenericBase : TestsBase
 		return ("TestsBase.g.cs", testsBase);
 	}
 
-	protected static GeneratedSource GetInterfaceMock(string methods, string proxy)
+	protected static GeneratedSource GetInterfaceMock(string methods, string proxy, string verifyNoOtherCalls, string invocations)
 	{
 		var mock =
 			$$"""
@@ -95,12 +95,12 @@ public abstract class TestsNonGenericBase : TestsBase
 
 			  	public void VerifyNoOtherCalls()
 			  	{
-
+			  {{verifyNoOtherCalls.Indent(2)}}
 			  	}
 
 			  	private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
 			  	{
-			  		yield break;
+			  {{invocations.Indent(2)}}
 			  	}
 
 			  	private sealed class Proxy : MyNihongo.Mock.Tests.IInterface
@@ -113,7 +113,6 @@ public abstract class TestsNonGenericBase : TestsBase
 			  		}
 
 			  {{proxy.Indent(2)}}
-
 			  	}
 			  }
 
@@ -207,7 +206,7 @@ public abstract class TestsNonGenericBase : TestsBase
 		return ("TestsBase.g.cs", testsBase);
 	}
 
-	protected static GeneratedSource GetClassMock(string methods, string proxy)
+	protected static GeneratedSource GetClassMock(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions)
 	{
 		var mock =
 			$$"""
@@ -231,12 +230,12 @@ public abstract class TestsNonGenericBase : TestsBase
 
 			  	public void VerifyNoOtherCalls()
 			  	{
-
+			  {{verifyNoOtherCalls.Indent(2)}}
 			  	}
 
 			  	private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
 			  	{
-			  		yield break;
+			  {{invocations.Indent(2)}}
 			  	}
 
 			  	private sealed class Proxy : MyNihongo.Mock.Tests.Class
@@ -249,7 +248,6 @@ public abstract class TestsNonGenericBase : TestsBase
 			  		}
 
 			  {{proxy.Indent(2)}}
-
 			  	}
 			  }
 
@@ -260,7 +258,7 @@ public abstract class TestsNonGenericBase : TestsBase
 			  		public void VerifyNoOtherCalls() =>
 			  			((ClassMock)@this).VerifyNoOtherCalls();
 
-			  		
+			  {{extensions.Indent(2)}}
 			  	}
 			  }
 
@@ -268,7 +266,7 @@ public abstract class TestsNonGenericBase : TestsBase
 			  {
 			  	extension(IMockSequence<MyNihongo.Mock.Tests.Class> @this)
 			  	{
-			  	
+
 			  	}
 			  }
 			  """;

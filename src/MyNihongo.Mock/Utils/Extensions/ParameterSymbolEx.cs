@@ -13,7 +13,7 @@ internal static class ParameterSymbolEx
 		public ParameterSplit SplitParameters()
 		{
 			ImmutableArray<IParameterSymbol>.Builder? inputBuilder = null, outputBuilder = null;
-			
+
 			foreach (var parameter in @this)
 			{
 				if (parameter.RefKind == RefKind.Out)
@@ -26,6 +26,28 @@ internal static class ParameterSymbolEx
 				inputParameters: inputBuilder?.ToImmutable() ?? ImmutableArray<IParameterSymbol>.Empty,
 				outputParameters: outputBuilder?.ToImmutable() ?? ImmutableArray<IParameterSymbol>.Empty
 			);
+		}
+
+		public string GetReturnValueName()
+		{
+			return @this.GetSafeVariableName("returnValue");
+		}
+
+		public string GetSafeVariableName(string variableName)
+		{
+			var parameterNames = @this
+				.Select(static x => x.Name)
+				.ToImmutableHashSet();
+
+			for (var i = 0; i < 4; i++)
+			{
+				if (!parameterNames.Contains(variableName))
+					return variableName;
+
+				variableName = '_' + variableName;
+			}
+
+			return $"__{Guid.NewGuid():N}__";
 		}
 	}
 
@@ -117,6 +139,22 @@ internal static class ParameterSymbolEx
 
 				if (appendComma)
 					@this.Append(", ");
+			}
+
+			return @this;
+		}
+
+		public StringBuilder AppendParameterNamesOrDefault(ImmutableArray<IParameterSymbol> parameters)
+		{
+			foreach (var parameter in parameters)
+			{
+				@this.Append(", ");
+
+				var parameterName = parameter.RefKind == RefKind.Out
+					? "default"
+					: parameter.Name;
+
+				@this.Append(parameterName);
 			}
 
 			return @this;

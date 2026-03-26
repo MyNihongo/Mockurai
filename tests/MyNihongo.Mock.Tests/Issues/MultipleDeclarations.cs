@@ -121,12 +121,12 @@ public sealed class MultipleDeclarations : TestsBase
 
 					public void VerifyNoOtherCalls()
 					{
-
+						_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);
 					}
 
 					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
 					{
-						yield break;
+						yield return _invoke0Invocation;
 					}
 
 					private sealed class Proxy : MyNihongo.Mock.Tests.IInterface
@@ -138,8 +138,12 @@ public sealed class MultipleDeclarations : TestsBase
 							_mock = mock;
 						}
 
-						public void Invoke() {}
-
+						public void Invoke()
+						{
+							_mock._invoke0Invocation ??= new Invocation("IInterface.Invoke()");
+							_mock._invoke0Invocation.Register(_mock._invocationIndex);
+							_mock._invoke0?.Invoke();
+						}
 					}
 				}
 
@@ -323,12 +327,12 @@ public sealed class MultipleDeclarations : TestsBase
 
 					public void VerifyNoOtherCalls()
 					{
-
+						_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);
 					}
 
 					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
 					{
-						yield break;
+						yield return _invoke0Invocation;
 					}
 
 					private sealed class Proxy : MyNihongo.Mock.Tests.IInterface
@@ -340,8 +344,12 @@ public sealed class MultipleDeclarations : TestsBase
 							_mock = mock;
 						}
 
-						public void Invoke() {}
-
+						public void Invoke()
+						{
+							_mock._invoke0Invocation ??= new Invocation("IInterface.Invoke()");
+							_mock._invoke0Invocation.Register(_mock._invocationIndex);
+							_mock._invoke0?.Invoke();
+						}
 					}
 				}
 
@@ -506,12 +514,14 @@ public sealed class MultipleDeclarations : TestsBase
 
 					public void VerifyNoOtherCalls()
 					{
-
+						_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);
+						_invoke20Invocation?.VerifyNoOtherCalls(_invocationProviders);
 					}
 
 					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
 					{
-						yield break;
+						yield return _invoke0Invocation;
+						yield return _invoke20Invocation;
 					}
 
 					private sealed class Proxy : MyNihongo.Mock.Tests.IInterface
@@ -523,9 +533,20 @@ public sealed class MultipleDeclarations : TestsBase
 							_mock = mock;
 						}
 
-						public T Invoke<T>(int param1, long param2) {return default;}
-						public decimal Invoke2(int param2, long param1) {return default;}
+						public T Invoke<T>(int param1, long param2)
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationInt32Int64)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationInt32Int64($"IInterface.Invoke<{key.Name}>({0}, {1})"));
+							invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
+							return ((SetupInt32Int64<T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
+						}
 
+						public decimal Invoke2(int param2, long param1)
+						{
+							_mock._invoke20Invocation ??= new InvocationInt32Int64("IInterface.Invoke2({0}, {1})");
+							_mock._invoke20Invocation.Register(_mock._invocationIndex, param2, param1);
+							return _mock._invoke20?.Execute(param2, param1, out var returnValue) == true ? returnValue! : default!;
+						}
 					}
 				}
 
@@ -693,12 +714,14 @@ public sealed class MultipleDeclarations : TestsBase
 
 					public void VerifyNoOtherCalls()
 					{
-
+						_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);
+						_invoke20Invocation?.VerifyNoOtherCalls(_invocationProviders);
 					}
 
 					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
 					{
-						yield break;
+						yield return _invoke0Invocation;
+						yield return _invoke20Invocation;
 					}
 
 					private sealed class Proxy : MyNihongo.Mock.Tests.IInterface
@@ -710,9 +733,20 @@ public sealed class MultipleDeclarations : TestsBase
 							_mock = mock;
 						}
 
-						public T Invoke<T>(int param1, long param2) {return default;}
-						public decimal Invoke2(long param2, int param1) {return default;}
+						public T Invoke<T>(int param1, long param2)
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationInt32Int64)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationInt32Int64($"IInterface.Invoke<{key.Name}>({0}, {1})"));
+							invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
+							return ((SetupInt32Int64<T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
+						}
 
+						public decimal Invoke2(long param2, int param1)
+						{
+							_mock._invoke20Invocation ??= new InvocationInt64Int32("IInterface.Invoke2({0}, {1})");
+							_mock._invoke20Invocation.Register(_mock._invocationIndex, param2, param1);
+							return _mock._invoke20?.Execute(param2, param1, out var returnValue) == true ? returnValue! : default!;
+						}
 					}
 				}
 
@@ -882,12 +916,14 @@ public sealed class MultipleDeclarations : TestsBase
 
 					public void VerifyNoOtherCalls()
 					{
-
+						_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);
+						_invoke20Invocation?.VerifyNoOtherCalls(_invocationProviders);
 					}
 
 					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
 					{
-						yield break;
+						yield return _invoke0Invocation;
+						yield return _invoke20Invocation;
 					}
 
 					private sealed class Proxy : MyNihongo.Mock.Tests.IInterface
@@ -899,9 +935,20 @@ public sealed class MultipleDeclarations : TestsBase
 							_mock = mock;
 						}
 
-						public T Invoke<T>(int param1, long param2) {return default;}
-						public decimal Invoke2(int param1, in long param2) {return default;}
+						public T Invoke<T>(int param1, long param2)
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationInt32Int64)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationInt32Int64($"IInterface.Invoke<{key.Name}>({0}, {1})"));
+							invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
+							return ((SetupInt32Int64<T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
+						}
 
+						public decimal Invoke2(int param1, in long param2)
+						{
+							_mock._invoke20Invocation ??= new InvocationInt32InInt64("IInterface.Invoke2({0}, {1})", prefixParam2: "in");
+							_mock._invoke20Invocation.Register(_mock._invocationIndex, param1, param2);
+							return _mock._invoke20?.Execute(param1, in param2, out var returnValue) == true ? returnValue! : default!;
+						}
 					}
 				}
 
@@ -1061,12 +1108,12 @@ public sealed class MultipleDeclarations : TestsBase
 
 					public void VerifyNoOtherCalls()
 					{
-
+						_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);
 					}
 
 					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
 					{
-						yield break;
+						yield return _invoke0Invocation;
 					}
 
 					private sealed class Proxy : MyNihongo.Mock.Tests.IInterface
@@ -1078,8 +1125,12 @@ public sealed class MultipleDeclarations : TestsBase
 							_mock = mock;
 						}
 
-						public void Invoke(int param1, double param2) {}
-
+						public void Invoke(int param1, double param2)
+						{
+							_mock._invoke0Invocation ??= new InvocationInt32Double("IInterface.Invoke({0}, {1})");
+							_mock._invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
+							_mock._invoke0?.Invoke(param1, param2);
+						}
 					}
 				}
 
@@ -1147,12 +1198,12 @@ public sealed class MultipleDeclarations : TestsBase
 
 					public void VerifyNoOtherCalls()
 					{
-
+						_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);
 					}
 
 					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
 					{
-						yield break;
+						yield return _invoke0Invocation;
 					}
 
 					private sealed class Proxy : MyNihongo.Mock.Tests.AbstractClass
@@ -1164,8 +1215,12 @@ public sealed class MultipleDeclarations : TestsBase
 							_mock = mock;
 						}
 
-						public override void Invoke(int value1, double value2) {}
-
+						public override void Invoke(int value1, double value2)
+						{
+							_mock._invoke0Invocation ??= new InvocationInt32Double("AbstractClass.Invoke({0}, {1})");
+							_mock._invoke0Invocation.Register(_mock._invocationIndex, value1, value2);
+							_mock._invoke0?.Invoke(value1, value2);
+						}
 					}
 				}
 
@@ -1340,12 +1395,14 @@ public sealed class MultipleDeclarations : TestsBase
 
 					public void VerifyNoOtherCalls()
 					{
-
+						_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);
+						_invoke20Invocation?.VerifyNoOtherCalls(_invocationProviders);
 					}
 
 					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
 					{
-						yield break;
+						yield return _invoke0Invocation;
+						yield return _invoke20Invocation;
 					}
 
 					private sealed class Proxy : MyNihongo.Mock.Tests.IInterface
@@ -1357,9 +1414,21 @@ public sealed class MultipleDeclarations : TestsBase
 							_mock = mock;
 						}
 
-						public void Invoke<TStuff>(int param1, TStuff param2) {}
-						public void Invoke2<TValue>(int param1, TValue param2) {}
+						public void Invoke<TStuff>(int param1, TStuff param2)
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationInt32T1<TStuff>)_mock._invoke0Invocation.GetOrAdd(typeof(TStuff), static key => new InvocationInt32T1<TStuff>($"IInterface.Invoke<{key.Name}>({0}, {1})"));
+							invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
+							((SetupInt32T1<TStuff>?)_mock._invoke0?.ValueOrDefault(typeof(TStuff)))?.Invoke(param1, param2);
+						}
 
+						public void Invoke2<TValue>(int param1, TValue param2)
+						{
+							_mock._invoke20Invocation ??= new InvocationDictionary();
+							var invoke20Invocation = (InvocationInt32T1<TValue>)_mock._invoke20Invocation.GetOrAdd(typeof(TValue), static key => new InvocationInt32T1<TValue>($"IInterface.Invoke2<{key.Name}>({0}, {1})"));
+							invoke20Invocation.Register(_mock._invocationIndex, param1, param2);
+							((SetupInt32T1<TValue>?)_mock._invoke20?.ValueOrDefault(typeof(TValue)))?.Invoke(param1, param2);
+						}
 					}
 				}
 
@@ -1540,12 +1609,14 @@ public sealed class MultipleDeclarations : TestsBase
 
 					public void VerifyNoOtherCalls()
 					{
-
+						_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);
+						_invoke20Invocation?.VerifyNoOtherCalls(_invocationProviders);
 					}
 
 					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
 					{
-						yield break;
+						yield return _invoke0Invocation;
+						yield return _invoke20Invocation;
 					}
 
 					private sealed class Proxy : MyNihongo.Mock.Tests.IInterface
@@ -1557,9 +1628,21 @@ public sealed class MultipleDeclarations : TestsBase
 							_mock = mock;
 						}
 
-						public void Invoke<TStuff>(int param1, TStuff param2) {}
-						public void Invoke2<TValue>(TValue param1, int param2) {}
+						public void Invoke<TStuff>(int param1, TStuff param2)
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationInt32T1<TStuff>)_mock._invoke0Invocation.GetOrAdd(typeof(TStuff), static key => new InvocationInt32T1<TStuff>($"IInterface.Invoke<{key.Name}>({0}, {1})"));
+							invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
+							((SetupInt32T1<TStuff>?)_mock._invoke0?.ValueOrDefault(typeof(TStuff)))?.Invoke(param1, param2);
+						}
 
+						public void Invoke2<TValue>(TValue param1, int param2)
+						{
+							_mock._invoke20Invocation ??= new InvocationDictionary();
+							var invoke20Invocation = (InvocationT1Int32<TValue>)_mock._invoke20Invocation.GetOrAdd(typeof(TValue), static key => new InvocationT1Int32<TValue>($"IInterface.Invoke2<{key.Name}>({0}, {1})"));
+							invoke20Invocation.Register(_mock._invocationIndex, param1, param2);
+							((SetupT1Int32<TValue>?)_mock._invoke20?.ValueOrDefault(typeof(TValue)))?.Invoke(param1, param2);
+						}
 					}
 				}
 
