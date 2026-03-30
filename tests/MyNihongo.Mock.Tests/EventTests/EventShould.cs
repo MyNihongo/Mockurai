@@ -75,8 +75,43 @@ public sealed class EventShould : EventTestsBase
 			yield return _handlerEvent0RemoveInvocation;
 			""";
 
+		const string extensions =
+			"""
+			// HandlerEvent
+			public void RaiseHandlerEvent(int value) =>
+				((InterfaceMock)@this).RaiseHandlerEvent(value);
+
+			public void VerifyAddHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, in Times times) =>
+				((InterfaceMock)@this).VerifyAddHandlerEvent(value, times);
+
+			public void VerifyAddHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyAddHandlerEvent(value, times());
+
+			public void VerifyRemoveHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, in Times times) =>
+				((InterfaceMock)@this).VerifyRemoveHandlerEvent(value, times);
+
+			public void VerifyRemoveHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyRemoveHandlerEvent(value, times());
+			""";
+
+		const string extensionsSequence =
+			"""
+			// HandlerEvent
+			public void AddHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyAddHandlerEvent(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+
+			public void RemoveHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyRemoveHandlerEvent(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(@event);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -155,8 +190,43 @@ public sealed class EventShould : EventTestsBase
 			yield return _handlerEvent0RemoveInvocation;
 			""";
 
+		const string extensions =
+			"""
+			// HandlerEvent
+			public void RaiseHandlerEvent(string e) =>
+				((InterfaceMock)@this).RaiseHandlerEvent(e);
+
+			public void VerifyAddHandlerEvent(in It<System.EventHandler<string>?> value, in Times times) =>
+				((InterfaceMock)@this).VerifyAddHandlerEvent(value, times);
+
+			public void VerifyAddHandlerEvent(in It<System.EventHandler<string>?> value, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyAddHandlerEvent(value, times());
+
+			public void VerifyRemoveHandlerEvent(in It<System.EventHandler<string>?> value, in Times times) =>
+				((InterfaceMock)@this).VerifyRemoveHandlerEvent(value, times);
+
+			public void VerifyRemoveHandlerEvent(in It<System.EventHandler<string>?> value, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyRemoveHandlerEvent(value, times());
+			""";
+
+		const string extensionsSequence =
+			"""
+			// HandlerEvent
+			public void AddHandlerEvent(in It<System.EventHandler<string>?> value)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyAddHandlerEvent(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+
+			public void RemoveHandlerEvent(in It<System.EventHandler<string>?> value)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyRemoveHandlerEvent(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(@event);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -293,8 +363,72 @@ public sealed class EventShould : EventTestsBase
 			yield return _handlerEvent20RemoveInvocation;
 			""";
 
+		const string extensions =
+			"""
+			// HandlerEvent1
+			public void RaiseHandlerEvent1(int value) =>
+				((InterfaceMock)@this).RaiseHandlerEvent1(value);
+
+			public void VerifyAddHandlerEvent1(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, in Times times) =>
+				((InterfaceMock)@this).VerifyAddHandlerEvent1(value, times);
+
+			public void VerifyAddHandlerEvent1(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyAddHandlerEvent1(value, times());
+
+			public void VerifyRemoveHandlerEvent1(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, in Times times) =>
+				((InterfaceMock)@this).VerifyRemoveHandlerEvent1(value, times);
+
+			public void VerifyRemoveHandlerEvent1(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyRemoveHandlerEvent1(value, times());
+
+			// HandlerEvent2
+			public void RaiseHandlerEvent2(string e) =>
+				((InterfaceMock)@this).RaiseHandlerEvent2(e);
+
+			public void VerifyAddHandlerEvent2(in It<System.EventHandler<string>?> value, in Times times) =>
+				((InterfaceMock)@this).VerifyAddHandlerEvent2(value, times);
+
+			public void VerifyAddHandlerEvent2(in It<System.EventHandler<string>?> value, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyAddHandlerEvent2(value, times());
+
+			public void VerifyRemoveHandlerEvent2(in It<System.EventHandler<string>?> value, in Times times) =>
+				((InterfaceMock)@this).VerifyRemoveHandlerEvent2(value, times);
+
+			public void VerifyRemoveHandlerEvent2(in It<System.EventHandler<string>?> value, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyRemoveHandlerEvent2(value, times());
+			""";
+
+		const string extensionsSequence =
+			"""
+			// HandlerEvent1
+			public void AddHandlerEvent1(in It<MyNihongo.Mock.Tests.SampleHandler1?> value)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyAddHandlerEvent1(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+
+			public void RemoveHandlerEvent1(in It<MyNihongo.Mock.Tests.SampleHandler1?> value)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyRemoveHandlerEvent1(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+
+			// HandlerEvent2
+			public void AddHandlerEvent2(in It<System.EventHandler<string>?> value)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyAddHandlerEvent2(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+
+			public void RemoveHandlerEvent2(in It<System.EventHandler<string>?> value)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyRemoveHandlerEvent2(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(@event);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();

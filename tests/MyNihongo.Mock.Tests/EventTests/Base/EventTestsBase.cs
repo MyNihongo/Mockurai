@@ -9,10 +9,10 @@ public abstract class EventTestsBase : TestsNonGenericBase
 		return CreateInterfaceTestCode(@event, CustomCode);
 	}
 
-	protected static GeneratedSources CreateInterfaceGeneratedSources(string methods, string proxy, string verifyNoOtherCalls, string invocations)
+	protected static GeneratedSources CreateInterfaceGeneratedSources(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions, string sequenceExtensions)
 	{
 		var testsBase = GetInterfaceTestsBase();
-		var mock = GetInterfaceMock(methods, proxy, verifyNoOtherCalls, invocations);
+		var mock = GetInterfaceMock(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		return
 		[
