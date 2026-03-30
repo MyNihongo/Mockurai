@@ -83,6 +83,18 @@ internal static class MockImplementationPropertyGenerator
 			.Append('}');
 	}
 
+	public static void AppendPropertyMockExtensions(StringBuilder stringBuilder, MockedMemberSymbol memberSymbol, string mockClassName, int indent)
+	{
+		if (memberSymbol.Symbol is not IPropertySymbol propertySymbol)
+			return;
+
+		if (propertySymbol.GetMethod is not null)
+			stringBuilder.AppendVerifyExtensionMethods(propertySymbol.GetMethod, mockClassName, indent);
+
+		if (propertySymbol.SetMethod is not null)
+			stringBuilder.AppendVerifyExtensionMethods(propertySymbol.SetMethod, mockClassName, indent, prependNewLines: true);
+	}
+
 	extension(StringBuilder stringBuilder)
 	{
 		private StringBuilder AppendPropertyDeclaration(IPropertySymbol propertySymbol)

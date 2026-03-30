@@ -26,10 +26,10 @@ public abstract class PropertyTestsBase : TestsNonGenericBase
 		return CreateClassTestCode(property, CustomCode, isAbstract);
 	}
 
-	protected static GeneratedSources CreateClassGeneratedSources(string methods, string proxy, string verifyNoOtherCalls, string invocations)
+	protected static GeneratedSources CreateClassGeneratedSources(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions)
 	{
 		var testsBase = GetClassTestsBase();
-		var mock = GetClassMock(methods, proxy, verifyNoOtherCalls, invocations, string.Empty);
+		var mock = GetClassMock(methods, proxy, verifyNoOtherCalls, invocations, extensions);
 
 		return
 		[

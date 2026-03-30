@@ -218,8 +218,15 @@ internal static class MethodSymbolEx
 				.Append('}');
 		}
 
-		public void AppendVerifyExtensionMethods(IMethodSymbol methodSymbol, string castName, int indent)
+		public void AppendVerifyExtensionMethods(IMethodSymbol methodSymbol, string castName, int indent, bool prependNewLines = false)
 		{
+			if (prependNewLines)
+			{
+				@this
+					.AppendLine()
+					.AppendLine();
+			}
+
 			// Verify times
 			@this
 				.Indent(indent)

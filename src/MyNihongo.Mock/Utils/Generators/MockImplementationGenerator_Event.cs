@@ -110,10 +110,10 @@ internal static class MockImplementationEventGenerator
 			.Append(");");
 
 		if (eventSymbol.AddMethod is not null)
-			stringBuilder.AppendEventVerifyExtensionMethods(eventSymbol.AddMethod, mockClassName, indent);
+			stringBuilder.AppendVerifyExtensionMethods(eventSymbol.AddMethod, mockClassName, indent, prependNewLines: true);
 
 		if (eventSymbol.RemoveMethod is not null)
-			stringBuilder.AppendEventVerifyExtensionMethods(eventSymbol.RemoveMethod, mockClassName, indent);
+			stringBuilder.AppendVerifyExtensionMethods(eventSymbol.RemoveMethod, mockClassName, indent, prependNewLines: true);
 	}
 
 	extension(StringBuilder stringBuilder)
@@ -194,14 +194,6 @@ internal static class MockImplementationEventGenerator
 
 			stringBuilder
 				.Indent(--indent).AppendLine("}");
-		}
-
-		private void AppendEventVerifyExtensionMethods(IMethodSymbol methodSymbol, string mockClassName, int indent)
-		{
-			stringBuilder
-				.AppendLine()
-				.AppendLine()
-				.AppendVerifyExtensionMethods(methodSymbol, mockClassName, indent);
 		}
 	}
 }
