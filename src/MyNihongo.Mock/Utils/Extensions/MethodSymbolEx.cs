@@ -227,7 +227,7 @@ internal static class MethodSymbolEx
 					.AppendLine();
 			}
 
-			// Verify times
+			// Verify times (object)
 			@this
 				.Indent(indent)
 				.AppendVerifyTimesMethodDeclaration(methodSymbol)
@@ -242,7 +242,24 @@ internal static class MethodSymbolEx
 				.AppendLine("times);")
 				.AppendLine();
 
-			// Verify index
+			// Verify times (func)
+			@this
+				.Indent(indent)
+				.AppendVerifyTimesMethodDeclaration(methodSymbol, timesType: "System.Func<Times>")
+				.AppendLine(" =>");
+
+			@this
+				.Indent(indent + 1)
+				.AppendCastCall(castName)
+				.AppendVerifyMethodName(methodSymbol)
+				.Append('(')
+				.AppendParameterNames(methodSymbol.Parameters, appendComma: true)
+				.Append("times());");
+		}
+
+		// TODO: use
+		public void AppendVerifySequenceExtensionMethods(IMethodSymbol methodSymbol, string castName, int indent)
+		{
 			@this
 				.Indent(indent)
 				.AppendVerifyIndexMethodDeclaration(methodSymbol)
@@ -257,14 +274,15 @@ internal static class MethodSymbolEx
 				.Append("index);");
 		}
 
-		private StringBuilder AppendVerifyTimesMethodDeclaration(IMethodSymbol methodSymbol)
+		private StringBuilder AppendVerifyTimesMethodDeclaration(IMethodSymbol methodSymbol, string timesType = "in Times")
 		{
 			return @this
 				.Append("public void ")
 				.AppendVerifyMethodName(methodSymbol)
 				.Append('(')
 				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
-				.Append("in Times times)");
+				.Append(timesType)
+				.Append(" times)");
 		}
 
 		private StringBuilder AppendVerifyIndexMethodDeclaration(IMethodSymbol methodSymbol)

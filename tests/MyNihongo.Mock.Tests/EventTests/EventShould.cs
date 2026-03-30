@@ -387,14 +387,14 @@ public sealed class EventShould : EventTestsBase
 			public void VerifyAddHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, in Times times) =>
 				((ClassMock)@this).VerifyAddHandlerEvent(value, times);
 
-			public long VerifyAddHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, long index) =>
-				((ClassMock)@this).VerifyAddHandlerEvent(value, index);
+			public void VerifyAddHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, System.Func<Times> times) =>
+				((ClassMock)@this).VerifyAddHandlerEvent(value, times());
 
 			public void VerifyRemoveHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, in Times times) =>
 				((ClassMock)@this).VerifyRemoveHandlerEvent(value, times);
 
-			public long VerifyRemoveHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, long index) =>
-				((ClassMock)@this).VerifyRemoveHandlerEvent(value, index);
+			public void VerifyRemoveHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, System.Func<Times> times) =>
+				((ClassMock)@this).VerifyRemoveHandlerEvent(value, times());
 			""";
 
 		var testCode = CreateClassTestCode(@event);

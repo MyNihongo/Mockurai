@@ -6,7 +6,7 @@ public abstract class TestsBase
 	{
 		return new CSharpSourceGeneratorTest<SourceGenerator, DefaultVerifier>
 		{
-			ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+			ReferenceAssemblies = ReferenceAssemblies.Net.Net100,
 			TestCode = testCode,
 			TestState =
 			{
