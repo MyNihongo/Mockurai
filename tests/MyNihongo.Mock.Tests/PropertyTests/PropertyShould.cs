@@ -426,11 +426,17 @@ public sealed class PropertyShould : PropertyTestsBase
 		const string extensions =
 			"""
 			// Property
+			public Setup<MyNihongo.Mock.Tests.Record> SetupGetProperty() =>
+				((ClassMock)@this).SetupGetProperty();
+
 			public void VerifyGetProperty(in Times times) =>
 				((ClassMock)@this).VerifyGetProperty(times);
 
 			public void VerifyGetProperty(System.Func<Times> times) =>
 				((ClassMock)@this).VerifyGetProperty(times());
+
+			public SetupWithParameter<MyNihongo.Mock.Tests.Record> SetupSetProperty(in It<MyNihongo.Mock.Tests.Record> value = default) =>
+				((ClassMock)@this).SetupSetProperty(value);
 
 			public void VerifySetProperty(in It<MyNihongo.Mock.Tests.Record> value, in Times times) =>
 				((ClassMock)@this).VerifySetProperty(value, times);

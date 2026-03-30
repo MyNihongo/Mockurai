@@ -89,10 +89,10 @@ internal static class MockImplementationPropertyGenerator
 			return;
 
 		if (propertySymbol.GetMethod is not null)
-			stringBuilder.AppendVerifyExtensionMethods(propertySymbol.GetMethod, mockClassName, indent);
+			stringBuilder.AppendSetupVerifyExtensionMethods(propertySymbol.GetMethod, mockClassName, indent);
 
 		if (propertySymbol.SetMethod is not null)
-			stringBuilder.AppendVerifyExtensionMethods(propertySymbol.SetMethod, mockClassName, indent, prependNewLines: true);
+			stringBuilder.AppendSetupVerifyExtensionMethods(propertySymbol.SetMethod, mockClassName, indent, prependNewLines: true);
 	}
 
 	extension(StringBuilder stringBuilder)

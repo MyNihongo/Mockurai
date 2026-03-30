@@ -732,6 +732,9 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 		const string extensions =
 			"""
 			// Invoke
+			public Setup SetupInvoke() =>
+				((ClassMock)@this).SetupInvoke();
+
 			public void VerifyInvoke(in Times times) =>
 				((ClassMock)@this).VerifyInvoke(times);
 
@@ -799,6 +802,9 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 		const string extensions =
 			"""
 			// Invoke
+			public Setup SetupInvoke() =>
+				((ClassMock)@this).SetupInvoke();
+
 			public void VerifyInvoke(in Times times) =>
 				((ClassMock)@this).VerifyInvoke(times);
 

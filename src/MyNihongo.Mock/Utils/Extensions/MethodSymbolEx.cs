@@ -103,15 +103,7 @@ internal static class MethodSymbolEx
 		public StringBuilder AppendSetupMethod(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 		{
 			@this
-				.Indent(indent)
-				.Append("public ")
-				.AppendSetupType(methodSymbol)
-				.Append(" Setup")
-				.AppendMethodName(methodSymbol)
-				.AppendGenericTypes(methodSymbol.TypeArguments)
-				.Append('(')
-				.AppendItParameters(methodSymbol.Parameters)
-				.AppendLine(")")
+				.Indent(indent).AppendSetupMethodDeclaration(methodSymbol, useDefaults: false).AppendLine()
 				.Indent(indent++).AppendLine("{");
 
 			@this
@@ -218,6 +210,36 @@ internal static class MethodSymbolEx
 				.Append('}');
 		}
 
+		public void AppendSetupVerifyExtensionMethods(IMethodSymbol methodSymbol, string castName, int indent, bool prependNewLines = false)
+		{
+			if (prependNewLines)
+			{
+				@this
+					.AppendLine()
+					.AppendLine();
+			}
+
+			@this.AppendSetupExtensionMethods(methodSymbol, castName, useDefaults: true, indent);
+			@this.AppendLine().AppendLine();
+			@this.AppendVerifyExtensionMethods(methodSymbol, castName, indent);
+		}
+
+		private void AppendSetupExtensionMethods(IMethodSymbol methodSymbol, string castName, bool useDefaults, int indent)
+		{
+			@this
+				.Indent(indent)
+				.AppendSetupMethodDeclaration(methodSymbol, useDefaults)
+				.AppendLine(" =>");
+
+			@this
+				.Indent(indent + 1)
+				.AppendCastCall(castName)
+				.AppendSetupMethodName(methodSymbol)
+				.Append('(')
+				.AppendParameterNames(methodSymbol.Parameters)
+				.Append(");");
+		}
+
 		public void AppendVerifyExtensionMethods(IMethodSymbol methodSymbol, string castName, int indent, bool prependNewLines = false)
 		{
 			if (prependNewLines)
@@ -272,6 +294,26 @@ internal static class MethodSymbolEx
 				.Append('(')
 				.AppendParameterNames(methodSymbol.Parameters, appendComma: true)
 				.Append("index);");
+		}
+
+		private StringBuilder AppendSetupMethodDeclaration(IMethodSymbol methodSymbol, bool useDefaults)
+		{
+			return @this
+				.Append("public ")
+				.AppendSetupType(methodSymbol)
+				.Append(' ')
+				.AppendSetupMethodName(methodSymbol)
+				.Append('(')
+				.AppendItParameters(methodSymbol.Parameters, useDefaults: useDefaults)
+				.Append(')');
+		}
+
+		private StringBuilder AppendSetupMethodName(IMethodSymbol methodSymbol)
+		{
+			return @this
+				.Append("Setup")
+				.AppendMethodName(methodSymbol)
+				.AppendGenericTypes(methodSymbol.TypeArguments);
 		}
 
 		private StringBuilder AppendVerifyTimesMethodDeclaration(IMethodSymbol methodSymbol, string timesType = "in Times")
@@ -453,10 +495,12 @@ internal static class MethodSymbolEx
 				.AppendPropertyName(methodName);
 		}
 
-		private StringBuilder AppendItParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride = null)
+		private StringBuilder AppendItParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride = null, bool useDefaults = false)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
+				var typeOverride = parameterTypeOverride?.GetValueOrDefault(parameters[i]);
+
 				if (!appendComma && i > 0)
 					@this.Append(", ");
 
@@ -464,9 +508,12 @@ internal static class MethodSymbolEx
 					.Append("in It")
 					.AppendRefKindPrefix(parameters[i].RefKind)
 					.Append('<')
-					.AppendType(parameters[i].Type)
+					.AppendType(parameters[i].Type, typeOverride)
 					.Append("> ")
 					.AppendParameterName(parameters[i].Name);
+
+				if (useDefaults)
+					@this.Append(" = default");
 
 				if (appendComma)
 					@this.Append(", ");
