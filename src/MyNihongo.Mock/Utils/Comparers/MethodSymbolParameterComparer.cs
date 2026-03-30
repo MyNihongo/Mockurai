@@ -40,6 +40,9 @@ internal sealed class MethodSymbolParameterComparer : IEqualityComparer<IMethodS
 
 				hash = hash * 23 + parameterHash;
 			}
+			
+			// TODO: get return parameter as well
+			aaaa
 
 			return hash;
 		}
