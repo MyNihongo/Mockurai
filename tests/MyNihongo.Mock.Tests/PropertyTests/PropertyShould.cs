@@ -429,14 +429,14 @@ public sealed class PropertyShould : PropertyTestsBase
 			public void VerifyGetProperty(in Times times) =>
 				((ClassMock)@this).VerifyGetProperty(times);
 
-			public long VerifyGetProperty(long index) =>
-				((ClassMock)@this).VerifyGetProperty(index);
+			public void VerifyGetProperty(System.Func<Times> times) =>
+				((ClassMock)@this).VerifyGetProperty(times());
 
 			public void VerifySetProperty(in It<MyNihongo.Mock.Tests.Record> value, in Times times) =>
 				((ClassMock)@this).VerifySetProperty(value, times);
 
-			public long VerifySetProperty(in It<MyNihongo.Mock.Tests.Record> value, long index) =>
-				((ClassMock)@this).VerifySetProperty(value, index);
+			public void VerifySetProperty(in It<MyNihongo.Mock.Tests.Record> value, System.Func<Times> times) =>
+				((ClassMock)@this).VerifySetProperty(value, times());
 			""";
 
 		var testCode = CreateClassTestCode(property, isAbstract: true);
