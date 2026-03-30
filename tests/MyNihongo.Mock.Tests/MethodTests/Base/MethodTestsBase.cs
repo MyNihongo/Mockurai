@@ -27,10 +27,10 @@ public abstract class MethodTestsBase : TestsNonGenericBase
 		return CreateClassTestCode(method, CustomCode, isAbstract);
 	}
 
-	protected static GeneratedSources CreateClassGeneratedSources(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions)
+	protected static GeneratedSources CreateClassGeneratedSources(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions, string sequenceExtensions)
 	{
 		var testsBase = GetClassTestsBase();
-		var mock = GetClassMock(methods, proxy, verifyNoOtherCalls, invocations, extensions, string.Empty);
+		var mock = GetClassMock(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		return
 		[

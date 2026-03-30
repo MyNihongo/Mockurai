@@ -331,6 +331,8 @@ internal static class MockImplementationGenerator
 			Action<StringBuilder, MockedMemberSymbol, string, int>? handler = member.Symbol.Kind switch
 			{
 				SymbolKind.Event => MockImplementationEventGenerator.AppendEventMockSequenceExtensions,
+				SymbolKind.Property => MockImplementationPropertyGenerator.AppendPropertyMockSequenceExtensions,
+				SymbolKind.Method => MockImplementationMethodGenerator.AppendMethodMockSequenceExtensions,
 				_ => null,
 			};
 

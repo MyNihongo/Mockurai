@@ -568,11 +568,51 @@ public sealed class EventShould : EventTestsBase
 
 			public void VerifyRemoveHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, System.Func<Times> times) =>
 				((ClassMock)@this).VerifyRemoveHandlerEvent(value, times());
+
+			// HandlerAnotherEvent
+			public void RaiseHandlerAnotherEvent(string e) =>
+				((ClassMock)@this).RaiseHandlerAnotherEvent(e);
+
+			public void VerifyAddHandlerAnotherEvent(in It<System.EventHandler<string>?> value, in Times times) =>
+				((ClassMock)@this).VerifyAddHandlerAnotherEvent(value, times);
+
+			public void VerifyAddHandlerAnotherEvent(in It<System.EventHandler<string>?> value, System.Func<Times> times) =>
+				((ClassMock)@this).VerifyAddHandlerAnotherEvent(value, times());
+
+			public void VerifyRemoveHandlerAnotherEvent(in It<System.EventHandler<string>?> value, in Times times) =>
+				((ClassMock)@this).VerifyRemoveHandlerAnotherEvent(value, times);
+
+			public void VerifyRemoveHandlerAnotherEvent(in It<System.EventHandler<string>?> value, System.Func<Times> times) =>
+				((ClassMock)@this).VerifyRemoveHandlerAnotherEvent(value, times());
 			""";
 
 		const string extensionsSequence =
 			"""
-			aaa
+			// HandlerEvent
+			public void AddHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value)
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyAddHandlerEvent(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+
+			public void RemoveHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value)
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyRemoveHandlerEvent(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+
+			// HandlerAnotherEvent
+			public void AddHandlerAnotherEvent(in It<System.EventHandler<string>?> value)
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyAddHandlerAnotherEvent(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+
+			public void RemoveHandlerAnotherEvent(in It<System.EventHandler<string>?> value)
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyRemoveHandlerAnotherEvent(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
 			""";
 
 		var testCode = CreateClassTestCode(@event, isAbstract: true);

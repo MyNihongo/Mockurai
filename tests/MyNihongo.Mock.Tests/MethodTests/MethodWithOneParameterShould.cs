@@ -1146,12 +1146,22 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			public void VerifyInvoke(in It<int> parameter, System.Func<Times> times) =>
 				((ClassMock)@this).VerifyInvoke(parameter, times());
 			""";
+		
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke(in It<int> parameter)
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke(parameter, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
 
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
 
 		var testCode = CreateClassTestCode(method);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
