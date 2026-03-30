@@ -397,8 +397,24 @@ public sealed class EventShould : EventTestsBase
 				((ClassMock)@this).VerifyRemoveHandlerEvent(value, times());
 			""";
 
+		const string extensionsSequence =
+			"""
+			// HandlerEvent
+			public void AddHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value)
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyAddHandlerEvent(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+
+			public void RemoveHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value)
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyRemoveHandlerEvent(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateClassTestCode(@event);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -535,8 +551,32 @@ public sealed class EventShould : EventTestsBase
 			yield return _handlerAnotherEvent0RemoveInvocation;
 			""";
 
+		const string extensions =
+			"""
+			// HandlerEvent
+			public void RaiseHandlerEvent(int value) =>
+				((ClassMock)@this).RaiseHandlerEvent(value);
+
+			public void VerifyAddHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, in Times times) =>
+				((ClassMock)@this).VerifyAddHandlerEvent(value, times);
+
+			public void VerifyAddHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, System.Func<Times> times) =>
+				((ClassMock)@this).VerifyAddHandlerEvent(value, times());
+
+			public void VerifyRemoveHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, in Times times) =>
+				((ClassMock)@this).VerifyRemoveHandlerEvent(value, times);
+
+			public void VerifyRemoveHandlerEvent(in It<MyNihongo.Mock.Tests.SampleHandler1?> value, System.Func<Times> times) =>
+				((ClassMock)@this).VerifyRemoveHandlerEvent(value, times());
+			""";
+
+		const string extensionsSequence =
+			"""
+			aaa
+			""";
+
 		var testCode = CreateClassTestCode(@event, isAbstract: true);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, string.Empty);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();

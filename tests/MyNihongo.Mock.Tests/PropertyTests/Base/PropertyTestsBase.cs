@@ -29,7 +29,7 @@ public abstract class PropertyTestsBase : TestsNonGenericBase
 	protected static GeneratedSources CreateClassGeneratedSources(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions)
 	{
 		var testsBase = GetClassTestsBase();
-		var mock = GetClassMock(methods, proxy, verifyNoOtherCalls, invocations, extensions);
+		var mock = GetClassMock(methods, proxy, verifyNoOtherCalls, invocations, extensions, string.Empty);
 
 		return
 		[

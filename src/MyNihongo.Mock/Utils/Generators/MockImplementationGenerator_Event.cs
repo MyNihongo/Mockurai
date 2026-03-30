@@ -116,6 +116,18 @@ internal static class MockImplementationEventGenerator
 			stringBuilder.AppendVerifyExtensionMethods(eventSymbol.RemoveMethod, mockClassName, indent, prependNewLines: true);
 	}
 
+	public static void AppendEventMockSequenceExtensions(StringBuilder stringBuilder, MockedMemberSymbol memberSymbol, string mockClassName, int indent)
+	{
+		if (memberSymbol.Symbol is not IEventSymbol eventSymbol)
+			return;
+
+		if (eventSymbol.AddMethod is not null)
+			stringBuilder.AppendVerifySequenceExtensionMethods(eventSymbol.AddMethod, mockClassName, indent);
+
+		if (eventSymbol.RemoveMethod is not null)
+			stringBuilder.AppendVerifySequenceExtensionMethods(eventSymbol.RemoveMethod, mockClassName, indent, prependNewLines: true);
+	}
+
 	extension(StringBuilder stringBuilder)
 	{
 		private StringBuilder AppendRaiseMethodDeclaration(MockedMemberSymbol memberSymbol, IParameterSymbol? parameterSymbol)

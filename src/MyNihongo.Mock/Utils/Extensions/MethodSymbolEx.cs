@@ -2,6 +2,8 @@
 
 internal static class MethodSymbolEx
 {
+	private const bool DefaultAppendVerifyPrefix = true;
+
 	extension(IMethodSymbol @this)
 	{
 		private bool TryGetGenericTypeCount(MockedTypeSymbol mockedTypeSymbol, out int count)
@@ -189,7 +191,11 @@ internal static class MethodSymbolEx
 			// Verify index
 			@this
 				.Indent(indent)
-				.AppendVerifyIndexMethodDeclaration(methodSymbol).AppendLine()
+				.Append("public long ")
+				.AppendVerifyMethodName(methodSymbol)
+				.Append('(')
+				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
+				.AppendLine("long index)")
 				.Indent(indent++).AppendLine("{");
 
 			@this
@@ -279,21 +285,39 @@ internal static class MethodSymbolEx
 				.Append("times());");
 		}
 
-		// TODO: use
-		public void AppendVerifySequenceExtensionMethods(IMethodSymbol methodSymbol, string castName, int indent)
+		public void AppendVerifySequenceExtensionMethods(IMethodSymbol methodSymbol, string castName, int indent, bool prependNewLines = false)
 		{
-			@this
-				.Indent(indent)
-				.AppendVerifyIndexMethodDeclaration(methodSymbol)
-				.AppendLine(" =>");
+			if (prependNewLines)
+			{
+				@this
+					.AppendLine()
+					.AppendLine();
+			}
 
 			@this
-				.Indent(indent + 1)
-				.AppendCastCall(castName)
+				.Indent(indent)
+				.Append("public void ")
+				.AppendVerifyMethodName(methodSymbol, appendVerifyPrefix: false)
+				.Append('(')
+				.AppendItParameters(methodSymbol.Parameters)
+				.AppendLine(")");
+
+			@this
+				.Indent(indent++)
+				.AppendLine("{");
+
+			@this
+				.Indent(indent)
+				.Append("var nextIndex = ")
+				.AppendCastCall(castName, thisParameterName: "@this.Mock")
 				.AppendVerifyMethodName(methodSymbol)
 				.Append('(')
 				.AppendParameterNames(methodSymbol.Parameters, appendComma: true)
-				.Append("index);");
+				.AppendLine("@this.VerifyIndex);");
+
+			@this
+				.Indent(indent).AppendLine("@this.VerifyIndex.Set(nextIndex);")
+				.Indent(--indent).Append('}');
 		}
 
 		private StringBuilder AppendSetupMethodDeclaration(IMethodSymbol methodSymbol, bool useDefaults)
@@ -327,20 +351,12 @@ internal static class MethodSymbolEx
 				.Append(" times)");
 		}
 
-		private StringBuilder AppendVerifyIndexMethodDeclaration(IMethodSymbol methodSymbol)
+		private StringBuilder AppendVerifyMethodName(IMethodSymbol methodSymbol, bool appendVerifyPrefix = DefaultAppendVerifyPrefix)
 		{
-			return @this
-				.Append("public long ")
-				.AppendVerifyMethodName(methodSymbol)
-				.Append('(')
-				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
-				.Append("long index)");
-		}
+			if (appendVerifyPrefix)
+				@this.Append("Verify");
 
-		private StringBuilder AppendVerifyMethodName(IMethodSymbol methodSymbol)
-		{
 			return @this
-				.Append("Verify")
 				.AppendMethodName(methodSymbol)
 				.AppendGenericTypes(methodSymbol.TypeArguments);
 		}

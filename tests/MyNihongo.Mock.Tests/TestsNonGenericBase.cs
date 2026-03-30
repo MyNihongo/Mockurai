@@ -206,7 +206,7 @@ public abstract class TestsNonGenericBase : TestsBase
 		return ("TestsBase.g.cs", testsBase);
 	}
 
-	protected static GeneratedSource GetClassMock(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions)
+	protected static GeneratedSource GetClassMock(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions, string sequenceExtensions)
 	{
 		var mock =
 			$$"""
@@ -266,7 +266,7 @@ public abstract class TestsNonGenericBase : TestsBase
 			  {
 			  	extension(IMockSequence<MyNihongo.Mock.Tests.Class> @this)
 			  	{
-
+			  {{sequenceExtensions.Indent(2)}}
 			  	}
 			  }
 			  """;
