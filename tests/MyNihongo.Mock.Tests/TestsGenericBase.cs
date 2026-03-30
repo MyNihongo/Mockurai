@@ -71,7 +71,7 @@ public abstract class TestsGenericBase : TestsBase
 		return ("TestsBase.g.cs", testsBase);
 	}
 
-	protected static GeneratedSource GetInterfaceMock(string methods, string proxy, string verifyNoOtherCalls, string invocations)
+	protected static GeneratedSource GetInterfaceMock(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions, string sequenceExtensions)
 	{
 		var mock =
 			$$"""
@@ -123,7 +123,7 @@ public abstract class TestsGenericBase : TestsBase
 			  		public void VerifyNoOtherCalls() =>
 			  			((InterfaceMock<T>)@this).VerifyNoOtherCalls();
 
-			  		
+			  {{extensions.Indent(2)}}
 			  	}
 			  }
 
@@ -131,7 +131,7 @@ public abstract class TestsGenericBase : TestsBase
 			  {
 			  	extension<T>(IMockSequence<MyNihongo.Mock.Tests.IInterface<T>> @this)
 			  	{
-			  	
+			  {{sequenceExtensions.Indent(2)}}
 			  	}
 			  }
 			  """;
@@ -206,7 +206,7 @@ public abstract class TestsGenericBase : TestsBase
 		return ("TestsBase.g.cs", testsBase);
 	}
 
-	protected static GeneratedSource GetClassMock(string methods, string proxy, string verifyNoOtherCalls, string invocations)
+	protected static GeneratedSource GetClassMock(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions, string sequenceExtensions)
 	{
 		var mock =
 			$$"""
@@ -258,7 +258,7 @@ public abstract class TestsGenericBase : TestsBase
 			  		public void VerifyNoOtherCalls() =>
 			  			((ClassMock<T>)@this).VerifyNoOtherCalls();
 
-			  		
+			  {{extensions.Indent(2)}}
 			  	}
 			  }
 
@@ -266,7 +266,7 @@ public abstract class TestsGenericBase : TestsBase
 			  {
 			  	extension<T>(IMockSequence<MyNihongo.Mock.Tests.Class<T>> @this)
 			  	{
-			  	
+			  {{sequenceExtensions.Indent(2)}}
 			  	}
 			  }
 			  """;

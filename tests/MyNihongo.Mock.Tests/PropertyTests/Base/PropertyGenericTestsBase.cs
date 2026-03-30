@@ -12,7 +12,7 @@ public class PropertyGenericTestsBase : TestsGenericBase
 	protected static GeneratedSources CreateInterfaceGeneratedSources(string methods, string proxy, string verifyNoOtherCalls, string invocations)
 	{
 		var testsBase = GetInterfaceTestsBase();
-		var mock = GetInterfaceMock(methods, proxy, verifyNoOtherCalls, invocations);
+		var mock = GetInterfaceMock(methods, proxy, verifyNoOtherCalls, invocations, string.Empty, string.Empty);
 
 		return
 		[
@@ -29,7 +29,7 @@ public class PropertyGenericTestsBase : TestsGenericBase
 	protected static GeneratedSources CreateClassGeneratedSources(string methods, string proxy, string verifyNoOtherCalls, string invocations)
 	{
 		var testsBase = GetClassTestsBase();
-		var mock = GetClassMock(methods, proxy, verifyNoOtherCalls, invocations);
+		var mock = GetClassMock(methods, proxy, verifyNoOtherCalls, invocations, string.Empty, string.Empty);
 
 		return
 		[
