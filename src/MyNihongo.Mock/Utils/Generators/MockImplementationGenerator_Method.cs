@@ -86,6 +86,12 @@ internal static class MockImplementationMethodGenerator
 			.Append('}');
 	}
 
+	public static void AppendMethodMockExtensions(StringBuilder stringBuilder, MockedMemberSymbol memberSymbol, string mockClassName, int indent)
+	{
+		if (memberSymbol.Symbol is IMethodSymbol methodSymbol)
+			stringBuilder.AppendVerifyExtensionMethods(methodSymbol, mockClassName, indent);
+	}
+
 	extension(StringBuilder stringBuilder)
 	{
 		private void AppendMethods(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
