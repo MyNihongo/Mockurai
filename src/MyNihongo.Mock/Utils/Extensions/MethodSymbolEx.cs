@@ -78,6 +78,30 @@ internal static class MethodSymbolEx
 
 	extension(StringBuilder @this)
 	{
+		public StringBuilder AppendInterface(string interfaceName, IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol)
+		{
+			@this
+				.Append(interfaceName)
+				.Append('<');
+
+			if (returnTypeSymbol is null)
+			{
+				@this
+					.AppendSetupClassName(methodSymbol)
+					.Append(".CallbackDelegate");
+			}
+			else
+			{
+				@this
+					.AppendSetupClassName(methodSymbol)
+					.Append($".CallbackDelegate, {MockGeneratorConst.Suffixes.GenericReturnParameter}, ")
+					.AppendSetupClassName(methodSymbol)
+					.Append(".ReturnsCallbackDelegate");
+			}
+
+			return @this.Append('>');
+		}
+
 		public void AppendSetupInvocationFields(IMethodSymbol method, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 		{
 			@this
@@ -337,8 +361,21 @@ internal static class MethodSymbolEx
 			return returnType switch
 			{
 				SetupMethodReturnType.Class => @this.AppendSetupType(methodSymbol),
-				SetupMethodReturnType.Interface => "aaa",
+				SetupMethodReturnType.Interface => @this.AppendSetupInterface(methodSymbol),
 				_ => @this,
+			};
+		}
+
+		private StringBuilder AppendSetupInterface(IMethodSymbol methodSymbol)
+		{
+			const string interfaceName = "ISetup";
+			var returnType = methodSymbol.TryGetReturnType();
+
+			return methodSymbol.Parameters.Length switch
+			{
+				0 => @this,
+				1 => @this,
+				_ => @this.AppendInterface(interfaceName, methodSymbol, returnType),
 			};
 		}
 
@@ -730,7 +767,7 @@ internal static class MethodSymbolEx
 				.AppendPropertyName(name);
 		}
 	}
-	
+
 	private enum SetupMethodReturnType
 	{
 		Class,
