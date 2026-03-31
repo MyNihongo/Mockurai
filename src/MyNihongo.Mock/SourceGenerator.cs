@@ -40,7 +40,7 @@ public sealed class SourceGenerator : IIncrementalGenerator
 					mockTypes.AddAll(mocks);
 				}
 
-				var methodSetups = new HashSet<IMethodSymbol>(MethodSymbolParameterComparer.Default);
+				var methodSetups = new HashSet<IMethodSymbol>(MethodSymbolSetupComparer.Default);
 				foreach (var mockType in mockTypes)
 				{
 					var sourceCodeResult = mockType.GenerateMockImplementation(source);

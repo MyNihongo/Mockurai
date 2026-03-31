@@ -1,8 +1,8 @@
 ﻿namespace MyNihongo.Mock.Utils;
 
-internal sealed class MethodSymbolParameterComparer : IEqualityComparer<IMethodSymbol>
+internal sealed class MethodSymbolSetupComparer : IEqualityComparer<IMethodSymbol>
 {
-	public static readonly MethodSymbolParameterComparer Default = new();
+	public static readonly MethodSymbolSetupComparer Default = new();
 
 	public bool Equals(IMethodSymbol? x, IMethodSymbol? y)
 	{
@@ -40,9 +40,13 @@ internal sealed class MethodSymbolParameterComparer : IEqualityComparer<IMethodS
 
 				hash = hash * 23 + parameterHash;
 			}
-			
-			// TODO: get return parameter as well
-			aaaa
+
+			var returnType = obj.TryGetReturnType();
+			if (returnType is not null)
+			{
+				var typeHashCode = symbolComparer.GetHashCode(returnType);
+				hash = hash * 23 + typeHashCode;
+			}
 
 			return hash;
 		}
