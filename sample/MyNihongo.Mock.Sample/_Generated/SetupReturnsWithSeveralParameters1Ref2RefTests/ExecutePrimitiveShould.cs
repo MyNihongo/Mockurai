@@ -8,7 +8,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue = nameof(returnValue);
 		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -26,7 +26,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -44,7 +44,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -63,7 +63,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixtureInt<SetupRefIntRefInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefInt32RefInt32<int>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -83,7 +83,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -102,7 +102,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixtureInt<SetupRefIntRefInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefInt32RefInt32<int>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -121,7 +121,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -139,7 +139,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixtureInt<SetupRefIntRefInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefInt32RefInt32<int>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -161,7 +161,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue2 = 987654321;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -180,7 +180,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue2 = 987654321;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -199,7 +199,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue2 = 987654321;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 
-		var fixture = CreateFixtureInt<SetupRefIntRefInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefInt32RefInt32<int>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -220,7 +220,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue1 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -239,7 +239,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue1 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -258,7 +258,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue1 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixtureInt<SetupRefIntRefInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefInt32RefInt32<int>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -275,7 +275,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue = nameof(returnValue);
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -292,7 +292,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue = nameof(returnValue);
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -309,7 +309,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int returnValue = 374452;
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixtureInt<SetupRefIntRefInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefInt32RefInt32<int>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -327,7 +327,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue = nameof(returnValue);
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -344,7 +344,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int returnValue = 374452;
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixtureInt<SetupRefIntRefInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefInt32RefInt32<int>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -362,7 +362,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue = nameof(returnValue);
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -379,7 +379,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int returnValue = 374452;
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixtureInt<SetupRefIntRefInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefInt32RefInt32<int>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns(returnValue);
 
@@ -397,7 +397,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage = nameof(errorMessage);
 		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
@@ -415,7 +415,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
@@ -433,7 +433,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
@@ -449,7 +449,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
@@ -464,7 +464,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
@@ -482,7 +482,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue2 = 987654321;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
@@ -501,7 +501,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue2 = 987654321;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
@@ -518,7 +518,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue1 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
@@ -537,7 +537,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue1 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
@@ -550,7 +550,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage = nameof(errorMessage);
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
@@ -567,7 +567,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage = nameof(errorMessage);
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
@@ -581,7 +581,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage = nameof(errorMessage);
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
@@ -595,7 +595,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage = nameof(errorMessage);
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage));
 
@@ -620,7 +620,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue4 = nameof(returnValue4);
 		It<int> setup41 = setupValue1, setup42 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Returns(returnValue1);
 
@@ -657,7 +657,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue4 = nameof(returnValue4);
 		It<int> setup41 = setupValue1, setup42 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Returns(returnValue1);
 
@@ -695,7 +695,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue4 = nameof(returnValue4);
 		It<int> setup41 = setupValue1, setup42 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Returns(returnValue1);
 
@@ -732,7 +732,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue4 = nameof(returnValue4);
 		It<int> setup41 = setupValue1, setup42 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Returns(returnValue1);
 
@@ -769,7 +769,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage4 = nameof(errorMessage4);
 		It<int> setup41 = setupValue1, setup42 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -806,7 +806,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage4 = nameof(errorMessage4);
 		It<int> setup41 = setupValue1, setup42 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -844,7 +844,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage4 = nameof(errorMessage4);
 		It<int> setup41 = setupValue1, setup42 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -881,7 +881,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage4 = nameof(errorMessage4);
 		It<int> setup41 = setupValue1, setup42 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -934,7 +934,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue9 = nameof(returnValue9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Returns(returnValue1);
 
@@ -1002,7 +1002,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue9 = nameof(returnValue9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Returns(returnValue1);
 
@@ -1071,7 +1071,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue9 = nameof(returnValue9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Returns(returnValue1);
 
@@ -1140,7 +1140,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue9 = nameof(returnValue9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Returns(returnValue1);
 
@@ -1209,7 +1209,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue9 = nameof(returnValue9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Returns(returnValue1);
 
@@ -1277,7 +1277,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue9 = nameof(returnValue9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Returns(returnValue1);
 
@@ -1345,7 +1345,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue9 = nameof(returnValue9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Returns(returnValue1);
 
@@ -1413,7 +1413,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue9 = nameof(returnValue9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Returns(returnValue1);
 
@@ -1481,7 +1481,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string returnValue9 = nameof(returnValue9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Returns(returnValue1);
 
@@ -1549,7 +1549,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage9 = nameof(errorMessage9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -1617,7 +1617,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage9 = nameof(errorMessage9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -1686,7 +1686,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage9 = nameof(errorMessage9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -1755,7 +1755,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage9 = nameof(errorMessage9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -1824,7 +1824,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage9 = nameof(errorMessage9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -1892,7 +1892,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage9 = nameof(errorMessage9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -1960,7 +1960,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage9 = nameof(errorMessage9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -2028,7 +2028,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage9 = nameof(errorMessage9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -2096,7 +2096,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage9 = nameof(errorMessage9);
 		It<int> setup91 = setupValue1, setup92 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup11.ValueSetup, setup12.ValueSetup);
 		fixture.Throws(new InvalidOperationException(errorMessage1));
 
@@ -2136,7 +2136,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => (x + y - 1).ToString());
 
@@ -2153,7 +2153,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => ((x -= y) - (y -= x)).ToString());
 
@@ -2174,7 +2174,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => (x + y - 1).ToString());
 
@@ -2191,7 +2191,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => ((x -= y) - (y -= x)).ToString());
 
@@ -2212,7 +2212,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => (x + y - 1).ToString());
 
@@ -2230,7 +2230,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => ((x -= y) - (y -= x)).ToString());
 
@@ -2251,7 +2251,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixtureInt<SetupRefIntRefInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefInt32RefInt32<int>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => x + y - 1);
 
@@ -2270,7 +2270,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => (x + y - 1).ToString());
 
@@ -2288,7 +2288,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => ((x -= y) - (y -= x)).ToString());
 
@@ -2309,7 +2309,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixtureInt<SetupRefIntRefInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefInt32RefInt32<int>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => x + y - 1);
 
@@ -2327,7 +2327,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => (x + y - 1).ToString());
 
@@ -2344,7 +2344,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => ((x -= y) - (y -= x)).ToString());
 
@@ -2364,7 +2364,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue1 = 12345678, setupValue2 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 
-		var fixture = CreateFixtureInt<SetupRefIntRefInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefInt32RefInt32<int>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => x + y - 1);
 
@@ -2385,7 +2385,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue2 = 987654321;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => (x + y - 1).ToString());
 
@@ -2406,7 +2406,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		int expected1 = inputValue1 - setupValue2, expected2 = setupValue2 - expected1;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => ((x -= y) - (y -= x)).ToString());
 
@@ -2427,7 +2427,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue2 = 987654321;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => (x + y - 1).ToString());
 
@@ -2446,7 +2446,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		int expected1 = inputValue1, expected2 = setupValue2;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => ((x -= y) - (y -= x)).ToString());
 
@@ -2466,7 +2466,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue2 = 987654321;
 		It<int> setup1 = It<int>.Where(static x => x <= 10), setup2 = setupValue2;
 
-		var fixture = CreateFixtureInt<SetupRefIntRefInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefInt32RefInt32<int>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => x + y - 1);
 
@@ -2486,7 +2486,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue1 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => (x + y - 1).ToString());
 
@@ -2507,7 +2507,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		int expected1 = setupValue1 - inputValue2, expected2 = inputValue2 - expected1;
 		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => ((x -= y) - (y -= x)).ToString());
 
@@ -2528,7 +2528,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue1 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => (x + y - 1).ToString());
 
@@ -2547,7 +2547,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		int expected1 = setupValue1, expected2 = inputValue2;
 		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => ((x -= y) - (y -= x)).ToString());
 
@@ -2567,7 +2567,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue1 = 987654321;
 		It<int> setup1 = setupValue1, setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixtureInt<SetupRefIntRefInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefInt32RefInt32<int>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => x + y - 1);
 
@@ -2583,7 +2583,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => (x + y - 1).ToString());
 
@@ -2600,7 +2600,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => ((x -= y) - (y -= x)).ToString());
 
@@ -2620,7 +2620,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => (x + y - 1).ToString());
 
@@ -2636,7 +2636,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => ((x -= y) - (y -= x)).ToString());
 
@@ -2655,7 +2655,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixtureInt<SetupRefIntRefInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefInt32RefInt32<int>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => x + y - 1);
 
@@ -2672,7 +2672,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => (x + y - 1).ToString());
 
@@ -2688,7 +2688,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => ((x -= y) - (y -= x)).ToString());
 
@@ -2707,7 +2707,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixtureInt<SetupRefIntRefInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefInt32RefInt32<int>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => x + y - 1);
 
@@ -2724,7 +2724,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => (x + y - 1).ToString());
 
@@ -2740,7 +2740,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => ((x -= y) - (y -= x)).ToString());
 
@@ -2759,7 +2759,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(static x => x >= 100), setup2 = It<int>.Where(static x => x <= 10);
 
-		var fixture = CreateFixtureInt<SetupRefIntRefInt<int>>();
+		var fixture = CreateFixtureInt<SetupRefInt32RefInt32<int>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Returns((ref x, ref y) => x + y - 1);
 
@@ -2777,7 +2777,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 
@@ -2794,7 +2794,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) =>
 		{
@@ -2818,7 +2818,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 		fixture.And();
@@ -2840,7 +2840,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Any();
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Throws(new Exception(expectedMessage));
 		fixture.And();
@@ -2862,7 +2862,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 
@@ -2879,7 +2879,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		int setupValue1 = 12345678, setupValue2 = 23456789;
 		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) =>
 		{
@@ -2901,7 +2901,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		int setupValue1 = 12345678, setupValue2 = 23456789;
 		It<int> setup1 = It<int>.Value(setupValue2), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) =>
 		{
@@ -2925,7 +2925,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 		fixture.And();
@@ -2947,7 +2947,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = setupValue1, setup2 = setupValue2;
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 		fixture.And();
@@ -2967,7 +2967,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Where(x => x > 20), setup2 = It<int>.Where(x => x < 15);
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 
@@ -2984,7 +2984,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(x => x > 20), setup2 = It<int>.Where(x => x < 15);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) =>
 		{
@@ -3006,7 +3006,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(x => x > 20), setup2 = It<int>.Where(x => x < 15);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) =>
 		{
@@ -3030,7 +3030,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Where(x => x > 20), setup2 = It<int>.Where(x => x < 15);
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 		fixture.And();
@@ -3052,7 +3052,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Where(x => x > 20), setup2 = It<int>.Where(x => x < 15);
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 		fixture.And();
@@ -3075,7 +3075,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 
@@ -3094,7 +3094,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		var setupValue2 = 23456789;
 		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => x = +y);
 
@@ -3114,7 +3114,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 
@@ -3133,7 +3133,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue2 = 23456789;
 		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) =>
 		{
@@ -3157,7 +3157,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 
@@ -3175,7 +3175,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue1 = 12345678, setupValue2 = 23456789;
 		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) =>
 		{
@@ -3198,7 +3198,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 
@@ -3215,7 +3215,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		int setupValue1 = 12345678, setupValue2 = 23456789;
 		It<int> setup1 = It<int>.Value(setupValue1), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) =>
 		{
@@ -3238,7 +3238,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Value(setupValue1), setup2 = It<int>.Any();
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 
@@ -3256,7 +3256,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue1 = 12345678;
 		It<int> setup1 = It<int>.Value(setupValue1), setup2 = It<int>.Any();
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) =>
 		{
@@ -3280,7 +3280,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Any(), setup2 = setupValue2;
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 
@@ -3298,7 +3298,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const int setupValue2 = 12345678;
 		It<int> setup1 = It<int>.Any(), setup2 = setupValue2;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) =>
 		{
@@ -3321,7 +3321,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Where(x => x < 20);
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 
@@ -3338,7 +3338,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Where(x => x < 20);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) =>
 		{
@@ -3361,7 +3361,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Where(x => x < 20);
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 
@@ -3378,7 +3378,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Where(x => x < 20);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) =>
 		{
@@ -3401,7 +3401,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Where(x => x < 20);
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 
@@ -3418,7 +3418,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Where(x => x < 20);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) =>
 		{
@@ -3441,7 +3441,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Any();
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 
@@ -3458,7 +3458,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Where(x => x > 10), setup2 = It<int>.Any();
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) =>
 		{
@@ -3481,7 +3481,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Where(x => x < 20);
 		var callbackValue = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) => callbackValue = x - y + 1);
 
@@ -3498,7 +3498,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		It<int> setup1 = It<int>.Any(), setup2 = It<int>.Where(x => x < 20);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(setup1.ValueSetup, setup2.ValueSetup);
 		fixture.Callback((ref x, ref y) =>
 		{
@@ -3518,7 +3518,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void NotDuplicateSameSetup()
 	{
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Any().ValueSetup);
 		fixture.Callback((ref _, ref _) => { });
 		fixture.Throws(new Exception());
@@ -3533,7 +3533,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void InsertAllSetups()
 	{
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Any().ValueSetup);
 		fixture.Callback((ref _, ref _) => { });
 
@@ -3551,7 +3551,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void ReturnLastResultAny()
 	{
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Any().ValueSetup);
 		fixture.Returns("random text");
 
@@ -3569,7 +3569,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void ThrowLastExceptionAny()
 	{
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Any().ValueSetup);
 		fixture.Throws(new Exception("random text"));
 
@@ -3587,7 +3587,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void ReturnLastResultAnyWhere()
 	{
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Where(x => x > 10).ValueSetup);
 		fixture.Returns("random text");
 
@@ -3605,7 +3605,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void ThrowLastExceptionAnyWhere()
 	{
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Where(x => x > 10).ValueSetup);
 		fixture.Throws(new Exception("random text"));
 
@@ -3625,7 +3625,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		var setupValue2 = 123;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Value(setupValue2).ValueSetup);
 		fixture.Returns("random text");
 
@@ -3645,7 +3645,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		var setupValue2 = 123;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Value(setupValue2).ValueSetup);
 		fixture.Throws(new Exception("random text"));
 
@@ -3663,7 +3663,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void ReturnLastResultWhere()
 	{
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Where(x => x > 100).ValueSetup, It<int>.Where(x => x < 20).ValueSetup);
 		fixture.Returns("random text");
 
@@ -3681,7 +3681,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	[Fact]
 	public void ThrowLastExceptionWhere()
 	{
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Where(x => x > 100).ValueSetup, It<int>.Where(x => x < 20).ValueSetup);
 		fixture.Throws(new Exception("random text"));
 
@@ -3701,7 +3701,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		var setupValue2 = 123;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Where(x => x > 100).ValueSetup, It<int>.Value(setupValue2).ValueSetup);
 		fixture.Returns("random text");
 
@@ -3721,7 +3721,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		var setupValue2 = 123;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Where(x => x > 100).ValueSetup, It<int>.Value(setupValue2).ValueSetup);
 		fixture.Throws(new Exception("random text"));
 
@@ -3741,7 +3741,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		int setupValue1 = 11, setupValue2 = 123;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Value(setupValue1).ValueSetup, It<int>.Value(setupValue2).ValueSetup);
 		fixture.Returns("random text");
 
@@ -3760,7 +3760,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		int setupValue1 = 11, setupValue2 = 123;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Value(setupValue1).ValueSetup, It<int>.Value(setupValue2).ValueSetup);
 		fixture.Throws(new Exception("random text"));
 
@@ -3779,7 +3779,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Any().ValueSetup);
 		fixture.Returns(setupValue1);
 		fixture.Returns(setupValue2);
@@ -3804,7 +3804,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		var callback = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Any().ValueSetup);
 		fixture.Callback((ref _, ref _) => callback++);
 		fixture.Returns(setupValue1);
@@ -3837,7 +3837,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		var callback = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Any().ValueSetup);
 		fixture.Callback((ref _, ref _) => callback++);
 		fixture.And();
@@ -3867,7 +3867,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		var callback = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Any().ValueSetup);
 		fixture.Returns(setupValue1);
 		fixture.Callback((ref _, ref _) => callback++);
@@ -3897,7 +3897,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		int callback1 = 10, callback2 = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Any().ValueSetup);
 		fixture.Callback((ref _, ref _) => callback1++);
 		fixture.And();
@@ -3929,7 +3929,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 	{
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Any().ValueSetup);
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Throws(new NullReferenceException(errorMessage2));
@@ -3954,7 +3954,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
 		var callback = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Any().ValueSetup);
 		fixture.Callback((ref _, ref _) => callback++);
 		fixture.Throws(new COMException(errorMessage1));
@@ -3985,7 +3985,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
 		var callback = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Any().ValueSetup);
 		fixture.Callback((ref _, ref _) => callback++);
 		fixture.And();
@@ -4015,7 +4015,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
 		var callback = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Any().ValueSetup);
 		fixture.Throws(new COMException(errorMessage1));
 		fixture.Callback((ref _, ref _) => callback++);
@@ -4045,7 +4045,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
 		int callback1 = 10, callback2 = 0;
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Any().ValueSetup);
 		fixture.Callback((ref _, ref _) => callback1++);
 		fixture.And();
@@ -4078,7 +4078,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage = nameof(errorMessage);
 		const string expected = nameof(expected);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Any().ValueSetup);
 		fixture.Returns(expected);
 		fixture.Throws(new IndexOutOfRangeException(errorMessage));
@@ -4103,7 +4103,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsTestsBase
 		const string errorMessage = nameof(errorMessage);
 		const string expected = nameof(expected);
 
-		var fixture = CreateFixture<SetupRefIntRefInt<string>>();
+		var fixture = CreateFixture<SetupRefInt32RefInt32<string>>();
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Any().ValueSetup);
 		fixture.Throws(new IndexOutOfRangeException(errorMessage));
 		fixture.Returns(expected);

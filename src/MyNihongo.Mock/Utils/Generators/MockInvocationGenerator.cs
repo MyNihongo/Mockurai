@@ -327,10 +327,10 @@ internal static class MockInvocationGenerator
 				.Append(") ? $\"{")
 				.AppendPrefixField(parameter.Name)
 				.Append("} ")
-				.AppendType(parameter.Type, typeOverride)
-				.Append("\" : \"")
-				.AppendType(parameter.Type, typeOverride)
-				.AppendLine("\";");
+				.AppendTypeInsideString(parameter.Type, typeOverride)
+				.Append("\" : ")
+				.AppendTypeSeparate(parameter.Type, typeOverride)
+				.AppendLine(";");
 		}
 
 		stringBuilder
@@ -657,6 +657,48 @@ internal static class MockInvocationGenerator
 				.Append("(\"")
 				.Append(parameterName)
 				.Append("\", result)");
+		}
+
+		private StringBuilder AppendTypeInsideString(ITypeSymbol typeSymbol, string? typeOverride)
+		{
+			if (typeSymbol is ITypeParameterSymbol typeParameterSymbol)
+			{
+				@this
+					.Append('{')
+					.AppendTypeofName(typeParameterSymbol, typeOverride)
+					.Append('}');
+			}
+			else
+			{
+				@this.AppendType(typeSymbol, typeOverride);
+			}
+
+			return @this;
+		}
+
+		private StringBuilder AppendTypeSeparate(ITypeSymbol typeSymbol, string? typeOverride)
+		{
+			if (typeSymbol is ITypeParameterSymbol typeParameterSymbol)
+			{
+				@this.AppendTypeofName(typeParameterSymbol, typeOverride);
+			}
+			else
+			{
+				@this
+					.Append('"')
+					.AppendType(typeSymbol, typeOverride)
+					.Append('"');
+			}
+
+			return @this;
+		}
+
+		private StringBuilder AppendTypeofName(ITypeParameterSymbol typeParameterSymbol, string? typeOverride)
+		{
+			return @this
+				.Append("typeof(")
+				.AppendType(typeParameterSymbol, typeOverride)
+				.Append(").Name");
 		}
 	}
 }

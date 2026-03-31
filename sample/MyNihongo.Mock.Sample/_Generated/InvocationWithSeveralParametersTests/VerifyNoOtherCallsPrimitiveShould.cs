@@ -154,7 +154,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 
 		const string expectedMessage =
 			"""
-			Expected MyClass.MyMethod(Int32, Int32) to be verified, but the following invocations have not been verified:
+			Expected MyClass.MyMethod(int, int) to be verified, but the following invocations have not been verified:
 			- 1: MyClass.MyMethod(123, 234)
 			- 2: MyClass.MyMethod(234, 345)
 			- 3: MyClass.MyMethod(345, 456)
@@ -179,7 +179,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 
 		const string expectedMessage =
 			"""
-			Expected MyClass.MyMethod(Int32, Int32) to be verified, but the following invocations have not been verified:
+			Expected MyClass.MyMethod(int, int) to be verified, but the following invocations have not been verified:
 			- 2: MyClass.MyMethod(234, 345)
 			- 3: MyClass.MyMethod(345, 456)
 			""";
@@ -204,7 +204,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 
 		const string expectedMessage =
 			"""
-			Expected MyClass.MyMethod(Int32, Int32) to be verified, but the following invocations have not been verified:
+			Expected MyClass.MyMethod(int, int) to be verified, but the following invocations have not been verified:
 			- 1: MyClass.MyMethod(123, 234)
 			""";
 
@@ -365,7 +365,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 
 		const string expectedMessage =
 			"""
-			Expected MyClass.MyMethod(Int32, Int32) to be verified, but the following invocations have not been verified:
+			Expected MyClass.MyMethod(int, int) to be verified, but the following invocations have not been verified:
 			- 1: MyClass.MyMethod(123, 234)
 			- 3: MyClass.MyMethod(345, 456)
 			""";
@@ -390,7 +390,7 @@ public sealed class VerifyNoOtherCallsPrimitiveShould : InvocationWithSeveralPar
 
 		const string expectedMessage =
 			"""
-			Expected MyClass.MyMethod(Int32, Int32) to be verified, but the following invocations have not been verified:
+			Expected MyClass.MyMethod(int, int) to be verified, but the following invocations have not been verified:
 			- 2: MyClass.MyMethod(234, 345)
 			""";
 

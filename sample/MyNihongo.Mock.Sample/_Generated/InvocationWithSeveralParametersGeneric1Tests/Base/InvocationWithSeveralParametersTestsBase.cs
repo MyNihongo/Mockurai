@@ -2,8 +2,8 @@ namespace MyNihongo.Mock.Sample._Generated.InvocationWithSeveralParametersGeneri
 
 public abstract class InvocationWithSeveralParametersTestsBase
 {
-	protected static InvocationT1Int<T> CreateFixturePrimitive<T>()
+	protected static InvocationT1Int32<T> CreateFixturePrimitive<T>()
 	{
-		return new InvocationT1Int<T>(name: "MyClass.MyMethod<T>({0}, {1})");
+		return new InvocationT1Int32<T>(name: "MyClass.MyMethod<T>({0}, {1})");
 	}
 }
