@@ -327,7 +327,7 @@ internal static class MockImplementationMethodGenerator
 				if (indent.HasValue)
 					stringBuilder.Indent(indent.Value);
 
-				stringBuilder.Append("return default;");
+				stringBuilder.Append("return default!;");
 
 				if (indent.HasValue)
 					stringBuilder.AppendLine();

@@ -11,6 +11,7 @@ internal static class MockInvocationGenerator
 
 		var source =
 			$$"""
+			  #nullable enable
 			  namespace {{result.Options.RootNamespace}};
 
 			  public sealed class {{className}} : IInvocationVerify
@@ -406,17 +407,17 @@ internal static class MockInvocationGenerator
 		foreach (var parameter in methodSymbol.Parameters)
 		{
 			stringBuilder
-				.AppendLine()
-				.Indent(indent)
-				.AppendLine("try")
-				.Indent(indent++).AppendLine("{");
-
-			stringBuilder
 				.Indent(indent)
 				.AppendFieldName(parameter.Name)
 				.Append(" = ")
 				.AppendParameterName(parameter.Name)
 				.AppendLine(";");
+
+			stringBuilder
+				.AppendLine()
+				.Indent(indent)
+				.AppendLine("try")
+				.Indent(indent++).AppendLine("{");
 
 			stringBuilder
 				.Indent(indent)
@@ -475,7 +476,7 @@ internal static class MockInvocationGenerator
 				.Append(">(")
 				.AppendFieldName(JsonSnapshotName)
 				.AppendPropertyName(parameter.Name)
-				.AppendLine(")");
+				.AppendLine(")!");
 
 			stringBuilder
 				.Indent(indent + 1)

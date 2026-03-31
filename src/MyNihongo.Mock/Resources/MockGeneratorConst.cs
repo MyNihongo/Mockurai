@@ -14,6 +14,6 @@ internal static class MockGeneratorConst
 		public const string Prefix = "prefix";
 		public const string GenericParameter = "T", GenericReturnParameter = "TReturns";
 		public const string MockVariableCall = "_mock.";
-		public const string DefaultAssign = " = default;";
+		public const string DefaultAssign = " = default!;";
 	}
 }

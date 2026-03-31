@@ -14,6 +14,7 @@ internal static class MockImplementationGenerator
 
 		var source =
 			$$"""
+			  #nullable enable
 			  namespace {{result.Options.RootNamespace}};
 
 			  public sealed class {{mockClassName}} : IMock<{{typeString}}>

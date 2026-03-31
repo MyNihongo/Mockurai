@@ -97,17 +97,22 @@ internal static class ParameterSymbolEx
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
+				var refKind = parameters[i].RefKind;
+
 				if (!appendComma && i > 0)
 					@this.Append(", ");
 
 				if (appendRefModifier)
 				{
-					var refModifier = parameters[i].RefKind.GetModifierString();
+					var refModifier = refKind.GetModifierString();
 					if (!string.IsNullOrEmpty(refModifier))
 						@this.Append(refModifier).Append(' ');
 				}
 
 				@this.Append(parameters[i].Name);
+
+				if (appendRefModifier && refKind == RefKind.Out)
+					@this.Append('!');
 
 				if (!string.IsNullOrEmpty(suffix))
 					@this.Append(suffix);
@@ -151,7 +156,7 @@ internal static class ParameterSymbolEx
 				@this.Append(", ");
 
 				var parameterName = parameter.RefKind == RefKind.Out
-					? "default"
+					? "default!"
 					: parameter.Name;
 
 				@this.Append(parameterName);
@@ -257,7 +262,7 @@ internal static class ParameterSymbolEx
 			{
 				if (appendRefKind)
 					@this.AppendRefKindPrefix(parameter.RefKind);
-				
+
 				if (parameter.Type is ITypeParameterSymbol)
 				{
 					builder ??= ImmutableArray.CreateBuilder<IParameterSymbol>();

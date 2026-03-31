@@ -9,6 +9,7 @@ internal static class MockClassGenerator
 
 		return
 			$$"""
+			  #nullable enable
 			  namespace {{classSymbol.ContainingNamespace}};
 
 			  {{classSymbol.DeclaredAccessibility.GetString()}} partial class {{classSymbol.Name}}

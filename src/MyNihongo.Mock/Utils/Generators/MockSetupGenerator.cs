@@ -12,6 +12,7 @@ internal static class MockSetupGenerator
 
 		var source =
 			$$"""
+			  #nullable enable
 			  namespace {{result.Options.RootNamespace}};
 
 			  public sealed class {{className}} : {{CreateInterfaceDerivedFrom(stringBuilder, methodSymbol, returnType)}}
