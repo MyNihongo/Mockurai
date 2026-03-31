@@ -34,22 +34,10 @@ internal abstract class MethodSymbolComparerBase : IEqualityComparer<IMethodSymb
 	{
 		return parameter.Type switch
 		{
-			ITypeParameterSymbol x => GetParameterHashCode(@this, x.ConstraintTypes),
+			// For generic types we care only about the count (not actual content)
+			ITypeParameterSymbol x => x.ConstraintTypes.GetHashCode(),
 			_ => @this.GetHashCode(parameter.Type),
 		};
-	}
-
-	private static int GetParameterHashCode(SymbolEqualityComparer @this, ImmutableArray<ITypeSymbol> constraintTypes)
-	{
-		var hash = new HashCode();
-
-		foreach (var constraint in constraintTypes)
-		{
-			var typeHashCode = @this.GetHashCode(constraint);
-			hash.Append(typeHashCode);
-		}
-
-		return hash.GetHashCode();
 	}
 
 	protected ref struct HashCode()

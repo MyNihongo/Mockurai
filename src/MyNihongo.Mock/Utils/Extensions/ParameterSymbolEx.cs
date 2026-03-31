@@ -191,9 +191,11 @@ internal static class ParameterSymbolEx
 			ImmutableDictionary<IParameterSymbol, string>.Builder? typeOverrideBuilder,
 			bool useOverriddenGenericNames)
 		{
+			const bool appendRefKind = true;
+
 			@this
 				.Append("Setup")
-				.AppendParameterRefKinds(parameters, out var genericParameters);
+				.AppendParameterRefKinds(parameters, appendRefKind, out var genericParameters);
 
 			if (returnTypeSymbol is not null)
 			{
@@ -236,21 +238,26 @@ internal static class ParameterSymbolEx
 			ImmutableDictionary<IParameterSymbol, string>.Builder? typeOverrideBuilder,
 			bool appendGenericDeclaration)
 		{
+			const bool appendRefKind = false;
+
 			@this
 				.Append("Invocation")
-				.AppendParameterRefKinds(parameters, out var genericParameters);
+				.AppendParameterRefKinds(parameters, appendRefKind, out var genericParameters);
 
 			return appendGenericDeclaration
 				? @this.AppendGenericSetupInvocationParameters(genericParameters, useOverriddenGenericNames, typeOverrideBuilder)
 				: @this;
 		}
 
-		private void AppendParameterRefKinds(ImmutableArray<IParameterSymbol> parameters, out ImmutableArray<IParameterSymbol> genericParameters)
+		private void AppendParameterRefKinds(ImmutableArray<IParameterSymbol> parameters, bool appendRefKind, out ImmutableArray<IParameterSymbol> genericParameters)
 		{
 			ImmutableArray<IParameterSymbol>.Builder? builder = null;
 
 			foreach (var parameter in parameters)
 			{
+				if (appendRefKind)
+					@this.AppendRefKindPrefix(parameter.RefKind);
+				
 				if (parameter.Type is ITypeParameterSymbol)
 				{
 					builder ??= ImmutableArray.CreateBuilder<IParameterSymbol>();
@@ -262,9 +269,7 @@ internal static class ParameterSymbolEx
 				}
 				else
 				{
-					@this
-						.AppendRefKindPrefix(parameter.RefKind)
-						.Append(parameter.Type.Name);
+					@this.Append(parameter.Type.Name);
 				}
 			}
 
