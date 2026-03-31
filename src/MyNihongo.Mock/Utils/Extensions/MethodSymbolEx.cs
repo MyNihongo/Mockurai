@@ -105,7 +105,7 @@ internal static class MethodSymbolEx
 		public StringBuilder AppendSetupMethod(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 		{
 			@this
-				.Indent(indent).AppendSetupMethodDeclaration(methodSymbol, useDefaults: false).AppendLine()
+				.Indent(indent).AppendSetupMethodDeclaration(methodSymbol, useDefaults: false, returnType: SetupMethodReturnType.Class).AppendLine()
 				.Indent(indent++).AppendLine("{");
 
 			@this
@@ -234,7 +234,7 @@ internal static class MethodSymbolEx
 		{
 			@this
 				.Indent(indent)
-				.AppendSetupMethodDeclaration(methodSymbol, useDefaults)
+				.AppendSetupMethodDeclaration(methodSymbol, useDefaults, returnType: SetupMethodReturnType.Interface)
 				.AppendLine(" =>");
 
 			@this
@@ -320,16 +320,26 @@ internal static class MethodSymbolEx
 				.Indent(--indent).Append('}');
 		}
 
-		private StringBuilder AppendSetupMethodDeclaration(IMethodSymbol methodSymbol, bool useDefaults)
+		private StringBuilder AppendSetupMethodDeclaration(IMethodSymbol methodSymbol, bool useDefaults, SetupMethodReturnType returnType)
 		{
 			return @this
 				.Append("public ")
-				.AppendSetupType(methodSymbol)
+				.AppendSetupMethodReturnType(methodSymbol, returnType)
 				.Append(' ')
 				.AppendSetupMethodName(methodSymbol)
 				.Append('(')
 				.AppendItParameters(methodSymbol.Parameters, useDefaults: useDefaults)
 				.Append(')');
+		}
+
+		private StringBuilder AppendSetupMethodReturnType(IMethodSymbol methodSymbol, SetupMethodReturnType returnType)
+		{
+			return returnType switch
+			{
+				SetupMethodReturnType.Class => @this.AppendSetupType(methodSymbol),
+				SetupMethodReturnType.Interface => "aaa",
+				_ => @this,
+			};
 		}
 
 		private StringBuilder AppendSetupMethodName(IMethodSymbol methodSymbol)
@@ -719,5 +729,11 @@ internal static class MethodSymbolEx
 				.AppendParameterName(MockGeneratorConst.Suffixes.Prefix)
 				.AppendPropertyName(name);
 		}
+	}
+	
+	private enum SetupMethodReturnType
+	{
+		Class,
+		Interface,
 	}
 }

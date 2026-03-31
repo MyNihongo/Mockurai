@@ -92,7 +92,7 @@ internal static class MockImplementationPropertyGenerator
 			stringBuilder.AppendSetupVerifyExtensionMethods(propertySymbol.GetMethod, mockClassName, indent);
 
 		if (propertySymbol.SetMethod is not null)
-			stringBuilder.AppendSetupVerifyExtensionMethods(propertySymbol.SetMethod, mockClassName, indent, prependNewLines: true);
+			stringBuilder.AppendSetupVerifyExtensionMethods(propertySymbol.SetMethod, mockClassName, indent, prependNewLines: propertySymbol.GetMethod is not null);
 	}
 
 	public static void AppendPropertyMockSequenceExtensions(StringBuilder stringBuilder, MockedMemberSymbol memberSymbol, string mockClassName, int indent)
@@ -104,7 +104,7 @@ internal static class MockImplementationPropertyGenerator
 			stringBuilder.AppendVerifySequenceExtensionMethods(propertySymbol.GetMethod, mockClassName, indent);
 
 		if (propertySymbol.SetMethod is not null)
-			stringBuilder.AppendVerifySequenceExtensionMethods(propertySymbol.SetMethod, mockClassName, indent, prependNewLines: true);
+			stringBuilder.AppendVerifySequenceExtensionMethods(propertySymbol.SetMethod, mockClassName, indent, prependNewLines: propertySymbol.GetMethod is not null);
 	}
 
 	extension(StringBuilder stringBuilder)
