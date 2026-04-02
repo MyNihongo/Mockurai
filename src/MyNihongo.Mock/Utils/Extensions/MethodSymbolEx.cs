@@ -122,12 +122,12 @@ internal static class MethodSymbolEx
 			return @this.Append(">");
 		}
 
-		private StringBuilder AppendInterface(string interfaceName, IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol)
+		public StringBuilder AppendInterface(string interfaceName, IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, bool useOverriddenGenericNames)
 		{
 			@this
 				.Append(interfaceName)
 				.Append('<')
-				.AppendSetupClassName(methodSymbol)
+				.AppendSetupClassName(methodSymbol, useOverriddenGenericNames)
 				.Append(".CallbackDelegate");
 
 			if (returnTypeSymbol is not null)
@@ -136,7 +136,7 @@ internal static class MethodSymbolEx
 					.Append(", ")
 					.Append(MockGeneratorConst.Suffixes.GenericReturnParameter)
 					.Append(", ")
-					.AppendSetupClassName(methodSymbol)
+					.AppendSetupClassName(methodSymbol, useOverriddenGenericNames)
 					.Append(".ReturnsCallbackDelegate");
 			}
 
@@ -416,7 +416,7 @@ internal static class MethodSymbolEx
 			{
 				0 => @this.AppendInterface(interfaceName, returnType),
 				1 => @this.AppendInterface(interfaceName, methodSymbol.Parameters[0], returnType),
-				_ => @this.AppendInterface(interfaceName, methodSymbol, returnType),
+				_ => @this.AppendInterface(interfaceName, methodSymbol, returnType, useOverriddenGenericNames: false),
 			};
 		}
 
