@@ -352,9 +352,35 @@ internal static class MockSetupGenerator
 
 	extension(StringBuilder @this)
 	{
+		private StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol)
+		{
+			return @this.AppendSetupClassName(methodSymbol, useOverriddenGenericNames: true);
+		}
+
 		private StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol, out ImmutableDictionary<IParameterSymbol, string> genericTypeOverride)
 		{
 			return @this.AppendSetupClassName(methodSymbol, useOverriddenGenericNames: true, out genericTypeOverride);
+		}
+
+		private StringBuilder AppendInterface(string interfaceName, IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol)
+		{
+			@this
+				.Append(interfaceName)
+				.Append('<')
+				.AppendSetupClassName(methodSymbol)
+				.Append(".CallbackDelegate");
+
+			if (returnTypeSymbol is not null)
+			{
+				@this
+					.Append(", ")
+					.Append(MockGeneratorConst.Suffixes.GenericReturnParameter)
+					.Append(", ")
+					.AppendSetupClassName(methodSymbol)
+					.Append(".ReturnsCallbackDelegate");
+			}
+
+			return @this.Append('>');
 		}
 
 		private StringBuilder AppendCallbackInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, int indent)

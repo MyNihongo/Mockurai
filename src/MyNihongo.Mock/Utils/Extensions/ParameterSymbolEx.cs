@@ -165,12 +165,7 @@ internal static class ParameterSymbolEx
 			return @this;
 		}
 
-		public StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol)
-		{
-			return @this.AppendSetupClassName(methodSymbol, useOverriddenGenericNames: true);
-		}
-
-		private StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol, bool useOverriddenGenericNames)
+		public StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol, bool useOverriddenGenericNames)
 		{
 			var parameters = methodSymbol.Parameters;
 			var returnTypeSymbol = methodSymbol.TryGetReturnType();

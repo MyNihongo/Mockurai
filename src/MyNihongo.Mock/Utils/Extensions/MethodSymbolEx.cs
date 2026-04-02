@@ -78,23 +78,64 @@ internal static class MethodSymbolEx
 
 	extension(StringBuilder @this)
 	{
-		public StringBuilder AppendInterface(string interfaceName, IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol)
+		private StringBuilder AppendInterface(string interfaceName, ITypeSymbol? returnTypeSymbol)
 		{
 			@this
 				.Append(interfaceName)
-				.Append('<');
+				.Append("<Action");
 
-			if (returnTypeSymbol is null)
+			if (returnTypeSymbol is not null)
 			{
 				@this
-					.AppendSetupClassName(methodSymbol)
-					.Append(".CallbackDelegate");
+					.Append(", ")
+					.AppendType(returnTypeSymbol)
+					.Append(", System.Func<")
+					.AppendType(returnTypeSymbol)
+					.Append(">");
 			}
-			else
+
+			return @this.Append('>');
+		}
+
+		private StringBuilder AppendInterface(string interfaceName, IParameterSymbol parameterSymbol, ITypeSymbol? returnTypeSymbol)
+		{
+			@this
+				.Append(interfaceName)
+				.Append("<Action")
+				.AppendRefKindPrefix(parameterSymbol.RefKind)
+				.Append('<')
+				.AppendType(parameterSymbol.Type)
+				.Append('>');
+
+			if (returnTypeSymbol is not null)
 			{
 				@this
-					.AppendSetupClassName(methodSymbol)
-					.Append($".CallbackDelegate, {MockGeneratorConst.Suffixes.GenericReturnParameter}, ")
+					.Append(", ")
+					.AppendType(returnTypeSymbol)
+					.Append(", System.Func<")
+					.AppendType(parameterSymbol.Type)
+					.Append(", ")
+					.AppendType(returnTypeSymbol)
+					.Append(">");
+			}
+
+			return @this.Append(">");
+		}
+
+		private StringBuilder AppendInterface(string interfaceName, IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol)
+		{
+			@this
+				.Append(interfaceName)
+				.Append('<')
+				.AppendSetupClassName(methodSymbol)
+				.Append(".CallbackDelegate");
+
+			if (returnTypeSymbol is not null)
+			{
+				@this
+					.Append(", ")
+					.Append(MockGeneratorConst.Suffixes.GenericReturnParameter)
+					.Append(", ")
 					.AppendSetupClassName(methodSymbol)
 					.Append(".ReturnsCallbackDelegate");
 			}
@@ -373,8 +414,8 @@ internal static class MethodSymbolEx
 
 			return methodSymbol.Parameters.Length switch
 			{
-				0 => @this,
-				1 => @this,
+				0 => @this.AppendInterface(interfaceName, returnType),
+				1 => @this.AppendInterface(interfaceName, methodSymbol.Parameters[0], returnType),
 				_ => @this.AppendInterface(interfaceName, methodSymbol, returnType),
 			};
 		}
