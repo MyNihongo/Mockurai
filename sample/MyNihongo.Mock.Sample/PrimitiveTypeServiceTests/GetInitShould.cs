@@ -493,7 +493,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 		var actual = () => VerifyInSequence(static ctx =>
 		{
 			ctx.DependencyServiceMock.SetGetInit(parameter1);
-			ctx.DependencyServiceMock.InvokeWithParameter(123);
+			ctx.DependencyServiceMock.InvokeWithParameter(ItIn<int>.Value(123));
 			ctx.DependencyServiceMock.GetGetInit();
 		});
 

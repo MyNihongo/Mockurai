@@ -34,7 +34,7 @@ public readonly ref struct It<T>
 		return new It<T>();
 	}
 
-	public static implicit operator It<T>(in T value)
+	public static implicit operator It<T>(T value)
 	{
 		return Value(value);
 	}
