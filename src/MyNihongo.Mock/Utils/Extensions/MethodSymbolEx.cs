@@ -688,13 +688,15 @@ internal static class MethodSymbolEx
 			}
 
 			@this.Append('(');
-			if (!genericTypeNames.IsDefaultOrEmpty)
+
+			var isStringInterpolated = !genericTypeNames.IsDefaultOrEmpty || (mockedTypeSymbol.TypeSymbol as INamedTypeSymbol)?.TypeArguments.Length > 0;
+			if (isStringInterpolated)
 				@this.Append('$');
 
 			@this
 				.Append('"')
 				.Append(mockedTypeSymbol.TypeSymbol.Name)
-				.AppendGenericTypes(mockedTypeSymbol.TypeSymbol)
+				.AppendGenericTypes(mockedTypeSymbol.TypeSymbol, appendTypeOfName: true)
 				.Append('.')
 				.AppendPropertyName(memberSymbol.Symbol.Name)
 				.AppendInvocationMethodGenericParameters(methodSymbol, genericTypeNames);
@@ -705,16 +707,18 @@ internal static class MethodSymbolEx
 					@this.Append(".get");
 					break;
 				case MethodKind.PropertySet:
-					@this.Append(".set = {0}");
+					@this.Append(".set = ").AppendStringFormat(index: 0, isStringInterpolated);
 					break;
 				case MethodKind.EventAdd:
-					@this.Append(".add += {0}");
+					@this.Append(".add += ").AppendStringFormat(index: 0, isStringInterpolated);
+					;
 					break;
 				case MethodKind.EventRemove:
-					@this.Append(".remove -= {0}");
+					@this.Append(".remove -= ").AppendStringFormat(index: 0, isStringInterpolated);
+					;
 					break;
 				default:
-					@this.AppendParameterPlaceholders(methodSymbol);
+					@this.AppendParameterPlaceholders(methodSymbol, isStringInterpolated);
 					break;
 			}
 
@@ -757,7 +761,7 @@ internal static class MethodSymbolEx
 			@this.Append('>');
 		}
 
-		private void AppendParameterPlaceholders(IMethodSymbol methodSymbol)
+		private void AppendParameterPlaceholders(IMethodSymbol methodSymbol, bool isStringInterpolated)
 		{
 			@this.Append('(');
 
@@ -766,13 +770,25 @@ internal static class MethodSymbolEx
 				if (i > 0)
 					@this.Append(", ");
 
-				@this
-					.Append('{')
-					.Append(i)
-					.Append('}');
+				@this.AppendStringFormat(i, isStringInterpolated);
 			}
 
 			@this.Append(')');
+		}
+
+		private void AppendStringFormat(int index, bool isStringInterpolated)
+		{
+			if (isStringInterpolated)
+				@this.Append("{{");
+			else
+				@this.Append('{');
+
+			@this.Append(index);
+
+			if (isStringInterpolated)
+				@this.Append("}}");
+			else
+				@this.Append('}');
 		}
 
 		private void TryAppendParameterPrefixes(IMethodSymbol methodSymbol)

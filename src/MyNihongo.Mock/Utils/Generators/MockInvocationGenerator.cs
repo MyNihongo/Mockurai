@@ -693,13 +693,5 @@ internal static class MockInvocationGenerator
 
 			return @this;
 		}
-
-		private StringBuilder AppendTypeofName(ITypeParameterSymbol typeParameterSymbol, string? typeOverride)
-		{
-			return @this
-				.Append("typeof(")
-				.AppendType(typeParameterSymbol, typeOverride)
-				.Append(").Name");
-		}
 	}
 }
