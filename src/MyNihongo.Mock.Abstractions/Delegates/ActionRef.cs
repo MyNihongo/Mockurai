@@ -1,4 +1,5 @@
-namespace MyNihongo.Mock;
+// ReSharper disable once CheckNamespace
+namespace System;
 
 #if NET8_0
 public delegate void ActionRef<T>(ref T obj);

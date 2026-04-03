@@ -82,7 +82,7 @@ internal static class MethodSymbolEx
 		{
 			@this
 				.Append(interfaceName)
-				.Append("<Action");
+				.Append("<System.Action");
 
 			if (returnTypeSymbol is not null)
 			{
@@ -101,7 +101,7 @@ internal static class MethodSymbolEx
 		{
 			@this
 				.Append(interfaceName)
-				.Append("<Action")
+				.Append("<System.Action")
 				.AppendRefKindPrefix(parameterSymbol.RefKind)
 				.Append('<')
 				.AppendType(parameterSymbol.Type)
@@ -112,7 +112,9 @@ internal static class MethodSymbolEx
 				@this
 					.Append(", ")
 					.AppendType(returnTypeSymbol)
-					.Append(", System.Func<")
+					.Append(", System.Func")
+					.AppendRefKindPrefix(parameterSymbol.RefKind)
+					.Append('<')
 					.AppendType(parameterSymbol.Type)
 					.Append(", ")
 					.AppendType(returnTypeSymbol)
@@ -132,9 +134,14 @@ internal static class MethodSymbolEx
 
 			if (returnTypeSymbol is not null)
 			{
+				@this.Append(", ");
+
+				if (useOverriddenGenericNames)
+					@this.Append(MockGeneratorConst.Suffixes.GenericReturnParameter);
+				else
+					@this.AppendType(returnTypeSymbol);
+
 				@this
-					.Append(", ")
-					.Append(MockGeneratorConst.Suffixes.GenericReturnParameter)
 					.Append(", ")
 					.AppendSetupClassName(methodSymbol, useOverriddenGenericNames)
 					.Append(".ReturnsCallbackDelegate");
