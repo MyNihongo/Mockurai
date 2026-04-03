@@ -8,7 +8,7 @@ public abstract class SetupBaseReturns<TCallback, TReturns, TReturnsCallback>
 	private ItemSetup? _currentSetup;
 	private bool _andContinue;
 
-	public abstract void Returns(TReturns? returns);
+	public abstract void Returns(TReturns returns);
 
 	public void Callback(in TCallback callback)
 	{

@@ -8,7 +8,7 @@ public abstract class SetupWithParameterBase<TParameter, TCallback, TReturns, TR
 	protected SetupContainer<Item>? Setups;
 	private Item? _currentSetup;
 
-	public abstract void Returns(TReturns? returns);
+	public abstract void Returns(TReturns returns);
 
 	public void SetupParameter(in ItSetup<TParameter> parameter)
 	{
