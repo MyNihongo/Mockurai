@@ -10,9 +10,9 @@ internal static class ObjectEx
 		{
 			return JsonSerializer.Serialize(@this);
 		}
-		catch (Exception e)
+		catch
 		{
-			return e.ToString();
+			return @this?.ToString() ?? string.Empty;
 		}
 	}
 }
