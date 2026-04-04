@@ -33,7 +33,7 @@ public sealed class SetupWithRefReadOnlyParameter<TParameter, TReturns> : SetupW
 		return false;
 	}
 
-	public override void Returns(TReturns? returns)
+	public override void Returns(TReturns returns)
 	{
 		Returns((ref readonly _) => returns);
 	}
