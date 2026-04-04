@@ -128,7 +128,7 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 			.Throws(new ArgumentException(errorMessage2));
 
 		DependencyGenericServiceMock
-			.SetupInvokeWithSeveralParameters(It<string>.Any(), parameter2: input2)
+			.SetupInvokeWithSeveralParameters(It<string>.Any(), input2)
 			.Throws(new OutOfMemoryException(errorMessage3));
 
 		DependencyGenericServiceMock
@@ -157,7 +157,7 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 			.Throws(new ArgumentException(errorMessage2));
 
 		DependencyGenericServiceMock
-			.SetupInvokeWithSeveralParameters(It<string>.Any(), parameter2: input2)
+			.SetupInvokeWithSeveralParameters(It<string>.Any(), input2)
 			.Throws(new OutOfMemoryException(errorMessage3));
 
 		DependencyGenericServiceMock
@@ -186,7 +186,7 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 			.Throws(new ArgumentException(errorMessage2));
 
 		DependencyGenericServiceMock
-			.SetupInvokeWithSeveralParameters(It<string>.Any(), parameter2: input2)
+			.SetupInvokeWithSeveralParameters(It<string>.Any(), input2)
 			.Throws(new OutOfMemoryException(errorMessage3));
 
 		DependencyGenericServiceMock
@@ -215,7 +215,7 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 			.Throws(new ArgumentException(errorMessage2));
 
 		DependencyGenericServiceMock
-			.SetupInvokeWithSeveralParameters(It<string>.Any(), parameter2: input2)
+			.SetupInvokeWithSeveralParameters(It<string>.Any(), input2)
 			.Throws(new OutOfMemoryException(errorMessage3));
 
 		DependencyGenericServiceMock
