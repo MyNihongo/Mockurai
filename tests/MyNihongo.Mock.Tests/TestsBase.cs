@@ -1,4 +1,6 @@
-﻿namespace MyNihongo.Mock.Tests;
+﻿using MyNihongo.Mockurai;
+
+namespace MyNihongo.Mock.Tests;
 
 public abstract class TestsBase
 {
