@@ -1,0 +1,16 @@
+namespace MyNihongo.Mockurai.Abstractions.Tests.Setup.SetupReturnsWithRefParameterTests;
+
+public abstract class SetupReturnsWithRefParameterTestsBase : SetupTestsBase
+{
+	protected static SetupWithRefParameter<T, TReturns> CreateFixture<T, TReturns>()
+	{
+		return new SetupWithRefParameter<T, TReturns>();
+	}
+
+	protected static SetupWithRefParameter<T, TReturns> CreateFixture<T, TReturns>(in ItRef<T> setup)
+	{
+		var fixture = new SetupWithRefParameter<T, TReturns>();
+		fixture.SetupParameter(setup.ValueSetup);
+		return fixture;
+	}
+}
