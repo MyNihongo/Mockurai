@@ -188,8 +188,8 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 		fixture.ReturnWithSeveralParameters<string, float, double>(ref parameterValue1, parameterValue2);
 		fixture.ReturnWithSeveralParameters<string, float, double>(ref parameterValue3, parameterValue2);
 
-		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref parameterValue1, parameterValue2, Times.Once);
-		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref parameterValue3, parameterValue2, Times.Once);
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue1), parameterValue2, Times.Once);
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue3), parameterValue2, Times.Once);
 		DependencyServiceMock.VerifyNoOtherCalls();
 	}
 
@@ -247,14 +247,14 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 		fixture.ReturnWithSeveralParameters<string, float, double>(ref parameterValue3, parameterValue4);
 		fixture.ReturnWithSeveralParameters<string, float, double>(ref parameterValue1, parameterValue4);
 
-		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref parameterValue3, parameterValue2, Times.Once);
-		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref parameterValue1, parameterValue4, Times.Once);
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue3), parameterValue2, Times.Once);
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue1), parameterValue4, Times.Once);
 
 		var actual = () => DependencyServiceMock.VerifyNoOtherCalls();
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref System.String, Single) to be verified, but the following invocations have not been verified:
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref String, Single) to be verified, but the following invocations have not been verified:
 			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue1", 234)
 			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", 456)
 			""";
@@ -275,9 +275,9 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 
 		VerifyInSequence(ctx =>
 		{
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue1, parameterValue2);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue3, parameterValue2);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue3, parameterValue4);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue1), parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue3), parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue3), parameterValue4);
 		});
 		VerifyNoOtherCalls();
 	}
@@ -296,9 +296,9 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 		VerifyInSequence(ctx =>
 		{
 			It<float> verify2 = It<float>.Where(x => x < 300), verify4 = It<float>.Where(x => x > 400);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue1, verify2);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue3, verify2);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue3, verify4);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue1), verify2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue3), verify2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue3), verify4);
 		});
 		VerifyNoOtherCalls();
 	}
@@ -317,9 +317,9 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 		VerifyInSequence(ctx =>
 		{
 			It<float> verify2 = It<float>.Equivalent(parameterValue2), verify4 = It<float>.Equivalent(parameterValue4);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue1, verify2);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue3, verify2);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue3, verify4);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue1), verify2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue3), verify2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue3), verify4);
 		});
 		VerifyNoOtherCalls();
 	}
@@ -359,9 +359,9 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 
 		var actual = () => VerifyInSequence(ctx =>
 		{
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue1, parameterValue2);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue3, parameterValue4);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue3, parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue1), parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue3), parameterValue4);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue3), parameterValue2);
 		});
 
 		const string expectedMessage =
@@ -390,9 +390,9 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 		var actual = () => VerifyInSequence(ctx =>
 		{
 			It<float> verify2 = It<float>.Where(x => x < 300), verify4 = It<float>.Where(x => x > 400);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue1, verify2);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue3, verify4);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue3, verify2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue1), verify2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue3), verify4);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue3), verify2);
 		});
 
 		const string expectedMessage =
@@ -421,9 +421,9 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 		var actual = () => VerifyInSequence(ctx =>
 		{
 			It<float> verify2 = It<float>.Equivalent(parameterValue2), verify4 = It<float>.Equivalent(parameterValue4);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue3, verify2);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue1, verify2);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue3, verify4);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue3), verify2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue1), verify2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue3), verify4);
 		});
 
 		const string expectedMessage =
@@ -487,10 +487,10 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 
 		var actual = () => VerifyInSequence(ctx =>
 		{
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue1, parameterValue2);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue3, parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue1), parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue3), parameterValue2);
 			ctx.DependencyServiceMock.GetGetInit();
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref parameterValue3, parameterValue4);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameterValue3), parameterValue4);
 		});
 
 		const string expectedMessage =
@@ -523,7 +523,7 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 		Assert.Equal(setupValue2, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
 		Assert.Equal(setupValue2, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
 
-		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(setValue1), setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -549,7 +549,7 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 		Assert.Equal(setupValue2, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
 		Assert.Equal(setValue1.Length + setValue2, callback);
 
-		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2, Times.Exactly(4));
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(setValue1), setValue2, Times.Exactly(4));
 		VerifyNoOtherCalls();
 	}
 
@@ -573,7 +573,7 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 		Assert.Equal(setupValue2, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
 		Assert.Equal(setValue1.Length + setValue2, callback);
 
-		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(setValue1), setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -597,7 +597,7 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 		Assert.Equal(setupValue2, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
 		Assert.Equal(2 * (setValue1.Length + setValue2), callback);
 
-		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(setValue1), setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -621,7 +621,7 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 		Assert.Equal(setupValue2, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
 		Assert.Equal(3 * (setValue1.Length + setValue2), callback);
 
-		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(setValue1), setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -651,7 +651,7 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 		var exception3 = Assert.Throws<NullReferenceException>(actual3);
 		Assert.Equal(errorMessage2, exception3.Message);
 
-		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(setValue1), setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -687,7 +687,7 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 
 		Assert.Equal(setValue1.Length + setValue2, callback);
 
-		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2, Times.Exactly(4));
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(setValue1), setValue2, Times.Exactly(4));
 		VerifyNoOtherCalls();
 	}
 
@@ -720,7 +720,7 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 
 		Assert.Equal(setValue1.Length + setValue2, callback);
 
-		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(setValue1), setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -753,7 +753,7 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 
 		Assert.Equal(2 * (setValue1.Length + setValue2), callback);
 
-		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(setValue1), setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -786,7 +786,7 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 
 		Assert.Equal(3 * (setValue1.Length + setValue2), callback);
 
-		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(setValue1), setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -812,7 +812,7 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 		Assert.Equal(setupValue, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
 		Assert.Equal(setupValue, fixture.ReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2));
 
-		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(setValue1), setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -841,7 +841,7 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 		var exception3 = Assert.Throws<COMException>(actual3);
 		Assert.Equal(errorMessage, exception3.Message);
 
-		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref setValue1, setValue2, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(setValue1), setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -894,9 +894,9 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 		fixture.ReturnWithSeveralParameters<decimal, float, string>(ref decimalParam, intParam);
 		fixture.ReturnWithSeveralParameters<string, float, double>(ref stringParam, intParam);
 
-		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ref stringParam, intParam, Times.Exactly(2));
-		DependencyServiceMock.VerifyReturnWithSeveralParameters<decimal, float, string>(ref decimalParam, intParam, Times.Once);
-		DependencyServiceMock.VerifyReturnWithSeveralParameters<float, double, string>(ref floatParam, intParam, Times.Once);
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(stringParam), intParam, Times.Exactly(2));
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<decimal, float, string>(ItRef<decimal>.Value(decimalParam), intParam, Times.Once);
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<float, double, string>(ItRef<float>.Value(floatParam), intParam, Times.Once);
 		VerifyNoOtherCalls();
 	}
 
@@ -915,9 +915,9 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 
 		VerifyInSequence(ctx =>
 		{
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ref stringParam, intParam);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<float, double, string>(ref floatParam, intParam);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters<decimal, float, string>(ref decimalParam, intParam);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(stringParam), intParam);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<float, double, string>(ItRef<float>.Value(floatParam), intParam);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters<decimal, float, string>(ItRef<decimal>.Value(decimalParam), intParam);
 		});
 		VerifyNoOtherCalls();
 	}

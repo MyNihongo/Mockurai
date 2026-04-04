@@ -15,7 +15,7 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.Invoke() to be called 100 times, but instead it was called 1 time.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.HandlerEvent.add
+			- 1: IPrimitiveDependencyService.HandlerEvent.add += System.EventHandler`1[System.String]
 			- 2: IPrimitiveDependencyService.GetOnly.get
 			- 4: IPrimitiveDependencyService.SetOnly.set = 123
 			- 5: IPrimitiveDependencyService.GetInit.set = "value"
@@ -23,8 +23,8 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 8: IPrimitiveDependencyService.Invoke(out 0)
 			- 9: IPrimitiveDependencyService.Invoke<Double>()
 			- 10: IPrimitiveDependencyService.InvokeAsync()
-			- 11: IPrimitiveDependencyService.InvokeWithParameter(345)
-			- 12: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 11: IPrimitiveDependencyService.InvokeWithParameter(in 345)
+			- 12: IPrimitiveDependencyService.InvokeWithParameter(in "another value")
 			- 13: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
 			- 14: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
 			- 15: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
@@ -38,7 +38,7 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 25: IPrimitiveDependencyService.Return(out null)
 			- 26: IPrimitiveDependencyService.Return<Decimal>()
 			- 27: IPrimitiveDependencyService.ReturnAsync()
-			- 29: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 29: IPrimitiveDependencyService.ReturnWithParameter(in "ret val")
 			- 30: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
 			- 31: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
 			- 32: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")
@@ -60,13 +60,13 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			.InvokeAllAsync();
 
 		var actual = () => DependencyServiceMock
-			.VerifyInvokeWithParameter(8374646, Times.Once);
+			.VerifyInvokeWithParameter(ItIn<int>.Value(8374646), Times.Once);
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(8374646) to be called 1 time, but instead it was called 0 times.
+			Expected IPrimitiveDependencyService.InvokeWithParameter(in 8374646) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.HandlerEvent.add
+			- 1: IPrimitiveDependencyService.HandlerEvent.add += System.EventHandler`1[System.String]
 			- 2: IPrimitiveDependencyService.GetOnly.get
 			- 4: IPrimitiveDependencyService.SetOnly.set = 123
 			- 5: IPrimitiveDependencyService.GetInit.set = "value"
@@ -74,8 +74,8 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 8: IPrimitiveDependencyService.Invoke(out 0)
 			- 9: IPrimitiveDependencyService.Invoke<Double>()
 			- 10: IPrimitiveDependencyService.InvokeAsync()
-			- 11: IPrimitiveDependencyService.InvokeWithParameter(345)
-			- 12: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 11: IPrimitiveDependencyService.InvokeWithParameter(in 345)
+			- 12: IPrimitiveDependencyService.InvokeWithParameter(in "another value")
 			- 13: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
 			- 14: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
 			- 15: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
@@ -89,7 +89,7 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 25: IPrimitiveDependencyService.Return(out null)
 			- 26: IPrimitiveDependencyService.Return<Decimal>()
 			- 27: IPrimitiveDependencyService.ReturnAsync()
-			- 29: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 29: IPrimitiveDependencyService.ReturnWithParameter(in "ret val")
 			- 30: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
 			- 31: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
 			- 32: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")
@@ -117,7 +117,7 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(8374646, 2843253) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.HandlerEvent.add
+			- 1: IPrimitiveDependencyService.HandlerEvent.add += System.EventHandler`1[System.String]
 			- 2: IPrimitiveDependencyService.GetOnly.get
 			- 4: IPrimitiveDependencyService.SetOnly.set = 123
 			- 5: IPrimitiveDependencyService.GetInit.set = "value"
@@ -125,8 +125,8 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 8: IPrimitiveDependencyService.Invoke(out 0)
 			- 9: IPrimitiveDependencyService.Invoke<Double>()
 			- 10: IPrimitiveDependencyService.InvokeAsync()
-			- 11: IPrimitiveDependencyService.InvokeWithParameter(345)
-			- 12: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 11: IPrimitiveDependencyService.InvokeWithParameter(in 345)
+			- 12: IPrimitiveDependencyService.InvokeWithParameter(in "another value")
 			- 13: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
 			- 14: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
 			- 15: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
@@ -140,7 +140,7 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 25: IPrimitiveDependencyService.Return(out null)
 			- 26: IPrimitiveDependencyService.Return<Decimal>()
 			- 27: IPrimitiveDependencyService.ReturnAsync()
-			- 29: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 29: IPrimitiveDependencyService.ReturnWithParameter(in "ret val")
 			- 30: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
 			- 31: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
 			- 32: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")
@@ -171,7 +171,7 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.Invoke() to be invoked at index 19, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.HandlerEvent.add
+			- 1: IPrimitiveDependencyService.HandlerEvent.add += System.EventHandler`1[System.String]
 			- 2: IPrimitiveDependencyService.GetOnly.get
 			- 4: IPrimitiveDependencyService.SetOnly.set = 123
 			- 5: IPrimitiveDependencyService.GetInit.set = "value"
@@ -179,8 +179,8 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 8: IPrimitiveDependencyService.Invoke(out 0)
 			- 9: IPrimitiveDependencyService.Invoke<Double>()
 			- 10: IPrimitiveDependencyService.InvokeAsync()
-			- 11: IPrimitiveDependencyService.InvokeWithParameter(345)
-			- 12: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 11: IPrimitiveDependencyService.InvokeWithParameter(in 345)
+			- 12: IPrimitiveDependencyService.InvokeWithParameter(in "another value")
 			- 13: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
 			- 14: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
 			- 15: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
@@ -194,7 +194,7 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 25: IPrimitiveDependencyService.Return(out null)
 			- 26: IPrimitiveDependencyService.Return<Decimal>()
 			- 27: IPrimitiveDependencyService.ReturnAsync()
-			- 29: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 29: IPrimitiveDependencyService.ReturnWithParameter(in "ret val")
 			- 30: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
 			- 31: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
 			- 32: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")
@@ -218,14 +218,14 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 		var actual = () => VerifyInSequence(static ctx =>
 		{
 			ctx.DependencyServiceMock.Invoke();
-			ctx.DependencyServiceMock.InvokeWithParameter(8374646);
+			ctx.DependencyServiceMock.InvokeWithParameter(ItIn<int>.Value(8374646));
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(8374646) to be invoked at index 8, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameter(in 8374646) to be invoked at index 8, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.HandlerEvent.add
+			- 1: IPrimitiveDependencyService.HandlerEvent.add += System.EventHandler`1[System.String]
 			- 2: IPrimitiveDependencyService.GetOnly.get
 			- 4: IPrimitiveDependencyService.SetOnly.set = 123
 			- 5: IPrimitiveDependencyService.GetInit.set = "value"
@@ -233,8 +233,8 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 8: IPrimitiveDependencyService.Invoke(out 0)
 			- 9: IPrimitiveDependencyService.Invoke<Double>()
 			- 10: IPrimitiveDependencyService.InvokeAsync()
-			- 11: IPrimitiveDependencyService.InvokeWithParameter(345)
-			- 12: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 11: IPrimitiveDependencyService.InvokeWithParameter(in 345)
+			- 12: IPrimitiveDependencyService.InvokeWithParameter(in "another value")
 			- 13: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
 			- 14: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
 			- 15: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
@@ -248,7 +248,7 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 25: IPrimitiveDependencyService.Return(out null)
 			- 26: IPrimitiveDependencyService.Return<Decimal>()
 			- 27: IPrimitiveDependencyService.ReturnAsync()
-			- 29: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 29: IPrimitiveDependencyService.ReturnWithParameter(in "ret val")
 			- 30: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
 			- 31: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
 			- 32: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")
@@ -279,7 +279,7 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(8374646, 2843253) to be invoked at index 8, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.HandlerEvent.add
+			- 1: IPrimitiveDependencyService.HandlerEvent.add += System.EventHandler`1[System.String]
 			- 2: IPrimitiveDependencyService.GetOnly.get
 			- 4: IPrimitiveDependencyService.SetOnly.set = 123
 			- 5: IPrimitiveDependencyService.GetInit.set = "value"
@@ -287,8 +287,8 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 8: IPrimitiveDependencyService.Invoke(out 0)
 			- 9: IPrimitiveDependencyService.Invoke<Double>()
 			- 10: IPrimitiveDependencyService.InvokeAsync()
-			- 11: IPrimitiveDependencyService.InvokeWithParameter(345)
-			- 12: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 11: IPrimitiveDependencyService.InvokeWithParameter(in 345)
+			- 12: IPrimitiveDependencyService.InvokeWithParameter(in "another value")
 			- 13: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
 			- 14: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
 			- 15: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
@@ -302,7 +302,7 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 25: IPrimitiveDependencyService.Return(out null)
 			- 26: IPrimitiveDependencyService.Return<Decimal>()
 			- 27: IPrimitiveDependencyService.ReturnAsync()
-			- 29: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 29: IPrimitiveDependencyService.ReturnWithParameter(in "ret val")
 			- 30: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
 			- 31: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
 			- 32: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")
@@ -331,7 +331,7 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.Invoke() to be verified, but the following invocations have not been verified:
 			- 1: IPrimitiveDependencyService.Invoke()
-			- 2: IPrimitiveDependencyService.InvokeWithParameter("param")
+			- 2: IPrimitiveDependencyService.InvokeWithParameter(in "param")
 			- 3: IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321)
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -349,8 +349,8 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(String) to be verified, but the following invocations have not been verified:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter("param")
+			Expected IPrimitiveDependencyService.InvokeWithParameter(in String) to be verified, but the following invocations have not been verified:
+			- 1: IPrimitiveDependencyService.InvokeWithParameter(in "param")
 			- 2: IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321)
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
@@ -372,7 +372,7 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(Int32, Int32) to be verified, but the following invocations have not been verified:
+			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(int, int) to be verified, but the following invocations have not been verified:
 			- 1: IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321)
 			- 2: IPrimitiveDependencyService.InvokeWithSeveralParameters(ref 43321, 321)
 			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters(123, ref 43321)
@@ -476,7 +476,7 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.GetOnly.get to be invoked at index 7, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.HandlerEvent.add
+			- 1: IPrimitiveDependencyService.HandlerEvent.add += System.EventHandler`1[System.String]
 			- 2: IPrimitiveDependencyService.GetOnly.get
 			- 4: IPrimitiveDependencyService.SetOnly.set = 123
 			- 5: IPrimitiveDependencyService.GetInit.set = "value"
@@ -484,8 +484,8 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 8: IPrimitiveDependencyService.Invoke(out 0)
 			- 9: IPrimitiveDependencyService.Invoke<Double>()
 			- 10: IPrimitiveDependencyService.InvokeAsync()
-			- 11: IPrimitiveDependencyService.InvokeWithParameter(345)
-			- 12: IPrimitiveDependencyService.InvokeWithParameter("another value")
+			- 11: IPrimitiveDependencyService.InvokeWithParameter(in 345)
+			- 12: IPrimitiveDependencyService.InvokeWithParameter(in "another value")
 			- 13: IPrimitiveDependencyService.InvokeWithParameter(ref 1234)
 			- 14: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
 			- 15: IPrimitiveDependencyService.InvokeWithParameterAsync(98)
@@ -499,7 +499,7 @@ public sealed class VerifyMultipleShould : PrimitiveTypeServiceTestsBase
 			- 25: IPrimitiveDependencyService.Return(out null)
 			- 26: IPrimitiveDependencyService.Return<Decimal>()
 			- 27: IPrimitiveDependencyService.ReturnAsync()
-			- 29: IPrimitiveDependencyService.ReturnWithParameter("ret val")
+			- 29: IPrimitiveDependencyService.ReturnWithParameter(in "ret val")
 			- 30: IPrimitiveDependencyService.ReturnWithParameter(ref 3488)
 			- 31: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
 			- 32: IPrimitiveDependencyService.ReturnWithParameterAsync("async value")

@@ -255,7 +255,7 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(Int32, Int32) to be verified, but the following invocations have not been verified:
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(int, int) to be verified, but the following invocations have not been verified:
 			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters(123, 234)
 			- 3: IPrimitiveDependencyService.ReturnWithSeveralParameters(234, 123)
 			""";
@@ -383,9 +383,9 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 
 		var actual = () => VerifyInSequence(ctx =>
 		{
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ref parameterValue1, parameterValue2);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ref parameterValue2, parameterValue1);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ref parameterValue2, parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ItRef<int>.Value(parameterValue1), parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ItRef<int>.Value(parameterValue2), parameterValue1);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ItRef<int>.Value(parameterValue2), parameterValue2);
 		});
 
 		const string expectedMessage =
@@ -412,9 +412,9 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 
 		var actual = () => VerifyInSequence(ctx =>
 		{
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue1, ref parameterValue2);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue2, ref parameterValue1);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue2, ref parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue1, ItRef<int>.Value(parameterValue2));
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue2, ItRef<int>.Value(parameterValue1));
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue2, ItRef<int>.Value(parameterValue2));
 		});
 
 		const string expectedMessage =
@@ -441,9 +441,9 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 
 		var actual = () => VerifyInSequence(ctx =>
 		{
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ref parameterValue1, ref parameterValue2);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ref parameterValue2, ref parameterValue1);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ref parameterValue2, ref parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ItRef<int>.Value(parameterValue1), ItRef<int>.Value(parameterValue2));
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ItRef<int>.Value(parameterValue2), ItRef<int>.Value(parameterValue1));
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ItRef<int>.Value(parameterValue2), ItRef<int>.Value(parameterValue2));
 		});
 
 		const string expectedMessage =
@@ -597,10 +597,10 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 
 		var actual = () => VerifyInSequence(ctx =>
 		{
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ref parameterValue1, parameterValue2);
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue2, ref parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ItRef<int>.Value(parameterValue1), parameterValue2);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(parameterValue2, ItRef<int>.Value(parameterValue2));
 			ctx.DependencyServiceMock.GetGetInit();
-			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ref parameterValue2, ref parameterValue1);
+			ctx.DependencyServiceMock.ReturnWithSeveralParameters(ItRef<int>.Value(parameterValue2), ItRef<int>.Value(parameterValue1));
 		});
 
 		const string expectedMessage =

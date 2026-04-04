@@ -29,16 +29,16 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 	[Fact]
 	public void VerifyIfNotCalled()
 	{
-		DependencyServiceMock.VerifyReturnWithParameter(It<string>.Any(), Times.Never);
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Any(), Times.Never);
 		DependencyServiceMock.VerifyReturnWithParameter(ItRef<double>.Any(), Times.Never);
 	}
 
 	[Fact]
 	public void ThrowIfNotCalled()
 	{
-		var actual = () => DependencyServiceMock.VerifyReturnWithParameter(It<string>.Any(), Times.Once);
+		var actual = () => DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Any(), Times.Once);
 
-		const string errorMessage = "Expected IPrimitiveDependencyService.ReturnWithParameter(any) to be called 1 time, but instead it was called 0 times.";
+		const string errorMessage = "Expected IPrimitiveDependencyService.ReturnWithParameter(in any) to be called 1 time, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 	}
@@ -61,7 +61,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 			expected = "name:Okayama Issei,age:32";
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(parameter)
+			.SetupReturnWithParameter(ItIn<string>.Value(parameter))
 			.Returns(nameSetup);
 
 		var actual = CreateFixture()
@@ -77,7 +77,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		var inputValue = 123d;
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(ref inputValue)
+			.SetupReturnWithParameter(ItRef<double>.Value(inputValue))
 			.Returns(setupValue);
 
 		var actual = CreateFixture()
@@ -94,7 +94,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 			expected = "name:Okayama Issei,age:32";
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(It<string>.Any())
+			.SetupReturnWithParameter(ItIn<string>.Any())
 			.Returns(nameSetup);
 
 		var actual = CreateFixture()
@@ -128,7 +128,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 			expected = "name:,age:32";
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(setupCustomerId)
+			.SetupReturnWithParameter(ItIn<string>.Value(setupCustomerId))
 			.Returns(setupName);
 
 		var actual = CreateFixture()
@@ -144,7 +144,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		double inputValue = 123d, setupInputValue = 987d;
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(ref setupInputValue)
+			.SetupReturnWithParameter(ItRef<double>.Value(setupInputValue))
 			.Returns(setupValue);
 
 		var actual = CreateFixture()
@@ -160,7 +160,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 			errorMessage = nameof(errorMessage);
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(parameter)
+			.SetupReturnWithParameter(ItIn<string>.Value(parameter))
 			.Throws(new InvalidOperationException(errorMessage));
 
 		Action actual = () => CreateFixture()
@@ -177,7 +177,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		var setupValue = 123d;
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(ref setupValue)
+			.SetupReturnWithParameter(ItRef<double>.Value(setupValue))
 			.Throws(new InvalidOperationException(errorMessage));
 
 		Action actual = () => CreateFixture()
@@ -197,7 +197,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 			expected = "name:,age:32";
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(setupCustomerId)
+			.SetupReturnWithParameter(ItIn<string>.Value(setupCustomerId))
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = CreateFixture()
@@ -215,7 +215,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		double inputValue = 123d, setupInputValue = 987d;
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(ref setupInputValue)
+			.SetupReturnWithParameter(ItRef<double>.Value(setupInputValue))
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = CreateFixture()
@@ -233,8 +233,8 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.ReturnWithParameter(parameter1);
 		fixture.ReturnWithParameter(parameter2);
 
-		DependencyServiceMock.VerifyReturnWithParameter(parameter1, Times.Once);
-		DependencyServiceMock.VerifyReturnWithParameter(parameter2, Times.AtLeast(1));
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(parameter1), Times.Once);
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(parameter2), Times.AtLeast(1));
 		DependencyServiceMock.VerifyNoOtherCalls();
 	}
 
@@ -247,8 +247,8 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.ReturnWithParameter(ref parameter1);
 		fixture.ReturnWithParameter(ref parameter2);
 
-		DependencyServiceMock.VerifyReturnWithParameter(ref parameter1, Times.Once);
-		DependencyServiceMock.VerifyReturnWithParameter(ref parameter2, Times.AtLeast(1));
+		DependencyServiceMock.VerifyReturnWithParameter(ItRef<double>.Value(parameter1), Times.Once);
+		DependencyServiceMock.VerifyReturnWithParameter(ItRef<double>.Value(parameter2), Times.AtLeast(1));
 		DependencyServiceMock.VerifyNoOtherCalls();
 	}
 
@@ -256,14 +256,14 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 	public void VerifyTimesWhere()
 	{
 		const string parameter1 = nameof(parameter1), parameter2 = nameof(parameter2);
-		var verify1 = It<string>.Where(x => x.EndsWith('1'));
+		var verify1 = ItIn<string>.Where(x => x.EndsWith('1'));
 
 		var fixture = CreateFixture();
 		fixture.ReturnWithParameter(parameter1);
 		fixture.ReturnWithParameter(parameter2);
 
 		DependencyServiceMock.VerifyReturnWithParameter(verify1, Times.Once);
-		DependencyServiceMock.VerifyReturnWithParameter(parameter2, Times.AtMost(1));
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(parameter2), Times.AtMost(1));
 		DependencyServiceMock.VerifyNoOtherCalls();
 	}
 
@@ -271,7 +271,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 	public void VerifyTimesAny()
 	{
 		const string parameter1 = nameof(parameter1), parameter2 = nameof(parameter2);
-		var verify = It<string>.Any();
+		var verify = ItIn<string>.Any();
 
 		var fixture = CreateFixture();
 		fixture.ReturnWithParameter(parameter1);
@@ -306,16 +306,16 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () =>
 		{
-			var verify = It<string>.Any();
+			var verify = ItIn<string>.Any();
 			DependencyServiceMock.VerifyReturnWithParameter(verify, Times.AtLeast(3));
 		};
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithParameter(any) to be called at least 3 times, but instead it was called 2 times.
+			Expected IPrimitiveDependencyService.ReturnWithParameter(in any) to be called at least 3 times, but instead it was called 2 times.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.ReturnWithParameter("parameter1")
-			- 2: IPrimitiveDependencyService.ReturnWithParameter("parameter2")
+			- 1: IPrimitiveDependencyService.ReturnWithParameter(in "parameter1")
+			- 2: IPrimitiveDependencyService.ReturnWithParameter(in "parameter2")
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -356,14 +356,14 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.ReturnWithParameter(parameter1);
 		fixture.ReturnWithParameter(parameter2);
 
-		DependencyServiceMock.VerifyReturnWithParameter(parameter1, Times.Once);
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(parameter1), Times.Once);
 
 		var actual = () => DependencyServiceMock.VerifyNoOtherCalls();
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithParameter(String) to be verified, but the following invocations have not been verified:
-			- 2: IPrimitiveDependencyService.ReturnWithParameter("parameter2")
+			Expected IPrimitiveDependencyService.ReturnWithParameter(in String) to be verified, but the following invocations have not been verified:
+			- 2: IPrimitiveDependencyService.ReturnWithParameter(in "parameter2")
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -378,7 +378,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.ReturnWithParameter(ref parameter1);
 		fixture.ReturnWithParameter(ref parameter2);
 
-		DependencyServiceMock.VerifyReturnWithParameter(ref parameter1, Times.Once);
+		DependencyServiceMock.VerifyReturnWithParameter(ItRef<double>.Value(parameter1), Times.Once);
 
 		var actual = () => DependencyServiceMock.VerifyNoOtherCalls();
 
@@ -402,8 +402,8 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		VerifyInSequence(static ctx =>
 		{
-			ctx.DependencyServiceMock.ReturnWithParameter(parameter1);
-			ctx.DependencyServiceMock.ReturnWithParameter(parameter2);
+			ctx.DependencyServiceMock.ReturnWithParameter(ItIn<string>.Value(parameter1));
+			ctx.DependencyServiceMock.ReturnWithParameter(ItIn<string>.Value(parameter2));
 		});
 		VerifyNoOtherCalls();
 	}
@@ -419,8 +419,8 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		VerifyInSequence(ctx =>
 		{
-			ctx.DependencyServiceMock.ReturnWithParameter(ref parameter1);
-			ctx.DependencyServiceMock.ReturnWithParameter(ref parameter2);
+			ctx.DependencyServiceMock.ReturnWithParameter(ItRef<double>.Value(parameter1));
+			ctx.DependencyServiceMock.ReturnWithParameter(ItRef<double>.Value(parameter2));
 		});
 		VerifyNoOtherCalls();
 	}
@@ -436,7 +436,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		VerifyInSequence(static ctx =>
 		{
-			It<string> verify1 = It<string>.Equivalent(parameter1), verify2 = It<string>.Equivalent(parameter2);
+			ItIn<string> verify1 = ItIn<string>.Equivalent(parameter1), verify2 = ItIn<string>.Equivalent(parameter2);
 			ctx.DependencyServiceMock.ReturnWithParameter(verify1);
 			ctx.DependencyServiceMock.ReturnWithParameter(verify2);
 		});
@@ -454,7 +454,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		VerifyInSequence(static ctx =>
 		{
-			var verify = It<string>.Any();
+			var verify = ItIn<string>.Any();
 			ctx.DependencyServiceMock.ReturnWithParameter(verify);
 			ctx.DependencyServiceMock.ReturnWithParameter(verify);
 		});
@@ -490,7 +490,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		VerifyInSequence(static ctx =>
 		{
-			It<string> verify1 = It<string>.Where(x => x.StartsWith("pa")), verify2 = It<string>.Where(x => x.EndsWith("r2"));
+			ItIn<string> verify1 = ItIn<string>.Where(x => x.StartsWith("pa")), verify2 = ItIn<string>.Where(x => x.EndsWith("r2"));
 			ctx.DependencyServiceMock.ReturnWithParameter(verify1);
 			ctx.DependencyServiceMock.ReturnWithParameter(verify2);
 		});
@@ -508,16 +508,16 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => VerifyInSequence(static ctx =>
 		{
-			ctx.DependencyServiceMock.ReturnWithParameter(parameter2);
-			ctx.DependencyServiceMock.ReturnWithParameter(parameter1);
+			ctx.DependencyServiceMock.ReturnWithParameter(ItIn<string>.Value(parameter2));
+			ctx.DependencyServiceMock.ReturnWithParameter(ItIn<string>.Value(parameter1));
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithParameter("parameter1") to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithParameter(in "parameter1") to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.ReturnWithParameter("parameter1")
-			- 2: IPrimitiveDependencyService.ReturnWithParameter("parameter2")
+			- 1: IPrimitiveDependencyService.ReturnWithParameter(in "parameter1")
+			- 2: IPrimitiveDependencyService.ReturnWithParameter(in "parameter2")
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -534,8 +534,8 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => VerifyInSequence(ctx =>
 		{
-			ctx.DependencyServiceMock.ReturnWithParameter(ref parameter2);
-			ctx.DependencyServiceMock.ReturnWithParameter(ref parameter1);
+			ctx.DependencyServiceMock.ReturnWithParameter(ItRef<double>.Value(parameter2));
+			ctx.DependencyServiceMock.ReturnWithParameter(ItRef<double>.Value(parameter1));
 		});
 
 		const string expectedMessage =
@@ -560,17 +560,17 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => VerifyInSequence(static ctx =>
 		{
-			It<string> verify1 = It<string>.Where(x => x.EndsWith("r2")), verify2 = It<string>.Where(x => x.StartsWith("pa"));
+			ItIn<string> verify1 = ItIn<string>.Where(x => x.EndsWith("r2")), verify2 = ItIn<string>.Where(x => x.StartsWith("pa"));
 			ctx.DependencyServiceMock.ReturnWithParameter(verify1);
 			ctx.DependencyServiceMock.ReturnWithParameter(verify2);
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithParameter(where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithParameter(in where(predicate)) to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.ReturnWithParameter("parameter1")
-			- 2: IPrimitiveDependencyService.ReturnWithParameter("parameter2")
+			- 1: IPrimitiveDependencyService.ReturnWithParameter(in "parameter1")
+			- 2: IPrimitiveDependencyService.ReturnWithParameter(in "parameter2")
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -587,17 +587,17 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => VerifyInSequence(static ctx =>
 		{
-			ctx.DependencyServiceMock.ReturnWithParameter(parameter1);
+			ctx.DependencyServiceMock.ReturnWithParameter(ItIn<string>.Value(parameter1));
 			ctx.DependencyServiceMock.InvokeWithSeveralParameters(123, 321);
-			ctx.DependencyServiceMock.ReturnWithParameter(parameter2);
+			ctx.DependencyServiceMock.ReturnWithParameter(ItIn<string>.Value(parameter2));
 		});
 
 		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321) to be invoked at index 2, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.ReturnWithParameter("parameter1")
-			- 2: IPrimitiveDependencyService.ReturnWithParameter("parameter2")
+			- 1: IPrimitiveDependencyService.ReturnWithParameter(in "parameter1")
+			- 2: IPrimitiveDependencyService.ReturnWithParameter(in "parameter2")
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -614,9 +614,9 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => VerifyInSequence(ctx =>
 		{
-			ctx.DependencyServiceMock.ReturnWithParameter(ref parameter1);
+			ctx.DependencyServiceMock.ReturnWithParameter(ItRef<double>.Value(parameter1));
 			ctx.DependencyServiceMock.InvokeWithSeveralParameters(123, 321);
-			ctx.DependencyServiceMock.ReturnWithParameter(ref parameter2);
+			ctx.DependencyServiceMock.ReturnWithParameter(ItRef<double>.Value(parameter2));
 		});
 
 		const string expectedMessage =
@@ -637,7 +637,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		const string setValue = nameof(setValue);
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(It<string>.Any())
+			.SetupReturnWithParameter(ItIn<string>.Any())
 			.Returns(setupValue1)
 			.Returns(setupValue2);
 
@@ -647,7 +647,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		Assert.Equal($"name:{setupValue2},age:32", fixture.ReturnWithParameter(setValue));
 		Assert.Equal($"name:{setupValue2},age:32", fixture.ReturnWithParameter(setValue));
 
-		DependencyServiceMock.VerifyReturnWithParameter(setValue, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(setValue), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -659,8 +659,8 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(It<string>.Any())
-			.Callback(x => callback += x.Length)
+			.SetupReturnWithParameter(ItIn<string>.Any())
+			.Callback((in x) => callback += x.Length)
 			.Returns(setupValue1)
 			.Returns(setupValue2);
 
@@ -672,7 +672,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		Assert.Equal($"name:{setupValue2},age:32", fixture.ReturnWithParameter(setValue));
 		Assert.Equal(setValue.Length, callback);
 
-		DependencyServiceMock.VerifyReturnWithParameter(setValue, Times.Exactly(4));
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(setValue), Times.Exactly(4));
 		VerifyNoOtherCalls();
 	}
 
@@ -684,8 +684,8 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(It<string>.Any())
-			.Callback(x => callback += x.Length).And().Returns(setupValue1)
+			.SetupReturnWithParameter(ItIn<string>.Any())
+			.Callback((in x) => callback += x.Length).And().Returns(setupValue1)
 			.Returns(setupValue2);
 
 		var fixture = CreateFixture();
@@ -695,7 +695,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		Assert.Equal($"name:{setupValue2},age:32", fixture.ReturnWithParameter(setValue));
 		Assert.Equal(setValue.Length, callback);
 
-		DependencyServiceMock.VerifyReturnWithParameter(setValue, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(setValue), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -707,9 +707,9 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(It<string>.Any())
+			.SetupReturnWithParameter(ItIn<string>.Any())
 			.Returns(setupValue1)
-			.Returns(setupValue2).And().Callback(x => callback += x.Length);
+			.Returns(setupValue2).And().Callback((in x) => callback += x.Length);
 
 		var fixture = CreateFixture();
 
@@ -718,7 +718,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		Assert.Equal($"name:{setupValue2},age:32", fixture.ReturnWithParameter(setValue));
 		Assert.Equal(2 * setValue.Length, callback);
 
-		DependencyServiceMock.VerifyReturnWithParameter(setValue, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(setValue), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -730,9 +730,9 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(It<string>.Any())
-			.Callback(x => callback += x.Length).And().Returns(setupValue1)
-			.Returns(setupValue2).And().Callback(x => callback += x.Length);
+			.SetupReturnWithParameter(ItIn<string>.Any())
+			.Callback((in x) => callback += x.Length).And().Returns(setupValue1)
+			.Returns(setupValue2).And().Callback((in x) => callback += x.Length);
 
 		var fixture = CreateFixture();
 
@@ -741,7 +741,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		Assert.Equal($"name:{setupValue2},age:32", fixture.ReturnWithParameter(setValue));
 		Assert.Equal(3 * setValue.Length, callback);
 
-		DependencyServiceMock.VerifyReturnWithParameter(setValue, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(setValue), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -752,7 +752,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		const string setValue = nameof(setValue);
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(It<string>.Any())
+			.SetupReturnWithParameter(ItIn<string>.Any())
 			.Throws(new COMException(errorMessage1))
 			.Throws(new NullReferenceException(errorMessage2));
 
@@ -770,7 +770,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		var exception3 = Assert.Throws<NullReferenceException>(actual3);
 		Assert.Equal(errorMessage2, exception3.Message);
 
-		DependencyServiceMock.VerifyReturnWithParameter(setValue, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(setValue), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -782,8 +782,8 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(It<string>.Any())
-			.Callback(x => callback += x.Length)
+			.SetupReturnWithParameter(ItIn<string>.Any())
+			.Callback((in x) => callback += x.Length)
 			.Throws(new COMException(errorMessage1))
 			.Throws(new NullReferenceException(errorMessage2));
 
@@ -805,7 +805,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		Assert.Equal(setValue.Length, callback);
 
-		DependencyServiceMock.VerifyReturnWithParameter(setValue, Times.Exactly(4));
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(setValue), Times.Exactly(4));
 		VerifyNoOtherCalls();
 	}
 
@@ -817,8 +817,8 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(It<string>.Any())
-			.Callback(x => callback += x.Length).And().Throws(new COMException(errorMessage1))
+			.SetupReturnWithParameter(ItIn<string>.Any())
+			.Callback((in x) => callback += x.Length).And().Throws(new COMException(errorMessage1))
 			.Throws(new NullReferenceException(errorMessage2));
 
 		var fixture = CreateFixture();
@@ -837,7 +837,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		Assert.Equal(setValue.Length, callback);
 
-		DependencyServiceMock.VerifyReturnWithParameter(setValue, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(setValue), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -849,9 +849,9 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(It<string>.Any())
+			.SetupReturnWithParameter(ItIn<string>.Any())
 			.Throws(new COMException(errorMessage1))
-			.Throws(new NullReferenceException(errorMessage2)).And().Callback(x => callback += x.Length);
+			.Throws(new NullReferenceException(errorMessage2)).And().Callback((in x) => callback += x.Length);
 
 		var fixture = CreateFixture();
 
@@ -869,7 +869,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		Assert.Equal(2 * setValue.Length, callback);
 
-		DependencyServiceMock.VerifyReturnWithParameter(setValue, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(setValue), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -881,9 +881,9 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(It<string>.Any())
-			.Callback(x => callback += x.Length).And().Throws(new COMException(errorMessage1))
-			.Throws(new NullReferenceException(errorMessage2)).And().Callback(x => callback += x.Length);
+			.SetupReturnWithParameter(ItIn<string>.Any())
+			.Callback((in x) => callback += x.Length).And().Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2)).And().Callback((in x) => callback += x.Length);
 
 		var fixture = CreateFixture();
 
@@ -901,7 +901,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		Assert.Equal(3 * setValue.Length, callback);
 
-		DependencyServiceMock.VerifyReturnWithParameter(setValue, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(setValue), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -911,7 +911,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		const string errorMessage = nameof(errorMessage), setValue = nameof(setValue), setupValue = nameof(setupValue);
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(It<string>.Any())
+			.SetupReturnWithParameter(ItIn<string>.Any())
 			.Throws(new COMException(errorMessage))
 			.Returns(setupValue);
 
@@ -924,7 +924,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		Assert.Equal($"name:{setupValue},age:32", fixture.ReturnWithParameter(setValue));
 		Assert.Equal($"name:{setupValue},age:32", fixture.ReturnWithParameter(setValue));
 
-		DependencyServiceMock.VerifyReturnWithParameter(setValue, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(setValue), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -934,7 +934,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		const string errorMessage = nameof(errorMessage), setValue = nameof(setValue), setupValue = nameof(setupValue);
 
 		DependencyServiceMock
-			.SetupReturnWithParameter(It<string>.Any())
+			.SetupReturnWithParameter(ItIn<string>.Any())
 			.Returns(setupValue)
 			.Throws(new COMException(errorMessage));
 
@@ -950,7 +950,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		var exception3 = Assert.Throws<COMException>(actual3);
 		Assert.Equal(errorMessage, exception3.Message);
 
-		DependencyServiceMock.VerifyReturnWithParameter(setValue, Times.Exactly(3));
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(setValue), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 }
