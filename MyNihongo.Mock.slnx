@@ -4,8 +4,8 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/MyNihongo.Mock.Tests/MyNihongo.Mock.Tests.csproj" />
-    <Project Path="tests\MyNihongo.Mock.Abstractions.Tests\MyNihongo.Mock.Abstractions.Tests.csproj" />
+    <Project Path="tests/MyNihongo.Mockurai.Abstractions.Tests/MyNihongo.Mockurai.Abstractions.Tests.csproj" />
   </Folder>
   <Project Path="src/MyNihongo.Mockurai.Abstractions/MyNihongo.Mockurai.Abstractions.csproj" />
-  <Project Path="src\MyNihongo.Mock\MyNihongo.Mock.csproj" />
+  <Project Path="src/MyNihongo.Mockurai/MyNihongo.Mockurai.csproj" />
 </Solution>

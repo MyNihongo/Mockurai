@@ -1,6 +1,6 @@
 ﻿namespace MyNihongo.Mockurai;
 
-public sealed class SetupWithRefReadOnlyParameter<TParameter, TReturns> : SetupWithParameterBase<TParameter, ActionRefReadOnly<TParameter>, TReturns, FuncRefReadOnly<TParameter, TReturns?>>
+public sealed class SetupWithRefReadOnlyParameter<TParameter, TReturns> : SetupWithParameterBase<TParameter, ActionRefReadOnly<TParameter>, TReturns, FuncRefReadOnly<TParameter, TReturns>>
 {
 	public bool Execute(ref readonly TParameter parameter, out TReturns? returnValue)
 	{
