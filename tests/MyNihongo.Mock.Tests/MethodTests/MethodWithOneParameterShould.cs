@@ -1087,4 +1087,83 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
 	}
+
+	[Fact]
+	public async Task GenerateClass()
+	{
+		const string method =
+			"""
+			public virtual void Invoke(int parameter) {}
+			protected virtual void Invoke2(in decimal parameter) {}
+			public void Invoke3(ref float parameter) {}
+			""";
+
+		const string methods =
+			"""
+			// Invoke
+			private SetupWithParameter<int>? _invoke0;
+			private Invocation<int>? _invoke0Invocation;
+
+			public SetupWithParameter<int> SetupInvoke(in It<int> parameter)
+			{
+				_invoke0 ??= new SetupWithParameter<int>();
+				_invoke0.SetupParameter(parameter.ValueSetup);
+				return _invoke0;
+			}
+
+			public void VerifyInvoke(in It<int> parameter, in Times times)
+			{
+				_invoke0Invocation ??= new Invocation<int>("Class.Invoke({0})");
+				_invoke0Invocation.Verify(parameter.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke(in It<int> parameter, long index)
+			{
+				_invoke0Invocation ??= new Invocation<int>("Class.Invoke({0})");
+				return _invoke0Invocation.Verify(parameter.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public override void Invoke(int parameter)
+			{
+				_mock._invoke0Invocation ??= new Invocation<int>("Class.Invoke({0})");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, parameter);
+				_mock._invoke0?.Invoke(parameter);
+			}
+			""";
+
+		const string extensions =
+			"""
+			// Invoke
+			public SetupWithParameter<int> SetupInvoke(in It<int> parameter = default) =>
+				((ClassMock)@this).SetupInvoke(parameter);
+
+			public void VerifyInvoke(in It<int> parameter, in Times times) =>
+				((ClassMock)@this).VerifyInvoke(parameter, times);
+
+			public void VerifyInvoke(in It<int> parameter, System.Func<Times> times) =>
+				((ClassMock)@this).VerifyInvoke(parameter, times());
+			""";
+		
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke(in It<int> parameter)
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke(parameter, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		var testCode = CreateClassTestCode(method);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
 }

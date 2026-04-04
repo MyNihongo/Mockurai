@@ -729,11 +729,34 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			}
 			""";
 
+		const string extensions =
+			"""
+			// Invoke
+			public Setup SetupInvoke() =>
+				((ClassMock)@this).SetupInvoke();
+
+			public void VerifyInvoke(in Times times) =>
+				((ClassMock)@this).VerifyInvoke(times);
+
+			public void VerifyInvoke(System.Func<Times> times) =>
+				((ClassMock)@this).VerifyInvoke(times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke()
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke(@this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
 
 		var testCode = CreateClassTestCode(method);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -782,15 +805,38 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 				_mock._invoke0Invocation.Register(_mock._invocationIndex);
 				return _mock._invoke0?.Execute(out var returnValue) == true ? returnValue! : default!;
 			}
-			
+
 			protected override decimal Invoke2() {return default;}
+			""";
+
+		const string extensions =
+			"""
+			// Invoke
+			public Setup<int> SetupInvoke() =>
+				((ClassMock)@this).SetupInvoke();
+
+			public void VerifyInvoke(in Times times) =>
+				((ClassMock)@this).VerifyInvoke(times);
+
+			public void VerifyInvoke(System.Func<Times> times) =>
+				((ClassMock)@this).VerifyInvoke(times());
+			""";
+		
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke()
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke(@this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
 			""";
 
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
 
 		var testCode = CreateClassTestCode(method, isAbstract: true);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();

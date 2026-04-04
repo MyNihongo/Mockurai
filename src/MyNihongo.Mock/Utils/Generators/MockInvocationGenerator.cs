@@ -11,6 +11,7 @@ internal static class MockInvocationGenerator
 
 		var source =
 			$$"""
+			  #nullable enable
 			  namespace {{result.Options.RootNamespace}};
 
 			  public sealed class {{className}} : IInvocationVerify
@@ -327,10 +328,10 @@ internal static class MockInvocationGenerator
 				.Append(") ? $\"{")
 				.AppendPrefixField(parameter.Name)
 				.Append("} ")
-				.AppendType(parameter.Type, typeOverride)
-				.Append("\" : \"")
-				.AppendType(parameter.Type, typeOverride)
-				.AppendLine("\";");
+				.AppendTypeInsideString(parameter.Type, typeOverride)
+				.Append("\" : ")
+				.AppendTypeSeparate(parameter.Type, typeOverride)
+				.AppendLine(";");
 		}
 
 		stringBuilder
@@ -406,17 +407,17 @@ internal static class MockInvocationGenerator
 		foreach (var parameter in methodSymbol.Parameters)
 		{
 			stringBuilder
-				.AppendLine()
-				.Indent(indent)
-				.AppendLine("try")
-				.Indent(indent++).AppendLine("{");
-
-			stringBuilder
 				.Indent(indent)
 				.AppendFieldName(parameter.Name)
 				.Append(" = ")
 				.AppendParameterName(parameter.Name)
 				.AppendLine(";");
+
+			stringBuilder
+				.AppendLine()
+				.Indent(indent)
+				.AppendLine("try")
+				.Indent(indent++).AppendLine("{");
 
 			stringBuilder
 				.Indent(indent)
@@ -475,7 +476,7 @@ internal static class MockInvocationGenerator
 				.Append(">(")
 				.AppendFieldName(JsonSnapshotName)
 				.AppendPropertyName(parameter.Name)
-				.AppendLine(")");
+				.AppendLine(")!");
 
 			stringBuilder
 				.Indent(indent + 1)
@@ -657,6 +658,40 @@ internal static class MockInvocationGenerator
 				.Append("(\"")
 				.Append(parameterName)
 				.Append("\", result)");
+		}
+
+		private StringBuilder AppendTypeInsideString(ITypeSymbol typeSymbol, string? typeOverride)
+		{
+			if (typeSymbol is ITypeParameterSymbol typeParameterSymbol)
+			{
+				@this
+					.Append('{')
+					.AppendTypeofName(typeParameterSymbol, typeOverride)
+					.Append('}');
+			}
+			else
+			{
+				@this.AppendType(typeSymbol, typeOverride);
+			}
+
+			return @this;
+		}
+
+		private StringBuilder AppendTypeSeparate(ITypeSymbol typeSymbol, string? typeOverride)
+		{
+			if (typeSymbol is ITypeParameterSymbol typeParameterSymbol)
+			{
+				@this.AppendTypeofName(typeParameterSymbol, typeOverride);
+			}
+			else
+			{
+				@this
+					.Append('"')
+					.AppendType(typeSymbol, typeOverride)
+					.Append('"');
+			}
+
+			return @this;
 		}
 	}
 }

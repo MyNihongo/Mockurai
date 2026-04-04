@@ -1,6 +1,6 @@
 ﻿namespace MyNihongo.Mock;
 
-public sealed class SetupWithInParameter<TParameter, TReturns> : SetupWithParameterBase<TParameter, ActionIn<TParameter>, TReturns, FuncIn<TParameter, TReturns?>>
+public sealed class SetupWithInParameter<TParameter, TReturns> : SetupWithParameterBase<TParameter, ActionIn<TParameter>, TReturns, FuncIn<TParameter, TReturns>>
 {
 	public bool Execute(in TParameter parameter, out TReturns? returnValue)
 	{
@@ -29,11 +29,11 @@ public sealed class SetupWithInParameter<TParameter, TReturns> : SetupWithParame
 		}
 
 		Default:
-		returnValue = default;
+		returnValue = default!;
 		return false;
 	}
 
-	public override void Returns(TReturns? returns)
+	public override void Returns(TReturns returns)
 	{
 		Returns((in _) => returns);
 	}

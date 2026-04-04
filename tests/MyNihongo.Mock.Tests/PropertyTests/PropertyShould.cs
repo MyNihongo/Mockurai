@@ -423,8 +423,30 @@ public sealed class PropertyShould : PropertyTestsBase
 			yield return _property0SetInvocation;
 			""";
 
+		const string extensions =
+			"""
+			// Property
+			public Setup<MyNihongo.Mock.Tests.Record> SetupGetProperty() =>
+				((ClassMock)@this).SetupGetProperty();
+
+			public void VerifyGetProperty(in Times times) =>
+				((ClassMock)@this).VerifyGetProperty(times);
+
+			public void VerifyGetProperty(System.Func<Times> times) =>
+				((ClassMock)@this).VerifyGetProperty(times());
+
+			public SetupWithParameter<MyNihongo.Mock.Tests.Record> SetupSetProperty(in It<MyNihongo.Mock.Tests.Record> value = default) =>
+				((ClassMock)@this).SetupSetProperty(value);
+
+			public void VerifySetProperty(in It<MyNihongo.Mock.Tests.Record> value, in Times times) =>
+				((ClassMock)@this).VerifySetProperty(value, times);
+
+			public void VerifySetProperty(in It<MyNihongo.Mock.Tests.Record> value, System.Func<Times> times) =>
+				((ClassMock)@this).VerifySetProperty(value, times());
+			""";
+
 		var testCode = CreateClassTestCode(property, isAbstract: true);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();

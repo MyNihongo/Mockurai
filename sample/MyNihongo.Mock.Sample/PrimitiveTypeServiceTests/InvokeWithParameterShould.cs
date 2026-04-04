@@ -31,9 +31,9 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 	[Fact]
 	public void ThrowIfNotCalled()
 	{
-		var actual = () => DependencyServiceMock.VerifyInvokeWithParameter(It<string>.Any(), Times.Once);
+		var actual = () => DependencyServiceMock.VerifyInvokeWithParameter(ItIn<string>.Any(), Times.Once);
 
-		const string errorMessage = "Expected IPrimitiveDependencyService.InvokeWithParameter(any) to be called 1 time, but instead it was called 0 times.";
+		const string errorMessage = "Expected IPrimitiveDependencyService.InvokeWithParameter(in any) to be called 1 time, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 	}
@@ -41,9 +41,9 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 	[Fact]
 	public void ThrowIfNotCalledOverload()
 	{
-		var actual = () => DependencyServiceMock.VerifyInvokeWithParameter(It<int>.Any(), Times.Once);
+		var actual = () => DependencyServiceMock.VerifyInvokeWithParameter(ItIn<int>.Any(), Times.Once);
 
-		const string errorMessage = "Expected IPrimitiveDependencyService.InvokeWithParameter(any) to be called 1 time, but instead it was called 0 times.";
+		const string errorMessage = "Expected IPrimitiveDependencyService.InvokeWithParameter(in any) to be called 1 time, but instead it was called 0 times.";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(errorMessage, exception.Message);
 	}
@@ -65,7 +65,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 			errorMessage = nameof(errorMessage);
 
 		DependencyServiceMock
-			.SetupInvokeWithParameter(parameter)
+			.SetupInvokeWithParameter(ItIn<string>.Value(parameter))
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = () => CreateFixture()
@@ -82,7 +82,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		var inputValue = 123m;
 
 		DependencyServiceMock
-			.SetupInvokeWithParameter(ref inputValue)
+			.SetupInvokeWithParameter(ItRef<decimal>.Value(inputValue))
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = () => CreateFixture()
@@ -99,7 +99,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 			errorMessage = nameof(errorMessage);
 
 		DependencyServiceMock
-			.SetupInvokeWithParameter(It<string>.Any())
+			.SetupInvokeWithParameter(ItIn<string>.Any())
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = () => CreateFixture()
@@ -116,7 +116,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		const string errorMessage = nameof(errorMessage);
 
 		DependencyServiceMock
-			.SetupInvokeWithParameter(It<int>.Any())
+			.SetupInvokeWithParameter(ItIn<int>.Any())
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = () => CreateFixture()
@@ -152,7 +152,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 			setupCustomerId = "another ID";
 
 		DependencyServiceMock
-			.SetupInvokeWithParameter(setupCustomerId)
+			.SetupInvokeWithParameter(ItIn<string>.Value(setupCustomerId))
 			.Throws(new InvalidOperationException(errorMessage));
 
 		CreateFixture()
@@ -166,7 +166,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		decimal setupValue = 321m, inputValue = 123m;
 
 		DependencyServiceMock
-			.SetupInvokeWithParameter(ref setupValue)
+			.SetupInvokeWithParameter(ItRef<decimal>.Value(setupValue))
 			.Throws(new InvalidOperationException(errorMessage));
 
 		CreateFixture()
@@ -180,7 +180,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		const int parameter = 0, anotherParameter = 1;
 
 		DependencyServiceMock
-			.SetupInvokeWithParameter(parameter)
+			.SetupInvokeWithParameter(ItIn<int>.Value(parameter))
 			.Throws(new InvalidOperationException(errorMessage));
 
 		var actual = () => CreateFixture()
@@ -204,7 +204,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 			.Throws(new InvalidOperationException(errorMessage1));
 
 		DependencyServiceMock
-			.SetupInvokeWithParameter(input)
+			.SetupInvokeWithParameter(ItIn<int>.Value(input))
 			.Throws(new ArgumentException(errorMessage2));
 
 		var actual = () => CreateFixture()
@@ -223,8 +223,8 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.InvokeWithParameter(parameter1);
 		fixture.InvokeWithParameter(parameter2);
 
-		DependencyServiceMock.VerifyInvokeWithParameter(parameter1, Times.Once);
-		DependencyServiceMock.VerifyInvokeWithParameter(parameter2, Times.AtLeast(1));
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<string>.Value(parameter1), Times.Once);
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<string>.Value(parameter2), Times.AtLeast(1));
 		DependencyServiceMock.VerifyNoOtherCalls();
 	}
 
@@ -237,8 +237,8 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.InvokeWithParameter(parameter1);
 		fixture.InvokeWithParameter(parameter2);
 
-		DependencyServiceMock.VerifyInvokeWithParameter(parameter1, Times.Once);
-		DependencyServiceMock.VerifyInvokeWithParameter(parameter2, Times.AtLeast(1));
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<int>.Value(parameter1), Times.Once);
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<int>.Value(parameter2), Times.AtLeast(1));
 		DependencyServiceMock.VerifyNoOtherCalls();
 	}
 
@@ -251,8 +251,8 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.InvokeWithParameter(ref parameter1);
 		fixture.InvokeWithParameter(ref parameter2);
 
-		DependencyServiceMock.VerifyInvokeWithParameter(ref parameter1, Times.Once);
-		DependencyServiceMock.VerifyInvokeWithParameter(ref parameter2, Times.AtLeast(1));
+		DependencyServiceMock.VerifyInvokeWithParameter(ItRef<decimal>.Value(parameter1), Times.Once);
+		DependencyServiceMock.VerifyInvokeWithParameter(ItRef<decimal>.Value(parameter2), Times.AtLeast(1));
 		DependencyServiceMock.VerifyNoOtherCalls();
 	}
 
@@ -260,14 +260,14 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 	public void VerifyTimesWhere()
 	{
 		const string parameter1 = nameof(parameter1), parameter2 = nameof(parameter2);
-		var verify1 = It<string>.Where(x => x.EndsWith('1'));
+		var verify1 = ItIn<string>.Where(x => x.EndsWith('1'));
 
 		var fixture = CreateFixture();
 		fixture.InvokeWithParameter(parameter1);
 		fixture.InvokeWithParameter(parameter2);
 
 		DependencyServiceMock.VerifyInvokeWithParameter(verify1, Times.Once);
-		DependencyServiceMock.VerifyInvokeWithParameter(parameter2, Times.AtMost(1));
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<string>.Value(parameter2), Times.AtMost(1));
 		DependencyServiceMock.VerifyNoOtherCalls();
 	}
 
@@ -275,14 +275,14 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 	public void VerifyTimesWhereOverload()
 	{
 		const int parameter1 = 123, parameter2 = 234;
-		var verify1 = It<int>.Where(x => x < 200);
+		var verify1 = ItIn<int>.Where(x => x < 200);
 
 		var fixture = CreateFixture();
 		fixture.InvokeWithParameter(parameter1);
 		fixture.InvokeWithParameter(parameter2);
 
 		DependencyServiceMock.VerifyInvokeWithParameter(verify1, Times.Once);
-		DependencyServiceMock.VerifyInvokeWithParameter(parameter2, Times.AtMost(1));
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<int>.Value(parameter2), Times.AtMost(1));
 		DependencyServiceMock.VerifyNoOtherCalls();
 	}
 
@@ -290,7 +290,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 	public void VerifyTimesAny()
 	{
 		const string parameter1 = nameof(parameter1), parameter2 = nameof(parameter2);
-		var verify = It<string>.Any();
+		var verify = ItIn<string>.Any();
 
 		var fixture = CreateFixture();
 		fixture.InvokeWithParameter(parameter1);
@@ -304,7 +304,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 	public void VerifyTimesAnyOverload()
 	{
 		const int parameter1 = 123, parameter2 = 234;
-		var verify = It<int>.Any();
+		var verify = ItIn<int>.Any();
 
 		var fixture = CreateFixture();
 		fixture.InvokeWithParameter(parameter1);
@@ -339,16 +339,16 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () =>
 		{
-			var verify = It<string>.Any();
+			var verify = ItIn<string>.Any();
 			DependencyServiceMock.VerifyInvokeWithParameter(verify, Times.AtLeast(3));
 		};
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(any) to be called at least 3 times, but instead it was called 2 times.
+			Expected IPrimitiveDependencyService.InvokeWithParameter(in any) to be called at least 3 times, but instead it was called 2 times.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter("parameter1")
-			- 2: IPrimitiveDependencyService.InvokeWithParameter("parameter2")
+			- 1: IPrimitiveDependencyService.InvokeWithParameter(in "parameter1")
+			- 2: IPrimitiveDependencyService.InvokeWithParameter(in "parameter2")
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -365,16 +365,16 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () =>
 		{
-			var verify = It<int>.Any();
+			var verify = ItIn<int>.Any();
 			DependencyServiceMock.VerifyInvokeWithParameter(verify, Times.AtLeast(3));
 		};
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(any) to be called at least 3 times, but instead it was called 2 times.
+			Expected IPrimitiveDependencyService.InvokeWithParameter(in any) to be called at least 3 times, but instead it was called 2 times.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter(123)
-			- 2: IPrimitiveDependencyService.InvokeWithParameter(234)
+			- 1: IPrimitiveDependencyService.InvokeWithParameter(in 123)
+			- 2: IPrimitiveDependencyService.InvokeWithParameter(in 234)
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -415,14 +415,14 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.InvokeWithParameter(parameter1);
 		fixture.InvokeWithParameter(parameter2);
 
-		DependencyServiceMock.VerifyInvokeWithParameter(parameter1, Times.Once);
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<string>.Value(parameter1), Times.Once);
 
 		var actual = () => DependencyServiceMock.VerifyNoOtherCalls();
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(String) to be verified, but the following invocations have not been verified:
-			- 2: IPrimitiveDependencyService.InvokeWithParameter("parameter2")
+			Expected IPrimitiveDependencyService.InvokeWithParameter(in String) to be verified, but the following invocations have not been verified:
+			- 2: IPrimitiveDependencyService.InvokeWithParameter(in "parameter2")
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -437,14 +437,14 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.InvokeWithParameter(parameter1);
 		fixture.InvokeWithParameter(parameter2);
 
-		DependencyServiceMock.VerifyInvokeWithParameter(parameter1, Times.Once);
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<int>.Value(parameter1), Times.Once);
 
 		var actual = () => DependencyServiceMock.VerifyNoOtherCalls();
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(Int32) to be verified, but the following invocations have not been verified:
-			- 2: IPrimitiveDependencyService.InvokeWithParameter(234)
+			Expected IPrimitiveDependencyService.InvokeWithParameter(in Int32) to be verified, but the following invocations have not been verified:
+			- 2: IPrimitiveDependencyService.InvokeWithParameter(in 234)
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -459,7 +459,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.InvokeWithParameter(ref parameter1);
 		fixture.InvokeWithParameter(ref parameter2);
 
-		DependencyServiceMock.VerifyInvokeWithParameter(ref parameter1, Times.Once);
+		DependencyServiceMock.VerifyInvokeWithParameter(ItRef<decimal>.Value(parameter1), Times.Once);
 
 		var actual = () => DependencyServiceMock.VerifyNoOtherCalls();
 
@@ -483,8 +483,8 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		VerifyInSequence(static ctx =>
 		{
-			ctx.DependencyServiceMock.InvokeWithParameter(parameter1);
-			ctx.DependencyServiceMock.InvokeWithParameter(parameter2);
+			ctx.DependencyServiceMock.InvokeWithParameter(ItIn<string>.Value(parameter1));
+			ctx.DependencyServiceMock.InvokeWithParameter(ItIn<string>.Value(parameter2));
 		});
 		VerifyNoOtherCalls();
 	}
@@ -500,8 +500,8 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		VerifyInSequence(static ctx =>
 		{
-			ctx.DependencyServiceMock.InvokeWithParameter(parameter1);
-			ctx.DependencyServiceMock.InvokeWithParameter(parameter2);
+			ctx.DependencyServiceMock.InvokeWithParameter(ItIn<int>.Value(parameter1));
+			ctx.DependencyServiceMock.InvokeWithParameter(ItIn<int>.Value(parameter2));
 		});
 		VerifyNoOtherCalls();
 	}
@@ -517,8 +517,8 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		VerifyInSequence(ctx =>
 		{
-			ctx.DependencyServiceMock.InvokeWithParameter(ref parameter1);
-			ctx.DependencyServiceMock.InvokeWithParameter(ref parameter2);
+			ctx.DependencyServiceMock.InvokeWithParameter(ItRef<decimal>.Value(parameter1));
+			ctx.DependencyServiceMock.InvokeWithParameter(ItRef<decimal>.Value(parameter2));
 		});
 		VerifyNoOtherCalls();
 	}
@@ -534,7 +534,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		VerifyInSequence(static ctx =>
 		{
-			It<string> verify1 = It<string>.Equivalent(parameter1), verify2 = It<string>.Equivalent(parameter2);
+			ItIn<string> verify1 = ItIn<string>.Equivalent(parameter1), verify2 = ItIn<string>.Equivalent(parameter2);
 			ctx.DependencyServiceMock.InvokeWithParameter(verify1);
 			ctx.DependencyServiceMock.InvokeWithParameter(verify2);
 		});
@@ -552,7 +552,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		VerifyInSequence(static ctx =>
 		{
-			It<int> verify1 = It<int>.Equivalent(parameter1), verify2 = It<int>.Equivalent(parameter2);
+			ItIn<int> verify1 = ItIn<int>.Equivalent(parameter1), verify2 = ItIn<int>.Equivalent(parameter2);
 			ctx.DependencyServiceMock.InvokeWithParameter(verify1);
 			ctx.DependencyServiceMock.InvokeWithParameter(verify2);
 		});
@@ -570,7 +570,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		VerifyInSequence(static ctx =>
 		{
-			var verify = It<string>.Any();
+			var verify = ItIn<string>.Any();
 			ctx.DependencyServiceMock.InvokeWithParameter(verify);
 			ctx.DependencyServiceMock.InvokeWithParameter(verify);
 		});
@@ -588,7 +588,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		VerifyInSequence(static ctx =>
 		{
-			var verify = It<int>.Any();
+			var verify = ItIn<int>.Any();
 			ctx.DependencyServiceMock.InvokeWithParameter(verify);
 			ctx.DependencyServiceMock.InvokeWithParameter(verify);
 		});
@@ -624,7 +624,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		VerifyInSequence(static ctx =>
 		{
-			It<string> verify1 = It<string>.Where(x => x.StartsWith("pa")), verify2 = It<string>.Where(x => x.EndsWith("r2"));
+			ItIn<string> verify1 = ItIn<string>.Where(x => x.StartsWith("pa")), verify2 = ItIn<string>.Where(x => x.EndsWith("r2"));
 			ctx.DependencyServiceMock.InvokeWithParameter(verify1);
 			ctx.DependencyServiceMock.InvokeWithParameter(verify2);
 		});
@@ -642,7 +642,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		VerifyInSequence(static ctx =>
 		{
-			It<int> verify1 = It<int>.Where(x => x < 200), verify2 = It<int>.Where(x => x > 200);
+			ItIn<int> verify1 = ItIn<int>.Where(x => x < 200), verify2 = ItIn<int>.Where(x => x > 200);
 			ctx.DependencyServiceMock.InvokeWithParameter(verify1);
 			ctx.DependencyServiceMock.InvokeWithParameter(verify2);
 		});
@@ -660,16 +660,16 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => VerifyInSequence(static ctx =>
 		{
-			ctx.DependencyServiceMock.InvokeWithParameter(parameter2);
-			ctx.DependencyServiceMock.InvokeWithParameter(parameter1);
+			ctx.DependencyServiceMock.InvokeWithParameter(ItIn<string>.Value(parameter2));
+			ctx.DependencyServiceMock.InvokeWithParameter(ItIn<string>.Value(parameter1));
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter("parameter1") to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameter(in "parameter1") to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter("parameter1")
-			- 2: IPrimitiveDependencyService.InvokeWithParameter("parameter2")
+			- 1: IPrimitiveDependencyService.InvokeWithParameter(in "parameter1")
+			- 2: IPrimitiveDependencyService.InvokeWithParameter(in "parameter2")
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -686,16 +686,16 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => VerifyInSequence(static ctx =>
 		{
-			ctx.DependencyServiceMock.InvokeWithParameter(parameter2);
-			ctx.DependencyServiceMock.InvokeWithParameter(parameter1);
+			ctx.DependencyServiceMock.InvokeWithParameter(ItIn<int>.Value(parameter2));
+			ctx.DependencyServiceMock.InvokeWithParameter(ItIn<int>.Value(parameter1));
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(123) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameter(in 123) to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter(123)
-			- 2: IPrimitiveDependencyService.InvokeWithParameter(234)
+			- 1: IPrimitiveDependencyService.InvokeWithParameter(in 123)
+			- 2: IPrimitiveDependencyService.InvokeWithParameter(in 234)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -712,8 +712,8 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => VerifyInSequence(ctx =>
 		{
-			ctx.DependencyServiceMock.InvokeWithParameter(ref parameter2);
-			ctx.DependencyServiceMock.InvokeWithParameter(ref parameter1);
+			ctx.DependencyServiceMock.InvokeWithParameter(ItRef<decimal>.Value(parameter2));
+			ctx.DependencyServiceMock.InvokeWithParameter(ItRef<decimal>.Value(parameter1));
 		});
 
 		const string expectedMessage =
@@ -738,17 +738,17 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => VerifyInSequence(static ctx =>
 		{
-			It<string> verify1 = It<string>.Where(x => x.EndsWith("r2")), verify2 = It<string>.Where(x => x.StartsWith("pa"));
+			ItIn<string> verify1 = ItIn<string>.Where(x => x.EndsWith("r2")), verify2 = ItIn<string>.Where(x => x.StartsWith("pa"));
 			ctx.DependencyServiceMock.InvokeWithParameter(verify1);
 			ctx.DependencyServiceMock.InvokeWithParameter(verify2);
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameter(in where(predicate)) to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter("parameter1")
-			- 2: IPrimitiveDependencyService.InvokeWithParameter("parameter2")
+			- 1: IPrimitiveDependencyService.InvokeWithParameter(in "parameter1")
+			- 2: IPrimitiveDependencyService.InvokeWithParameter(in "parameter2")
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -765,17 +765,17 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => VerifyInSequence(static ctx =>
 		{
-			It<int> verify1 = It<int>.Where(x => x > 200), verify2 = It<int>.Where(x => x < 200);
+			ItIn<int> verify1 = ItIn<int>.Where(x => x > 200), verify2 = ItIn<int>.Where(x => x < 200);
 			ctx.DependencyServiceMock.InvokeWithParameter(verify1);
 			ctx.DependencyServiceMock.InvokeWithParameter(verify2);
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameter(in where(predicate)) to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter(123)
-			- 2: IPrimitiveDependencyService.InvokeWithParameter(234)
+			- 1: IPrimitiveDependencyService.InvokeWithParameter(in 123)
+			- 2: IPrimitiveDependencyService.InvokeWithParameter(in 234)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -792,17 +792,17 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => VerifyInSequence(static ctx =>
 		{
-			ctx.DependencyServiceMock.InvokeWithParameter(parameter1);
+			ctx.DependencyServiceMock.InvokeWithParameter(ItIn<string>.Value(parameter1));
 			ctx.DependencyServiceMock.InvokeWithSeveralParameters(123, 321);
-			ctx.DependencyServiceMock.InvokeWithParameter(parameter2);
+			ctx.DependencyServiceMock.InvokeWithParameter(ItIn<string>.Value(parameter2));
 		});
 
 		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321) to be invoked at index 2, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter("parameter1")
-			- 2: IPrimitiveDependencyService.InvokeWithParameter("parameter2")
+			- 1: IPrimitiveDependencyService.InvokeWithParameter(in "parameter1")
+			- 2: IPrimitiveDependencyService.InvokeWithParameter(in "parameter2")
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -820,18 +820,18 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => VerifyInSequence(static ctx =>
 		{
-			ctx.DependencyServiceMock.InvokeWithParameter(parameter1);
-			ctx.DependencyServiceMock.InvokeWithParameter(It<string>.Equivalent("another param"));
-			ctx.DependencyServiceMock.InvokeWithParameter(parameter2);
+			ctx.DependencyServiceMock.InvokeWithParameter(ItIn<string>.Value(parameter1));
+			ctx.DependencyServiceMock.InvokeWithParameter(ItIn<string>.Equivalent("another param"));
+			ctx.DependencyServiceMock.InvokeWithParameter(ItIn<string>.Value(parameter2));
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter("another param") to be invoked at index 2, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameter(in "another param") to be invoked at index 2, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter("parameter1")
+			- 1: IPrimitiveDependencyService.InvokeWithParameter(in "parameter1")
 			- 2: IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321)
-			- 3: IPrimitiveDependencyService.InvokeWithParameter("parameter2")
+			- 3: IPrimitiveDependencyService.InvokeWithParameter(in "parameter2")
 			  expected: another param
 			  actual: parameter2
 			""";
@@ -850,17 +850,17 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => VerifyInSequence(static ctx =>
 		{
-			ctx.DependencyServiceMock.InvokeWithParameter(parameter1);
+			ctx.DependencyServiceMock.InvokeWithParameter(ItIn<int>.Value(parameter1));
 			ctx.DependencyServiceMock.InvokeWithSeveralParameters(parameter1, parameter2);
-			ctx.DependencyServiceMock.InvokeWithParameter(parameter2);
+			ctx.DependencyServiceMock.InvokeWithParameter(ItIn<int>.Value(parameter2));
 		});
 
 		const string expectedMessage =
 			"""
 			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 234) to be invoked at index 2, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter(123)
-			- 2: IPrimitiveDependencyService.InvokeWithParameter(234)
+			- 1: IPrimitiveDependencyService.InvokeWithParameter(in 123)
+			- 2: IPrimitiveDependencyService.InvokeWithParameter(in 234)
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -877,9 +877,9 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		var actual = () => VerifyInSequence(ctx =>
 		{
-			ctx.DependencyServiceMock.InvokeWithParameter(ref parameter1);
+			ctx.DependencyServiceMock.InvokeWithParameter(ItRef<decimal>.Value(parameter1));
 			ctx.DependencyServiceMock.InvokeWithSeveralParameters(123, 321);
-			ctx.DependencyServiceMock.InvokeWithParameter(ref parameter2);
+			ctx.DependencyServiceMock.InvokeWithParameter(ItRef<decimal>.Value(parameter2));
 		});
 
 		const string expectedMessage =
@@ -900,7 +900,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		const int setValue = 2;
 
 		DependencyServiceMock
-			.SetupInvokeWithParameter(It<int>.Any())
+			.SetupInvokeWithParameter(ItIn<int>.Any())
 			.Throws(new COMException(errorMessage1))
 			.Throws(new NullReferenceException(errorMessage2));
 
@@ -918,7 +918,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		var exception3 = Assert.Throws<NullReferenceException>(actual3);
 		Assert.Equal(errorMessage2, exception3.Message);
 
-		DependencyServiceMock.VerifyInvokeWithParameter(setValue, Times.Exactly(3));
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<int>.Value(setValue), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -930,8 +930,8 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupInvokeWithParameter(It<int>.Any())
-			.Callback(x => callback += x)
+			.SetupInvokeWithParameter(ItIn<int>.Any())
+			.Callback((in x) => callback += x)
 			.Throws(new COMException(errorMessage1))
 			.Throws(new NullReferenceException(errorMessage2));
 
@@ -953,7 +953,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		Assert.Equal(setValue, callback);
 
-		DependencyServiceMock.VerifyInvokeWithParameter(setValue, Times.Exactly(4));
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<int>.Value(setValue), Times.Exactly(4));
 		VerifyNoOtherCalls();
 	}
 
@@ -965,8 +965,8 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupInvokeWithParameter(It<int>.Any())
-			.Callback(x => callback += x).And().Throws(new COMException(errorMessage1))
+			.SetupInvokeWithParameter(ItIn<int>.Any())
+			.Callback((in x) => callback += x).And().Throws(new COMException(errorMessage1))
 			.Throws(new NullReferenceException(errorMessage2));
 
 		var fixture = CreateFixture();
@@ -985,7 +985,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		Assert.Equal(setValue, callback);
 
-		DependencyServiceMock.VerifyInvokeWithParameter(setValue, Times.Exactly(3));
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<int>.Value(setValue), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -997,9 +997,9 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupInvokeWithParameter(It<int>.Any())
+			.SetupInvokeWithParameter(ItIn<int>.Any())
 			.Throws(new COMException(errorMessage1))
-			.Throws(new NullReferenceException(errorMessage2)).And().Callback(x => callback += x);
+			.Throws(new NullReferenceException(errorMessage2)).And().Callback((in x) => callback += x);
 
 		var fixture = CreateFixture();
 
@@ -1017,7 +1017,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		Assert.Equal(2 * setValue, callback);
 
-		DependencyServiceMock.VerifyInvokeWithParameter(setValue, Times.Exactly(3));
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<int>.Value(setValue), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 
@@ -1029,9 +1029,9 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		var callback = 0;
 
 		DependencyServiceMock
-			.SetupInvokeWithParameter(It<int>.Any())
-			.Callback(x => callback += x).And().Throws(new COMException(errorMessage1))
-			.Throws(new NullReferenceException(errorMessage2)).And().Callback(x => callback += x);
+			.SetupInvokeWithParameter(ItIn<int>.Any())
+			.Callback((in x) => callback += x).And().Throws(new COMException(errorMessage1))
+			.Throws(new NullReferenceException(errorMessage2)).And().Callback((in x) => callback += x);
 
 		var fixture = CreateFixture();
 
@@ -1049,7 +1049,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		Assert.Equal(3 * setValue, callback);
 
-		DependencyServiceMock.VerifyInvokeWithParameter(setValue, Times.Exactly(3));
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<int>.Value(setValue), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 }

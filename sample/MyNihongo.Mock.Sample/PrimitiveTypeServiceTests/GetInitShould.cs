@@ -8,7 +8,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 		var actual = CreateFixture()
 			.GetInit;
 
-		Assert.Empty(actual);
+		Assert.Null(actual);
 	}
 
 	[Fact]
@@ -101,8 +101,8 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithParameter(String) to be verified, but the following invocations have not been verified:
-			- 2: IPrimitiveDependencyService.ReturnWithParameter("value")
+			Expected IPrimitiveDependencyService.ReturnWithParameter(in String) to be verified, but the following invocations have not been verified:
+			- 2: IPrimitiveDependencyService.ReturnWithParameter(in "value")
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -493,13 +493,13 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 		var actual = () => VerifyInSequence(static ctx =>
 		{
 			ctx.DependencyServiceMock.SetGetInit(parameter1);
-			ctx.DependencyServiceMock.InvokeWithParameter(123);
+			ctx.DependencyServiceMock.InvokeWithParameter(ItIn<int>.Value(123));
 			ctx.DependencyServiceMock.GetGetInit();
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(123) to be invoked at index 2, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameter(in 123) to be invoked at index 2, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.GetInit.set = "parameter1"
 			- 2: IPrimitiveDependencyService.GetInit.get
@@ -542,7 +542,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 
 		var fixture = CreateFixture();
 
-		Assert.Equal(string.Empty, fixture.GetInit);
+		Assert.Null(fixture.GetInit);
 		Assert.Equal(setupValue1, fixture.GetInit);
 		Assert.Equal(setupValue2, fixture.GetInit);
 		Assert.Equal(setupValue2, fixture.GetInit);
@@ -660,7 +660,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 
 		var fixture = CreateFixture();
 
-		Assert.Equal(string.Empty, fixture.GetInit);
+		Assert.Null(fixture.GetInit);
 
 		var actual2 = () => fixture.GetInit;
 		var exception2 = Assert.Throws<COMException>(actual2);

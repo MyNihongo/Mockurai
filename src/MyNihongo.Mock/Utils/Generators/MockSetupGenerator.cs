@@ -12,6 +12,7 @@ internal static class MockSetupGenerator
 
 		var source =
 			$$"""
+			  #nullable enable
 			  namespace {{result.Options.RootNamespace}};
 
 			  public sealed class {{className}} : {{CreateInterfaceDerivedFrom(stringBuilder, methodSymbol, returnType)}}
@@ -351,38 +352,14 @@ internal static class MockSetupGenerator
 
 	extension(StringBuilder @this)
 	{
-		private StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol)
+		private StringBuilder AppendInterface(string interfaceName, IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol)
 		{
-			return @this.AppendSetupClassName(methodSymbol, useOverriddenGenericNames: true);
+			return @this.AppendInterface(interfaceName, methodSymbol, returnTypeSymbol, useOverriddenGenericNames: true);
 		}
 
 		private StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol, out ImmutableDictionary<IParameterSymbol, string> genericTypeOverride)
 		{
 			return @this.AppendSetupClassName(methodSymbol, useOverriddenGenericNames: true, out genericTypeOverride);
-		}
-
-		private StringBuilder AppendInterface(string interfaceName, IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol)
-		{
-			@this
-				.Append(interfaceName)
-				.Append('<');
-
-			if (returnTypeSymbol is null)
-			{
-				@this
-					.AppendSetupClassName(methodSymbol)
-					.Append(".CallbackDelegate");
-			}
-			else
-			{
-				@this
-					.AppendSetupClassName(methodSymbol)
-					.Append($".CallbackDelegate, {MockGeneratorConst.Suffixes.GenericReturnParameter}, ")
-					.AppendSetupClassName(methodSymbol)
-					.Append(".ReturnsCallbackDelegate");
-			}
-
-			return @this.Append('>');
 		}
 
 		private StringBuilder AppendCallbackInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, int indent)

@@ -2,6 +2,8 @@
 
 internal static class MethodSymbolEx
 {
+	private const bool DefaultAppendVerifyPrefix = true;
+
 	extension(IMethodSymbol @this)
 	{
 		private bool TryGetGenericTypeCount(MockedTypeSymbol mockedTypeSymbol, out int count)
@@ -76,6 +78,78 @@ internal static class MethodSymbolEx
 
 	extension(StringBuilder @this)
 	{
+		private StringBuilder AppendInterface(string interfaceName, ITypeSymbol? returnTypeSymbol)
+		{
+			@this
+				.Append(interfaceName)
+				.Append("<System.Action");
+
+			if (returnTypeSymbol is not null)
+			{
+				@this
+					.Append(", ")
+					.AppendType(returnTypeSymbol)
+					.Append(", System.Func<")
+					.AppendType(returnTypeSymbol)
+					.Append(">");
+			}
+
+			return @this.Append('>');
+		}
+
+		private StringBuilder AppendInterface(string interfaceName, IParameterSymbol parameterSymbol, ITypeSymbol? returnTypeSymbol)
+		{
+			@this
+				.Append(interfaceName)
+				.Append("<System.Action")
+				.AppendRefKindPrefix(parameterSymbol.RefKind)
+				.Append('<')
+				.AppendType(parameterSymbol.Type)
+				.Append('>');
+
+			if (returnTypeSymbol is not null)
+			{
+				@this
+					.Append(", ")
+					.AppendType(returnTypeSymbol)
+					.Append(", System.Func")
+					.AppendRefKindPrefix(parameterSymbol.RefKind)
+					.Append('<')
+					.AppendType(parameterSymbol.Type)
+					.Append(", ")
+					.AppendType(returnTypeSymbol)
+					.Append(">");
+			}
+
+			return @this.Append(">");
+		}
+
+		public StringBuilder AppendInterface(string interfaceName, IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, bool useOverriddenGenericNames)
+		{
+			@this
+				.Append(interfaceName)
+				.Append('<')
+				.AppendSetupClassName(methodSymbol, useOverriddenGenericNames)
+				.Append(".CallbackDelegate");
+
+			if (returnTypeSymbol is not null)
+			{
+				@this.Append(", ");
+
+				if (useOverriddenGenericNames)
+					@this.Append(MockGeneratorConst.Suffixes.GenericReturnParameter);
+				else
+					@this.AppendType(returnTypeSymbol);
+
+				@this
+					.Append(", ")
+					.AppendSetupClassName(methodSymbol, useOverriddenGenericNames)
+					.Append(".ReturnsCallbackDelegate");
+			}
+
+			return @this.Append('>');
+		}
+
 		public void AppendSetupInvocationFields(IMethodSymbol method, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 		{
 			@this
@@ -103,15 +177,7 @@ internal static class MethodSymbolEx
 		public StringBuilder AppendSetupMethod(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 		{
 			@this
-				.Indent(indent)
-				.Append("public ")
-				.AppendSetupType(methodSymbol)
-				.Append(" Setup")
-				.AppendMethodName(methodSymbol)
-				.AppendGenericTypes(methodSymbol.TypeArguments)
-				.Append('(')
-				.AppendItParameters(methodSymbol.Parameters)
-				.AppendLine(")")
+				.Indent(indent).AppendSetupMethodDeclaration(methodSymbol, useDefaults: false, returnType: SetupMethodReturnType.Class).AppendLine()
 				.Indent(indent++).AppendLine("{");
 
 			@this
@@ -197,7 +263,11 @@ internal static class MethodSymbolEx
 			// Verify index
 			@this
 				.Indent(indent)
-				.AppendVerifyIndexMethodDeclaration(methodSymbol).AppendLine()
+				.Append("public long ")
+				.AppendVerifyMethodName(methodSymbol)
+				.Append('(')
+				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
+				.AppendLine("long index)")
 				.Indent(indent++).AppendLine("{");
 
 			@this
@@ -218,9 +288,46 @@ internal static class MethodSymbolEx
 				.Append('}');
 		}
 
-		public void AppendVerifyExtensionMethods(IMethodSymbol methodSymbol, string castName, int indent)
+		public void AppendSetupVerifyExtensionMethods(IMethodSymbol methodSymbol, string castName, int indent, bool prependNewLines = false)
 		{
-			// Verify times
+			if (prependNewLines)
+			{
+				@this
+					.AppendLine()
+					.AppendLine();
+			}
+
+			@this.AppendSetupExtensionMethods(methodSymbol, castName, useDefaults: true, indent);
+			@this.AppendLine().AppendLine();
+			@this.AppendVerifyExtensionMethods(methodSymbol, castName, indent);
+		}
+
+		private void AppendSetupExtensionMethods(IMethodSymbol methodSymbol, string castName, bool useDefaults, int indent)
+		{
+			@this
+				.Indent(indent)
+				.AppendSetupMethodDeclaration(methodSymbol, useDefaults, returnType: SetupMethodReturnType.Interface)
+				.AppendLine(" =>");
+
+			@this
+				.Indent(indent + 1)
+				.AppendCastCall(castName)
+				.AppendSetupMethodName(methodSymbol)
+				.Append('(')
+				.AppendParameterNames(methodSymbol.Parameters)
+				.Append(");");
+		}
+
+		public void AppendVerifyExtensionMethods(IMethodSymbol methodSymbol, string castName, int indent, bool prependNewLines = false)
+		{
+			if (prependNewLines)
+			{
+				@this
+					.AppendLine()
+					.AppendLine();
+			}
+
+			// Verify times (object)
 			@this
 				.Indent(indent)
 				.AppendVerifyTimesMethodDeclaration(methodSymbol)
@@ -235,10 +342,10 @@ internal static class MethodSymbolEx
 				.AppendLine("times);")
 				.AppendLine();
 
-			// Verify index
+			// Verify times (func)
 			@this
 				.Indent(indent)
-				.AppendVerifyIndexMethodDeclaration(methodSymbol)
+				.AppendVerifyTimesMethodDeclaration(methodSymbol, timesType: "System.Func<Times>")
 				.AppendLine(" =>");
 
 			@this
@@ -247,33 +354,104 @@ internal static class MethodSymbolEx
 				.AppendVerifyMethodName(methodSymbol)
 				.Append('(')
 				.AppendParameterNames(methodSymbol.Parameters, appendComma: true)
-				.Append("index);");
+				.Append("times());");
 		}
 
-		private StringBuilder AppendVerifyTimesMethodDeclaration(IMethodSymbol methodSymbol)
+		public void AppendVerifySequenceExtensionMethods(IMethodSymbol methodSymbol, string castName, int indent, bool prependNewLines = false)
+		{
+			if (prependNewLines)
+			{
+				@this
+					.AppendLine()
+					.AppendLine();
+			}
+
+			@this
+				.Indent(indent)
+				.Append("public void ")
+				.AppendVerifyMethodName(methodSymbol, appendVerifyPrefix: false)
+				.Append('(')
+				.AppendItParameters(methodSymbol.Parameters)
+				.AppendLine(")");
+
+			@this
+				.Indent(indent++)
+				.AppendLine("{");
+
+			@this
+				.Indent(indent)
+				.Append("var nextIndex = ")
+				.AppendCastCall(castName, thisParameterName: "@this.Mock")
+				.AppendVerifyMethodName(methodSymbol)
+				.Append('(')
+				.AppendParameterNames(methodSymbol.Parameters, appendComma: true)
+				.AppendLine("@this.VerifyIndex);");
+
+			@this
+				.Indent(indent).AppendLine("@this.VerifyIndex.Set(nextIndex);")
+				.Indent(--indent).Append('}');
+		}
+
+		private StringBuilder AppendSetupMethodDeclaration(IMethodSymbol methodSymbol, bool useDefaults, SetupMethodReturnType returnType)
+		{
+			return @this
+				.Append("public ")
+				.AppendSetupMethodReturnType(methodSymbol, returnType)
+				.Append(' ')
+				.AppendSetupMethodName(methodSymbol)
+				.Append('(')
+				.AppendItParameters(methodSymbol.Parameters, useDefaults: useDefaults)
+				.Append(')');
+		}
+
+		private StringBuilder AppendSetupMethodReturnType(IMethodSymbol methodSymbol, SetupMethodReturnType returnType)
+		{
+			return returnType switch
+			{
+				SetupMethodReturnType.Class => @this.AppendSetupType(methodSymbol),
+				SetupMethodReturnType.Interface => @this.AppendSetupInterface(methodSymbol),
+				_ => @this,
+			};
+		}
+
+		private StringBuilder AppendSetupInterface(IMethodSymbol methodSymbol)
+		{
+			const string interfaceName = "ISetup";
+			var returnType = methodSymbol.TryGetReturnType();
+
+			return methodSymbol.Parameters.Length switch
+			{
+				0 => @this.AppendInterface(interfaceName, returnType),
+				1 => @this.AppendInterface(interfaceName, methodSymbol.Parameters[0], returnType),
+				_ => @this.AppendInterface(interfaceName, methodSymbol, returnType, useOverriddenGenericNames: false),
+			};
+		}
+
+		private StringBuilder AppendSetupMethodName(IMethodSymbol methodSymbol)
+		{
+			return @this
+				.Append("Setup")
+				.AppendMethodName(methodSymbol)
+				.AppendGenericTypes(methodSymbol.TypeArguments);
+		}
+
+		private StringBuilder AppendVerifyTimesMethodDeclaration(IMethodSymbol methodSymbol, string timesType = "in Times")
 		{
 			return @this
 				.Append("public void ")
 				.AppendVerifyMethodName(methodSymbol)
 				.Append('(')
 				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
-				.Append("in Times times)");
+				.Append(timesType)
+				.Append(" times)");
 		}
 
-		private StringBuilder AppendVerifyIndexMethodDeclaration(IMethodSymbol methodSymbol)
+		private StringBuilder AppendVerifyMethodName(IMethodSymbol methodSymbol, bool appendVerifyPrefix = DefaultAppendVerifyPrefix)
 		{
-			return @this
-				.Append("public long ")
-				.AppendVerifyMethodName(methodSymbol)
-				.Append('(')
-				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
-				.Append("long index)");
-		}
+			if (appendVerifyPrefix)
+				@this.Append("Verify");
 
-		private StringBuilder AppendVerifyMethodName(IMethodSymbol methodSymbol)
-		{
 			return @this
-				.Append("Verify")
 				.AppendMethodName(methodSymbol)
 				.AppendGenericTypes(methodSymbol.TypeArguments);
 		}
@@ -428,10 +606,12 @@ internal static class MethodSymbolEx
 				.AppendPropertyName(methodName);
 		}
 
-		private StringBuilder AppendItParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride = null)
+		private StringBuilder AppendItParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride = null, bool useDefaults = false)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
+				var typeOverride = parameterTypeOverride?.GetValueOrDefault(parameters[i]);
+
 				if (!appendComma && i > 0)
 					@this.Append(", ");
 
@@ -439,9 +619,12 @@ internal static class MethodSymbolEx
 					.Append("in It")
 					.AppendRefKindPrefix(parameters[i].RefKind)
 					.Append('<')
-					.AppendType(parameters[i].Type)
+					.AppendType(parameters[i].Type, typeOverride)
 					.Append("> ")
 					.AppendParameterName(parameters[i].Name);
+
+				if (useDefaults)
+					@this.Append(" = default");
 
 				if (appendComma)
 					@this.Append(", ");
@@ -505,13 +688,15 @@ internal static class MethodSymbolEx
 			}
 
 			@this.Append('(');
-			if (!genericTypeNames.IsDefaultOrEmpty)
+
+			var isStringInterpolated = !genericTypeNames.IsDefaultOrEmpty || (mockedTypeSymbol.TypeSymbol as INamedTypeSymbol)?.TypeArguments.Length > 0;
+			if (isStringInterpolated)
 				@this.Append('$');
 
 			@this
 				.Append('"')
 				.Append(mockedTypeSymbol.TypeSymbol.Name)
-				.AppendGenericTypes(mockedTypeSymbol.TypeSymbol)
+				.AppendGenericTypes(mockedTypeSymbol.TypeSymbol, appendTypeOfName: true)
 				.Append('.')
 				.AppendPropertyName(memberSymbol.Symbol.Name)
 				.AppendInvocationMethodGenericParameters(methodSymbol, genericTypeNames);
@@ -522,16 +707,18 @@ internal static class MethodSymbolEx
 					@this.Append(".get");
 					break;
 				case MethodKind.PropertySet:
-					@this.Append(".set = {0}");
+					@this.Append(".set = ").AppendStringFormat(index: 0, isStringInterpolated);
 					break;
 				case MethodKind.EventAdd:
-					@this.Append(".add += {0}");
+					@this.Append(".add += ").AppendStringFormat(index: 0, isStringInterpolated);
+					;
 					break;
 				case MethodKind.EventRemove:
-					@this.Append(".remove -= {0}");
+					@this.Append(".remove -= ").AppendStringFormat(index: 0, isStringInterpolated);
+					;
 					break;
 				default:
-					@this.AppendParameterPlaceholders(methodSymbol);
+					@this.AppendParameterPlaceholders(methodSymbol, isStringInterpolated);
 					break;
 			}
 
@@ -574,7 +761,7 @@ internal static class MethodSymbolEx
 			@this.Append('>');
 		}
 
-		private void AppendParameterPlaceholders(IMethodSymbol methodSymbol)
+		private void AppendParameterPlaceholders(IMethodSymbol methodSymbol, bool isStringInterpolated)
 		{
 			@this.Append('(');
 
@@ -583,13 +770,25 @@ internal static class MethodSymbolEx
 				if (i > 0)
 					@this.Append(", ");
 
-				@this
-					.Append('{')
-					.Append(i)
-					.Append('}');
+				@this.AppendStringFormat(i, isStringInterpolated);
 			}
 
 			@this.Append(')');
+		}
+
+		private void AppendStringFormat(int index, bool isStringInterpolated)
+		{
+			if (isStringInterpolated)
+				@this.Append("{{");
+			else
+				@this.Append('{');
+
+			@this.Append(index);
+
+			if (isStringInterpolated)
+				@this.Append("}}");
+			else
+				@this.Append('}');
 		}
 
 		private void TryAppendParameterPrefixes(IMethodSymbol methodSymbol)
@@ -631,5 +830,11 @@ internal static class MethodSymbolEx
 				.AppendParameterName(MockGeneratorConst.Suffixes.Prefix)
 				.AppendPropertyName(name);
 		}
+	}
+
+	private enum SetupMethodReturnType
+	{
+		Class,
+		Interface,
 	}
 }

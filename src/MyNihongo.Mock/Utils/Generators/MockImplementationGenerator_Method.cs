@@ -86,6 +86,18 @@ internal static class MockImplementationMethodGenerator
 			.Append('}');
 	}
 
+	public static void AppendMethodMockExtensions(StringBuilder stringBuilder, MockedMemberSymbol memberSymbol, string mockClassName, int indent)
+	{
+		if (memberSymbol.Symbol is IMethodSymbol methodSymbol)
+			stringBuilder.AppendSetupVerifyExtensionMethods(methodSymbol, mockClassName, indent);
+	}
+
+	public static void AppendMethodMockSequenceExtensions(StringBuilder stringBuilder, MockedMemberSymbol memberSymbol, string mockClassName, int indent)
+	{
+		if (memberSymbol.Symbol is IMethodSymbol methodSymbol)
+			stringBuilder.AppendVerifySequenceExtensionMethods(methodSymbol, mockClassName, indent);
+	}
+
 	extension(StringBuilder stringBuilder)
 	{
 		private void AppendMethods(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
@@ -315,7 +327,7 @@ internal static class MockImplementationMethodGenerator
 				if (indent.HasValue)
 					stringBuilder.Indent(indent.Value);
 
-				stringBuilder.Append("return default;");
+				stringBuilder.Append("return default!;");
 
 				if (indent.HasValue)
 					stringBuilder.AppendLine();

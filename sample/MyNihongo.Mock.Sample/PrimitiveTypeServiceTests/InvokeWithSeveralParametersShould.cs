@@ -308,7 +308,7 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(Int32, Int32) to be verified, but the following invocations have not been verified:
+			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(int, int) to be verified, but the following invocations have not been verified:
 			- 1: IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 234)
 			- 3: IPrimitiveDependencyService.InvokeWithSeveralParameters(234, 123)
 			""";

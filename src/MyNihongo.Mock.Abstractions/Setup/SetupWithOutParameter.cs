@@ -2,7 +2,7 @@ namespace MyNihongo.Mock;
 
 public sealed class SetupWithOutParameter<TParameter> : SetupBase<ActionOut<TParameter>>
 {
-	public void Invoke(out TParameter? parameter)
+	public void Invoke(out TParameter parameter)
 	{
 		var x = GetSetup();
 		if (x.Callback is not null)

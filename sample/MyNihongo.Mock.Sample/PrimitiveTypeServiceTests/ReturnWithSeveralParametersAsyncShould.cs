@@ -246,7 +246,7 @@ public sealed class ReturnWithSeveralParametersAsyncShould : PrimitiveTypeServic
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(Int32, Int32) to be verified, but the following invocations have not been verified:
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(int, int) to be verified, but the following invocations have not been verified:
 			- 1: IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(123, 234)
 			- 3: IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(234, 123)
 			""";

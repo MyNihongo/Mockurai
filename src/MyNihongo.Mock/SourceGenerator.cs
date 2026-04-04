@@ -40,7 +40,8 @@ public sealed class SourceGenerator : IIncrementalGenerator
 					mockTypes.AddAll(mocks);
 				}
 
-				var methodSetups = new HashSet<IMethodSymbol>(MethodSymbolParameterComparer.Default);
+				var methodSetups = new HashSet<IMethodSymbol>(MethodSymbolSetupComparer.Default);
+				var methodInvocations = new HashSet<IMethodSymbol>(MethodSymbolInvocationSetupComparer.Default);
 				foreach (var mockType in mockTypes)
 				{
 					var sourceCodeResult = mockType.GenerateMockImplementation(source);
@@ -53,6 +54,9 @@ public sealed class SourceGenerator : IIncrementalGenerator
 				{
 					var setupSourceCode = methodSetup.GenerateMockSetup(source);
 					context.AddSanitisedSource($"{setupSourceCode.Name}.g.cs", setupSourceCode.Source);
+
+					if (!methodInvocations.Add(methodSetup))
+						continue;
 
 					var invocationSourceCode = methodSetup.GenerateMockInvocation(source);
 					context.AddSanitisedSource($"{invocationSourceCode.Name}.g.cs", invocationSourceCode.Source);

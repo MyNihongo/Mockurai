@@ -108,8 +108,8 @@ public sealed class InvokeGenericShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(String) to be verified, but the following invocations have not been verified:
-			- 2: IPrimitiveDependencyService.InvokeWithParameter("value")
+			Expected IPrimitiveDependencyService.InvokeWithParameter(in String) to be verified, but the following invocations have not been verified:
+			- 2: IPrimitiveDependencyService.InvokeWithParameter(in "value")
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);

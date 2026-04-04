@@ -103,8 +103,8 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithParameter(String) to be verified, but the following invocations have not been verified:
-			- 2: IPrimitiveDependencyService.ReturnWithParameter("value")
+			Expected IPrimitiveDependencyService.ReturnWithParameter(in String) to be verified, but the following invocations have not been verified:
+			- 2: IPrimitiveDependencyService.ReturnWithParameter(in "value")
 			""";
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
