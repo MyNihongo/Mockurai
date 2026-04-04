@@ -527,14 +527,14 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		const string methods =
 			"""
 			// Property
-			private Setup<MyNihongo.Mock.Tests.Record<T?>>? _property0Get;
+			private Setup<MyNihongo.Mockurai.Tests.Record<T?>>? _property0Get;
 			private Invocation? _property0GetInvocation;
-			private SetupWithParameter<MyNihongo.Mock.Tests.Record<T?>>? _property0Set;
-			private Invocation<MyNihongo.Mock.Tests.Record<T?>>? _property0SetInvocation;
+			private SetupWithParameter<MyNihongo.Mockurai.Tests.Record<T?>>? _property0Set;
+			private Invocation<MyNihongo.Mockurai.Tests.Record<T?>>? _property0SetInvocation;
 
-			public Setup<MyNihongo.Mock.Tests.Record<T?>> SetupGetProperty()
+			public Setup<MyNihongo.Mockurai.Tests.Record<T?>> SetupGetProperty()
 			{
-				_property0Get ??= new Setup<MyNihongo.Mock.Tests.Record<T?>>();
+				_property0Get ??= new Setup<MyNihongo.Mockurai.Tests.Record<T?>>();
 				return _property0Get;
 			}
 
@@ -550,29 +550,29 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 				return _property0GetInvocation.Verify(index, _invocationProviders);
 			}
 
-			public SetupWithParameter<MyNihongo.Mock.Tests.Record<T?>> SetupSetProperty(in It<MyNihongo.Mock.Tests.Record<T?>> value)
+			public SetupWithParameter<MyNihongo.Mockurai.Tests.Record<T?>> SetupSetProperty(in It<MyNihongo.Mockurai.Tests.Record<T?>> value)
 			{
-				_property0Set ??= new SetupWithParameter<MyNihongo.Mock.Tests.Record<T?>>();
+				_property0Set ??= new SetupWithParameter<MyNihongo.Mockurai.Tests.Record<T?>>();
 				_property0Set.SetupParameter(value.ValueSetup);
 				return _property0Set;
 			}
 
-			public void VerifySetProperty(in It<MyNihongo.Mock.Tests.Record<T?>> value, in Times times)
+			public void VerifySetProperty(in It<MyNihongo.Mockurai.Tests.Record<T?>> value, in Times times)
 			{
-				_property0SetInvocation ??= new Invocation<MyNihongo.Mock.Tests.Record<T?>>("Class<T>.Property.set = {0}");
+				_property0SetInvocation ??= new Invocation<MyNihongo.Mockurai.Tests.Record<T?>>("Class<T>.Property.set = {0}");
 				_property0SetInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
-			public long VerifySetProperty(in It<MyNihongo.Mock.Tests.Record<T?>> value, long index)
+			public long VerifySetProperty(in It<MyNihongo.Mockurai.Tests.Record<T?>> value, long index)
 			{
-				_property0SetInvocation ??= new Invocation<MyNihongo.Mock.Tests.Record<T?>>("Class<T>.Property.set = {0}");
+				_property0SetInvocation ??= new Invocation<MyNihongo.Mockurai.Tests.Record<T?>>("Class<T>.Property.set = {0}");
 				return _property0SetInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
 		const string proxy =
 			"""
-			public override MyNihongo.Mock.Tests.Record<T?> Property
+			public override MyNihongo.Mockurai.Tests.Record<T?> Property
 			{
 				get
 				{
@@ -582,7 +582,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 				}
 				set
 				{
-					_mock._property0SetInvocation ??= new Invocation<MyNihongo.Mock.Tests.Record<T?>>("Class<T>.Property.set = {0}");
+					_mock._property0SetInvocation ??= new Invocation<MyNihongo.Mockurai.Tests.Record<T?>>("Class<T>.Property.set = {0}");
 					_mock._property0SetInvocation.Register(_mock._invocationIndex, value);
 					_mock._property0Set?.Invoke(value);
 				}

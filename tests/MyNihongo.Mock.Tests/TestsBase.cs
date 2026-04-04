@@ -16,7 +16,7 @@ public abstract class TestsBase
 				GeneratedSources =
 				{
 					expected,
-					(typeof(SourceGenerator), "_Usings.g.cs", "global using MyNihongo.Mock;"),
+					(typeof(SourceGenerator), "_Usings.g.cs", "global using MyNihongo.Mockurai;"),
 				},
 			},
 		};
@@ -320,7 +320,7 @@ public abstract class TestsBase
 
 		var sourceCode =
 			$$"""
-			  namespace MyNihongo.Mock;
+			  namespace MyNihongo.Mockurai;
 
 			  public sealed class Setup{{classNameReturns}} : ISetupCallbackJoin<{{interfaceGeneric}}>, ISetupCallbackReset<{{interfaceGeneric}}>, {{iSetupThrowsJoin}}<{{interfaceGeneric}}>, {{iSetupThrowsReset}}<{{interfaceGeneric}}>
 			  {
@@ -544,7 +544,7 @@ public abstract class TestsBase
 
 		var sourceCode =
 			$$"""
-			  namespace MyNihongo.Mock;
+			  namespace MyNihongo.Mockurai;
 
 			  public sealed class Invocation{{classNameGenerics}} : IInvocationVerify
 			  {

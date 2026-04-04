@@ -1,0 +1,592 @@
+namespace MyNihongo.Mockurai.Abstractions.Tests.Setup.SetupWithRefReadOnlyParameterTests;
+
+public sealed class InvokePrimitiveShould : SetupWithRefReadOnlyParameterTestsBase
+{
+	[Fact]
+	public void ThrowForAnySetup()
+	{
+		const string errorMessage = nameof(errorMessage);
+		var setup = ItRefReadOnly<int>.Any();
+
+		var fixture = CreateFixture(setup);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		var input = 12345678;
+		var actual = () => fixture.Invoke(ref input);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowForValueSetup()
+	{
+		const string errorMessage = nameof(errorMessage);
+		var input = 12345678;
+		var setup = ItRefReadOnly<int>.Value(input);
+
+		var fixture = CreateFixture(setup);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		var actual = () => fixture.Invoke(ref input);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Fact]
+	public void NotThrowForValueSetup()
+	{
+		const string errorMessage = nameof(errorMessage);
+		const int setupValue = 23456789;
+		var setup = ItRefReadOnly<int>.Value(setupValue);
+
+		var fixture = CreateFixture(setup);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		var input = 12345678;
+		fixture.Invoke(ref input);
+	}
+
+	[Theory]
+	[InlineData(-1)]
+	[InlineData(0)]
+	[InlineData(10)]
+	public void ThrowForWhereSetup(int input)
+	{
+		const string errorMessage = nameof(errorMessage);
+		var setup = ItRefReadOnly<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture(setup);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		var actual = () => fixture.Invoke(ref input);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+
+	[Theory]
+	[InlineData(11)]
+	[InlineData(100)]
+	public void NotThrowForWhereSetup(int input)
+	{
+		const string errorMessage = nameof(errorMessage);
+		var setup = ItRefReadOnly<int>.Where(static x => x <= 10);
+
+		var fixture = CreateFixture(setup);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		fixture.Invoke(ref input);
+	}
+
+	[Fact]
+	public void PrioritiseWhereOverAnyThrowWhere()
+	{
+		const string errorMessage1 = nameof(errorMessage1);
+		var setup1 = ItRefReadOnly<int>.Any();
+
+		const string errorMessage2 = nameof(errorMessage2);
+		var setup2 = ItRefReadOnly<int>.Where(static x => x > 10);
+
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(setup1.ValueSetup);
+		fixture.Throws(new InvalidOperationException(errorMessage1));
+
+		fixture.SetupParameter(setup2.ValueSetup);
+		fixture.Throws(new InvalidCastException(errorMessage2));
+
+		var input = 12345678;
+		var actual = () => fixture.Invoke(ref input);
+
+		var exception = Assert.Throws<InvalidCastException>(actual);
+		Assert.Equal(errorMessage2, exception.Message);
+	}
+
+	[Fact]
+	public void PrioritiseWhereOverAnyThrowAny()
+	{
+		const string errorMessage1 = nameof(errorMessage1);
+		var setup1 = ItRefReadOnly<int>.Any();
+
+		const string errorMessage2 = nameof(errorMessage2);
+		var setup2 = ItRefReadOnly<int>.Where(static x => x > 10);
+
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(setup1.ValueSetup);
+		fixture.Throws(new InvalidOperationException(errorMessage1));
+
+		fixture.SetupParameter(setup2.ValueSetup);
+		fixture.Throws(new InvalidCastException(errorMessage2));
+
+		var input = 10;
+		var actual = () => fixture.Invoke(ref input);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage1, exception.Message);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverWhereThrowValue()
+	{
+		const string errorMessage1 = nameof(errorMessage1);
+		var setup1 = ItRefReadOnly<int>.Any();
+
+		const string errorMessage2 = nameof(errorMessage2);
+		var setup2 = ItRefReadOnly<int>.Where(static x => x > 10);
+
+		var setupValue3 = 12345678;
+		const string errorMessage3 = nameof(errorMessage3);
+		var setup3 = ItRefReadOnly<int>.Value(setupValue3);
+
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(setup1.ValueSetup);
+		fixture.Throws(new InvalidOperationException(errorMessage1));
+
+		fixture.SetupParameter(setup2.ValueSetup);
+		fixture.Throws(new InvalidCastException(errorMessage2));
+
+		fixture.SetupParameter(setup3.ValueSetup);
+		fixture.Throws(new ArrayTypeMismatchException(errorMessage3));
+
+		var actual = () => fixture.Invoke(ref setupValue3);
+
+		var exception = Assert.Throws<ArrayTypeMismatchException>(actual);
+		Assert.Equal(errorMessage3, exception.Message);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverWhereThrowWhere()
+	{
+		const string errorMessage1 = nameof(errorMessage1);
+		var setup1 = ItRefReadOnly<int>.Any();
+
+		const string errorMessage2 = nameof(errorMessage2);
+		var setup2 = ItRefReadOnly<int>.Where(static x => x > 10);
+
+		const int setupValue3 = 12345678;
+		const string errorMessage3 = nameof(errorMessage3);
+		var setup3 = ItRefReadOnly<int>.Value(setupValue3);
+
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(setup1.ValueSetup);
+		fixture.Throws(new InvalidOperationException(errorMessage1));
+
+		fixture.SetupParameter(setup2.ValueSetup);
+		fixture.Throws(new InvalidCastException(errorMessage2));
+
+		fixture.SetupParameter(setup3.ValueSetup);
+		fixture.Throws(new ArrayTypeMismatchException(errorMessage3));
+
+		var input = 11;
+		var actual = () => fixture.Invoke(ref input);
+
+		var exception = Assert.Throws<InvalidCastException>(actual);
+		Assert.Equal(errorMessage2, exception.Message);
+	}
+
+	[Fact]
+	public void PrioritiseValueOverWhereThrowAny()
+	{
+		const string errorMessage1 = nameof(errorMessage1);
+		var setup1 = ItRefReadOnly<int>.Any();
+
+		const string errorMessage2 = nameof(errorMessage2);
+		var setup2 = ItRefReadOnly<int>.Where(static x => x > 10);
+
+		const int setupValue3 = 12345678;
+		const string errorMessage3 = nameof(errorMessage3);
+		var setup3 = ItRefReadOnly<int>.Value(setupValue3);
+
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(setup1.ValueSetup);
+		fixture.Throws(new InvalidOperationException(errorMessage1));
+
+		fixture.SetupParameter(setup2.ValueSetup);
+		fixture.Throws(new InvalidCastException(errorMessage2));
+
+		fixture.SetupParameter(setup3.ValueSetup);
+		fixture.Throws(new ArrayTypeMismatchException(errorMessage3));
+
+		var input = 10;
+		var actual = () => fixture.Invoke(ref input);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage1, exception.Message);
+	}
+
+	[Fact]
+	public void InvokeCallbackForAny()
+	{
+		var setup = ItRefReadOnly<int>.Any();
+		var callbackValue = 0;
+
+		var fixture = CreateFixture(setup);
+		fixture.Callback((ref readonly x) => callbackValue = x + 1);
+
+		var inputValue = 12345678;
+		fixture.Invoke(ref inputValue);
+
+		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForAnyBeforeThrows()
+	{
+		const string expectedMessage = nameof(expectedMessage);
+		var setup = ItRefReadOnly<int>.Any();
+		var callbackValue = 0;
+
+		var fixture = CreateFixture(setup);
+		fixture.Callback((ref readonly x) => callbackValue = x + 1);
+		fixture.And();
+		fixture.Throws(new Exception(expectedMessage));
+
+		var inputValue = 12345678;
+		var actual = () => fixture.Invoke(ref inputValue);
+
+		var exception = Assert.Throws<Exception>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForValue()
+	{
+		var setupValue = 12345678;
+		var setup = ItRefReadOnly<int>.Value(setupValue);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture(setup);
+		fixture.Callback((ref readonly x) => callbackValue = x + 1);
+		fixture.Invoke(ref setupValue);
+
+		Assert.Equal(setupValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForValueBeforeThrows()
+	{
+		const string expectedMessage = nameof(expectedMessage);
+		const int setupValue = 12345678;
+		var setup = ItRefReadOnly<int>.Value(setupValue);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture(setup);
+		fixture.Throws(new Exception(expectedMessage));
+		fixture.And();
+		fixture.Callback((ref readonly x) => callbackValue = x + 1);
+
+		var inputValue = 12345678;
+		var actual = () => fixture.Invoke(ref inputValue);
+
+		var exception = Assert.Throws<Exception>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForValue()
+	{
+		const int setupValue = 12345678;
+		var setup = ItRefReadOnly<int>.Value(setupValue);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture(setup);
+		fixture.Callback((ref readonly x) => callbackValue = x + 1);
+
+		var inputValue = -64713;
+		fixture.Invoke(ref inputValue);
+
+		const int expected = 0;
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForWhere()
+	{
+		var setup = ItRefReadOnly<int>.Where(x => x > 10);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture(setup);
+		fixture.Callback((ref readonly x) => callbackValue = x + 1);
+
+		var inputValue = 12345678;
+		fixture.Invoke(ref inputValue);
+
+		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void InvokeCallbackForWhereBeforeThrows()
+	{
+		const string expectedMessage = nameof(expectedMessage);
+		var setup = ItRefReadOnly<int>.Where(x => x > 10);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture(setup);
+		fixture.Callback((ref readonly x) => callbackValue = x + 1);
+		fixture.And();
+		fixture.Throws(new Exception(expectedMessage));
+
+		var inputValue = 12345678;
+		var actual = () => fixture.Invoke(ref inputValue);
+
+		var exception = Assert.Throws<Exception>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+		Assert.Equal(inputValue + 1, callbackValue);
+	}
+
+	[Fact]
+	public void NotInvokeCallbackForWhere()
+	{
+		var setup = ItRefReadOnly<int>.Where(x => x > 10);
+		var callbackValue = 0;
+
+		var fixture = CreateFixture(setup);
+		fixture.Callback((ref readonly x) => callbackValue = x + 1);
+
+		var inputValue = -64713;
+		fixture.Invoke(ref inputValue);
+
+		const int expected = 0;
+		Assert.Equal(expected, callbackValue);
+	}
+
+	[Fact]
+	public void NotDuplicateSameSetup()
+	{
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(ItRefReadOnly<int>.Any().ValueSetup);
+		fixture.Callback((ref readonly _) => { });
+		fixture.Throws(new Exception());
+		fixture.Callback((ref readonly _) => { Debug.WriteLine("output"); });
+
+		const int expected = 1;
+		var actual = GetSetupCount(fixture);
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void InsertAllSetups()
+	{
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(ItRefReadOnly<int>.Any().ValueSetup);
+		fixture.Callback((ref readonly _) => { });
+
+		fixture.SetupParameter(ItRefReadOnly<int>.Any().ValueSetup);
+		fixture.Throws(new Exception());
+
+		fixture.SetupParameter(ItRefReadOnly<int>.Any().ValueSetup);
+		fixture.Callback((ref readonly _) => { Debug.WriteLine("output"); });
+
+		const int expected = 3;
+		var actual = GetSetupCount(fixture);
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionAny()
+	{
+		var fixture = CreateFixture<int>();
+
+		fixture.SetupParameter(ItRefReadOnly<int>.Any().ValueSetup);
+		fixture.Throws(new Exception("random text"));
+
+		const string expectedMessage = nameof(expectedMessage);
+		fixture.SetupParameter(ItRefReadOnly<int>.Any().ValueSetup);
+		fixture.Throws(new NullReferenceException(expectedMessage));
+
+		var inputValue = 12345678;
+		var actual = () => fixture.Invoke(ref inputValue);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionWhere()
+	{
+		var fixture = CreateFixture<int>();
+
+		fixture.SetupParameter(ItRefReadOnly<int>.Where(x => x > 10).ValueSetup);
+		fixture.Throws(new Exception("random text"));
+
+		const string expectedMessage = nameof(expectedMessage);
+		fixture.SetupParameter(ItRefReadOnly<int>.Where(x => x > 100).ValueSetup);
+		fixture.Throws(new NullReferenceException(expectedMessage));
+
+		var inputValue = 12345678;
+		var actual = () => fixture.Invoke(ref inputValue);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowLastExceptionValue()
+	{
+		var setupValue = 12345678;
+		var fixture = CreateFixture<int>();
+
+		fixture.SetupParameter(ItRefReadOnly<int>.Value(setupValue).ValueSetup);
+		fixture.Throws(new Exception("random text"));
+
+		const string expectedMessage = nameof(expectedMessage);
+		fixture.SetupParameter(ItRefReadOnly<int>.Value(setupValue).ValueSetup);
+		fixture.Throws(new NullReferenceException(expectedMessage));
+
+		var actual = () => fixture.Invoke(ref setupValue);
+
+		var exception = Assert.Throws<NullReferenceException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptions()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(ItRefReadOnly<int>.Any().ValueSetup);
+		fixture.Throws(new COMException(errorMessage1));
+		fixture.Throws(new NullReferenceException(errorMessage2));
+
+		var parameter = 1234;
+		var actual1 = () => fixture.Invoke(ref parameter);
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => fixture.Invoke(ref parameter);
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => fixture.Invoke(ref parameter);
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback1()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		var callback = 0;
+
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(ItRefReadOnly<int>.Any().ValueSetup);
+		fixture.Callback((ref readonly _) => callback++);
+		fixture.Throws(new COMException(errorMessage1));
+		fixture.Throws(new NullReferenceException(errorMessage2));
+
+		var parameter = 1234;
+		fixture.Invoke(ref parameter);
+
+		var actual2 = () => fixture.Invoke(ref parameter);
+		var exception2 = Assert.Throws<COMException>(actual2);
+		Assert.Equal(errorMessage1, exception2.Message);
+
+		var actual3 = () => fixture.Invoke(ref parameter);
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		var actual4 = () => fixture.Invoke(ref parameter);
+		var exception4 = Assert.Throws<NullReferenceException>(actual4);
+		Assert.Equal(errorMessage2, exception4.Message);
+
+		const int expectedCallback = 1;
+		Assert.Equal(expectedCallback, callback);
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback2()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		var callback = 0;
+
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(ItRefReadOnly<int>.Any().ValueSetup);
+		fixture.Callback((ref readonly _) => callback++);
+		fixture.And();
+		fixture.Throws(new COMException(errorMessage1));
+		fixture.Throws(new NullReferenceException(errorMessage2));
+
+		var parameter = 1234;
+		var actual1 = () => fixture.Invoke(ref parameter);
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => fixture.Invoke(ref parameter);
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => fixture.Invoke(ref parameter);
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		const int expectedCallback = 1;
+		Assert.Equal(expectedCallback, callback);
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback3()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		var callback = 0;
+
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(ItRefReadOnly<int>.Any().ValueSetup);
+		fixture.Throws(new COMException(errorMessage1));
+		fixture.Callback((ref readonly _) => callback++);
+		fixture.And();
+		fixture.Throws(new NullReferenceException(errorMessage2));
+
+		var parameter = 1234;
+		var actual1 = () => fixture.Invoke(ref parameter);
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => fixture.Invoke(ref parameter);
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => fixture.Invoke(ref parameter);
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		const int expectedCallback = 2;
+		Assert.Equal(expectedCallback, callback);
+	}
+
+	[Fact]
+	public void ThrowDifferentExceptionsWithCallback4()
+	{
+		const string errorMessage1 = nameof(errorMessage1), errorMessage2 = nameof(errorMessage2);
+		int callback1 = 10, callback2 = 0;
+
+		var fixture = CreateFixture<int>();
+		fixture.SetupParameter(ItRefReadOnly<int>.Any().ValueSetup);
+		fixture.Callback((ref readonly _) => callback1++);
+		fixture.And();
+		fixture.Throws(new COMException(errorMessage1));
+		fixture.Throws(new NullReferenceException(errorMessage2));
+		fixture.And();
+		fixture.Callback((ref readonly _) => callback2++);
+
+		var parameter = 1234;
+		var actual1 = () => fixture.Invoke(ref parameter);
+		var exception1 = Assert.Throws<COMException>(actual1);
+		Assert.Equal(errorMessage1, exception1.Message);
+
+		var actual2 = () => fixture.Invoke(ref parameter);
+		var exception2 = Assert.Throws<NullReferenceException>(actual2);
+		Assert.Equal(errorMessage2, exception2.Message);
+
+		var actual3 = () => fixture.Invoke(ref parameter);
+		var exception3 = Assert.Throws<NullReferenceException>(actual3);
+		Assert.Equal(errorMessage2, exception3.Message);
+
+		const int expectedCallback1 = 11, expectedCallback2 = 2;
+		Assert.Equal(expectedCallback1, callback1);
+		Assert.Equal(expectedCallback2, callback2);
+	}
+}

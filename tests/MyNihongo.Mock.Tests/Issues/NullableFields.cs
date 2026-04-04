@@ -7,7 +7,7 @@ public sealed class NullableFields : TestsBase
 	{
 		const string testCode =
 			"""
-			namespace MyNihongo.Mock.Tests;
+			namespace MyNihongo.Mockurai.Tests;
 
 			public interface IInterface
 			{
@@ -25,7 +25,7 @@ public sealed class NullableFields : TestsBase
 			(
 				"TestsBase.g.cs",
 				"""
-				namespace MyNihongo.Mock.Tests;
+				namespace MyNihongo.Mockurai.Tests;
 
 				public partial class TestsBase
 				{
@@ -47,13 +47,13 @@ public sealed class NullableFields : TestsBase
 					protected sealed class VerifySequenceContext
 					{
 						private readonly VerifyIndex _verifyIndex = new();
-						public readonly IMockSequence<MyNihongo.Mock.Tests.IInterface>? InterfaceMock;
+						public readonly IMockSequence<MyNihongo.Mockurai.Tests.IInterface>? InterfaceMock;
 
-						public VerifySequenceContext(MyNihongo.Mock.IMock<MyNihongo.Mock.Tests.IInterface>? interfaceMock)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface>? interfaceMock)
 						{
 							if (interfaceMock is not null)
 							{
-								InterfaceMock = new MockSequence<MyNihongo.Mock.Tests.IInterface>
+								InterfaceMock = new MockSequence<MyNihongo.Mockurai.Tests.IInterface>
 								{
 									VerifyIndex = _verifyIndex,
 									Mock = interfaceMock,
@@ -67,9 +67,9 @@ public sealed class NullableFields : TestsBase
 			(
 				"InterfaceMock.g.cs",
 				"""
-				namespace MyNihongo.Mock;
+				namespace MyNihongo.Mockurai;
 
-				public sealed class InterfaceMock : IMock<MyNihongo.Mock.Tests.IInterface>
+				public sealed class InterfaceMock : IMock<MyNihongo.Mockurai.Tests.IInterface>
 				{
 					private readonly InvocationIndex.Counter _invocationIndex;
 					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
@@ -81,7 +81,7 @@ public sealed class NullableFields : TestsBase
 						_invocationProviders = GetInvocations;
 					}
 
-					public MyNihongo.Mock.Tests.IInterface Object => _proxy ??= new Proxy(this);
+					public MyNihongo.Mockurai.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
 
 
@@ -95,7 +95,7 @@ public sealed class NullableFields : TestsBase
 						yield break;
 					}
 
-					private sealed class Proxy : MyNihongo.Mock.Tests.IInterface
+					private sealed class Proxy : MyNihongo.Mockurai.Tests.IInterface
 					{
 						private readonly InterfaceMock _mock;
 
@@ -110,7 +110,7 @@ public sealed class NullableFields : TestsBase
 
 				public static partial class MockExtensions
 				{
-					extension(IMock<MyNihongo.Mock.Tests.IInterface> @this)
+					extension(IMock<MyNihongo.Mockurai.Tests.IInterface> @this)
 					{
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
@@ -121,7 +121,7 @@ public sealed class NullableFields : TestsBase
 
 				public static partial class MockSequenceExtensions
 				{
-					extension(IMockSequence<MyNihongo.Mock.Tests.IInterface> @this)
+					extension(IMockSequence<MyNihongo.Mockurai.Tests.IInterface> @this)
 					{
 					
 					}

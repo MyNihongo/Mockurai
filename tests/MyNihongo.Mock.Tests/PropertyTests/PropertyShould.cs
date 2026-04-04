@@ -349,14 +349,14 @@ public sealed class PropertyShould : PropertyTestsBase
 		const string methods =
 			"""
 			// Property
-			private Setup<MyNihongo.Mock.Tests.Record>? _property0Get;
+			private Setup<MyNihongo.Mockurai.Tests.Record>? _property0Get;
 			private Invocation? _property0GetInvocation;
-			private SetupWithParameter<MyNihongo.Mock.Tests.Record>? _property0Set;
-			private Invocation<MyNihongo.Mock.Tests.Record>? _property0SetInvocation;
+			private SetupWithParameter<MyNihongo.Mockurai.Tests.Record>? _property0Set;
+			private Invocation<MyNihongo.Mockurai.Tests.Record>? _property0SetInvocation;
 
-			public Setup<MyNihongo.Mock.Tests.Record> SetupGetProperty()
+			public Setup<MyNihongo.Mockurai.Tests.Record> SetupGetProperty()
 			{
-				_property0Get ??= new Setup<MyNihongo.Mock.Tests.Record>();
+				_property0Get ??= new Setup<MyNihongo.Mockurai.Tests.Record>();
 				return _property0Get;
 			}
 
@@ -372,29 +372,29 @@ public sealed class PropertyShould : PropertyTestsBase
 				return _property0GetInvocation.Verify(index, _invocationProviders);
 			}
 
-			public SetupWithParameter<MyNihongo.Mock.Tests.Record> SetupSetProperty(in It<MyNihongo.Mock.Tests.Record> value)
+			public SetupWithParameter<MyNihongo.Mockurai.Tests.Record> SetupSetProperty(in It<MyNihongo.Mockurai.Tests.Record> value)
 			{
-				_property0Set ??= new SetupWithParameter<MyNihongo.Mock.Tests.Record>();
+				_property0Set ??= new SetupWithParameter<MyNihongo.Mockurai.Tests.Record>();
 				_property0Set.SetupParameter(value.ValueSetup);
 				return _property0Set;
 			}
 
-			public void VerifySetProperty(in It<MyNihongo.Mock.Tests.Record> value, in Times times)
+			public void VerifySetProperty(in It<MyNihongo.Mockurai.Tests.Record> value, in Times times)
 			{
-				_property0SetInvocation ??= new Invocation<MyNihongo.Mock.Tests.Record>("Class.Property.set = {0}");
+				_property0SetInvocation ??= new Invocation<MyNihongo.Mockurai.Tests.Record>("Class.Property.set = {0}");
 				_property0SetInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
-			public long VerifySetProperty(in It<MyNihongo.Mock.Tests.Record> value, long index)
+			public long VerifySetProperty(in It<MyNihongo.Mockurai.Tests.Record> value, long index)
 			{
-				_property0SetInvocation ??= new Invocation<MyNihongo.Mock.Tests.Record>("Class.Property.set = {0}");
+				_property0SetInvocation ??= new Invocation<MyNihongo.Mockurai.Tests.Record>("Class.Property.set = {0}");
 				return _property0SetInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
 
 		const string proxy =
 			"""
-			public override MyNihongo.Mock.Tests.Record Property
+			public override MyNihongo.Mockurai.Tests.Record Property
 			{
 				get
 				{
@@ -404,7 +404,7 @@ public sealed class PropertyShould : PropertyTestsBase
 				}
 				set
 				{
-					_mock._property0SetInvocation ??= new Invocation<MyNihongo.Mock.Tests.Record>("Class.Property.set = {0}");
+					_mock._property0SetInvocation ??= new Invocation<MyNihongo.Mockurai.Tests.Record>("Class.Property.set = {0}");
 					_mock._property0SetInvocation.Register(_mock._invocationIndex, value);
 					_mock._property0Set?.Invoke(value);
 				}
@@ -426,7 +426,7 @@ public sealed class PropertyShould : PropertyTestsBase
 		const string extensions =
 			"""
 			// Property
-			public Setup<MyNihongo.Mock.Tests.Record> SetupGetProperty() =>
+			public Setup<MyNihongo.Mockurai.Tests.Record> SetupGetProperty() =>
 				((ClassMock)@this).SetupGetProperty();
 
 			public void VerifyGetProperty(in Times times) =>
@@ -435,13 +435,13 @@ public sealed class PropertyShould : PropertyTestsBase
 			public void VerifyGetProperty(System.Func<Times> times) =>
 				((ClassMock)@this).VerifyGetProperty(times());
 
-			public SetupWithParameter<MyNihongo.Mock.Tests.Record> SetupSetProperty(in It<MyNihongo.Mock.Tests.Record> value = default) =>
+			public SetupWithParameter<MyNihongo.Mockurai.Tests.Record> SetupSetProperty(in It<MyNihongo.Mockurai.Tests.Record> value = default) =>
 				((ClassMock)@this).SetupSetProperty(value);
 
-			public void VerifySetProperty(in It<MyNihongo.Mock.Tests.Record> value, in Times times) =>
+			public void VerifySetProperty(in It<MyNihongo.Mockurai.Tests.Record> value, in Times times) =>
 				((ClassMock)@this).VerifySetProperty(value, times);
 
-			public void VerifySetProperty(in It<MyNihongo.Mock.Tests.Record> value, System.Func<Times> times) =>
+			public void VerifySetProperty(in It<MyNihongo.Mockurai.Tests.Record> value, System.Func<Times> times) =>
 				((ClassMock)@this).VerifySetProperty(value, times());
 			""";
 

@@ -1,0 +1,25 @@
+namespace MyNihongo.Mockurai.Abstractions.Tests.Setup.SetupWithRefParameterTests;
+
+public sealed class InvokeStructShould : SetupWithRefParameterTestsBase
+{
+	[Fact]
+	public void ThrowForAnySetup()
+	{
+		const string errorMessage = nameof(errorMessage);
+		var setup = ItRef<StructParameter1>.Any();
+
+		var fixture = CreateFixture(setup);
+		fixture.Throws(new InvalidOperationException(errorMessage));
+
+		var input = new StructParameter1
+		{
+			Text = "any text",
+			Number = 12345678,
+		};
+
+		var actual = () => fixture.Invoke(ref input);
+
+		var exception = Assert.Throws<InvalidOperationException>(actual);
+		Assert.Equal(errorMessage, exception.Message);
+	}
+}
