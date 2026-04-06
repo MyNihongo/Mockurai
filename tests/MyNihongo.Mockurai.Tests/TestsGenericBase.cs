@@ -29,6 +29,7 @@ public abstract class TestsGenericBase : TestsBase
 	{
 		const string testsBase =
 			"""
+			#nullable enable
 			namespace MyNihongo.Mockurai.Tests;
 
 			public partial class TestsBase
@@ -75,6 +76,7 @@ public abstract class TestsGenericBase : TestsBase
 	{
 		var mock =
 			$$"""
+			  #nullable enable
 			  namespace MyNihongo.Mockurai;
 
 			  public sealed class InterfaceMock<T> : IMock<MyNihongo.Mockurai.Tests.IInterface<T>>

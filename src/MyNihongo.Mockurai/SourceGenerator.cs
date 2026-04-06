@@ -36,7 +36,7 @@ public sealed class SourceGenerator : IIncrementalGenerator
 						continue;
 
 					var sourceCode = namedTypeSymbol.GenerateMockClass(mocks);
-					context.AddSource($"{namedTypeSymbol.Name}.g.cs", sourceCode);
+					context.AddSanitisedSource($"{namedTypeSymbol.Name}.g.cs", sourceCode);
 					mockTypes.AddAll(mocks);
 				}
 

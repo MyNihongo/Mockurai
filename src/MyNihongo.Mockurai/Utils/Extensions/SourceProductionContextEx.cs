@@ -1,3 +1,5 @@
+using Microsoft.CodeAnalysis.Text;
+
 namespace MyNihongo.Mockurai.Utils;
 
 internal static class SourceProductionContextEx
@@ -8,6 +10,7 @@ internal static class SourceProductionContextEx
 			? fileName.Replace('<', '_').Replace('>', '_').Replace(", ", "_")
 			: fileName;
 
-		@this.AddSource(fileName, source);
+		var sourceText = SourceText.From(source, Encoding.UTF8);
+		@this.AddSource(fileName, sourceText);
 	}
 }
