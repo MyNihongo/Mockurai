@@ -1,6 +1,4 @@
-﻿using MyNihongo.Mockurai;
-
-namespace MyNihongo.Mockurai.Tests;
+﻿namespace MyNihongo.Mockurai.Tests;
 
 public abstract class TestsBase
 {
@@ -135,7 +133,7 @@ public abstract class TestsBase
 			? $"""
 
 
-			   		Default:{(useReturns ? Environment.NewLine + $"\t\t{returnValue} = default;" : string.Empty)}{(outTypes.Length > 0 ? string.Concat(outTypes.Select(static x => Environment.NewLine + $"\t\t{x.GetParameterNameString()} = default;")) : string.Empty)}
+			   		Default:{(useReturns ? Environment.NewLine + $"\t\t{returnValue} = default!;" : string.Empty)}{(outTypes.Length > 0 ? string.Concat(outTypes.Select(static x => Environment.NewLine + $"\t\t{x.GetParameterNameString()} = default;")) : string.Empty)}
 			   		return{(useReturns ? " false" : string.Empty)};
 			   """
 			: string.Empty;
@@ -320,6 +318,7 @@ public abstract class TestsBase
 
 		var sourceCode =
 			$$"""
+			  #nullable enable
 			  namespace MyNihongo.Mockurai;
 
 			  public sealed class Setup{{classNameReturns}} : ISetupCallbackJoin<{{interfaceGeneric}}>, ISetupCallbackReset<{{interfaceGeneric}}>, {{iSetupThrowsJoin}}<{{interfaceGeneric}}>, {{iSetupThrowsReset}}<{{interfaceGeneric}}>
@@ -470,7 +469,7 @@ public abstract class TestsBase
 		var setupParameters = string.Join(", ", types.Select(static x => $"in ItSetup<{x.GetTypeString()}> {x.GetParameterNameString()}"));
 		var verifyParameters = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x => $"var verify{x.GetCamelCaseNameString()} = span[i].Get{x.GetCamelCaseNameString()}({x.GetParameterNameString()}.Type);"));
 		var parameterToString = string.Join(", ", types.Select(static x => $"{x.GetParameterNameString()}.ToString(_prefix{x.GetCamelCaseNameString()})"));
-		var typeNameParameters = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"var typeName{x.GetCamelCaseNameString()} = !string.IsNullOrEmpty(_prefix{x.GetCamelCaseNameString()}) ? $\"{{_prefix{x.GetCamelCaseNameString()}}} {x.GetTypeString()}\" : \"{x.GetTypeString()}\";"));
+		var typeNameParameters = string.Join(Environment.NewLine + "\t\t", types.Select(static x => { return $"var typeName{x.GetCamelCaseNameString()} = !string.IsNullOrEmpty(_prefix{x.GetCamelCaseNameString()}) ? $\"{{_prefix{x.GetCamelCaseNameString()}}} {(x.IsGeneric ? $"{{typeof({x.GetTypeString()}).Name}}" : x.GetTypeString())}\" : {(x.IsGeneric ? $"typeof({x.GetTypeString()}).Name" : $"\"{x.GetTypeString()}\"")};"; }));
 		var typeParameterNames = string.Join(", ", types.Select(static x => $"typeName{x.GetCamelCaseNameString()}"));
 		var parameterFields = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"private readonly {x.GetTypeString()} _{x.GetParameterNameString()};"));
 		var verifyChecks = string.Join(Environment.NewLine + "\t\t\t", types.Select(static (x, i) =>
@@ -498,9 +497,9 @@ public abstract class TestsBase
 
 			return
 				$$"""
-				  try
+				  _{{name}} = {{name}};
+				  			try
 				  			{
-				  				_{{name}} = {{name}};
 				  				_jsonSnapshot{{camelCase}} = System.Text.Json.JsonSerializer.Serialize({{name}});
 				  			}
 				  			catch
@@ -518,7 +517,7 @@ public abstract class TestsBase
 				  public {{typeString}} Get{{x.GetCamelCaseNameString()}}(SetupType setupType)
 				  		{
 				  			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshot{{x.GetCamelCaseNameString()}})
-				  				? System.Text.Json.JsonSerializer.Deserialize<{{typeString}}>(_jsonSnapshot{{x.GetCamelCaseNameString()}})
+				  				? System.Text.Json.JsonSerializer.Deserialize<{{typeString}}>(_jsonSnapshot{{x.GetCamelCaseNameString()}})!
 				  				: _{{x.GetParameterNameString()}};
 				  		}
 				  """;
@@ -544,6 +543,7 @@ public abstract class TestsBase
 
 		var sourceCode =
 			$$"""
+			  #nullable enable
 			  namespace MyNihongo.Mockurai;
 
 			  public sealed class Invocation{{classNameGenerics}} : IInvocationVerify
