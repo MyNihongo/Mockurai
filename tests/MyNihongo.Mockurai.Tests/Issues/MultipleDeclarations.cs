@@ -1905,7 +1905,7 @@ public sealed class MultipleDeclarations : TestsBase
 			public interface IInterface
 			{
 				void Invoke(int param1, int param2);
-				decimal Invoke(int param1, int param2);
+				decimal Invoke2(int param1, int param2);
 			}
 
 			[MockuraiGenerate]
@@ -1915,6 +1915,7 @@ public sealed class MultipleDeclarations : TestsBase
 			}
 			""";
 
+		string[] types = ["Int32", "Int32"];
 		GeneratedSources generatedSources =
 		[
 			(
@@ -1925,25 +1926,19 @@ public sealed class MultipleDeclarations : TestsBase
 
 				public partial class TestsBase
 				{
-					// InterfaceMock1
-					private readonly InterfaceMock _interfaceMock1 = new(InvocationIndex.CounterValue);
-					protected partial MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock1 => _interfaceMock1;
-
-					// InterfaceMock2
-					private readonly InterfaceMock _interfaceMock2 = new(InvocationIndex.CounterValue);
-					protected partial MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock2 => _interfaceMock2;
+					// InterfaceMock
+					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
+					protected partial MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock => _interfaceMock;
 
 					protected void VerifyNoOtherCalls()
 					{
-						InterfaceMock1.VerifyNoOtherCalls();
-						InterfaceMock2.VerifyNoOtherCalls();
+						InterfaceMock.VerifyNoOtherCalls();
 					}
 
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
-							interfaceMock1: InterfaceMock1,
-							interfaceMock2: InterfaceMock2
+							interfaceMock: InterfaceMock
 						);
 
 						verify(ctx);
@@ -1952,20 +1947,14 @@ public sealed class MultipleDeclarations : TestsBase
 					protected sealed class VerifySequenceContext
 					{
 						private readonly VerifyIndex _verifyIndex = new();
-						public readonly IMockSequence<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock1;
-						public readonly IMockSequence<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock2;
+						public readonly IMockSequence<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock;
 
-						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> interfaceMock1, MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> interfaceMock2)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> interfaceMock)
 						{
-							InterfaceMock1 = new MockSequence<MyNihongo.Mockurai.Tests.IInterface>
+							InterfaceMock = new MockSequence<MyNihongo.Mockurai.Tests.IInterface>
 							{
 								VerifyIndex = _verifyIndex,
-								Mock = interfaceMock1,
-							};
-							InterfaceMock2 = new MockSequence<MyNihongo.Mockurai.Tests.IInterface>
-							{
-								VerifyIndex = _verifyIndex,
-								Mock = interfaceMock2,
+								Mock = interfaceMock,
 							};
 						}
 					}
@@ -1993,35 +1982,61 @@ public sealed class MultipleDeclarations : TestsBase
 					public MyNihongo.Mockurai.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
 					// Invoke
-					private Setup? _invoke0;
-					private Invocation? _invoke0Invocation;
+					private SetupInt32Int32? _invoke0;
+					private InvocationInt32Int32? _invoke0Invocation;
 
-					public Setup SetupInvoke()
+					public SetupInt32Int32 SetupInvoke(in It<int> param1, in It<int> param2)
 					{
-						_invoke0 ??= new Setup();
+						_invoke0 ??= new SetupInt32Int32();
+						_invoke0.SetupParameters(param1.ValueSetup, param2.ValueSetup);
 						return _invoke0;
 					}
 
-					public void VerifyInvoke(in Times times)
+					public void VerifyInvoke(in It<int> param1, in It<int> param2, in Times times)
 					{
-						_invoke0Invocation ??= new Invocation("IInterface.Invoke()");
-						_invoke0Invocation.Verify(times, _invocationProviders);
+						_invoke0Invocation ??= new InvocationInt32Int32("IInterface.Invoke({0}, {1})");
+						_invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, times, _invocationProviders);
 					}
 
-					public long VerifyInvoke(long index)
+					public long VerifyInvoke(in It<int> param1, in It<int> param2, long index)
 					{
-						_invoke0Invocation ??= new Invocation("IInterface.Invoke()");
-						return _invoke0Invocation.Verify(index, _invocationProviders);
+						_invoke0Invocation ??= new InvocationInt32Int32("IInterface.Invoke({0}, {1})");
+						return _invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
+					}
+
+					// Invoke2
+					private SetupInt32Int32<decimal>? _invoke20;
+					private InvocationInt32Int32? _invoke20Invocation;
+
+					public SetupInt32Int32<decimal> SetupInvoke2(in It<int> param1, in It<int> param2)
+					{
+						_invoke20 ??= new SetupInt32Int32<decimal>();
+						_invoke20.SetupParameters(param1.ValueSetup, param2.ValueSetup);
+						return _invoke20;
+					}
+
+					public void VerifyInvoke2(in It<int> param1, in It<int> param2, in Times times)
+					{
+						_invoke20Invocation ??= new InvocationInt32Int32("IInterface.Invoke2({0}, {1})");
+						_invoke20Invocation.Verify(param1.ValueSetup, param2.ValueSetup, times, _invocationProviders);
+					}
+
+					public long VerifyInvoke2(in It<int> param1, in It<int> param2, long index)
+					{
+						_invoke20Invocation ??= new InvocationInt32Int32("IInterface.Invoke2({0}, {1})");
+						return _invoke20Invocation.Verify(param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
 					}
 
 					public void VerifyNoOtherCalls()
 					{
 						_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);
+						_invoke20Invocation?.VerifyNoOtherCalls(_invocationProviders);
 					}
 
 					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
 					{
 						yield return _invoke0Invocation;
+						yield return _invoke20Invocation;
 					}
 
 					private sealed class Proxy : MyNihongo.Mockurai.Tests.IInterface
@@ -2033,11 +2048,18 @@ public sealed class MultipleDeclarations : TestsBase
 							_mock = mock;
 						}
 
-						public void Invoke()
+						public void Invoke(int param1, int param2)
 						{
-							_mock._invoke0Invocation ??= new Invocation("IInterface.Invoke()");
-							_mock._invoke0Invocation.Register(_mock._invocationIndex);
-							_mock._invoke0?.Invoke();
+							_mock._invoke0Invocation ??= new InvocationInt32Int32("IInterface.Invoke({0}, {1})");
+							_mock._invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
+							_mock._invoke0?.Invoke(param1, param2);
+						}
+
+						public decimal Invoke2(int param1, int param2)
+						{
+							_mock._invoke20Invocation ??= new InvocationInt32Int32("IInterface.Invoke2({0}, {1})");
+							_mock._invoke20Invocation.Register(_mock._invocationIndex, param1, param2);
+							return _mock._invoke20?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 						}
 					}
 				}
@@ -2049,7 +2071,25 @@ public sealed class MultipleDeclarations : TestsBase
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
-						
+						// Invoke
+						public ISetup<SetupInt32Int32.CallbackDelegate> SetupInvoke(in It<int> param1 = default, in It<int> param2 = default) =>
+							((InterfaceMock)@this).SetupInvoke(param1, param2);
+
+						public void VerifyInvoke(in It<int> param1, in It<int> param2, in Times times) =>
+							((InterfaceMock)@this).VerifyInvoke(param1, param2, times);
+
+						public void VerifyInvoke(in It<int> param1, in It<int> param2, System.Func<Times> times) =>
+							((InterfaceMock)@this).VerifyInvoke(param1, param2, times());
+
+						// Invoke2
+						public ISetup<SetupInt32Int32<decimal>.CallbackDelegate, decimal, SetupInt32Int32<decimal>.ReturnsCallbackDelegate> SetupInvoke2(in It<int> param1 = default, in It<int> param2 = default) =>
+							((InterfaceMock)@this).SetupInvoke2(param1, param2);
+
+						public void VerifyInvoke2(in It<int> param1, in It<int> param2, in Times times) =>
+							((InterfaceMock)@this).VerifyInvoke2(param1, param2, times);
+
+						public void VerifyInvoke2(in It<int> param1, in It<int> param2, System.Func<Times> times) =>
+							((InterfaceMock)@this).VerifyInvoke2(param1, param2, times());
 					}
 				}
 
@@ -2057,11 +2097,26 @@ public sealed class MultipleDeclarations : TestsBase
 				{
 					extension(IMockSequence<MyNihongo.Mockurai.Tests.IInterface> @this)
 					{
-					
+						// Invoke
+						public void Invoke(in It<int> param1, in It<int> param2)
+						{
+							var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvoke(param1, param2, @this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+
+						// Invoke2
+						public void Invoke2(in It<int> param1, in It<int> param2)
+						{
+							var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvoke2(param1, param2, @this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
 					}
 				}
 				"""
 			),
+			CreateSetupCode(types),
+			CreateInvocationCode(types),
+			CreateSetupReturnsCode(types),
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);

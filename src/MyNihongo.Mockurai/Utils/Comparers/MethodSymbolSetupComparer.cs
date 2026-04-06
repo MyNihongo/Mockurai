@@ -20,7 +20,9 @@ internal sealed class MethodSymbolSetupComparer : MethodSymbolComparerBase
 		var returnType = obj.TryGetReturnType();
 		if (returnType is not null)
 		{
-			var typeHashCode = symbolComparer.GetHashCode(returnType);
+			// When we generate the setup we only care about whether the return type exists or not
+			// Setup has the generic return type
+			var typeHashCode = true.GetHashCode();
 			hash.Append(typeHashCode);
 		}
 
