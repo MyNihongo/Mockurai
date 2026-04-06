@@ -52,7 +52,7 @@ internal static class MockClassGenerator
 				.Indent(indent)
 				.Append(mock.Property.DeclaredAccessibility.GetString())
 				.Append(" partial ")
-				.Append(mock.Property.Type)
+				.AppendType(mock.Property.Type)
 				.Append(' ')
 				.Append(propertyName)
 				.Append(" => ")
