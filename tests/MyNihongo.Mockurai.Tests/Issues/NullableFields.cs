@@ -25,6 +25,7 @@ public sealed class NullableFields : TestsBase
 			(
 				"TestsBase.g.cs",
 				"""
+				#nullable enable
 				namespace MyNihongo.Mockurai.Tests;
 
 				public partial class TestsBase
@@ -67,6 +68,7 @@ public sealed class NullableFields : TestsBase
 			(
 				"InterfaceMock.g.cs",
 				"""
+				#nullable enable
 				namespace MyNihongo.Mockurai;
 
 				public sealed class InterfaceMock : IMock<MyNihongo.Mockurai.Tests.IInterface>
@@ -115,7 +117,7 @@ public sealed class NullableFields : TestsBase
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
-						
+
 					}
 				}
 
@@ -123,7 +125,7 @@ public sealed class NullableFields : TestsBase
 				{
 					extension(IMockSequence<MyNihongo.Mockurai.Tests.IInterface> @this)
 					{
-					
+
 					}
 				}
 				"""
