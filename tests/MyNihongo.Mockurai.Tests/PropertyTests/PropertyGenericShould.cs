@@ -98,13 +98,13 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 
 			public void VerifySetProperty(in It<int> value, in Times times)
 			{
-				_property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
+				_property0SetInvocation ??= new Invocation<int>($"IInterface<{typeof(T).Name}>.Property.set = {{0}}");
 				_property0SetInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifySetProperty(in It<int> value, long index)
 			{
-				_property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
+				_property0SetInvocation ??= new Invocation<int>($"IInterface<{typeof(T).Name}>.Property.set = {{0}}");
 				return _property0SetInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -115,7 +115,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			{
 				set
 				{
-					_mock._property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
+					_mock._property0SetInvocation ??= new Invocation<int>($"IInterface<{typeof(T).Name}>.Property.set = {{0}}");
 					_mock._property0SetInvocation.Register(_mock._invocationIndex, value);
 					_mock._property0Set?.Invoke(value);
 				}
@@ -125,37 +125,22 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		const string extensions =
 			"""
 			// Property
-			public ISetup<System.Action, MyNihongo.Example.Tests.Record<T?>, System.Func<MyNihongo.Example.Tests.Record<T?>>> SetupGetProperty() =>
-				((ClassMock<T>)@this).SetupGetProperty();
+			public ISetup<System.Action<int>> SetupSetProperty(in It<int> value = default) =>
+				((InterfaceMock<T>)@this).SetupSetProperty(value);
 
-			public void VerifyGetProperty(in Times times) =>
-				((ClassMock<T>)@this).VerifyGetProperty(times);
+			public void VerifySetProperty(in It<int> value, in Times times) =>
+				((InterfaceMock<T>)@this).VerifySetProperty(value, times);
 
-			public void VerifyGetProperty(System.Func<Times> times) =>
-				((ClassMock<T>)@this).VerifyGetProperty(times());
-
-			public ISetup<System.Action<MyNihongo.Example.Tests.Record<T?>>> SetupSetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value = default) =>
-				((ClassMock<T>)@this).SetupSetProperty(value);
-
-			public void VerifySetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value, in Times times) =>
-				((ClassMock<T>)@this).VerifySetProperty(value, times);
-
-			public void VerifySetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value, System.Func<Times> times) =>
-				((ClassMock<T>)@this).VerifySetProperty(value, times());
+			public void VerifySetProperty(in It<int> value, System.Func<Times> times) =>
+				((InterfaceMock<T>)@this).VerifySetProperty(value, times());
 			""";
 
 		const string extensionsSequence =
 			"""
 			// Property
-			public void GetProperty()
+			public void SetProperty(in It<int> value)
 			{
-				var nextIndex = ((ClassMock<T>)@this.Mock).VerifyGetProperty(@this.VerifyIndex);
-				@this.VerifyIndex.Set(nextIndex);
-			}
-
-			public void SetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value)
-			{
-				var nextIndex = ((ClassMock<T>)@this.Mock).VerifySetProperty(value, @this.VerifyIndex);
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifySetProperty(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
 			}
 			""";
@@ -190,13 +175,13 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 
 			public void VerifySetProperty(in It<int> value, in Times times)
 			{
-				_property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
+				_property0SetInvocation ??= new Invocation<int>($"IInterface<{typeof(T).Name}>.Property.set = {{0}}");
 				_property0SetInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifySetProperty(in It<int> value, long index)
 			{
-				_property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
+				_property0SetInvocation ??= new Invocation<int>($"IInterface<{typeof(T).Name}>.Property.set = {{0}}");
 				return _property0SetInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -207,7 +192,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			{
 				init
 				{
-					_mock._property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
+					_mock._property0SetInvocation ??= new Invocation<int>($"IInterface<{typeof(T).Name}>.Property.set = {{0}}");
 					_mock._property0SetInvocation.Register(_mock._invocationIndex, value);
 					_mock._property0Set?.Invoke(value);
 				}
@@ -217,37 +202,22 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		const string extensions =
 			"""
 			// Property
-			public ISetup<System.Action, MyNihongo.Example.Tests.Record<T?>, System.Func<MyNihongo.Example.Tests.Record<T?>>> SetupGetProperty() =>
-				((ClassMock<T>)@this).SetupGetProperty();
+			public ISetup<System.Action<int>> SetupSetProperty(in It<int> value = default) =>
+				((InterfaceMock<T>)@this).SetupSetProperty(value);
 
-			public void VerifyGetProperty(in Times times) =>
-				((ClassMock<T>)@this).VerifyGetProperty(times);
+			public void VerifySetProperty(in It<int> value, in Times times) =>
+				((InterfaceMock<T>)@this).VerifySetProperty(value, times);
 
-			public void VerifyGetProperty(System.Func<Times> times) =>
-				((ClassMock<T>)@this).VerifyGetProperty(times());
-
-			public ISetup<System.Action<MyNihongo.Example.Tests.Record<T?>>> SetupSetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value = default) =>
-				((ClassMock<T>)@this).SetupSetProperty(value);
-
-			public void VerifySetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value, in Times times) =>
-				((ClassMock<T>)@this).VerifySetProperty(value, times);
-
-			public void VerifySetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value, System.Func<Times> times) =>
-				((ClassMock<T>)@this).VerifySetProperty(value, times());
+			public void VerifySetProperty(in It<int> value, System.Func<Times> times) =>
+				((InterfaceMock<T>)@this).VerifySetProperty(value, times());
 			""";
 
 		const string extensionsSequence =
 			"""
 			// Property
-			public void GetProperty()
+			public void SetProperty(in It<int> value)
 			{
-				var nextIndex = ((ClassMock<T>)@this.Mock).VerifyGetProperty(@this.VerifyIndex);
-				@this.VerifyIndex.Set(nextIndex);
-			}
-
-			public void SetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value)
-			{
-				var nextIndex = ((ClassMock<T>)@this.Mock).VerifySetProperty(value, @this.VerifyIndex);
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifySetProperty(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
 			}
 			""";
@@ -302,13 +272,13 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 
 			public void VerifySetProperty(in It<int> value, in Times times)
 			{
-				_property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
+				_property0SetInvocation ??= new Invocation<int>($"IInterface<{typeof(T).Name}>.Property.set = {{0}}");
 				_property0SetInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifySetProperty(in It<int> value, long index)
 			{
-				_property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
+				_property0SetInvocation ??= new Invocation<int>($"IInterface<{typeof(T).Name}>.Property.set = {{0}}");
 				return _property0SetInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -325,7 +295,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 				}
 				set
 				{
-					_mock._property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
+					_mock._property0SetInvocation ??= new Invocation<int>($"IInterface<{typeof(T).Name}>.Property.set = {{0}}");
 					_mock._property0SetInvocation.Register(_mock._invocationIndex, value);
 					_mock._property0Set?.Invoke(value);
 				}
@@ -347,23 +317,23 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		const string extensions =
 			"""
 			// Property
-			public ISetup<System.Action, MyNihongo.Example.Tests.Record<T?>, System.Func<MyNihongo.Example.Tests.Record<T?>>> SetupGetProperty() =>
-				((ClassMock<T>)@this).SetupGetProperty();
+			public ISetup<System.Action, int, System.Func<int>> SetupGetProperty() =>
+				((InterfaceMock<T>)@this).SetupGetProperty();
 
 			public void VerifyGetProperty(in Times times) =>
-				((ClassMock<T>)@this).VerifyGetProperty(times);
+				((InterfaceMock<T>)@this).VerifyGetProperty(times);
 
 			public void VerifyGetProperty(System.Func<Times> times) =>
-				((ClassMock<T>)@this).VerifyGetProperty(times());
+				((InterfaceMock<T>)@this).VerifyGetProperty(times());
 
-			public ISetup<System.Action<MyNihongo.Example.Tests.Record<T?>>> SetupSetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value = default) =>
-				((ClassMock<T>)@this).SetupSetProperty(value);
+			public ISetup<System.Action<int>> SetupSetProperty(in It<int> value = default) =>
+				((InterfaceMock<T>)@this).SetupSetProperty(value);
 
-			public void VerifySetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value, in Times times) =>
-				((ClassMock<T>)@this).VerifySetProperty(value, times);
+			public void VerifySetProperty(in It<int> value, in Times times) =>
+				((InterfaceMock<T>)@this).VerifySetProperty(value, times);
 
-			public void VerifySetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value, System.Func<Times> times) =>
-				((ClassMock<T>)@this).VerifySetProperty(value, times());
+			public void VerifySetProperty(in It<int> value, System.Func<Times> times) =>
+				((InterfaceMock<T>)@this).VerifySetProperty(value, times());
 			""";
 
 		const string extensionsSequence =
@@ -371,13 +341,13 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			// Property
 			public void GetProperty()
 			{
-				var nextIndex = ((ClassMock<T>)@this.Mock).VerifyGetProperty(@this.VerifyIndex);
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyGetProperty(@this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
 			}
 
-			public void SetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value)
+			public void SetProperty(in It<int> value)
 			{
-				var nextIndex = ((ClassMock<T>)@this.Mock).VerifySetProperty(value, @this.VerifyIndex);
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifySetProperty(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
 			}
 			""";
@@ -429,13 +399,13 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 
 			public void VerifySetProperty(in It<int> value, in Times times)
 			{
-				_property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
+				_property0SetInvocation ??= new Invocation<int>($"IInterface<{typeof(T).Name}>.Property.set = {{0}}");
 				_property0SetInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifySetProperty(in It<int> value, long index)
 			{
-				_property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
+				_property0SetInvocation ??= new Invocation<int>($"IInterface<{typeof(T).Name}>.Property.set = {{0}}");
 				return _property0SetInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -452,7 +422,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 				}
 				init
 				{
-					_mock._property0SetInvocation ??= new Invocation<int>("IInterface<T>.Property.set = {0}");
+					_mock._property0SetInvocation ??= new Invocation<int>($"IInterface<{typeof(T).Name}>.Property.set = {{0}}");
 					_mock._property0SetInvocation.Register(_mock._invocationIndex, value);
 					_mock._property0Set?.Invoke(value);
 				}
@@ -474,23 +444,23 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		const string extensions =
 			"""
 			// Property
-			public ISetup<System.Action, MyNihongo.Example.Tests.Record<T?>, System.Func<MyNihongo.Example.Tests.Record<T?>>> SetupGetProperty() =>
-				((ClassMock<T>)@this).SetupGetProperty();
+			public ISetup<System.Action, int, System.Func<int>> SetupGetProperty() =>
+				((InterfaceMock<T>)@this).SetupGetProperty();
 
 			public void VerifyGetProperty(in Times times) =>
-				((ClassMock<T>)@this).VerifyGetProperty(times);
+				((InterfaceMock<T>)@this).VerifyGetProperty(times);
 
 			public void VerifyGetProperty(System.Func<Times> times) =>
-				((ClassMock<T>)@this).VerifyGetProperty(times());
+				((InterfaceMock<T>)@this).VerifyGetProperty(times());
 
-			public ISetup<System.Action<MyNihongo.Example.Tests.Record<T?>>> SetupSetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value = default) =>
-				((ClassMock<T>)@this).SetupSetProperty(value);
+			public ISetup<System.Action<int>> SetupSetProperty(in It<int> value = default) =>
+				((InterfaceMock<T>)@this).SetupSetProperty(value);
 
-			public void VerifySetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value, in Times times) =>
-				((ClassMock<T>)@this).VerifySetProperty(value, times);
+			public void VerifySetProperty(in It<int> value, in Times times) =>
+				((InterfaceMock<T>)@this).VerifySetProperty(value, times);
 
-			public void VerifySetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value, System.Func<Times> times) =>
-				((ClassMock<T>)@this).VerifySetProperty(value, times());
+			public void VerifySetProperty(in It<int> value, System.Func<Times> times) =>
+				((InterfaceMock<T>)@this).VerifySetProperty(value, times());
 			""";
 
 		const string extensionsSequence =
@@ -498,13 +468,13 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			// Property
 			public void GetProperty()
 			{
-				var nextIndex = ((ClassMock<T>)@this.Mock).VerifyGetProperty(@this.VerifyIndex);
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyGetProperty(@this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
 			}
 
-			public void SetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value)
+			public void SetProperty(in It<int> value)
 			{
-				var nextIndex = ((ClassMock<T>)@this.Mock).VerifySetProperty(value, @this.VerifyIndex);
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifySetProperty(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
 			}
 			""";
@@ -556,13 +526,13 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 
 			public void VerifySetProperty(in It<T> value, in Times times)
 			{
-				_property0SetInvocation ??= new Invocation<T>("IInterface<T>.Property.set = {0}");
+				_property0SetInvocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Property.set = {{0}}");
 				_property0SetInvocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifySetProperty(in It<T> value, long index)
 			{
-				_property0SetInvocation ??= new Invocation<T>("IInterface<T>.Property.set = {0}");
+				_property0SetInvocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Property.set = {{0}}");
 				return _property0SetInvocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -579,7 +549,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 				}
 				init
 				{
-					_mock._property0SetInvocation ??= new Invocation<T>("IInterface<T>.Property.set = {0}");
+					_mock._property0SetInvocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Property.set = {{0}}");
 					_mock._property0SetInvocation.Register(_mock._invocationIndex, value);
 					_mock._property0Set?.Invoke(value);
 				}
@@ -601,23 +571,23 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		const string extensions =
 			"""
 			// Property
-			public ISetup<System.Action, MyNihongo.Example.Tests.Record<T?>, System.Func<MyNihongo.Example.Tests.Record<T?>>> SetupGetProperty() =>
-				((ClassMock<T>)@this).SetupGetProperty();
+			public ISetup<System.Action, T, System.Func<T>> SetupGetProperty() =>
+				((InterfaceMock<T>)@this).SetupGetProperty();
 
 			public void VerifyGetProperty(in Times times) =>
-				((ClassMock<T>)@this).VerifyGetProperty(times);
+				((InterfaceMock<T>)@this).VerifyGetProperty(times);
 
 			public void VerifyGetProperty(System.Func<Times> times) =>
-				((ClassMock<T>)@this).VerifyGetProperty(times());
+				((InterfaceMock<T>)@this).VerifyGetProperty(times());
 
-			public ISetup<System.Action<MyNihongo.Example.Tests.Record<T?>>> SetupSetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value = default) =>
-				((ClassMock<T>)@this).SetupSetProperty(value);
+			public ISetup<System.Action<T>> SetupSetProperty(in It<T> value = default) =>
+				((InterfaceMock<T>)@this).SetupSetProperty(value);
 
-			public void VerifySetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value, in Times times) =>
-				((ClassMock<T>)@this).VerifySetProperty(value, times);
+			public void VerifySetProperty(in It<T> value, in Times times) =>
+				((InterfaceMock<T>)@this).VerifySetProperty(value, times);
 
-			public void VerifySetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value, System.Func<Times> times) =>
-				((ClassMock<T>)@this).VerifySetProperty(value, times());
+			public void VerifySetProperty(in It<T> value, System.Func<Times> times) =>
+				((InterfaceMock<T>)@this).VerifySetProperty(value, times());
 			""";
 
 		const string extensionsSequence =
@@ -625,13 +595,13 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			// Property
 			public void GetProperty()
 			{
-				var nextIndex = ((ClassMock<T>)@this.Mock).VerifyGetProperty(@this.VerifyIndex);
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyGetProperty(@this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
 			}
 
-			public void SetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value)
+			public void SetProperty(in It<T> value)
 			{
-				var nextIndex = ((ClassMock<T>)@this.Mock).VerifySetProperty(value, @this.VerifyIndex);
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifySetProperty(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
 			}
 			""";
@@ -728,23 +698,23 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		const string extensions =
 			"""
 			// Property
-			public ISetup<System.Action, MyNihongo.Example.Tests.Record<T?>, System.Func<MyNihongo.Example.Tests.Record<T?>>> SetupGetProperty() =>
-				((ClassMock<T>)@this).SetupGetProperty();
+			public ISetup<System.Action, T?, System.Func<T?>> SetupGetProperty() =>
+				((InterfaceMock<T>)@this).SetupGetProperty();
 
 			public void VerifyGetProperty(in Times times) =>
-				((ClassMock<T>)@this).VerifyGetProperty(times);
+				((InterfaceMock<T>)@this).VerifyGetProperty(times);
 
 			public void VerifyGetProperty(System.Func<Times> times) =>
-				((ClassMock<T>)@this).VerifyGetProperty(times());
+				((InterfaceMock<T>)@this).VerifyGetProperty(times());
 
-			public ISetup<System.Action<MyNihongo.Example.Tests.Record<T?>>> SetupSetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value = default) =>
-				((ClassMock<T>)@this).SetupSetProperty(value);
+			public ISetup<System.Action<T?>> SetupSetProperty(in It<T?> value = default) =>
+				((InterfaceMock<T>)@this).SetupSetProperty(value);
 
-			public void VerifySetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value, in Times times) =>
-				((ClassMock<T>)@this).VerifySetProperty(value, times);
+			public void VerifySetProperty(in It<T?> value, in Times times) =>
+				((InterfaceMock<T>)@this).VerifySetProperty(value, times);
 
-			public void VerifySetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value, System.Func<Times> times) =>
-				((ClassMock<T>)@this).VerifySetProperty(value, times());
+			public void VerifySetProperty(in It<T?> value, System.Func<Times> times) =>
+				((InterfaceMock<T>)@this).VerifySetProperty(value, times());
 			""";
 
 		const string extensionsSequence =
@@ -752,13 +722,13 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			// Property
 			public void GetProperty()
 			{
-				var nextIndex = ((ClassMock<T>)@this.Mock).VerifyGetProperty(@this.VerifyIndex);
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyGetProperty(@this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
 			}
 
-			public void SetProperty(in It<MyNihongo.Example.Tests.Record<T?>> value)
+			public void SetProperty(in It<T?> value)
 			{
-				var nextIndex = ((ClassMock<T>)@this.Mock).VerifySetProperty(value, @this.VerifyIndex);
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifySetProperty(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
 			}
 			""";
