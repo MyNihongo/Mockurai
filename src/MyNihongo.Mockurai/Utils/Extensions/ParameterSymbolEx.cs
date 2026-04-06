@@ -2,6 +2,16 @@
 
 internal static class ParameterSymbolEx
 {
+	extension(IParameterSymbol? @this)
+	{
+		public ImmutableArray<IParameterSymbol> ToImmutableArray()
+		{
+			return @this is null
+				? ImmutableArray<IParameterSymbol>.Empty
+				: [@this];
+		}
+	}
+
 	extension(ImmutableArray<IParameterSymbol> @this)
 	{
 		public bool TryGetInputParameters(out ImmutableArray<IParameterSymbol> parameters)

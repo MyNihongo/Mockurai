@@ -145,7 +145,7 @@ public abstract class TestsGenericBase : TestsBase
 	{
 		return
 			$$"""
-			  namespace MyNihongo.Mockurai.Tests;
+			  namespace MyNihongo.Example.Tests;
 
 			  {{customCode}}
 
@@ -166,13 +166,14 @@ public abstract class TestsGenericBase : TestsBase
 	{
 		const string testsBase =
 			"""
-			namespace MyNihongo.Mockurai.Tests;
+			#nullable enable
+			namespace MyNihongo.Example.Tests;
 
 			public partial class TestsBase
 			{
 				// ClassMock
 				private readonly ClassMock<string> _classMock = new(InvocationIndex.CounterValue);
-				protected partial MyNihongo.Mockurai.IMock<MyNihongo.Example.Tests.Class<string>> ClassMock => _classMock;
+				protected partial IMock<MyNihongo.Example.Tests.Class<string>> ClassMock => _classMock;
 
 				protected void VerifyNoOtherCalls()
 				{
@@ -193,7 +194,7 @@ public abstract class TestsGenericBase : TestsBase
 					private readonly VerifyIndex _verifyIndex = new();
 					public readonly IMockSequence<MyNihongo.Example.Tests.Class<string>> ClassMock;
 
-					public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Example.Tests.Class<string>> classMock)
+					public VerifySequenceContext(IMock<MyNihongo.Example.Tests.Class<string>> classMock)
 					{
 						ClassMock = new MockSequence<MyNihongo.Example.Tests.Class<string>>
 						{
@@ -212,6 +213,7 @@ public abstract class TestsGenericBase : TestsBase
 	{
 		var mock =
 			$$"""
+			  #nullable enable
 			  namespace MyNihongo.Mockurai;
 
 			  public sealed class ClassMock<T> : IMock<MyNihongo.Example.Tests.Class<T>>
