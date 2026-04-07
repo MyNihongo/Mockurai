@@ -308,12 +308,12 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 		const string methods =
 			"""
 			// InvokeAsync
-			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>? _invokeAsync0;
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invokeAsync0;
 			private InvocationDictionary? _invokeAsync0Invocation;
 
 			public Setup<TReturn> SetupInvokeAsync<TReturn>()
 			{
-				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
+				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
 				var invokeAsync0 = (Setup<TReturn>)_invokeAsync0.GetOrAdd(typeof(TReturn), static _ => new Setup<TReturn>());
 				return invokeAsync0;
 			}
@@ -683,12 +683,12 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 		const string methods =
 			"""
 			// InvokeAsync
-			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>? _invokeAsync0;
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invokeAsync0;
 			private InvocationDictionary? _invokeAsync0Invocation;
 
 			public Setup<TReturn> SetupInvokeAsync<TReturn>()
 			{
-				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
+				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
 				var invokeAsync0 = (Setup<TReturn>)_invokeAsync0.GetOrAdd(typeof(TReturn), static _ => new Setup<TReturn>());
 				return invokeAsync0;
 			}
@@ -844,12 +844,12 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 		const string methods =
 			"""
 			// InvokeAsync
-			private Setup<System.Threading.Tasks.Task<decimal>>? _invokeAsync0;
+			private Setup<decimal>? _invokeAsync0;
 			private Invocation? _invokeAsync0Invocation;
 
-			public Setup<System.Threading.Tasks.Task<decimal>> SetupInvokeAsync()
+			public Setup<decimal> SetupInvokeAsync()
 			{
-				_invokeAsync0 ??= new Setup<System.Threading.Tasks.Task<decimal>>();
+				_invokeAsync0 ??= new Setup<decimal>();
 				return _invokeAsync0;
 			}
 
@@ -872,15 +872,14 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 			{
 				_mock._invokeAsync0Invocation ??= new Invocation($"Class<{typeof(T).Name}>.InvokeAsync()");
 				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex);
-				_mock._invokeAsync0?.Invoke();
-				return System.Threading.Tasks.Task.CompletedTask;
+				return System.Threading.Tasks.Task.FromResult<decimal>(_mock._invokeAsync0?.Execute(out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
 		const string extensions =
 			"""
 			// InvokeAsync
-			public ISetup<System.Action, System.Threading.Tasks.Task<decimal>, System.Func<System.Threading.Tasks.Task<decimal>>> SetupInvokeAsync() =>
+			public ISetup<System.Action, decimal, System.Func<decimal>> SetupInvokeAsync() =>
 				((ClassMock<T>)@this).SetupInvokeAsync();
 
 			public void VerifyInvokeAsync(in Times times) =>
@@ -1167,13 +1166,13 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 		const string methods =
 			"""
 			// InvokeAsync
-			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>? _invokeAsync0;
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invokeAsync0;
 			private InvocationDictionary? _invokeAsync0Invocation;
 
-			public Setup<System.Threading.Tasks.Task<decimal>> SetupInvokeAsync<TInvoke>()
+			public Setup<decimal> SetupInvokeAsync<TInvoke>()
 			{
-				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
-				var invokeAsync0 = (Setup<System.Threading.Tasks.Task<decimal>>)_invokeAsync0.GetOrAdd(typeof(TInvoke), static _ => new Setup<System.Threading.Tasks.Task<decimal>>());
+				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+				var invokeAsync0 = (Setup<decimal>)_invokeAsync0.GetOrAdd(typeof(TInvoke), static _ => new Setup<decimal>());
 				return invokeAsync0;
 			}
 
@@ -1199,14 +1198,14 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
 				var invokeAsync0Invocation = (Invocation)_mock._invokeAsync0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation($"Class<{typeof(T).Name}>.InvokeAsync<{key.Name}>()"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex);
-				return ((Setup<System.Threading.Tasks.Task<decimal>>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Execute(out var returnValue) == true ? returnValue! : default!;
+				return System.Threading.Tasks.Task.FromResult<decimal>(((Setup<decimal>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Execute(out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
 		const string extensions =
 			"""
 			// InvokeAsync
-			public ISetup<System.Action, System.Threading.Tasks.Task<decimal>, System.Func<System.Threading.Tasks.Task<decimal>>> SetupInvokeAsync<TInvoke>() =>
+			public ISetup<System.Action, decimal, System.Func<decimal>> SetupInvokeAsync<TInvoke>() =>
 				((ClassMock<T>)@this).SetupInvokeAsync<TInvoke>();
 
 			public void VerifyInvokeAsync<TInvoke>(in Times times) =>
@@ -1334,12 +1333,12 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 		const string methods =
 			"""
 			// InvokeAsync
-			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>? _invokeAsync0;
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invokeAsync0;
 			private InvocationDictionary? _invokeAsync0Invocation;
 
 			public Setup<int> SetupInvokeAsync<TInvoke>()
 			{
-				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
+				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
 				var invokeAsync0 = (Setup<int>)_invokeAsync0.GetOrAdd(typeof(TInvoke), static _ => new Setup<int>());
 				return invokeAsync0;
 			}
@@ -1366,16 +1365,16 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
 				var invokeAsync0Invocation = (Invocation)_mock._invokeAsync0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation($"Class<{typeof(T).Name}>.InvokeAsync<{key.Name}>()"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex);
-				return ((Setup<int>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Execute(out var returnValue) == true ? returnValue! : default!;
+				return System.Threading.Tasks.Task.FromResult<int>(((Setup<int>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Execute(out var returnValue) == true ? returnValue! : default!);
 			}
 
-			protected override System.Threading.Tasks.Task<decimal> InvokeAsync2<TInvoke>() {return System.Threading.Tasks.Task.CompletedTask;}
+			protected override System.Threading.Tasks.Task<decimal> InvokeAsync2<TInvoke>() {return System.Threading.Tasks.Task.FromResult<decimal>(default!);}
 			""";
 
 		const string extensions =
 			"""
 			// InvokeAsync
-			public ISetup<System.Action, System.Threading.Tasks.Task<int>, System.Func<System.Threading.Tasks.Task<int>>> SetupInvokeAsync<TInvoke>() =>
+			public ISetup<System.Action, int, System.Func<int>> SetupInvokeAsync<TInvoke>() =>
 				((ClassMock<T>)@this).SetupInvokeAsync<TInvoke>();
 
 			public void VerifyInvokeAsync<TInvoke>(in Times times) =>
@@ -1418,12 +1417,12 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 		const string methods =
 			"""
 			// InvokeAsync
-			private Setup<System.Threading.Tasks.Task<T>>? _invokeAsync0;
+			private Setup<T>? _invokeAsync0;
 			private Invocation? _invokeAsync0Invocation;
 
-			public Setup<System.Threading.Tasks.Task<T>> SetupInvokeAsync()
+			public Setup<T> SetupInvokeAsync()
 			{
-				_invokeAsync0 ??= new Setup<System.Threading.Tasks.Task<T>>();
+				_invokeAsync0 ??= new Setup<T>();
 				return _invokeAsync0;
 			}
 
@@ -1446,15 +1445,14 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 			{
 				_mock._invokeAsync0Invocation ??= new Invocation($"Class<{typeof(T).Name}>.InvokeAsync()");
 				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex);
-				_mock._invokeAsync0?.Invoke();
-				return System.Threading.Tasks.Task.CompletedTask;
+				return System.Threading.Tasks.Task.FromResult<T>(_mock._invokeAsync0?.Execute(out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
 		const string extensions =
 			"""
 			// InvokeAsync
-			public ISetup<System.Action, System.Threading.Tasks.Task<T>, System.Func<System.Threading.Tasks.Task<T>>> SetupInvokeAsync() =>
+			public ISetup<System.Action, T, System.Func<T>> SetupInvokeAsync() =>
 				((ClassMock<T>)@this).SetupInvokeAsync();
 
 			public void VerifyInvokeAsync(in Times times) =>
@@ -1497,12 +1495,12 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 		const string methods =
 			"""
 			// InvokeAsync
-			private Setup<System.Threading.Tasks.Task<T>>? _invokeAsync0;
+			private Setup<T>? _invokeAsync0;
 			private Invocation? _invokeAsync0Invocation;
 
-			public Setup<System.Threading.Tasks.Task<T>> SetupInvokeAsync()
+			public Setup<T> SetupInvokeAsync()
 			{
-				_invokeAsync0 ??= new Setup<System.Threading.Tasks.Task<T>>();
+				_invokeAsync0 ??= new Setup<T>();
 				return _invokeAsync0;
 			}
 
@@ -1525,17 +1523,16 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 			{
 				_mock._invokeAsync0Invocation ??= new Invocation($"Class<{typeof(T).Name}>.InvokeAsync()");
 				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex);
-				_mock._invokeAsync0?.Invoke();
-				return System.Threading.Tasks.Task.CompletedTask;
+				return System.Threading.Tasks.Task.FromResult<T>(_mock._invokeAsync0?.Execute(out var returnValue) == true ? returnValue! : default!);
 			}
 
-			protected override System.Threading.Tasks.Task<T> InvokeAsync2() {return System.Threading.Tasks.Task.CompletedTask;}
+			protected override System.Threading.Tasks.Task<T> InvokeAsync2() {return System.Threading.Tasks.Task.FromResult<T>(default!);}
 			""";
 
 		const string extensions =
 			"""
 			// InvokeAsync
-			public ISetup<System.Action, System.Threading.Tasks.Task<T>, System.Func<System.Threading.Tasks.Task<T>>> SetupInvokeAsync() =>
+			public ISetup<System.Action, T, System.Func<T>> SetupInvokeAsync() =>
 				((ClassMock<T>)@this).SetupInvokeAsync();
 
 			public void VerifyInvokeAsync(in Times times) =>
@@ -1578,13 +1575,13 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 		const string methods =
 			"""
 			// InvokeAsync
-			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>? _invokeAsync0;
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invokeAsync0;
 			private InvocationDictionary? _invokeAsync0Invocation;
 
-			public Setup<System.Threading.Tasks.Task<TReturn>> SetupInvokeAsync<TReturn>()
+			public Setup<TReturn> SetupInvokeAsync<TReturn>()
 			{
-				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
-				var invokeAsync0 = (Setup<System.Threading.Tasks.Task<TReturn>>)_invokeAsync0.GetOrAdd(typeof(TReturn), static _ => new Setup<System.Threading.Tasks.Task<TReturn>>());
+				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+				var invokeAsync0 = (Setup<TReturn>)_invokeAsync0.GetOrAdd(typeof(TReturn), static _ => new Setup<TReturn>());
 				return invokeAsync0;
 			}
 
@@ -1610,14 +1607,14 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
 				var invokeAsync0Invocation = (Invocation)_mock._invokeAsync0Invocation.GetOrAdd(typeof(TReturn), static key => new Invocation($"Class<{typeof(T).Name}>.InvokeAsync<{key.Name}>()"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex);
-				return ((Setup<System.Threading.Tasks.Task<TReturn>>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TReturn)))?.Execute(out var returnValue) == true ? returnValue! : default!;
+				return System.Threading.Tasks.Task.FromResult<TReturn>(((Setup<TReturn>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TReturn)))?.Execute(out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
 		const string extensions =
 			"""
 			// InvokeAsync
-			public ISetup<System.Action, System.Threading.Tasks.Task<TReturn>, System.Func<System.Threading.Tasks.Task<TReturn>>> SetupInvokeAsync<TReturn>() =>
+			public ISetup<System.Action, TReturn, System.Func<TReturn>> SetupInvokeAsync<TReturn>() =>
 				((ClassMock<T>)@this).SetupInvokeAsync<TReturn>();
 
 			public void VerifyInvokeAsync<TReturn>(in Times times) =>
@@ -1660,13 +1657,13 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 		const string methods =
 			"""
 			// InvokeAsync
-			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>? _invokeAsync0;
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invokeAsync0;
 			private InvocationDictionary? _invokeAsync0Invocation;
 
-			public Setup<System.Threading.Tasks.Task<TReturn>> SetupInvokeAsync<TReturn>()
+			public Setup<TReturn> SetupInvokeAsync<TReturn>()
 			{
-				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
-				var invokeAsync0 = (Setup<System.Threading.Tasks.Task<TReturn>>)_invokeAsync0.GetOrAdd(typeof(TReturn), static _ => new Setup<System.Threading.Tasks.Task<TReturn>>());
+				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+				var invokeAsync0 = (Setup<TReturn>)_invokeAsync0.GetOrAdd(typeof(TReturn), static _ => new Setup<TReturn>());
 				return invokeAsync0;
 			}
 
@@ -1692,16 +1689,16 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
 				var invokeAsync0Invocation = (Invocation)_mock._invokeAsync0Invocation.GetOrAdd(typeof(TReturn), static key => new Invocation($"Class<{typeof(T).Name}>.InvokeAsync<{key.Name}>()"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex);
-				return ((Setup<System.Threading.Tasks.Task<TReturn>>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TReturn)))?.Execute(out var returnValue) == true ? returnValue! : default!;
+				return System.Threading.Tasks.Task.FromResult<TReturn>(((Setup<TReturn>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TReturn)))?.Execute(out var returnValue) == true ? returnValue! : default!);
 			}
 
-			protected override System.Threading.Tasks.Task<TReturn> InvokeAsync2<TReturn>() {return System.Threading.Tasks.Task.CompletedTask;}
+			protected override System.Threading.Tasks.Task<TReturn> InvokeAsync2<TReturn>() {return System.Threading.Tasks.Task.FromResult<TReturn>(default!);}
 			""";
 
 		const string extensions =
 			"""
 			// InvokeAsync
-			public ISetup<System.Action, System.Threading.Tasks.Task<TReturn>, System.Func<System.Threading.Tasks.Task<TReturn>>> SetupInvokeAsync<TReturn>() =>
+			public ISetup<System.Action, TReturn, System.Func<TReturn>> SetupInvokeAsync<TReturn>() =>
 				((ClassMock<T>)@this).SetupInvokeAsync<TReturn>();
 
 			public void VerifyInvokeAsync<TReturn>(in Times times) =>
@@ -1744,12 +1741,12 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 		const string methods =
 			"""
 			// InvokeAsync
-			private Setup<System.Threading.Tasks.ValueTask>? _invokeAsync0;
+			private Setup? _invokeAsync0;
 			private Invocation? _invokeAsync0Invocation;
 
-			public Setup<System.Threading.Tasks.ValueTask> SetupInvokeAsync()
+			public Setup SetupInvokeAsync()
 			{
-				_invokeAsync0 ??= new Setup<System.Threading.Tasks.ValueTask>();
+				_invokeAsync0 ??= new Setup();
 				return _invokeAsync0;
 			}
 
@@ -1768,19 +1765,19 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 
 		const string proxy =
 			"""
-			public override ValueTask InvokeAsync()
+			public override System.Threading.Tasks.ValueTask InvokeAsync()
 			{
 				_mock._invokeAsync0Invocation ??= new Invocation($"Class<{typeof(T).Name}>.InvokeAsync()");
 				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex);
 				_mock._invokeAsync0?.Invoke();
-				return System.Threading.Tasks.Task.CompletedTask;
+				return System.Threading.Tasks.ValueTask.CompletedTask;
 			}
 			""";
 
 		const string extensions =
 			"""
 			// InvokeAsync
-			public ISetup<System.Action, System.Threading.Tasks.ValueTask, System.Func<System.Threading.Tasks.ValueTask>> SetupInvokeAsync() =>
+			public ISetup<System.Action> SetupInvokeAsync() =>
 				((ClassMock<T>)@this).SetupInvokeAsync();
 
 			public void VerifyInvokeAsync(in Times times) =>
@@ -1823,12 +1820,12 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 		const string methods =
 			"""
 			// InvokeAsync
-			private Setup<System.Threading.Tasks.ValueTask<decimal>>? _invokeAsync0;
+			private Setup<decimal>? _invokeAsync0;
 			private Invocation? _invokeAsync0Invocation;
 
-			public Setup<System.Threading.Tasks.ValueTask<decimal>> SetupInvokeAsync()
+			public Setup<decimal> SetupInvokeAsync()
 			{
-				_invokeAsync0 ??= new Setup<System.Threading.Tasks.ValueTask<decimal>>();
+				_invokeAsync0 ??= new Setup<decimal>();
 				return _invokeAsync0;
 			}
 
@@ -1847,19 +1844,18 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 
 		const string proxy =
 			"""
-			public override ValueTask<decimal> InvokeAsync()
+			public override System.Threading.Tasks.ValueTask<decimal> InvokeAsync()
 			{
 				_mock._invokeAsync0Invocation ??= new Invocation($"Class<{typeof(T).Name}>.InvokeAsync()");
 				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex);
-				_mock._invokeAsync0?.Invoke();
-				return System.Threading.Tasks.Task.CompletedTask;
+				return System.Threading.Tasks.ValueTask.FromResult<decimal>(_mock._invokeAsync0?.Execute(out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
 		const string extensions =
 			"""
 			// InvokeAsync
-			public ISetup<System.Action, System.Threading.Tasks.ValueTask<decimal>, System.Func<System.Threading.Tasks.ValueTask<decimal>>> SetupInvokeAsync() =>
+			public ISetup<System.Action, decimal, System.Func<decimal>> SetupInvokeAsync() =>
 				((ClassMock<T>)@this).SetupInvokeAsync();
 
 			public void VerifyInvokeAsync(in Times times) =>
@@ -1902,12 +1898,12 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 		const string methods =
 			"""
 			// InvokeAsync
-			private Setup<System.Threading.Tasks.ValueTask>? _invokeAsync0;
+			private Setup? _invokeAsync0;
 			private Invocation? _invokeAsync0Invocation;
 
-			public Setup<System.Threading.Tasks.ValueTask> SetupInvokeAsync()
+			public Setup SetupInvokeAsync()
 			{
-				_invokeAsync0 ??= new Setup<System.Threading.Tasks.ValueTask>();
+				_invokeAsync0 ??= new Setup();
 				return _invokeAsync0;
 			}
 
@@ -1926,21 +1922,21 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 
 		const string proxy =
 			"""
-			public override ValueTask InvokeAsync()
+			public override System.Threading.Tasks.ValueTask InvokeAsync()
 			{
 				_mock._invokeAsync0Invocation ??= new Invocation($"Class<{typeof(T).Name}>.InvokeAsync()");
 				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex);
 				_mock._invokeAsync0?.Invoke();
-				return System.Threading.Tasks.Task.CompletedTask;
+				return System.Threading.Tasks.ValueTask.CompletedTask;
 			}
 
-			protected override ValueTask InvokeAsync2() {return System.Threading.Tasks.Task.CompletedTask;}
+			protected override System.Threading.Tasks.ValueTask InvokeAsync2() {return System.Threading.Tasks.ValueTask.CompletedTask;}
 			""";
 
 		const string extensions =
 			"""
 			// InvokeAsync
-			public ISetup<System.Action, System.Threading.Tasks.ValueTask, System.Func<System.Threading.Tasks.ValueTask>> SetupInvokeAsync() =>
+			public ISetup<System.Action> SetupInvokeAsync() =>
 				((ClassMock<T>)@this).SetupInvokeAsync();
 
 			public void VerifyInvokeAsync(in Times times) =>
@@ -1983,12 +1979,12 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 		const string methods =
 			"""
 			// InvokeAsync
-			private Setup<System.Threading.Tasks.ValueTask<int>>? _invokeAsync0;
+			private Setup<int>? _invokeAsync0;
 			private Invocation? _invokeAsync0Invocation;
 
-			public Setup<System.Threading.Tasks.ValueTask<int>> SetupInvokeAsync()
+			public Setup<int> SetupInvokeAsync()
 			{
-				_invokeAsync0 ??= new Setup<System.Threading.Tasks.ValueTask<int>>();
+				_invokeAsync0 ??= new Setup<int>();
 				return _invokeAsync0;
 			}
 
@@ -2007,21 +2003,20 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 
 		const string proxy =
 			"""
-			public override ValueTask<int> InvokeAsync()
+			public override System.Threading.Tasks.ValueTask<int> InvokeAsync()
 			{
 				_mock._invokeAsync0Invocation ??= new Invocation($"Class<{typeof(T).Name}>.InvokeAsync()");
 				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex);
-				_mock._invokeAsync0?.Invoke();
-				return System.Threading.Tasks.Task.CompletedTask;
+				return System.Threading.Tasks.ValueTask.FromResult<int>(_mock._invokeAsync0?.Execute(out var returnValue) == true ? returnValue! : default!);
 			}
 
-			protected override ValueTask<decimal> InvokeAsync2() {return System.Threading.Tasks.Task.CompletedTask;}
+			protected override System.Threading.Tasks.ValueTask<decimal> InvokeAsync2() {return System.Threading.Tasks.ValueTask.FromResult<decimal>(default!);}
 			""";
 
 		const string extensions =
 			"""
 			// InvokeAsync
-			public ISetup<System.Action, System.Threading.Tasks.ValueTask<int>, System.Func<System.Threading.Tasks.ValueTask<int>>> SetupInvokeAsync() =>
+			public ISetup<System.Action, int, System.Func<int>> SetupInvokeAsync() =>
 				((ClassMock<T>)@this).SetupInvokeAsync();
 
 			public void VerifyInvokeAsync(in Times times) =>
@@ -2067,10 +2062,10 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>? _invokeAsync0;
 			private InvocationDictionary? _invokeAsync0Invocation;
 
-			public Setup<System.Threading.Tasks.ValueTask> SetupInvokeAsync<TInvoke>()
+			public Setup SetupInvokeAsync<TInvoke>()
 			{
 				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
-				var invokeAsync0 = (Setup<System.Threading.Tasks.ValueTask>)_invokeAsync0.GetOrAdd(typeof(TInvoke), static _ => new Setup<System.Threading.Tasks.ValueTask>());
+				var invokeAsync0 = (Setup)_invokeAsync0.GetOrAdd(typeof(TInvoke), static _ => new Setup());
 				return invokeAsync0;
 			}
 
@@ -2091,19 +2086,20 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 
 		const string proxy =
 			"""
-			public override ValueTask InvokeAsync<TInvoke>()
+			public override System.Threading.Tasks.ValueTask InvokeAsync<TInvoke>()
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
 				var invokeAsync0Invocation = (Invocation)_mock._invokeAsync0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation($"Class<{typeof(T).Name}>.InvokeAsync<{key.Name}>()"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex);
-				return ((Setup<System.Threading.Tasks.ValueTask>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Execute(out var returnValue) == true ? returnValue! : default!;
+				((Setup?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Invoke();
+				return System.Threading.Tasks.ValueTask.CompletedTask;
 			}
 			""";
 
 		const string extensions =
 			"""
 			// InvokeAsync
-			public ISetup<System.Action, System.Threading.Tasks.ValueTask, System.Func<System.Threading.Tasks.ValueTask>> SetupInvokeAsync<TInvoke>() =>
+			public ISetup<System.Action> SetupInvokeAsync<TInvoke>() =>
 				((ClassMock<T>)@this).SetupInvokeAsync<TInvoke>();
 
 			public void VerifyInvokeAsync<TInvoke>(in Times times) =>
@@ -2146,13 +2142,13 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 		const string methods =
 			"""
 			// InvokeAsync
-			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>? _invokeAsync0;
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invokeAsync0;
 			private InvocationDictionary? _invokeAsync0Invocation;
 
-			public Setup<System.Threading.Tasks.ValueTask<decimal>> SetupInvokeAsync<TInvoke>()
+			public Setup<decimal> SetupInvokeAsync<TInvoke>()
 			{
-				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
-				var invokeAsync0 = (Setup<System.Threading.Tasks.ValueTask<decimal>>)_invokeAsync0.GetOrAdd(typeof(TInvoke), static _ => new Setup<System.Threading.Tasks.ValueTask<decimal>>());
+				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+				var invokeAsync0 = (Setup<decimal>)_invokeAsync0.GetOrAdd(typeof(TInvoke), static _ => new Setup<decimal>());
 				return invokeAsync0;
 			}
 
@@ -2173,19 +2169,19 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 
 		const string proxy =
 			"""
-			public override ValueTask<decimal> InvokeAsync<TInvoke>()
+			public override System.Threading.Tasks.ValueTask<decimal> InvokeAsync<TInvoke>()
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
 				var invokeAsync0Invocation = (Invocation)_mock._invokeAsync0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation($"Class<{typeof(T).Name}>.InvokeAsync<{key.Name}>()"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex);
-				return ((Setup<System.Threading.Tasks.ValueTask<decimal>>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Execute(out var returnValue) == true ? returnValue! : default!;
+				return System.Threading.Tasks.ValueTask.FromResult<decimal>(((Setup<decimal>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Execute(out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
 		const string extensions =
 			"""
 			// InvokeAsync
-			public ISetup<System.Action, System.Threading.Tasks.ValueTask<decimal>, System.Func<System.Threading.Tasks.ValueTask<decimal>>> SetupInvokeAsync<TInvoke>() =>
+			public ISetup<System.Action, decimal, System.Func<decimal>> SetupInvokeAsync<TInvoke>() =>
 				((ClassMock<T>)@this).SetupInvokeAsync<TInvoke>();
 
 			public void VerifyInvokeAsync<TInvoke>(in Times times) =>
@@ -2231,10 +2227,10 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>? _invokeAsync0;
 			private InvocationDictionary? _invokeAsync0Invocation;
 
-			public Setup<System.Threading.Tasks.ValueTask> SetupInvokeAsync<TInvoke>()
+			public Setup SetupInvokeAsync<TInvoke>()
 			{
 				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
-				var invokeAsync0 = (Setup<System.Threading.Tasks.ValueTask>)_invokeAsync0.GetOrAdd(typeof(TInvoke), static _ => new Setup<System.Threading.Tasks.ValueTask>());
+				var invokeAsync0 = (Setup)_invokeAsync0.GetOrAdd(typeof(TInvoke), static _ => new Setup());
 				return invokeAsync0;
 			}
 
@@ -2255,21 +2251,22 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 
 		const string proxy =
 			"""
-			public override ValueTask InvokeAsync<TInvoke>()
+			public override System.Threading.Tasks.ValueTask InvokeAsync<TInvoke>()
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
 				var invokeAsync0Invocation = (Invocation)_mock._invokeAsync0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation($"Class<{typeof(T).Name}>.InvokeAsync<{key.Name}>()"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex);
-				return ((Setup<System.Threading.Tasks.ValueTask>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Execute(out var returnValue) == true ? returnValue! : default!;
+				((Setup?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Invoke();
+				return System.Threading.Tasks.ValueTask.CompletedTask;
 			}
 
-			protected override ValueTask InvokeAsync2<TInvoke>() {return System.Threading.Tasks.Task.CompletedTask;}
+			protected override System.Threading.Tasks.ValueTask InvokeAsync2<TInvoke>() {return System.Threading.Tasks.ValueTask.CompletedTask;}
 			""";
 
 		const string extensions =
 			"""
 			// InvokeAsync
-			public ISetup<System.Action, System.Threading.Tasks.ValueTask, System.Func<System.Threading.Tasks.ValueTask>> SetupInvokeAsync<TInvoke>() =>
+			public ISetup<System.Action> SetupInvokeAsync<TInvoke>() =>
 				((ClassMock<T>)@this).SetupInvokeAsync<TInvoke>();
 
 			public void VerifyInvokeAsync<TInvoke>(in Times times) =>
@@ -2312,13 +2309,13 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 		const string methods =
 			"""
 			// InvokeAsync
-			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>? _invokeAsync0;
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invokeAsync0;
 			private InvocationDictionary? _invokeAsync0Invocation;
 
-			public Setup<System.Threading.Tasks.ValueTask<int>> SetupInvokeAsync<TInvoke>()
+			public Setup<int> SetupInvokeAsync<TInvoke>()
 			{
-				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
-				var invokeAsync0 = (Setup<System.Threading.Tasks.ValueTask<int>>)_invokeAsync0.GetOrAdd(typeof(TInvoke), static _ => new Setup<System.Threading.Tasks.ValueTask<int>>());
+				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+				var invokeAsync0 = (Setup<int>)_invokeAsync0.GetOrAdd(typeof(TInvoke), static _ => new Setup<int>());
 				return invokeAsync0;
 			}
 
@@ -2339,21 +2336,21 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 
 		const string proxy =
 			"""
-			public override ValueTask<int> InvokeAsync<TInvoke>()
+			public override System.Threading.Tasks.ValueTask<int> InvokeAsync<TInvoke>()
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
 				var invokeAsync0Invocation = (Invocation)_mock._invokeAsync0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation($"Class<{typeof(T).Name}>.InvokeAsync<{key.Name}>()"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex);
-				return ((Setup<System.Threading.Tasks.ValueTask<int>>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Execute(out var returnValue) == true ? returnValue! : default!;
+				return System.Threading.Tasks.ValueTask.FromResult<int>(((Setup<int>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Execute(out var returnValue) == true ? returnValue! : default!);
 			}
 
-			protected override ValueTask<decimal> InvokeAsync2<TInvoke>() {return System.Threading.Tasks.Task.CompletedTask;}
+			protected override System.Threading.Tasks.ValueTask<decimal> InvokeAsync2<TInvoke>() {return System.Threading.Tasks.ValueTask.FromResult<decimal>(default!);}
 			""";
 
 		const string extensions =
 			"""
 			// InvokeAsync
-			public ISetup<System.Action, System.Threading.Tasks.ValueTask<int>, System.Func<System.Threading.Tasks.ValueTask<int>>> SetupInvokeAsync<TInvoke>() =>
+			public ISetup<System.Action, int, System.Func<int>> SetupInvokeAsync<TInvoke>() =>
 				((ClassMock<T>)@this).SetupInvokeAsync<TInvoke>();
 
 			public void VerifyInvokeAsync<TInvoke>(in Times times) =>
@@ -2396,12 +2393,12 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 		const string methods =
 			"""
 			// InvokeAsync
-			private Setup<System.Threading.Tasks.ValueTask<T>>? _invokeAsync0;
+			private Setup<T>? _invokeAsync0;
 			private Invocation? _invokeAsync0Invocation;
 
-			public Setup<System.Threading.Tasks.ValueTask<T>> SetupInvokeAsync()
+			public Setup<T> SetupInvokeAsync()
 			{
-				_invokeAsync0 ??= new Setup<System.Threading.Tasks.ValueTask<T>>();
+				_invokeAsync0 ??= new Setup<T>();
 				return _invokeAsync0;
 			}
 
@@ -2420,19 +2417,18 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 
 		const string proxy =
 			"""
-			public override ValueTask<T> InvokeAsync()
+			public override System.Threading.Tasks.ValueTask<T> InvokeAsync()
 			{
 				_mock._invokeAsync0Invocation ??= new Invocation($"Class<{typeof(T).Name}>.InvokeAsync()");
 				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex);
-				_mock._invokeAsync0?.Invoke();
-				return System.Threading.Tasks.Task.CompletedTask;
+				return System.Threading.Tasks.ValueTask.FromResult<T>(_mock._invokeAsync0?.Execute(out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
 		const string extensions =
 			"""
 			// InvokeAsync
-			public ISetup<System.Action, System.Threading.Tasks.ValueTask<T>, System.Func<System.Threading.Tasks.ValueTask<T>>> SetupInvokeAsync() =>
+			public ISetup<System.Action, T, System.Func<T>> SetupInvokeAsync() =>
 				((ClassMock<T>)@this).SetupInvokeAsync();
 
 			public void VerifyInvokeAsync(in Times times) =>
@@ -2475,12 +2471,12 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 		const string methods =
 			"""
 			// InvokeAsync
-			private Setup<System.Threading.Tasks.ValueTask<T>>? _invokeAsync0;
+			private Setup<T>? _invokeAsync0;
 			private Invocation? _invokeAsync0Invocation;
 
-			public Setup<System.Threading.Tasks.ValueTask<T>> SetupInvokeAsync()
+			public Setup<T> SetupInvokeAsync()
 			{
-				_invokeAsync0 ??= new Setup<System.Threading.Tasks.ValueTask<T>>();
+				_invokeAsync0 ??= new Setup<T>();
 				return _invokeAsync0;
 			}
 
@@ -2499,21 +2495,20 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 
 		const string proxy =
 			"""
-			public override ValueTask<T> InvokeAsync()
+			public override System.Threading.Tasks.ValueTask<T> InvokeAsync()
 			{
 				_mock._invokeAsync0Invocation ??= new Invocation($"Class<{typeof(T).Name}>.InvokeAsync()");
 				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex);
-				_mock._invokeAsync0?.Invoke();
-				return System.Threading.Tasks.Task.CompletedTask;
+				return System.Threading.Tasks.ValueTask.FromResult<T>(_mock._invokeAsync0?.Execute(out var returnValue) == true ? returnValue! : default!);
 			}
 
-			protected override ValueTask<T> InvokeAsync2() {return System.Threading.Tasks.Task.CompletedTask;}
+			protected override System.Threading.Tasks.ValueTask<T> InvokeAsync2() {return System.Threading.Tasks.ValueTask.FromResult<T>(default!);}
 			""";
 
 		const string extensions =
 			"""
 			// InvokeAsync
-			public ISetup<System.Action, System.Threading.Tasks.ValueTask<T>, System.Func<System.Threading.Tasks.ValueTask<T>>> SetupInvokeAsync() =>
+			public ISetup<System.Action, T, System.Func<T>> SetupInvokeAsync() =>
 				((ClassMock<T>)@this).SetupInvokeAsync();
 
 			public void VerifyInvokeAsync(in Times times) =>
@@ -2556,13 +2551,13 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 		const string methods =
 			"""
 			// InvokeAsync
-			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>? _invokeAsync0;
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invokeAsync0;
 			private InvocationDictionary? _invokeAsync0Invocation;
 
-			public Setup<System.Threading.Tasks.ValueTask<TReturn>> SetupInvokeAsync<TReturn>()
+			public Setup<TReturn> SetupInvokeAsync<TReturn>()
 			{
-				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
-				var invokeAsync0 = (Setup<System.Threading.Tasks.ValueTask<TReturn>>)_invokeAsync0.GetOrAdd(typeof(TReturn), static _ => new Setup<System.Threading.Tasks.ValueTask<TReturn>>());
+				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+				var invokeAsync0 = (Setup<TReturn>)_invokeAsync0.GetOrAdd(typeof(TReturn), static _ => new Setup<TReturn>());
 				return invokeAsync0;
 			}
 
@@ -2583,19 +2578,19 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 
 		const string proxy =
 			"""
-			public override ValueTask<TReturn> InvokeAsync<TReturn>()
+			public override System.Threading.Tasks.ValueTask<TReturn> InvokeAsync<TReturn>()
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
 				var invokeAsync0Invocation = (Invocation)_mock._invokeAsync0Invocation.GetOrAdd(typeof(TReturn), static key => new Invocation($"Class<{typeof(T).Name}>.InvokeAsync<{key.Name}>()"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex);
-				return ((Setup<System.Threading.Tasks.ValueTask<TReturn>>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TReturn)))?.Execute(out var returnValue) == true ? returnValue! : default!;
+				return System.Threading.Tasks.ValueTask.FromResult<TReturn>(((Setup<TReturn>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TReturn)))?.Execute(out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
 		const string extensions =
 			"""
 			// InvokeAsync
-			public ISetup<System.Action, System.Threading.Tasks.ValueTask<TReturn>, System.Func<System.Threading.Tasks.ValueTask<TReturn>>> SetupInvokeAsync<TReturn>() =>
+			public ISetup<System.Action, TReturn, System.Func<TReturn>> SetupInvokeAsync<TReturn>() =>
 				((ClassMock<T>)@this).SetupInvokeAsync<TReturn>();
 
 			public void VerifyInvokeAsync<TReturn>(in Times times) =>
@@ -2638,13 +2633,13 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 		const string methods =
 			"""
 			// InvokeAsync
-			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>? _invokeAsync0;
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invokeAsync0;
 			private InvocationDictionary? _invokeAsync0Invocation;
 
-			public Setup<System.Threading.Tasks.ValueTask<TReturn>> SetupInvokeAsync<TReturn>()
+			public Setup<TReturn> SetupInvokeAsync<TReturn>()
 			{
-				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
-				var invokeAsync0 = (Setup<System.Threading.Tasks.ValueTask<TReturn>>)_invokeAsync0.GetOrAdd(typeof(TReturn), static _ => new Setup<System.Threading.Tasks.ValueTask<TReturn>>());
+				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+				var invokeAsync0 = (Setup<TReturn>)_invokeAsync0.GetOrAdd(typeof(TReturn), static _ => new Setup<TReturn>());
 				return invokeAsync0;
 			}
 
@@ -2665,21 +2660,21 @@ public sealed class MethodNoParametersGenericAsyncShould : MethodGenericTestsBas
 
 		const string proxy =
 			"""
-			public override ValueTask<TReturn> InvokeAsync<TReturn>()
+			public override System.Threading.Tasks.ValueTask<TReturn> InvokeAsync<TReturn>()
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
 				var invokeAsync0Invocation = (Invocation)_mock._invokeAsync0Invocation.GetOrAdd(typeof(TReturn), static key => new Invocation($"Class<{typeof(T).Name}>.InvokeAsync<{key.Name}>()"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex);
-				return ((Setup<System.Threading.Tasks.ValueTask<TReturn>>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TReturn)))?.Execute(out var returnValue) == true ? returnValue! : default!;
+				return System.Threading.Tasks.ValueTask.FromResult<TReturn>(((Setup<TReturn>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TReturn)))?.Execute(out var returnValue) == true ? returnValue! : default!);
 			}
 
-			protected override ValueTask<TReturn> InvokeAsync2<TReturn>() {return System.Threading.Tasks.Task.CompletedTask;}
+			protected override System.Threading.Tasks.ValueTask<TReturn> InvokeAsync2<TReturn>() {return System.Threading.Tasks.ValueTask.FromResult<TReturn>(default!);}
 			""";
 
 		const string extensions =
 			"""
 			// InvokeAsync
-			public ISetup<System.Action, System.Threading.Tasks.ValueTask<TReturn>, System.Func<System.Threading.Tasks.ValueTask<TReturn>>> SetupInvokeAsync<TReturn>() =>
+			public ISetup<System.Action, TReturn, System.Func<TReturn>> SetupInvokeAsync<TReturn>() =>
 				((ClassMock<T>)@this).SetupInvokeAsync<TReturn>();
 
 			public void VerifyInvokeAsync<TReturn>(in Times times) =>
