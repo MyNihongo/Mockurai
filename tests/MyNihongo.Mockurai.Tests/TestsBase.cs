@@ -57,8 +57,8 @@ public abstract class TestsBase
 		var classNameReturns = string.Join(null, types) + returnsGenericType;
 		var parameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString()));
 		var discardedParameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString(typeNameOverride: "_")));
-		var parameterNamesWithRef = string.Join(", ", types.Select(static x => x.GetParameterNameString(appendRefKind: true)));
-		var returnsValue = outTypes.Length > 0 ? Environment.NewLine + "\t\t{" + string.Concat(outTypes.Select(static x => $"{Environment.NewLine}\t\t\t{x.GetParameterNameString()} = default;")) + $"{Environment.NewLine}\t\t\treturn returns;{Environment.NewLine}" + "\t\t}" : " returns";
+		var parameterNamesWithRef = string.Join(", ", types.Select(static x => x.RefType == "out" ? $"{x.GetParameterNameString(appendRefKind: true)}!" : x.GetParameterNameString(appendRefKind: true)));
+		var returnsValue = outTypes.Length > 0 ? Environment.NewLine + "\t\t{" + string.Concat(outTypes.Select(static x => $"{Environment.NewLine}\t\t\t{x.GetParameterNameString()} = default!;")) + $"{Environment.NewLine}\t\t\treturn returns;{Environment.NewLine}" + "\t\t}" : " returns";
 		var inputParameterNames = string.Join(", ", inputParameters.Select(static x => x.GetParameterNameString()));
 		var setupParametersName = inputParameters.Length > 1 ? "SetupParameters" : "SetupParameter";
 		var setupParameters = (bool isNullable) => string.Join(", ", inputParameters.Select(x => $"in ItSetup<{x.GetTypeString()}>{(isNullable ? "?" : string.Empty)} {x.GetParameterNameString()}"));
@@ -133,7 +133,7 @@ public abstract class TestsBase
 			? $"""
 
 
-			   		Default:{(useReturns ? Environment.NewLine + $"\t\t{returnValue} = default!;" : string.Empty)}{(outTypes.Length > 0 ? string.Concat(outTypes.Select(static x => Environment.NewLine + $"\t\t{x.GetParameterNameString()} = default;")) : string.Empty)}
+			   		Default:{(useReturns ? Environment.NewLine + $"\t\t{returnValue} = default!;" : string.Empty)}{(outTypes.Length > 0 ? string.Concat(outTypes.Select(static x => Environment.NewLine + $"\t\t{x.GetParameterNameString()} = default!;")) : string.Empty)}
 			   		return{(useReturns ? " false" : string.Empty)};
 			   """
 			: string.Empty;
@@ -225,7 +225,7 @@ public abstract class TestsBase
 				    			}
 				    			else
 				    			{
-				    				{{string.Join(Environment.NewLine + "\t\t\t\t", outTypes.Select(x => $"{x.GetParameterNameString()} = default;"))}}
+				    				{{string.Join(Environment.NewLine + "\t\t\t\t", outTypes.Select(x => $"{x.GetParameterNameString()} = default!;"))}}
 				    			}
 				    """
 				: $$"""
@@ -235,7 +235,7 @@ public abstract class TestsBase
 				    		}
 				    		else
 				    		{
-				    			{{string.Join(Environment.NewLine + "\t\t\t", outTypes.Select(x => $"{x.GetParameterNameString()} = default;"))}}
+				    			{{string.Join(Environment.NewLine + "\t\t\t", outTypes.Select(x => $"{x.GetParameterNameString()} = default!;"))}}
 				    		}
 				    """;
 
@@ -302,7 +302,7 @@ public abstract class TestsBase
 			    			if (x.Exception is not null)
 			    				throw x.Exception;
 
-			    			{{(useReturns ? checkReturns + (outTypes.Length > 0 ? $"returnValue = default;{Environment.NewLine}\t\t\treturn false" : "goto Default") : "return")}};
+			    			{{(useReturns ? checkReturns + (outTypes.Length > 0 ? $"returnValue = default!;{Environment.NewLine}\t\t\treturn false" : "goto Default") : "return")}};
 			    		}{{defaultReturns}}
 			    	}
 			    """
@@ -312,7 +312,7 @@ public abstract class TestsBase
 			    		{{callbackInvoke}}
 
 			    		if (x.Exception is not null)
-			    			throw x.Exception;{{(useReturns ? $"{Environment.NewLine + Environment.NewLine}\t\t" + checkReturns + (outTypes.Length > 0 ? $"returnValue = default;{Environment.NewLine}\t\treturn false;" : "goto Default;") : string.Empty)}}
+			    			throw x.Exception;{{(useReturns ? $"{Environment.NewLine + Environment.NewLine}\t\t" + checkReturns + (outTypes.Length > 0 ? $"returnValue = default!;{Environment.NewLine}\t\treturn false;" : "goto Default;") : string.Empty)}}
 			    	}
 			    """;
 
