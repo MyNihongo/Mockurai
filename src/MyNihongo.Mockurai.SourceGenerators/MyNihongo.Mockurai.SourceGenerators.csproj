@@ -14,6 +14,7 @@
 		<Product>Mockurai</Product>
 		<Description>A source generator–based mocking library for .NET.</Description>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RootNamespace>MyNihongo.Mockurai</RootNamespace>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
