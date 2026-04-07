@@ -43,6 +43,29 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 			}
 			""";
 
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<SetupInt32Single.CallbackDelegate> SetupInvoke(in It<int> param1 = default, in It<float> param2 = default) =>
+				((InterfaceMock)@this).SetupInvoke(param1, param2);
+
+			public void VerifyInvoke(in It<int> param1, in It<float> param2, in Times times) =>
+				((InterfaceMock)@this).VerifyInvoke(param1, param2, times);
+
+			public void VerifyInvoke(in It<int> param1, in It<float> param2, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvoke(param1, param2, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke(in It<int> param1, in It<float> param2)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvoke(param1, param2, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
 
@@ -50,7 +73,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupCode(types);
 		var invocationCode = CreateInvocationCode(types);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, setupCode, invocationCode);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
