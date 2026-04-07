@@ -36,12 +36,12 @@ public sealed class SourceGenerator : IIncrementalGenerator
 						continue;
 
 					var sourceCode = namedTypeSymbol.GenerateMockClass(mocks);
-					context.AddSource($"{namedTypeSymbol.Name}.g.cs", sourceCode);
+					context.AddSanitisedSource($"{namedTypeSymbol.Name}.g.cs", sourceCode);
 					mockTypes.AddAll(mocks);
 				}
 
 				var methodSetups = new HashSet<IMethodSymbol>(MethodSymbolSetupComparer.Default);
-				var methodInvocations = new HashSet<IMethodSymbol>(MethodSymbolInvocationSetupComparer.Default);
+				var methodInvocations = new HashSet<IMethodSymbol>(MethodSymbolInvocationComparer.Default);
 				foreach (var mockType in mockTypes)
 				{
 					var sourceCodeResult = mockType.GenerateMockImplementation(source);

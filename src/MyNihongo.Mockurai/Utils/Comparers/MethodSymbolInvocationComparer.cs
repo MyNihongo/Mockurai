@@ -1,8 +1,8 @@
 ﻿namespace MyNihongo.Mockurai.Utils;
 
-internal sealed class MethodSymbolInvocationSetupComparer : MethodSymbolComparerBase
+internal sealed class MethodSymbolInvocationComparer : MethodSymbolComparerBase
 {
-	public static readonly MethodSymbolInvocationSetupComparer Default = new();
+	public static readonly MethodSymbolInvocationComparer Default = new();
 
 	protected override int GetHashCode(IMethodSymbol obj, HashCode hash, SymbolEqualityComparer symbolComparer)
 	{

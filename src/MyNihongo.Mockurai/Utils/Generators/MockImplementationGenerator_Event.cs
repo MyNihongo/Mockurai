@@ -106,7 +106,7 @@ internal static class MockImplementationEventGenerator
 			.AppendCastCall(mockClassName)
 			.AppendRaiseMethodName(memberSymbol)
 			.Append('(')
-			.AppendParameterNames([parameterSymbol])
+			.AppendParameterNames(parameterSymbol.ToImmutableArray())
 			.Append(");");
 
 		if (eventSymbol.AddMethod is not null)

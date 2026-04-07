@@ -32,6 +32,7 @@ public sealed class GenericSetup : TestsBase
 			(
 				"TestsBase.g.cs",
 				"""
+				#nullable enable
 				namespace MyNihongo.Mockurai.Tests;
 
 				public partial class TestsBase
@@ -74,6 +75,7 @@ public sealed class GenericSetup : TestsBase
 			(
 				"InterfaceMock.g.cs",
 				"""
+				#nullable enable
 				namespace MyNihongo.Mockurai;
 
 				public sealed class InterfaceMock : IMock<MyNihongo.Mockurai.Tests.IInterface>
@@ -105,14 +107,14 @@ public sealed class GenericSetup : TestsBase
 					public void VerifyInvoke<TReturns>(in It<int> param1, in It<TReturns> returnValue, in Times times)
 					{
 						_invoke0Invocation ??= new InvocationDictionary();
-						var invoke0Invocation = (InvocationInt32T1<TReturns>)_invoke0Invocation.GetOrAdd(typeof(TReturns), static key => new InvocationInt32T1<TReturns>($"IInterface.Invoke<{key.Name}>({0}, {1})"));
+						var invoke0Invocation = (InvocationInt32T1<TReturns>)_invoke0Invocation.GetOrAdd(typeof(TReturns), static key => new InvocationInt32T1<TReturns>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
 						invoke0Invocation.Verify(param1.ValueSetup, returnValue.ValueSetup, times, _invocationProviders);
 					}
 
 					public long VerifyInvoke<TReturns>(in It<int> param1, in It<TReturns> returnValue, long index)
 					{
 						_invoke0Invocation ??= new InvocationDictionary();
-						var invoke0Invocation = (InvocationInt32T1<TReturns>)_invoke0Invocation.GetOrAdd(typeof(TReturns), static key => new InvocationInt32T1<TReturns>($"IInterface.Invoke<{key.Name}>({0}, {1})"));
+						var invoke0Invocation = (InvocationInt32T1<TReturns>)_invoke0Invocation.GetOrAdd(typeof(TReturns), static key => new InvocationInt32T1<TReturns>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
 						return invoke0Invocation.Verify(param1.ValueSetup, returnValue.ValueSetup, index, _invocationProviders);
 					}
 
@@ -138,7 +140,7 @@ public sealed class GenericSetup : TestsBase
 						public TReturns Invoke<TReturns>(int param1, TReturns returnValue)
 						{
 							_mock._invoke0Invocation ??= new InvocationDictionary();
-							var invoke0Invocation = (InvocationInt32T1<TReturns>)_mock._invoke0Invocation.GetOrAdd(typeof(TReturns), static key => new InvocationInt32T1<TReturns>($"IInterface.Invoke<{key.Name}>({0}, {1})"));
+							var invoke0Invocation = (InvocationInt32T1<TReturns>)_mock._invoke0Invocation.GetOrAdd(typeof(TReturns), static key => new InvocationInt32T1<TReturns>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
 							invoke0Invocation.Register(_mock._invocationIndex, param1, returnValue);
 							return ((SetupInt32T1<TReturns, TReturns>?)_mock._invoke0?.ValueOrDefault(typeof(TReturns)))?.Execute(param1, returnValue, out var _returnValue) == true ? _returnValue! : default!;
 						}
@@ -152,7 +154,15 @@ public sealed class GenericSetup : TestsBase
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
-						
+						// Invoke
+						public ISetup<SetupInt32T1<TReturns, TReturns>.CallbackDelegate, TReturns, SetupInt32T1<TReturns, TReturns>.ReturnsCallbackDelegate> SetupInvoke<TReturns>(in It<int> param1 = default, in It<TReturns> returnValue = default) =>
+							((InterfaceMock)@this).SetupInvoke<TReturns>(param1, returnValue);
+
+						public void VerifyInvoke<TReturns>(in It<int> param1, in It<TReturns> returnValue, in Times times) =>
+							((InterfaceMock)@this).VerifyInvoke<TReturns>(param1, returnValue, times);
+
+						public void VerifyInvoke<TReturns>(in It<int> param1, in It<TReturns> returnValue, System.Func<Times> times) =>
+							((InterfaceMock)@this).VerifyInvoke<TReturns>(param1, returnValue, times());
 					}
 				}
 
@@ -160,7 +170,12 @@ public sealed class GenericSetup : TestsBase
 				{
 					extension(IMockSequence<MyNihongo.Mockurai.Tests.IInterface> @this)
 					{
-					
+						// Invoke
+						public void Invoke<TReturns>(in It<int> param1, in It<TReturns> returnValue)
+						{
+							var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvoke<TReturns>(param1, returnValue, @this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
 					}
 				}
 				"""

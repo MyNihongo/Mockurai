@@ -406,6 +406,8 @@ internal static class MockInvocationGenerator
 
 		foreach (var parameter in methodSymbol.Parameters)
 		{
+			stringBuilder.AppendLine();
+			
 			stringBuilder
 				.Indent(indent)
 				.AppendFieldName(parameter.Name)
@@ -414,7 +416,6 @@ internal static class MockInvocationGenerator
 				.AppendLine(";");
 
 			stringBuilder
-				.AppendLine()
 				.Indent(indent)
 				.AppendLine("try")
 				.Indent(indent++).AppendLine("{");

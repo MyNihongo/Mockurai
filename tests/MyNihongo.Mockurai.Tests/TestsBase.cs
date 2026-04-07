@@ -1,6 +1,4 @@
-﻿using MyNihongo.Mockurai;
-
-namespace MyNihongo.Mockurai.Tests;
+﻿namespace MyNihongo.Mockurai.Tests;
 
 public abstract class TestsBase
 {
@@ -59,8 +57,8 @@ public abstract class TestsBase
 		var classNameReturns = string.Join(null, types) + returnsGenericType;
 		var parameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString()));
 		var discardedParameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString(typeNameOverride: "_")));
-		var parameterNamesWithRef = string.Join(", ", types.Select(static x => x.GetParameterNameString(appendRefKind: true)));
-		var returnsValue = outTypes.Length > 0 ? Environment.NewLine + "\t\t{" + string.Concat(outTypes.Select(static x => $"{Environment.NewLine}\t\t\t{x.GetParameterNameString()} = default;")) + $"{Environment.NewLine}\t\t\treturn returns;{Environment.NewLine}" + "\t\t}" : " returns";
+		var parameterNamesWithRef = string.Join(", ", types.Select(static x => x.RefType == "out" ? $"{x.GetParameterNameString(appendRefKind: true)}!" : x.GetParameterNameString(appendRefKind: true)));
+		var returnsValue = outTypes.Length > 0 ? Environment.NewLine + "\t\t{" + string.Concat(outTypes.Select(static x => $"{Environment.NewLine}\t\t\t{x.GetParameterNameString()} = default!;")) + $"{Environment.NewLine}\t\t\treturn returns;{Environment.NewLine}" + "\t\t}" : " returns";
 		var inputParameterNames = string.Join(", ", inputParameters.Select(static x => x.GetParameterNameString()));
 		var setupParametersName = inputParameters.Length > 1 ? "SetupParameters" : "SetupParameter";
 		var setupParameters = (bool isNullable) => string.Join(", ", inputParameters.Select(x => $"in ItSetup<{x.GetTypeString()}>{(isNullable ? "?" : string.Empty)} {x.GetParameterNameString()}"));
@@ -135,7 +133,7 @@ public abstract class TestsBase
 			? $"""
 
 
-			   		Default:{(useReturns ? Environment.NewLine + $"\t\t{returnValue} = default;" : string.Empty)}{(outTypes.Length > 0 ? string.Concat(outTypes.Select(static x => Environment.NewLine + $"\t\t{x.GetParameterNameString()} = default;")) : string.Empty)}
+			   		Default:{(useReturns ? Environment.NewLine + $"\t\t{returnValue} = default!;" : string.Empty)}{(outTypes.Length > 0 ? string.Concat(outTypes.Select(static x => Environment.NewLine + $"\t\t{x.GetParameterNameString()} = default!;")) : string.Empty)}
 			   		return{(useReturns ? " false" : string.Empty)};
 			   """
 			: string.Empty;
@@ -227,7 +225,7 @@ public abstract class TestsBase
 				    			}
 				    			else
 				    			{
-				    				{{string.Join(Environment.NewLine + "\t\t\t\t", outTypes.Select(x => $"{x.GetParameterNameString()} = default;"))}}
+				    				{{string.Join(Environment.NewLine + "\t\t\t\t", outTypes.Select(x => $"{x.GetParameterNameString()} = default!;"))}}
 				    			}
 				    """
 				: $$"""
@@ -237,7 +235,7 @@ public abstract class TestsBase
 				    		}
 				    		else
 				    		{
-				    			{{string.Join(Environment.NewLine + "\t\t\t", outTypes.Select(x => $"{x.GetParameterNameString()} = default;"))}}
+				    			{{string.Join(Environment.NewLine + "\t\t\t", outTypes.Select(x => $"{x.GetParameterNameString()} = default!;"))}}
 				    		}
 				    """;
 
@@ -304,7 +302,7 @@ public abstract class TestsBase
 			    			if (x.Exception is not null)
 			    				throw x.Exception;
 
-			    			{{(useReturns ? checkReturns + (outTypes.Length > 0 ? $"returnValue = default;{Environment.NewLine}\t\t\treturn false" : "goto Default") : "return")}};
+			    			{{(useReturns ? checkReturns + (outTypes.Length > 0 ? $"returnValue = default!;{Environment.NewLine}\t\t\treturn false" : "goto Default") : "return")}};
 			    		}{{defaultReturns}}
 			    	}
 			    """
@@ -314,12 +312,13 @@ public abstract class TestsBase
 			    		{{callbackInvoke}}
 
 			    		if (x.Exception is not null)
-			    			throw x.Exception;{{(useReturns ? $"{Environment.NewLine + Environment.NewLine}\t\t" + checkReturns + (outTypes.Length > 0 ? $"returnValue = default;{Environment.NewLine}\t\treturn false;" : "goto Default;") : string.Empty)}}
+			    			throw x.Exception;{{(useReturns ? $"{Environment.NewLine + Environment.NewLine}\t\t" + checkReturns + (outTypes.Length > 0 ? $"returnValue = default!;{Environment.NewLine}\t\treturn false;" : "goto Default;") : string.Empty)}}
 			    	}
 			    """;
 
 		var sourceCode =
 			$$"""
+			  #nullable enable
 			  namespace MyNihongo.Mockurai;
 
 			  public sealed class Setup{{classNameReturns}} : ISetupCallbackJoin<{{interfaceGeneric}}>, ISetupCallbackReset<{{interfaceGeneric}}>, {{iSetupThrowsJoin}}<{{interfaceGeneric}}>, {{iSetupThrowsReset}}<{{interfaceGeneric}}>
@@ -470,7 +469,7 @@ public abstract class TestsBase
 		var setupParameters = string.Join(", ", types.Select(static x => $"in ItSetup<{x.GetTypeString()}> {x.GetParameterNameString()}"));
 		var verifyParameters = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x => $"var verify{x.GetCamelCaseNameString()} = span[i].Get{x.GetCamelCaseNameString()}({x.GetParameterNameString()}.Type);"));
 		var parameterToString = string.Join(", ", types.Select(static x => $"{x.GetParameterNameString()}.ToString(_prefix{x.GetCamelCaseNameString()})"));
-		var typeNameParameters = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"var typeName{x.GetCamelCaseNameString()} = !string.IsNullOrEmpty(_prefix{x.GetCamelCaseNameString()}) ? $\"{{_prefix{x.GetCamelCaseNameString()}}} {x.GetTypeString()}\" : \"{x.GetTypeString()}\";"));
+		var typeNameParameters = string.Join(Environment.NewLine + "\t\t", types.Select(static x => { return $"var typeName{x.GetCamelCaseNameString()} = !string.IsNullOrEmpty(_prefix{x.GetCamelCaseNameString()}) ? $\"{{_prefix{x.GetCamelCaseNameString()}}} {(x.IsGeneric ? $"{{typeof({x.GetTypeString()}).Name}}" : x.GetTypeString())}\" : {(x.IsGeneric ? $"typeof({x.GetTypeString()}).Name" : $"\"{x.GetTypeString()}\"")};"; }));
 		var typeParameterNames = string.Join(", ", types.Select(static x => $"typeName{x.GetCamelCaseNameString()}"));
 		var parameterFields = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"private readonly {x.GetTypeString()} _{x.GetParameterNameString()};"));
 		var verifyChecks = string.Join(Environment.NewLine + "\t\t\t", types.Select(static (x, i) =>
@@ -498,9 +497,9 @@ public abstract class TestsBase
 
 			return
 				$$"""
-				  try
+				  _{{name}} = {{name}};
+				  			try
 				  			{
-				  				_{{name}} = {{name}};
 				  				_jsonSnapshot{{camelCase}} = System.Text.Json.JsonSerializer.Serialize({{name}});
 				  			}
 				  			catch
@@ -518,7 +517,7 @@ public abstract class TestsBase
 				  public {{typeString}} Get{{x.GetCamelCaseNameString()}}(SetupType setupType)
 				  		{
 				  			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshot{{x.GetCamelCaseNameString()}})
-				  				? System.Text.Json.JsonSerializer.Deserialize<{{typeString}}>(_jsonSnapshot{{x.GetCamelCaseNameString()}})
+				  				? System.Text.Json.JsonSerializer.Deserialize<{{typeString}}>(_jsonSnapshot{{x.GetCamelCaseNameString()}})!
 				  				: _{{x.GetParameterNameString()}};
 				  		}
 				  """;
@@ -544,6 +543,7 @@ public abstract class TestsBase
 
 		var sourceCode =
 			$$"""
+			  #nullable enable
 			  namespace MyNihongo.Mockurai;
 
 			  public sealed class Invocation{{classNameGenerics}} : IInvocationVerify

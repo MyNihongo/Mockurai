@@ -47,8 +47,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.Action<int>> SetupInvokeAsync(in It<int> param = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(param);
+
+			public void VerifyInvokeAsync(in It<int> param, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(param, times);
+
+			public void VerifyInvokeAsync(in It<int> param, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(param, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in It<int> param)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(param, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -99,8 +122,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.Action<int>> SetupInvokeAsync(in It<int> param = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(param);
+
+			public void VerifyInvokeAsync(in It<int> param, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(param, times);
+
+			public void VerifyInvokeAsync(in It<int> param, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(param, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in It<int> param)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(param, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -150,8 +196,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.Action<int>, float, System.Func<int, float>> SetupInvokeAsync(in It<int> param = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(param);
+
+			public void VerifyInvokeAsync(in It<int> param, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(param, times);
+
+			public void VerifyInvokeAsync(in It<int> param, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(param, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in It<int> param)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(param, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -201,8 +270,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.Action<int>, float, System.Func<int, float>> SetupInvokeAsync(in It<int> param = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(param);
+
+			public void VerifyInvokeAsync(in It<int> param, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(param, times);
+
+			public void VerifyInvokeAsync(in It<int> param, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(param, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in It<int> param)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(param, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -243,15 +335,15 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.Task InvokeAsync(out int result)
 			{
 				_mock._invokeAsync0Invocation ??= new Invocation<int>("IInterface.InvokeAsync({0})", prefix: "out");
-				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex, default);
+				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex, default!);
 				if (_mock._invokeAsync0 is not null)
 				{
-					_mock._invokeAsync0.Invoke(out result);
+					_mock._invokeAsync0.Invoke(out result!);
 					return System.Threading.Tasks.Task.CompletedTask;
 				}
 				else
 				{
-					result = default;
+					result = default!;
 					return System.Threading.Tasks.Task.CompletedTask;
 				}
 			}
@@ -260,8 +352,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionOut<int>> SetupInvokeAsync(in ItOut<int> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(result);
+
+			public void VerifyInvokeAsync(in ItOut<int> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times);
+
+			public void VerifyInvokeAsync(in ItOut<int> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in ItOut<int> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -302,15 +417,15 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.ValueTask InvokeAsync(out int result)
 			{
 				_mock._invokeAsync0Invocation ??= new Invocation<int>("IInterface.InvokeAsync({0})", prefix: "out");
-				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex, default);
+				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex, default!);
 				if (_mock._invokeAsync0 is not null)
 				{
-					_mock._invokeAsync0.Invoke(out result);
+					_mock._invokeAsync0.Invoke(out result!);
 					return System.Threading.Tasks.ValueTask.CompletedTask;
 				}
 				else
 				{
-					result = default;
+					result = default!;
 					return System.Threading.Tasks.ValueTask.CompletedTask;
 				}
 			}
@@ -319,8 +434,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionOut<int>> SetupInvokeAsync(in ItOut<int> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(result);
+
+			public void VerifyInvokeAsync(in ItOut<int> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times);
+
+			public void VerifyInvokeAsync(in ItOut<int> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in ItOut<int> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -361,14 +499,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.Task<decimal> InvokeAsync(out int result)
 			{
 				_mock._invokeAsync0Invocation ??= new Invocation<int>("IInterface.InvokeAsync({0})", prefix: "out");
-				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex, default);
+				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex, default!);
 				if (_mock._invokeAsync0 is not null)
 				{
-					return System.Threading.Tasks.Task.FromResult<decimal>(_mock._invokeAsync0.Execute(out result, out var returnValue) == true ? returnValue! : default!);
+					return System.Threading.Tasks.Task.FromResult<decimal>(_mock._invokeAsync0.Execute(out result!, out var returnValue) == true ? returnValue! : default!);
 				}
 				else
 				{
-					result = default;
+					result = default!;
 					return System.Threading.Tasks.Task.FromResult<decimal>(default!);
 				}
 			}
@@ -377,8 +515,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionOut<int>, decimal, System.FuncOut<int, decimal>> SetupInvokeAsync(in ItOut<int> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(result);
+
+			public void VerifyInvokeAsync(in ItOut<int> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times);
+
+			public void VerifyInvokeAsync(in ItOut<int> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in ItOut<int> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -419,14 +580,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.ValueTask<decimal> InvokeAsync(out int result)
 			{
 				_mock._invokeAsync0Invocation ??= new Invocation<int>("IInterface.InvokeAsync({0})", prefix: "out");
-				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex, default);
+				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex, default!);
 				if (_mock._invokeAsync0 is not null)
 				{
-					return System.Threading.Tasks.ValueTask.FromResult<decimal>(_mock._invokeAsync0.Execute(out result, out var returnValue) == true ? returnValue! : default!);
+					return System.Threading.Tasks.ValueTask.FromResult<decimal>(_mock._invokeAsync0.Execute(out result!, out var returnValue) == true ? returnValue! : default!);
 				}
 				else
 				{
-					result = default;
+					result = default!;
 					return System.Threading.Tasks.ValueTask.FromResult<decimal>(default!);
 				}
 			}
@@ -435,8 +596,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionOut<int>, decimal, System.FuncOut<int, decimal>> SetupInvokeAsync(in ItOut<int> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(result);
+
+			public void VerifyInvokeAsync(in ItOut<int> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times);
+
+			public void VerifyInvokeAsync(in ItOut<int> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in ItOut<int> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -487,8 +671,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionIn<int>> SetupInvokeAsync(in ItIn<int> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(result);
+
+			public void VerifyInvokeAsync(in ItIn<int> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times);
+
+			public void VerifyInvokeAsync(in ItIn<int> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in ItIn<int> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -539,8 +746,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionIn<int>> SetupInvokeAsync(in ItIn<int> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(result);
+
+			public void VerifyInvokeAsync(in ItIn<int> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times);
+
+			public void VerifyInvokeAsync(in ItIn<int> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in ItIn<int> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -590,8 +820,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionIn<int>, decimal, System.FuncIn<int, decimal>> SetupInvokeAsync(in ItIn<int> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(result);
+
+			public void VerifyInvokeAsync(in ItIn<int> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times);
+
+			public void VerifyInvokeAsync(in ItIn<int> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in ItIn<int> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -641,8 +894,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionIn<int>, decimal, System.FuncIn<int, decimal>> SetupInvokeAsync(in ItIn<int> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(result);
+
+			public void VerifyInvokeAsync(in ItIn<int> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times);
+
+			public void VerifyInvokeAsync(in ItIn<int> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in ItIn<int> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -693,8 +969,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionRef<int>> SetupInvokeAsync(in ItRef<int> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(result);
+
+			public void VerifyInvokeAsync(in ItRef<int> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times);
+
+			public void VerifyInvokeAsync(in ItRef<int> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in ItRef<int> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -745,8 +1044,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionRef<int>> SetupInvokeAsync(in ItRef<int> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(result);
+
+			public void VerifyInvokeAsync(in ItRef<int> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times);
+
+			public void VerifyInvokeAsync(in ItRef<int> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in ItRef<int> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -796,8 +1118,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionRef<int>, decimal, System.FuncRef<int, decimal>> SetupInvokeAsync(in ItRef<int> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(result);
+
+			public void VerifyInvokeAsync(in ItRef<int> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times);
+
+			public void VerifyInvokeAsync(in ItRef<int> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in ItRef<int> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -847,8 +1192,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionRef<int>, decimal, System.FuncRef<int, decimal>> SetupInvokeAsync(in ItRef<int> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(result);
+
+			public void VerifyInvokeAsync(in ItRef<int> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times);
+
+			public void VerifyInvokeAsync(in ItRef<int> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in ItRef<int> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -899,8 +1267,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionRefReadOnly<int>> SetupInvokeAsync(in ItRefReadOnly<int> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(result);
+
+			public void VerifyInvokeAsync(in ItRefReadOnly<int> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times);
+
+			public void VerifyInvokeAsync(in ItRefReadOnly<int> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in ItRefReadOnly<int> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -951,8 +1342,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionRefReadOnly<int>> SetupInvokeAsync(in ItRefReadOnly<int> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(result);
+
+			public void VerifyInvokeAsync(in ItRefReadOnly<int> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times);
+
+			public void VerifyInvokeAsync(in ItRefReadOnly<int> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in ItRefReadOnly<int> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1002,8 +1416,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionRefReadOnly<int>, decimal, System.FuncRefReadOnly<int, decimal>> SetupInvokeAsync(in ItRefReadOnly<int> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(result);
+
+			public void VerifyInvokeAsync(in ItRefReadOnly<int> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times);
+
+			public void VerifyInvokeAsync(in ItRefReadOnly<int> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in ItRefReadOnly<int> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1053,8 +1490,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionRefReadOnly<int>, decimal, System.FuncRefReadOnly<int, decimal>> SetupInvokeAsync(in ItRefReadOnly<int> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync(result);
+
+			public void VerifyInvokeAsync(in ItRefReadOnly<int> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times);
+
+			public void VerifyInvokeAsync(in ItRefReadOnly<int> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync(in ItRefReadOnly<int> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1082,14 +1542,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T>(in It<T> param, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})"));
 				invokeAsync0Invocation.Verify(param.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T>(in It<T> param, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})"));
 				return invokeAsync0Invocation.Verify(param.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -1099,7 +1559,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.Task InvokeAsync<T>(T param)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})"));
+				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, param);
 				((SetupWithParameter<T>?)_mock._invokeAsync0?.ValueOrDefault(typeof(T)))?.Invoke(param);
 				return System.Threading.Tasks.Task.CompletedTask;
@@ -1109,8 +1569,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.Action<T>> SetupInvokeAsync<T>(in It<T> param = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T>(param);
+
+			public void VerifyInvokeAsync<T>(in It<T> param, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(param, times);
+
+			public void VerifyInvokeAsync<T>(in It<T> param, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(param, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T>(in It<T> param)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T>(param, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1138,14 +1621,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T>(in It<T> param, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})"));
 				invokeAsync0Invocation.Verify(param.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T>(in It<T> param, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})"));
 				return invokeAsync0Invocation.Verify(param.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -1155,7 +1638,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.ValueTask InvokeAsync<T>(T param)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})"));
+				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, param);
 				((SetupWithParameter<T>?)_mock._invokeAsync0?.ValueOrDefault(typeof(T)))?.Invoke(param);
 				return System.Threading.Tasks.ValueTask.CompletedTask;
@@ -1165,8 +1648,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.Action<T>> SetupInvokeAsync<T>(in It<T> param = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T>(param);
+
+			public void VerifyInvokeAsync<T>(in It<T> param, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(param, times);
+
+			public void VerifyInvokeAsync<T>(in It<T> param, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(param, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T>(in It<T> param)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T>(param, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1194,14 +1700,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T1, T2>(in It<T1> param, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})"));
 				invokeAsync0Invocation.Verify(param.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T1, T2>(in It<T1> param, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})"));
 				return invokeAsync0Invocation.Verify(param.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -1211,7 +1717,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.Task<T2> InvokeAsync<T1, T2>(T1 param)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})"));
+				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, param);
 				return System.Threading.Tasks.Task.FromResult<T2>(((SetupWithParameter<T1, T2>?)_mock._invokeAsync0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(param, out var returnValue) == true ? returnValue! : default!);
 			}
@@ -1220,8 +1726,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.Action<T1>, T2, System.Func<T1, T2>> SetupInvokeAsync<T1, T2>(in It<T1> param = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T1, T2>(param);
+
+			public void VerifyInvokeAsync<T1, T2>(in It<T1> param, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(param, times);
+
+			public void VerifyInvokeAsync<T1, T2>(in It<T1> param, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(param, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T1, T2>(in It<T1> param)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T1, T2>(param, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1249,14 +1778,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T1, T2>(in It<T1> param, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})"));
 				invokeAsync0Invocation.Verify(param.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T1, T2>(in It<T1> param, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})"));
 				return invokeAsync0Invocation.Verify(param.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -1266,7 +1795,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.ValueTask<T2> InvokeAsync<T1, T2>(T1 param)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})"));
+				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, param);
 				return System.Threading.Tasks.ValueTask.FromResult<T2>(((SetupWithParameter<T1, T2>?)_mock._invokeAsync0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(param, out var returnValue) == true ? returnValue! : default!);
 			}
@@ -1275,8 +1804,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.Action<T1>, T2, System.Func<T1, T2>> SetupInvokeAsync<T1, T2>(in It<T1> param = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T1, T2>(param);
+
+			public void VerifyInvokeAsync<T1, T2>(in It<T1> param, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(param, times);
+
+			public void VerifyInvokeAsync<T1, T2>(in It<T1> param, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(param, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T1, T2>(in It<T1> param)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T1, T2>(param, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1303,14 +1855,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T>(in ItOut<T> value, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "out"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "out"));
 				invokeAsync0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T>(in ItOut<T> value, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "out"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "out"));
 				return invokeAsync0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -1320,16 +1872,16 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.Task InvokeAsync<T>(out T value)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "out"));
-				invokeAsync0Invocation.Register(_mock._invocationIndex, default);
+				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "out"));
+				invokeAsync0Invocation.Register(_mock._invocationIndex, default!);
 				if (_mock._invokeAsync0?.TryGetValue(typeof(T), out var setup) == true)
 				{
-					((SetupWithOutParameter<T>)setup).Invoke(out value);
+					((SetupWithOutParameter<T>)setup).Invoke(out value!);
 					return System.Threading.Tasks.Task.CompletedTask;
 				}
 				else
 				{
-					value = default;
+					value = default!;
 					return System.Threading.Tasks.Task.CompletedTask;
 				}
 			}
@@ -1338,8 +1890,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionOut<T>> SetupInvokeAsync<T>(in ItOut<T> value = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T>(value);
+
+			public void VerifyInvokeAsync<T>(in ItOut<T> value, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(value, times);
+
+			public void VerifyInvokeAsync<T>(in ItOut<T> value, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T>(in ItOut<T> value)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T>(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1366,14 +1941,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T>(in ItOut<T> value, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "out"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "out"));
 				invokeAsync0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T>(in ItOut<T> value, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "out"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "out"));
 				return invokeAsync0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -1383,16 +1958,16 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.ValueTask InvokeAsync<T>(out T value)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "out"));
-				invokeAsync0Invocation.Register(_mock._invocationIndex, default);
+				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "out"));
+				invokeAsync0Invocation.Register(_mock._invocationIndex, default!);
 				if (_mock._invokeAsync0?.TryGetValue(typeof(T), out var setup) == true)
 				{
-					((SetupWithOutParameter<T>)setup).Invoke(out value);
+					((SetupWithOutParameter<T>)setup).Invoke(out value!);
 					return System.Threading.Tasks.ValueTask.CompletedTask;
 				}
 				else
 				{
-					value = default;
+					value = default!;
 					return System.Threading.Tasks.ValueTask.CompletedTask;
 				}
 			}
@@ -1401,8 +1976,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionOut<T>> SetupInvokeAsync<T>(in ItOut<T> value = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T>(value);
+
+			public void VerifyInvokeAsync<T>(in ItOut<T> value, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(value, times);
+
+			public void VerifyInvokeAsync<T>(in ItOut<T> value, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T>(in ItOut<T> value)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T>(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1429,14 +2027,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T1, T2>(in ItOut<T1> result, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "out"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "out"));
 				invokeAsync0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T1, T2>(in ItOut<T1> result, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "out"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "out"));
 				return invokeAsync0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -1446,15 +2044,15 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.Task<T2> InvokeAsync<T1, T2>(out T1 result)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "out"));
-				invokeAsync0Invocation.Register(_mock._invocationIndex, default);
+				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "out"));
+				invokeAsync0Invocation.Register(_mock._invocationIndex, default!);
 				if (_mock._invokeAsync0?.TryGetValue((typeof(T1), typeof(T2)), out var setup) == true)
 				{
-					return System.Threading.Tasks.Task.FromResult<T2>(((SetupWithOutParameter<T1, T2>)setup).Execute(out result, out var returnValue) == true ? returnValue! : default!);
+					return System.Threading.Tasks.Task.FromResult<T2>(((SetupWithOutParameter<T1, T2>)setup).Execute(out result!, out var returnValue) == true ? returnValue! : default!);
 				}
 				else
 				{
-					result = default;
+					result = default!;
 					return System.Threading.Tasks.Task.FromResult<T2>(default!);
 				}
 			}
@@ -1463,8 +2061,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionOut<T1>, T2, System.FuncOut<T1, T2>> SetupInvokeAsync<T1, T2>(in ItOut<T1> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T1, T2>(result);
+
+			public void VerifyInvokeAsync<T1, T2>(in ItOut<T1> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(result, times);
+
+			public void VerifyInvokeAsync<T1, T2>(in ItOut<T1> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T1, T2>(in ItOut<T1> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T1, T2>(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1491,14 +2112,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T1, T2>(in ItOut<T1> result, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "out"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "out"));
 				invokeAsync0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T1, T2>(in ItOut<T1> result, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "out"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "out"));
 				return invokeAsync0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -1508,15 +2129,15 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.ValueTask<T2> InvokeAsync<T1, T2>(out T1 result)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "out"));
-				invokeAsync0Invocation.Register(_mock._invocationIndex, default);
+				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "out"));
+				invokeAsync0Invocation.Register(_mock._invocationIndex, default!);
 				if (_mock._invokeAsync0?.TryGetValue((typeof(T1), typeof(T2)), out var setup) == true)
 				{
-					return System.Threading.Tasks.ValueTask.FromResult<T2>(((SetupWithOutParameter<T1, T2>)setup).Execute(out result, out var returnValue) == true ? returnValue! : default!);
+					return System.Threading.Tasks.ValueTask.FromResult<T2>(((SetupWithOutParameter<T1, T2>)setup).Execute(out result!, out var returnValue) == true ? returnValue! : default!);
 				}
 				else
 				{
-					result = default;
+					result = default!;
 					return System.Threading.Tasks.ValueTask.FromResult<T2>(default!);
 				}
 			}
@@ -1525,8 +2146,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionOut<T1>, T2, System.FuncOut<T1, T2>> SetupInvokeAsync<T1, T2>(in ItOut<T1> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T1, T2>(result);
+
+			public void VerifyInvokeAsync<T1, T2>(in ItOut<T1> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(result, times);
+
+			public void VerifyInvokeAsync<T1, T2>(in ItOut<T1> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T1, T2>(in ItOut<T1> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T1, T2>(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1554,14 +2198,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T>(in ItIn<T> value, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "in"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "in"));
 				invokeAsync0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T>(in ItIn<T> value, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "in"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "in"));
 				return invokeAsync0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -1571,7 +2215,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.Task InvokeAsync<T>(in T value)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "in"));
+				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "in"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, value);
 				((SetupWithInParameter<T>?)_mock._invokeAsync0?.ValueOrDefault(typeof(T)))?.Invoke(in value);
 				return System.Threading.Tasks.Task.CompletedTask;
@@ -1581,8 +2225,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionIn<T>> SetupInvokeAsync<T>(in ItIn<T> value = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T>(value);
+
+			public void VerifyInvokeAsync<T>(in ItIn<T> value, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(value, times);
+
+			public void VerifyInvokeAsync<T>(in ItIn<T> value, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T>(in ItIn<T> value)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T>(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1610,14 +2277,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T>(in ItIn<T> value, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "in"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "in"));
 				invokeAsync0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T>(in ItIn<T> value, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "in"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "in"));
 				return invokeAsync0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -1627,7 +2294,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.ValueTask InvokeAsync<T>(in T value)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "in"));
+				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "in"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, value);
 				((SetupWithInParameter<T>?)_mock._invokeAsync0?.ValueOrDefault(typeof(T)))?.Invoke(in value);
 				return System.Threading.Tasks.ValueTask.CompletedTask;
@@ -1637,8 +2304,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionIn<T>> SetupInvokeAsync<T>(in ItIn<T> value = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T>(value);
+
+			public void VerifyInvokeAsync<T>(in ItIn<T> value, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(value, times);
+
+			public void VerifyInvokeAsync<T>(in ItIn<T> value, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T>(in ItIn<T> value)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T>(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1666,14 +2356,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T1, T2>(in ItIn<T1> result, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "in"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "in"));
 				invokeAsync0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T1, T2>(in ItIn<T1> result, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "in"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "in"));
 				return invokeAsync0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -1683,7 +2373,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.Task<T2> InvokeAsync<T1, T2>(in T1 result)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "in"));
+				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "in"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, result);
 				return System.Threading.Tasks.Task.FromResult<T2>(((SetupWithInParameter<T1, T2>?)_mock._invokeAsync0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(in result, out var returnValue) == true ? returnValue! : default!);
 			}
@@ -1692,8 +2382,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionIn<T1>, T2, System.FuncIn<T1, T2>> SetupInvokeAsync<T1, T2>(in ItIn<T1> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T1, T2>(result);
+
+			public void VerifyInvokeAsync<T1, T2>(in ItIn<T1> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(result, times);
+
+			public void VerifyInvokeAsync<T1, T2>(in ItIn<T1> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T1, T2>(in ItIn<T1> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T1, T2>(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1721,14 +2434,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T1, T2>(in ItIn<T1> result, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "in"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "in"));
 				invokeAsync0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T1, T2>(in ItIn<T1> result, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "in"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "in"));
 				return invokeAsync0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -1738,7 +2451,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.ValueTask<T2> InvokeAsync<T1, T2>(in T1 result)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "in"));
+				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "in"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, result);
 				return System.Threading.Tasks.ValueTask.FromResult<T2>(((SetupWithInParameter<T1, T2>?)_mock._invokeAsync0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(in result, out var returnValue) == true ? returnValue! : default!);
 			}
@@ -1747,8 +2460,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionIn<T1>, T2, System.FuncIn<T1, T2>> SetupInvokeAsync<T1, T2>(in ItIn<T1> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T1, T2>(result);
+
+			public void VerifyInvokeAsync<T1, T2>(in ItIn<T1> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(result, times);
+
+			public void VerifyInvokeAsync<T1, T2>(in ItIn<T1> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T1, T2>(in ItIn<T1> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T1, T2>(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1776,14 +2512,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T>(in ItRef<T> value, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "ref"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "ref"));
 				invokeAsync0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T>(in ItRef<T> value, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "ref"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "ref"));
 				return invokeAsync0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -1793,7 +2529,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.Task InvokeAsync<T>(ref T value)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "ref"));
+				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "ref"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, value);
 				((SetupWithRefParameter<T>?)_mock._invokeAsync0?.ValueOrDefault(typeof(T)))?.Invoke(ref value);
 				return System.Threading.Tasks.Task.CompletedTask;
@@ -1803,8 +2539,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionRef<T>> SetupInvokeAsync<T>(in ItRef<T> value = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T>(value);
+
+			public void VerifyInvokeAsync<T>(in ItRef<T> value, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(value, times);
+
+			public void VerifyInvokeAsync<T>(in ItRef<T> value, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T>(in ItRef<T> value)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T>(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1832,14 +2591,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T>(in ItRef<T> value, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "ref"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "ref"));
 				invokeAsync0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T>(in ItRef<T> value, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "ref"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "ref"));
 				return invokeAsync0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -1849,7 +2608,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.ValueTask InvokeAsync<T>(ref T value)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "ref"));
+				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "ref"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, value);
 				((SetupWithRefParameter<T>?)_mock._invokeAsync0?.ValueOrDefault(typeof(T)))?.Invoke(ref value);
 				return System.Threading.Tasks.ValueTask.CompletedTask;
@@ -1859,8 +2618,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionRef<T>> SetupInvokeAsync<T>(in ItRef<T> value = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T>(value);
+
+			public void VerifyInvokeAsync<T>(in ItRef<T> value, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(value, times);
+
+			public void VerifyInvokeAsync<T>(in ItRef<T> value, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T>(in ItRef<T> value)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T>(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1888,14 +2670,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T1, T2>(in ItRef<T1> result, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref"));
 				invokeAsync0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T1, T2>(in ItRef<T1> result, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref"));
 				return invokeAsync0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -1905,7 +2687,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.Task<T2> InvokeAsync<T1, T2>(ref T1 result)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref"));
+				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, result);
 				return System.Threading.Tasks.Task.FromResult<T2>(((SetupWithRefParameter<T1, T2>?)_mock._invokeAsync0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(ref result, out var returnValue) == true ? returnValue! : default!);
 			}
@@ -1914,8 +2696,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionRef<T1>, T2, System.FuncRef<T1, T2>> SetupInvokeAsync<T1, T2>(in ItRef<T1> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T1, T2>(result);
+
+			public void VerifyInvokeAsync<T1, T2>(in ItRef<T1> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(result, times);
+
+			public void VerifyInvokeAsync<T1, T2>(in ItRef<T1> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T1, T2>(in ItRef<T1> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T1, T2>(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1943,14 +2748,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T1, T2>(in ItRef<T1> result, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref"));
 				invokeAsync0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T1, T2>(in ItRef<T1> result, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref"));
 				return invokeAsync0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -1960,7 +2765,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.ValueTask<T2> InvokeAsync<T1, T2>(ref T1 result)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref"));
+				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, result);
 				return System.Threading.Tasks.ValueTask.FromResult<T2>(((SetupWithRefParameter<T1, T2>?)_mock._invokeAsync0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(ref result, out var returnValue) == true ? returnValue! : default!);
 			}
@@ -1969,8 +2774,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionRef<T1>, T2, System.FuncRef<T1, T2>> SetupInvokeAsync<T1, T2>(in ItRef<T1> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T1, T2>(result);
+
+			public void VerifyInvokeAsync<T1, T2>(in ItRef<T1> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(result, times);
+
+			public void VerifyInvokeAsync<T1, T2>(in ItRef<T1> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T1, T2>(in ItRef<T1> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T1, T2>(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1998,14 +2826,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T>(in ItRefReadOnly<T> value, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "ref readonly"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "ref readonly"));
 				invokeAsync0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T>(in ItRefReadOnly<T> value, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "ref readonly"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "ref readonly"));
 				return invokeAsync0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -2015,7 +2843,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.Task InvokeAsync<T>(ref readonly T value)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "ref readonly"));
+				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "ref readonly"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, value);
 				((SetupWithRefReadOnlyParameter<T>?)_mock._invokeAsync0?.ValueOrDefault(typeof(T)))?.Invoke(in value);
 				return System.Threading.Tasks.Task.CompletedTask;
@@ -2025,8 +2853,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionRefReadOnly<T>> SetupInvokeAsync<T>(in ItRefReadOnly<T> value = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T>(value);
+
+			public void VerifyInvokeAsync<T>(in ItRefReadOnly<T> value, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(value, times);
+
+			public void VerifyInvokeAsync<T>(in ItRefReadOnly<T> value, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T>(in ItRefReadOnly<T> value)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T>(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -2054,14 +2905,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T>(in ItRefReadOnly<T> value, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "ref readonly"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "ref readonly"));
 				invokeAsync0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T>(in ItRefReadOnly<T> value, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "ref readonly"));
+				var invokeAsync0Invocation = (Invocation<T>)_invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "ref readonly"));
 				return invokeAsync0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -2071,7 +2922,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.ValueTask InvokeAsync<T>(ref readonly T value)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
-				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({0})", prefix: "ref readonly"));
+				var invokeAsync0Invocation = (Invocation<T>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"IInterface.InvokeAsync<{key.Name}>({{0}})", prefix: "ref readonly"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, value);
 				((SetupWithRefReadOnlyParameter<T>?)_mock._invokeAsync0?.ValueOrDefault(typeof(T)))?.Invoke(in value);
 				return System.Threading.Tasks.ValueTask.CompletedTask;
@@ -2081,8 +2932,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionRefReadOnly<T>> SetupInvokeAsync<T>(in ItRefReadOnly<T> value = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T>(value);
+
+			public void VerifyInvokeAsync<T>(in ItRefReadOnly<T> value, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(value, times);
+
+			public void VerifyInvokeAsync<T>(in ItRefReadOnly<T> value, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T>(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T>(in ItRefReadOnly<T> value)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T>(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -2110,14 +2984,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T1, T2>(in ItRefReadOnly<T1> result, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref readonly"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref readonly"));
 				invokeAsync0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T1, T2>(in ItRefReadOnly<T1> result, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref readonly"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref readonly"));
 				return invokeAsync0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -2127,7 +3001,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.Task<T2> InvokeAsync<T1, T2>(ref readonly T1 result)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref readonly"));
+				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref readonly"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, result);
 				return System.Threading.Tasks.Task.FromResult<T2>(((SetupWithRefReadOnlyParameter<T1, T2>?)_mock._invokeAsync0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(in result, out var returnValue) == true ? returnValue! : default!);
 			}
@@ -2136,8 +3010,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionRefReadOnly<T1>, T2, System.FuncRefReadOnly<T1, T2>> SetupInvokeAsync<T1, T2>(in ItRefReadOnly<T1> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T1, T2>(result);
+
+			public void VerifyInvokeAsync<T1, T2>(in ItRefReadOnly<T1> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(result, times);
+
+			public void VerifyInvokeAsync<T1, T2>(in ItRefReadOnly<T1> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T1, T2>(in ItRefReadOnly<T1> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T1, T2>(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -2165,14 +3062,14 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public void VerifyInvokeAsync<T1, T2>(in ItRefReadOnly<T1> result, in Times times)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref readonly"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref readonly"));
 				invokeAsync0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvokeAsync<T1, T2>(in ItRefReadOnly<T1> result, long index)
 			{
 				_invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref readonly"));
+				var invokeAsync0Invocation = (Invocation<T1>)_invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref readonly"));
 				return invokeAsync0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -2182,7 +3079,7 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 			public System.Threading.Tasks.ValueTask<T2> InvokeAsync<T1, T2>(ref readonly T1 result)
 			{
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
-				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({0})", prefix: "ref readonly"));
+				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref readonly"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, result);
 				return System.Threading.Tasks.ValueTask.FromResult<T2>(((SetupWithRefReadOnlyParameter<T1, T2>?)_mock._invokeAsync0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(in result, out var returnValue) == true ? returnValue! : default!);
 			}
@@ -2191,8 +3088,31 @@ public sealed class MethodWithOneParameterAsyncShould : MethodTestsBase
 		const string verifyNoOtherCalls = "_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invokeAsync0Invocation;";
 
+		const string extensions =
+			"""
+			// InvokeAsync
+			public ISetup<System.ActionRefReadOnly<T1>, T2, System.FuncRefReadOnly<T1, T2>> SetupInvokeAsync<T1, T2>(in ItRefReadOnly<T1> result = default) =>
+				((InterfaceMock)@this).SetupInvokeAsync<T1, T2>(result);
+
+			public void VerifyInvokeAsync<T1, T2>(in ItRefReadOnly<T1> result, in Times times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(result, times);
+
+			public void VerifyInvokeAsync<T1, T2>(in ItRefReadOnly<T1> result, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvokeAsync<T1, T2>(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// InvokeAsync
+			public void InvokeAsync<T1, T2>(in ItRefReadOnly<T1> result)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<T1, T2>(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
