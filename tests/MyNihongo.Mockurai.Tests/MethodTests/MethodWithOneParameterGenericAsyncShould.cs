@@ -1746,7 +1746,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.Task<float> InvokeAsync<TInvoke>(in It<TInvoke> param)
+			public void InvokeAsync<TInvoke>(in It<TInvoke> param)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<TInvoke>(param, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -1801,7 +1801,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
 				var invokeAsync0Invocation = (Invocation<TInvoke>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation<TInvoke>($"IInterface<{typeof(T).Name}>.InvokeAsync<{key.Name}>({{0}})"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, param);
-				return new System.Threading.Tasks.ValueTask<float>(((SetupWithParameter<TInvoke, float>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Execute(param, out var returnValue) == true ? returnValue! : default!);
+				return System.Threading.Tasks.ValueTask.FromResult<float>(((SetupWithParameter<TInvoke, float>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Execute(param, out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
@@ -1824,7 +1824,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.ValueTask<float> InvokeAsync<TInvoke>(in It<TInvoke> param)
+			public void InvokeAsync<TInvoke>(in It<TInvoke> param)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<TInvoke>(param, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -2081,7 +2081,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.Task<decimal> InvokeAsync<TInvoke>(in ItOut<TInvoke> value)
+			public void InvokeAsync<TInvoke>(in ItOut<TInvoke> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<TInvoke>(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -2137,12 +2137,12 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 				invokeAsync0Invocation.Register(_mock._invocationIndex, default!);
 				if (_mock._invokeAsync0?.TryGetValue(typeof(TInvoke), out var setup) == true)
 				{
-					return new System.Threading.Tasks.ValueTask<decimal>(((SetupWithOutParameter<TInvoke, decimal>)setup).Execute(out value!, out var returnValue) == true ? returnValue! : default!);
+					return System.Threading.Tasks.ValueTask.FromResult<decimal>(((SetupWithOutParameter<TInvoke, decimal>)setup).Execute(out value!, out var returnValue) == true ? returnValue! : default!);
 				}
 				else
 				{
 					value = default!;
-					return new System.Threading.Tasks.ValueTask<decimal>(default!);
+					return System.Threading.Tasks.ValueTask.FromResult<decimal>(default!);
 				}
 			}
 			""";
@@ -2166,7 +2166,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.ValueTask<decimal> InvokeAsync<TInvoke>(in ItOut<TInvoke> value)
+			public void InvokeAsync<TInvoke>(in ItOut<TInvoke> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<TInvoke>(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -2402,7 +2402,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.Task<float> InvokeAsync<TInvoke>(in ItIn<TInvoke> value)
+			public void InvokeAsync<TInvoke>(in ItIn<TInvoke> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<TInvoke>(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -2457,7 +2457,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
 				var invokeAsync0Invocation = (Invocation<TInvoke>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation<TInvoke>($"IInterface<{typeof(T).Name}>.InvokeAsync<{key.Name}>({{0}})", prefix: "in"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, value);
-				return new System.Threading.Tasks.ValueTask<float>(((SetupWithInParameter<TInvoke, float>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Execute(in value, out var returnValue) == true ? returnValue! : default!);
+				return System.Threading.Tasks.ValueTask.FromResult<float>(((SetupWithInParameter<TInvoke, float>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Execute(in value, out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
@@ -2480,7 +2480,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.ValueTask<float> InvokeAsync<TInvoke>(in ItIn<TInvoke> value)
+			public void InvokeAsync<TInvoke>(in ItIn<TInvoke> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<TInvoke>(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -2716,7 +2716,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.Task<float> InvokeAsync<TInvoke>(in ItRef<TInvoke> value)
+			public void InvokeAsync<TInvoke>(in ItRef<TInvoke> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<TInvoke>(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -2771,7 +2771,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
 				var invokeAsync0Invocation = (Invocation<TInvoke>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation<TInvoke>($"IInterface<{typeof(T).Name}>.InvokeAsync<{key.Name}>({{0}})", prefix: "ref"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, value);
-				return new System.Threading.Tasks.ValueTask<float>(((SetupWithRefParameter<TInvoke, float>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Execute(ref value, out var returnValue) == true ? returnValue! : default!);
+				return System.Threading.Tasks.ValueTask.FromResult<float>(((SetupWithRefParameter<TInvoke, float>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Execute(ref value, out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
@@ -2794,7 +2794,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.ValueTask<float> InvokeAsync<TInvoke>(in ItRef<TInvoke> value)
+			public void InvokeAsync<TInvoke>(in ItRef<TInvoke> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<TInvoke>(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -3030,7 +3030,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.Task<float> InvokeAsync<TInvoke>(in ItRefReadOnly<TInvoke> value)
+			public void InvokeAsync<TInvoke>(in ItRefReadOnly<TInvoke> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<TInvoke>(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -3085,7 +3085,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary();
 				var invokeAsync0Invocation = (Invocation<TInvoke>)_mock._invokeAsync0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation<TInvoke>($"IInterface<{typeof(T).Name}>.InvokeAsync<{key.Name}>({{0}})", prefix: "ref readonly"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, value);
-				return new System.Threading.Tasks.ValueTask<float>(((SetupWithRefReadOnlyParameter<TInvoke, float>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Execute(in value, out var returnValue) == true ? returnValue! : default!);
+				return System.Threading.Tasks.ValueTask.FromResult<float>(((SetupWithRefReadOnlyParameter<TInvoke, float>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TInvoke)))?.Execute(in value, out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
@@ -3108,7 +3108,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.ValueTask<float> InvokeAsync<TInvoke>(in ItRefReadOnly<TInvoke> value)
+			public void InvokeAsync<TInvoke>(in ItRefReadOnly<TInvoke> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<TInvoke>(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -3332,7 +3332,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.Task<T> InvokeAsync(in It<T> param)
+			public void InvokeAsync(in It<T> param)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync(param, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -3383,7 +3383,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			{
 				_mock._invokeAsync0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.InvokeAsync({{0}})");
 				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex, param);
-				return new System.Threading.Tasks.ValueTask<T>(_mock._invokeAsync0?.Execute(param, out var returnValue) == true ? returnValue! : default!);
+				return System.Threading.Tasks.ValueTask.FromResult<T>(_mock._invokeAsync0?.Execute(param, out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
@@ -3406,7 +3406,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.ValueTask<T> InvokeAsync(in It<T> param)
+			public void InvokeAsync(in It<T> param)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync(param, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -3651,7 +3651,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.Task<T> InvokeAsync(in ItOut<T> value)
+			public void InvokeAsync(in ItOut<T> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -3703,12 +3703,12 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex, default!);
 				if (_mock._invokeAsync0 is not null)
 				{
-					return new System.Threading.Tasks.ValueTask<T>(_mock._invokeAsync0.Execute(out value!, out var returnValue) == true ? returnValue! : default!);
+					return System.Threading.Tasks.ValueTask.FromResult<T>(_mock._invokeAsync0.Execute(out value!, out var returnValue) == true ? returnValue! : default!);
 				}
 				else
 				{
 					value = default!;
-					return new System.Threading.Tasks.ValueTask<T>(default!);
+					return System.Threading.Tasks.ValueTask.FromResult<T>(default!);
 				}
 			}
 			""";
@@ -3732,7 +3732,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.ValueTask<T> InvokeAsync(in ItOut<T> value)
+			public void InvokeAsync(in ItOut<T> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -3956,7 +3956,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.Task<T> InvokeAsync(in ItIn<T> value)
+			public void InvokeAsync(in ItIn<T> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -4007,7 +4007,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			{
 				_mock._invokeAsync0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.InvokeAsync({{0}})", prefix: "in");
 				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex, value);
-				return new System.Threading.Tasks.ValueTask<T>(_mock._invokeAsync0?.Execute(in value, out var returnValue) == true ? returnValue! : default!);
+				return System.Threading.Tasks.ValueTask.FromResult<T>(_mock._invokeAsync0?.Execute(in value, out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
@@ -4030,7 +4030,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.ValueTask<T> InvokeAsync(in ItIn<T> value)
+			public void InvokeAsync(in ItIn<T> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -4254,7 +4254,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.Task<T> InvokeAsync(in ItRef<T> value)
+			public void InvokeAsync(in ItRef<T> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -4305,7 +4305,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			{
 				_mock._invokeAsync0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.InvokeAsync({{0}})", prefix: "ref");
 				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex, value);
-				return new System.Threading.Tasks.ValueTask<T>(_mock._invokeAsync0?.Execute(ref value, out var returnValue) == true ? returnValue! : default!);
+				return System.Threading.Tasks.ValueTask.FromResult<T>(_mock._invokeAsync0?.Execute(ref value, out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
@@ -4328,7 +4328,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.ValueTask<T> InvokeAsync(in ItRef<T> value)
+			public void InvokeAsync(in ItRef<T> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -4552,7 +4552,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.Task<T> InvokeAsync(in ItRefReadOnly<T> value)
+			public void InvokeAsync(in ItRefReadOnly<T> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -4603,7 +4603,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			{
 				_mock._invokeAsync0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.InvokeAsync({{0}})", prefix: "ref readonly");
 				_mock._invokeAsync0Invocation.Register(_mock._invocationIndex, value);
-				return new System.Threading.Tasks.ValueTask<T>(_mock._invokeAsync0?.Execute(in value, out var returnValue) == true ? returnValue! : default!);
+				return System.Threading.Tasks.ValueTask.FromResult<T>(_mock._invokeAsync0?.Execute(in value, out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
@@ -4626,7 +4626,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.ValueTask<T> InvokeAsync(in ItRefReadOnly<T> value)
+			public void InvokeAsync(in ItRefReadOnly<T> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -4862,7 +4862,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.Task<T2> InvokeAsync<T1, T2>(in It<T1> param)
+			public void InvokeAsync<T1, T2>(in It<T1> param)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<T1, T2>(param, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -4917,7 +4917,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
 				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface<{typeof(T).Name}>.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, param);
-				return new System.Threading.Tasks.ValueTask<T2>(((SetupWithParameter<T1, T2>?)_mock._invokeAsync0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(param, out var returnValue) == true ? returnValue! : default!);
+				return System.Threading.Tasks.ValueTask.FromResult<T2>(((SetupWithParameter<T1, T2>?)_mock._invokeAsync0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(param, out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
@@ -4940,7 +4940,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.ValueTask<T2> InvokeAsync<T1, T2>(in It<T1> param)
+			public void InvokeAsync<T1, T2>(in It<T1> param)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<T1, T2>(param, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -5197,7 +5197,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.Task<T2> InvokeAsync<T1, T2>(in ItOut<T1> value)
+			public void InvokeAsync<T1, T2>(in ItOut<T1> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<T1, T2>(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -5253,12 +5253,12 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 				invokeAsync0Invocation.Register(_mock._invocationIndex, default!);
 				if (_mock._invokeAsync0?.TryGetValue((typeof(T1), typeof(T2)), out var setup) == true)
 				{
-					return new System.Threading.Tasks.ValueTask<T2>(((SetupWithOutParameter<T1, T2>)setup).Execute(out value!, out var returnValue) == true ? returnValue! : default!);
+					return System.Threading.Tasks.ValueTask.FromResult<T2>(((SetupWithOutParameter<T1, T2>)setup).Execute(out value!, out var returnValue) == true ? returnValue! : default!);
 				}
 				else
 				{
 					value = default!;
-					return new System.Threading.Tasks.ValueTask<T2>(default!);
+					return System.Threading.Tasks.ValueTask.FromResult<T2>(default!);
 				}
 			}
 			""";
@@ -5282,7 +5282,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.ValueTask<T2> InvokeAsync<T1, T2>(in ItOut<T1> value)
+			public void InvokeAsync<T1, T2>(in ItOut<T1> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<T1, T2>(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -5518,7 +5518,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.Task<T2> InvokeAsync<T1, T2>(in ItIn<T1> value)
+			public void InvokeAsync<T1, T2>(in ItIn<T1> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<T1, T2>(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -5573,7 +5573,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
 				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface<{typeof(T).Name}>.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "in"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, value);
-				return new System.Threading.Tasks.ValueTask<T2>(((SetupWithInParameter<T1, T2>?)_mock._invokeAsync0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(in value, out var returnValue) == true ? returnValue! : default!);
+				return System.Threading.Tasks.ValueTask.FromResult<T2>(((SetupWithInParameter<T1, T2>?)_mock._invokeAsync0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(in value, out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
@@ -5596,7 +5596,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.ValueTask<T2> InvokeAsync<T1, T2>(in ItIn<T1> value)
+			public void InvokeAsync<T1, T2>(in ItIn<T1> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<T1, T2>(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -5832,7 +5832,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.Task<T2> InvokeAsync<T1, T2>(in ItRef<T1> value)
+			public void InvokeAsync<T1, T2>(in ItRef<T1> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<T1, T2>(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -5887,7 +5887,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
 				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface<{typeof(T).Name}>.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, value);
-				return new System.Threading.Tasks.ValueTask<T2>(((SetupWithRefParameter<T1, T2>?)_mock._invokeAsync0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(ref value, out var returnValue) == true ? returnValue! : default!);
+				return System.Threading.Tasks.ValueTask.FromResult<T2>(((SetupWithRefParameter<T1, T2>?)_mock._invokeAsync0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(ref value, out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
@@ -5910,7 +5910,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.ValueTask<T2> InvokeAsync<T1, T2>(in ItRef<T1> value)
+			public void InvokeAsync<T1, T2>(in ItRef<T1> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<T1, T2>(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -6146,7 +6146,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.Task<T2> InvokeAsync<T1, T2>(in ItRefReadOnly<T1> value)
+			public void InvokeAsync<T1, T2>(in ItRefReadOnly<T1> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<T1, T2>(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
@@ -6201,7 +6201,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 				_mock._invokeAsync0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
 				var invokeAsync0Invocation = (Invocation<T1>)_mock._invokeAsync0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface<{typeof(T).Name}>.InvokeAsync<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref readonly"));
 				invokeAsync0Invocation.Register(_mock._invocationIndex, value);
-				return new System.Threading.Tasks.ValueTask<T2>(((SetupWithRefReadOnlyParameter<T1, T2>?)_mock._invokeAsync0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(in value, out var returnValue) == true ? returnValue! : default!);
+				return System.Threading.Tasks.ValueTask.FromResult<T2>(((SetupWithRefReadOnlyParameter<T1, T2>?)_mock._invokeAsync0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(in value, out var returnValue) == true ? returnValue! : default!);
 			}
 			""";
 
@@ -6224,7 +6224,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 		const string sequenceExtensions =
 			"""
 			// InvokeAsync
-			public System.Threading.Tasks.ValueTask<T2> InvokeAsync<T1, T2>(in ItRefReadOnly<T1> value)
+			public void InvokeAsync<T1, T2>(in ItRefReadOnly<T1> value)
 			{
 				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvokeAsync<T1, T2>(value, @this.VerifyIndex);
 				@this.VerifyIndex.Set(nextIndex);
