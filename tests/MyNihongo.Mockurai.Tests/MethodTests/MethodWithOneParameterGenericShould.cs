@@ -755,8 +755,6 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 		await ctx.RunAsync();
 	}
 
-	// Section 2: Generic interface tests with one type param
-
 	[Fact]
 	public async Task GenerateInterfaceGeneric()
 	{
@@ -1550,7 +1548,758 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 		await ctx.RunAsync();
 	}
 
-	// Section 3: Generic interface tests with two type params
+	[Fact]
+	public async Task GenerateInterfaceGeneric1()
+	{
+		const string method = "void Invoke(T param);";
+
+		const string methods =
+			"""
+			// Invoke
+			private SetupWithParameter<T>? _invoke0;
+			private Invocation<T>? _invoke0Invocation;
+
+			public SetupWithParameter<T> SetupInvoke(in It<T> param)
+			{
+				_invoke0 ??= new SetupWithParameter<T>();
+				_invoke0.SetupParameter(param.ValueSetup);
+				return _invoke0;
+			}
+
+			public void VerifyInvoke(in It<T> param, in Times times)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})");
+				_invoke0Invocation.Verify(param.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke(in It<T> param, long index)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})");
+				return _invoke0Invocation.Verify(param.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public void Invoke(T param)
+			{
+				_mock._invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, param);
+				_mock._invoke0?.Invoke(param);
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.Action<T>> SetupInvoke(in It<T> param = default) =>
+				((InterfaceMock<T>)@this).SetupInvoke(param);
+
+			public void VerifyInvoke(in It<T> param, in Times times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(param, times);
+
+			public void VerifyInvoke(in It<T> param, System.Func<Times> times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(param, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke(in It<T> param)
+			{
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvoke(param, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		var testCode = CreateInterfaceTestCode(method);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateInterfaceGeneric1Return()
+	{
+		const string method = "T Invoke(T param);";
+
+		const string methods =
+			"""
+			// Invoke
+			private SetupWithParameter<T, T>? _invoke0;
+			private Invocation<T>? _invoke0Invocation;
+
+			public SetupWithParameter<T, T> SetupInvoke(in It<T> param)
+			{
+				_invoke0 ??= new SetupWithParameter<T, T>();
+				_invoke0.SetupParameter(param.ValueSetup);
+				return _invoke0;
+			}
+
+			public void VerifyInvoke(in It<T> param, in Times times)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})");
+				_invoke0Invocation.Verify(param.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke(in It<T> param, long index)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})");
+				return _invoke0Invocation.Verify(param.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public T Invoke(T param)
+			{
+				_mock._invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, param);
+				return _mock._invoke0?.Execute(param, out var returnValue) == true ? returnValue! : default!;
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.Action<T>, T, System.Func<T, T>> SetupInvoke(in It<T> param = default) =>
+				((InterfaceMock<T>)@this).SetupInvoke(param);
+
+			public void VerifyInvoke(in It<T> param, in Times times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(param, times);
+
+			public void VerifyInvoke(in It<T> param, System.Func<Times> times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(param, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke(in It<T> param)
+			{
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvoke(param, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		var testCode = CreateInterfaceTestCode(method);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateInterfaceGeneric1WithOut()
+	{
+		const string method = "void Invoke(out T value);";
+
+		const string methods =
+			"""
+			// Invoke
+			private SetupWithOutParameter<T>? _invoke0;
+			private Invocation<T>? _invoke0Invocation;
+
+			public SetupWithOutParameter<T> SetupInvoke(in ItOut<T> value)
+			{
+				_invoke0 ??= new SetupWithOutParameter<T>();
+				return _invoke0;
+			}
+
+			public void VerifyInvoke(in ItOut<T> value, in Times times)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "out");
+				_invoke0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke(in ItOut<T> value, long index)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "out");
+				return _invoke0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public void Invoke(out T value)
+			{
+				_mock._invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "out");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, default!);
+				if (_mock._invoke0 is not null)
+				{
+					_mock._invoke0.Invoke(out value!);
+				}
+				else
+				{
+					value = default!;
+				}
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.ActionOut<T>> SetupInvoke(in ItOut<T> value = default) =>
+				((InterfaceMock<T>)@this).SetupInvoke(value);
+
+			public void VerifyInvoke(in ItOut<T> value, in Times times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(value, times);
+
+			public void VerifyInvoke(in ItOut<T> value, System.Func<Times> times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke(in ItOut<T> value)
+			{
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvoke(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		var testCode = CreateInterfaceTestCode(method);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateInterfaceGeneric1WithOutReturn()
+	{
+		const string method = "T Invoke(out T value);";
+
+		const string methods =
+			"""
+			// Invoke
+			private SetupWithOutParameter<T, T>? _invoke0;
+			private Invocation<T>? _invoke0Invocation;
+
+			public SetupWithOutParameter<T, T> SetupInvoke(in ItOut<T> value)
+			{
+				_invoke0 ??= new SetupWithOutParameter<T, T>();
+				return _invoke0;
+			}
+
+			public void VerifyInvoke(in ItOut<T> value, in Times times)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "out");
+				_invoke0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke(in ItOut<T> value, long index)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "out");
+				return _invoke0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public T Invoke(out T value)
+			{
+				_mock._invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "out");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, default!);
+				if (_mock._invoke0 is not null)
+				{
+					return _mock._invoke0.Execute(out value!, out var returnValue) == true ? returnValue! : default!;
+				}
+				else
+				{
+					value = default!;
+					return default!;
+				}
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.ActionOut<T>, T, System.FuncOut<T, T>> SetupInvoke(in ItOut<T> value = default) =>
+				((InterfaceMock<T>)@this).SetupInvoke(value);
+
+			public void VerifyInvoke(in ItOut<T> value, in Times times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(value, times);
+
+			public void VerifyInvoke(in ItOut<T> value, System.Func<Times> times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke(in ItOut<T> value)
+			{
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvoke(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		var testCode = CreateInterfaceTestCode(method);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateInterfaceGeneric1WithIn()
+	{
+		const string method = "void Invoke(in T value);";
+
+		const string methods =
+			"""
+			// Invoke
+			private SetupWithInParameter<T>? _invoke0;
+			private Invocation<T>? _invoke0Invocation;
+
+			public SetupWithInParameter<T> SetupInvoke(in ItIn<T> value)
+			{
+				_invoke0 ??= new SetupWithInParameter<T>();
+				_invoke0.SetupParameter(value.ValueSetup);
+				return _invoke0;
+			}
+
+			public void VerifyInvoke(in ItIn<T> value, in Times times)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "in");
+				_invoke0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke(in ItIn<T> value, long index)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "in");
+				return _invoke0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public void Invoke(in T value)
+			{
+				_mock._invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "in");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, value);
+				_mock._invoke0?.Invoke(in value);
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.ActionIn<T>> SetupInvoke(in ItIn<T> value = default) =>
+				((InterfaceMock<T>)@this).SetupInvoke(value);
+
+			public void VerifyInvoke(in ItIn<T> value, in Times times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(value, times);
+
+			public void VerifyInvoke(in ItIn<T> value, System.Func<Times> times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke(in ItIn<T> value)
+			{
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvoke(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		var testCode = CreateInterfaceTestCode(method);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateInterfaceGeneric1WithInReturn()
+	{
+		const string method = "T Invoke(in T value);";
+
+		const string methods =
+			"""
+			// Invoke
+			private SetupWithInParameter<T, T>? _invoke0;
+			private Invocation<T>? _invoke0Invocation;
+
+			public SetupWithInParameter<T, T> SetupInvoke(in ItIn<T> value)
+			{
+				_invoke0 ??= new SetupWithInParameter<T, T>();
+				_invoke0.SetupParameter(value.ValueSetup);
+				return _invoke0;
+			}
+
+			public void VerifyInvoke(in ItIn<T> value, in Times times)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "in");
+				_invoke0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke(in ItIn<T> value, long index)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "in");
+				return _invoke0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public T Invoke(in T value)
+			{
+				_mock._invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "in");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, value);
+				return _mock._invoke0?.Execute(in value, out var returnValue) == true ? returnValue! : default!;
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.ActionIn<T>, T, System.FuncIn<T, T>> SetupInvoke(in ItIn<T> value = default) =>
+				((InterfaceMock<T>)@this).SetupInvoke(value);
+
+			public void VerifyInvoke(in ItIn<T> value, in Times times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(value, times);
+
+			public void VerifyInvoke(in ItIn<T> value, System.Func<Times> times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke(in ItIn<T> value)
+			{
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvoke(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		var testCode = CreateInterfaceTestCode(method);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateInterfaceGeneric1WithRef()
+	{
+		const string method = "void Invoke(ref T value);";
+
+		const string methods =
+			"""
+			// Invoke
+			private SetupWithRefParameter<T>? _invoke0;
+			private Invocation<T>? _invoke0Invocation;
+
+			public SetupWithRefParameter<T> SetupInvoke(in ItRef<T> value)
+			{
+				_invoke0 ??= new SetupWithRefParameter<T>();
+				_invoke0.SetupParameter(value.ValueSetup);
+				return _invoke0;
+			}
+
+			public void VerifyInvoke(in ItRef<T> value, in Times times)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "ref");
+				_invoke0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke(in ItRef<T> value, long index)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "ref");
+				return _invoke0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public void Invoke(ref T value)
+			{
+				_mock._invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "ref");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, value);
+				_mock._invoke0?.Invoke(ref value);
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.ActionRef<T>> SetupInvoke(in ItRef<T> value = default) =>
+				((InterfaceMock<T>)@this).SetupInvoke(value);
+
+			public void VerifyInvoke(in ItRef<T> value, in Times times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(value, times);
+
+			public void VerifyInvoke(in ItRef<T> value, System.Func<Times> times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke(in ItRef<T> value)
+			{
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvoke(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		var testCode = CreateInterfaceTestCode(method);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateInterfaceGeneric1WithRefReturn()
+	{
+		const string method = "T Invoke(ref T value);";
+
+		const string methods =
+			"""
+			// Invoke
+			private SetupWithRefParameter<T, T>? _invoke0;
+			private Invocation<T>? _invoke0Invocation;
+
+			public SetupWithRefParameter<T, T> SetupInvoke(in ItRef<T> value)
+			{
+				_invoke0 ??= new SetupWithRefParameter<T, T>();
+				_invoke0.SetupParameter(value.ValueSetup);
+				return _invoke0;
+			}
+
+			public void VerifyInvoke(in ItRef<T> value, in Times times)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "ref");
+				_invoke0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke(in ItRef<T> value, long index)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "ref");
+				return _invoke0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public T Invoke(ref T value)
+			{
+				_mock._invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "ref");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, value);
+				return _mock._invoke0?.Execute(ref value, out var returnValue) == true ? returnValue! : default!;
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.ActionRef<T>, T, System.FuncRef<T, T>> SetupInvoke(in ItRef<T> value = default) =>
+				((InterfaceMock<T>)@this).SetupInvoke(value);
+
+			public void VerifyInvoke(in ItRef<T> value, in Times times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(value, times);
+
+			public void VerifyInvoke(in ItRef<T> value, System.Func<Times> times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke(in ItRef<T> value)
+			{
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvoke(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		var testCode = CreateInterfaceTestCode(method);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateInterfaceGeneric1WithRefReadOnly()
+	{
+		const string method = "void Invoke(ref readonly T value);";
+
+		const string methods =
+			"""
+			// Invoke
+			private SetupWithRefReadOnlyParameter<T>? _invoke0;
+			private Invocation<T>? _invoke0Invocation;
+
+			public SetupWithRefReadOnlyParameter<T> SetupInvoke(in ItRefReadOnly<T> value)
+			{
+				_invoke0 ??= new SetupWithRefReadOnlyParameter<T>();
+				_invoke0.SetupParameter(value.ValueSetup);
+				return _invoke0;
+			}
+
+			public void VerifyInvoke(in ItRefReadOnly<T> value, in Times times)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "ref readonly");
+				_invoke0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke(in ItRefReadOnly<T> value, long index)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "ref readonly");
+				return _invoke0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public void Invoke(ref readonly T value)
+			{
+				_mock._invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "ref readonly");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, value);
+				_mock._invoke0?.Invoke(in value);
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.ActionRefReadOnly<T>> SetupInvoke(in ItRefReadOnly<T> value = default) =>
+				((InterfaceMock<T>)@this).SetupInvoke(value);
+
+			public void VerifyInvoke(in ItRefReadOnly<T> value, in Times times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(value, times);
+
+			public void VerifyInvoke(in ItRefReadOnly<T> value, System.Func<Times> times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke(in ItRefReadOnly<T> value)
+			{
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvoke(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		var testCode = CreateInterfaceTestCode(method);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateInterfaceGeneric1WithRefReadOnlyReturn()
+	{
+		const string method = "T Invoke(ref readonly T value);";
+
+		const string methods =
+			"""
+			// Invoke
+			private SetupWithRefReadOnlyParameter<T, T>? _invoke0;
+			private Invocation<T>? _invoke0Invocation;
+
+			public SetupWithRefReadOnlyParameter<T, T> SetupInvoke(in ItRefReadOnly<T> value)
+			{
+				_invoke0 ??= new SetupWithRefReadOnlyParameter<T, T>();
+				_invoke0.SetupParameter(value.ValueSetup);
+				return _invoke0;
+			}
+
+			public void VerifyInvoke(in ItRefReadOnly<T> value, in Times times)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "ref readonly");
+				_invoke0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke(in ItRefReadOnly<T> value, long index)
+			{
+				_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "ref readonly");
+				return _invoke0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public T Invoke(ref readonly T value)
+			{
+				_mock._invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})", prefix: "ref readonly");
+				_mock._invoke0Invocation.Register(_mock._invocationIndex, value);
+				return _mock._invoke0?.Execute(in value, out var returnValue) == true ? returnValue! : default!;
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.ActionRefReadOnly<T>, T, System.FuncRefReadOnly<T, T>> SetupInvoke(in ItRefReadOnly<T> value = default) =>
+				((InterfaceMock<T>)@this).SetupInvoke(value);
+
+			public void VerifyInvoke(in ItRefReadOnly<T> value, in Times times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(value, times);
+
+			public void VerifyInvoke(in ItRefReadOnly<T> value, System.Func<Times> times) =>
+				((InterfaceMock<T>)@this).VerifyInvoke(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke(in ItRefReadOnly<T> value)
+			{
+				var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvoke(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		var testCode = CreateInterfaceTestCode(method);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
 
 	[Fact]
 	public async Task GenerateInterfaceGeneric2()
