@@ -2350,4 +2350,847 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
 	}
+
+	[Fact]
+	public async Task GenerateClassGeneric()
+	{
+		const string method =
+			"""
+			public virtual void Invoke<T>(T parameter) {}
+			protected virtual void Invoke2<T>(T parameter) {}
+			public void Invoke3<T>(T parameter) {}
+			""";
+
+		const string methods =
+			"""
+			// Invoke
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
+			private InvocationDictionary? _invoke0Invocation;
+
+			public SetupWithParameter<T> SetupInvoke<T>(in It<T> parameter)
+			{
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+				var invoke0 = (SetupWithParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithParameter<T>());
+				invoke0.SetupParameter(parameter.ValueSetup);
+				return invoke0;
+			}
+
+			public void VerifyInvoke<T>(in It<T> parameter, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"Class.Invoke<{key.Name}>({{0}})"));
+				invoke0Invocation.Verify(parameter.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke<T>(in It<T> parameter, long index)
+			{
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"Class.Invoke<{key.Name}>({{0}})"));
+				return invoke0Invocation.Verify(parameter.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public override void Invoke<T>(T parameter)
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"Class.Invoke<{key.Name}>({{0}})"));
+				invoke0Invocation.Register(_mock._invocationIndex, parameter);
+				((SetupWithParameter<T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Invoke(parameter);
+			}
+			""";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.Action<T>> SetupInvoke<T>(in It<T> parameter = default) =>
+				((ClassMock)@this).SetupInvoke<T>(parameter);
+
+			public void VerifyInvoke<T>(in It<T> parameter, in Times times) =>
+				((ClassMock)@this).VerifyInvoke<T>(parameter, times);
+
+			public void VerifyInvoke<T>(in It<T> parameter, System.Func<Times> times) =>
+				((ClassMock)@this).VerifyInvoke<T>(parameter, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke<T>(in It<T> parameter)
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke<T>(parameter, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		var testCode = CreateClassTestCode(method);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateClassGenericReturn()
+	{
+		const string method =
+			"""
+			public virtual T2 Invoke<T1, T2>(T1 parameter) { return default!; }
+			protected virtual T2 Invoke2<T1, T2>(T1 parameter) { return default!; }
+			public T2 Invoke3<T1, T2>(T1 parameter) { return default!; }
+			""";
+
+		const string methods =
+			"""
+			// Invoke
+			private System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>? _invoke0;
+			private InvocationDictionary<(System.Type, System.Type)>? _invoke0Invocation;
+
+			public SetupWithParameter<T1, T2> SetupInvoke<T1, T2>(in It<T1> parameter)
+			{
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
+				var invoke0 = (SetupWithParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithParameter<T1, T2>());
+				invoke0.SetupParameter(parameter.ValueSetup);
+				return invoke0;
+			}
+
+			public void VerifyInvoke<T1, T2>(in It<T1> parameter, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"Class.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})"));
+				invoke0Invocation.Verify(parameter.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke<T1, T2>(in It<T1> parameter, long index)
+			{
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"Class.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})"));
+				return invoke0Invocation.Verify(parameter.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public override T2 Invoke<T1, T2>(T1 parameter)
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"Class.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})"));
+				invoke0Invocation.Register(_mock._invocationIndex, parameter);
+				return ((SetupWithParameter<T1, T2>?)_mock._invoke0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(parameter, out var returnValue) == true ? returnValue! : default!;
+			}
+			""";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.Action<T1>, T2, System.Func<T1, T2>> SetupInvoke<T1, T2>(in It<T1> parameter = default) =>
+				((ClassMock)@this).SetupInvoke<T1, T2>(parameter);
+
+			public void VerifyInvoke<T1, T2>(in It<T1> parameter, in Times times) =>
+				((ClassMock)@this).VerifyInvoke<T1, T2>(parameter, times);
+
+			public void VerifyInvoke<T1, T2>(in It<T1> parameter, System.Func<Times> times) =>
+				((ClassMock)@this).VerifyInvoke<T1, T2>(parameter, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke<T1, T2>(in It<T1> parameter)
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke<T1, T2>(parameter, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		var testCode = CreateClassTestCode(method);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateClassGenericWithOut()
+	{
+		const string method =
+			"""
+			public virtual void Invoke<T>(out T value) { value = default!; }
+			protected virtual void Invoke2<T>(out T value) { value = default!; }
+			public void Invoke3<T>(out T value) { value = default!; }
+			""";
+
+		const string methods =
+			"""
+			// Invoke
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
+			private InvocationDictionary? _invoke0Invocation;
+
+			public SetupWithOutParameter<T> SetupInvoke<T>(in ItOut<T> value)
+			{
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+				var invoke0 = (SetupWithOutParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithOutParameter<T>());
+				return invoke0;
+			}
+
+			public void VerifyInvoke<T>(in ItOut<T> value, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"Class.Invoke<{key.Name}>({{0}})", prefix: "out"));
+				invoke0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke<T>(in ItOut<T> value, long index)
+			{
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"Class.Invoke<{key.Name}>({{0}})", prefix: "out"));
+				return invoke0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public override void Invoke<T>(out T value)
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"Class.Invoke<{key.Name}>({{0}})", prefix: "out"));
+				invoke0Invocation.Register(_mock._invocationIndex, default!);
+				if (_mock._invoke0?.TryGetValue(typeof(T), out var setup) == true)
+				{
+					((SetupWithOutParameter<T>)setup).Invoke(out value!);
+				}
+				else
+				{
+					value = default!;
+				}
+			}
+			""";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.ActionOut<T>> SetupInvoke<T>(in ItOut<T> value = default) =>
+				((ClassMock)@this).SetupInvoke<T>(value);
+
+			public void VerifyInvoke<T>(in ItOut<T> value, in Times times) =>
+				((ClassMock)@this).VerifyInvoke<T>(value, times);
+
+			public void VerifyInvoke<T>(in ItOut<T> value, System.Func<Times> times) =>
+				((ClassMock)@this).VerifyInvoke<T>(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke<T>(in ItOut<T> value)
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke<T>(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		var testCode = CreateClassTestCode(method);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateClassGenericWithOutReturn()
+	{
+		const string method =
+			"""
+			public virtual T2 Invoke<T1, T2>(out T1 result) { result = default!; return default!; }
+			protected virtual T2 Invoke2<T1, T2>(out T1 result) { result = default!; return default!; }
+			public T2 Invoke3<T1, T2>(out T1 result) { result = default!; return default!; }
+			""";
+
+		const string methods =
+			"""
+			// Invoke
+			private System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>? _invoke0;
+			private InvocationDictionary<(System.Type, System.Type)>? _invoke0Invocation;
+
+			public SetupWithOutParameter<T1, T2> SetupInvoke<T1, T2>(in ItOut<T1> result)
+			{
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
+				var invoke0 = (SetupWithOutParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithOutParameter<T1, T2>());
+				return invoke0;
+			}
+
+			public void VerifyInvoke<T1, T2>(in ItOut<T1> result, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"Class.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "out"));
+				invoke0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke<T1, T2>(in ItOut<T1> result, long index)
+			{
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"Class.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "out"));
+				return invoke0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public override T2 Invoke<T1, T2>(out T1 result)
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"Class.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "out"));
+				invoke0Invocation.Register(_mock._invocationIndex, default!);
+				if (_mock._invoke0?.TryGetValue((typeof(T1), typeof(T2)), out var setup) == true)
+				{
+					return ((SetupWithOutParameter<T1, T2>)setup).Execute(out result!, out var returnValue) == true ? returnValue! : default!;
+				}
+				else
+				{
+					result = default!;
+					return default!;
+				}
+			}
+			""";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.ActionOut<T1>, T2, System.FuncOut<T1, T2>> SetupInvoke<T1, T2>(in ItOut<T1> result = default) =>
+				((ClassMock)@this).SetupInvoke<T1, T2>(result);
+
+			public void VerifyInvoke<T1, T2>(in ItOut<T1> result, in Times times) =>
+				((ClassMock)@this).VerifyInvoke<T1, T2>(result, times);
+
+			public void VerifyInvoke<T1, T2>(in ItOut<T1> result, System.Func<Times> times) =>
+				((ClassMock)@this).VerifyInvoke<T1, T2>(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke<T1, T2>(in ItOut<T1> result)
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke<T1, T2>(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		var testCode = CreateClassTestCode(method);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateClassGenericWithIn()
+	{
+		const string method =
+			"""
+			public virtual void Invoke<T>(in T value) {}
+			protected virtual void Invoke2<T>(in T value) {}
+			public void Invoke3<T>(in T value) {}
+			""";
+
+		const string methods =
+			"""
+			// Invoke
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
+			private InvocationDictionary? _invoke0Invocation;
+
+			public SetupWithInParameter<T> SetupInvoke<T>(in ItIn<T> value)
+			{
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+				var invoke0 = (SetupWithInParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithInParameter<T>());
+				invoke0.SetupParameter(value.ValueSetup);
+				return invoke0;
+			}
+
+			public void VerifyInvoke<T>(in ItIn<T> value, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"Class.Invoke<{key.Name}>({{0}})", prefix: "in"));
+				invoke0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke<T>(in ItIn<T> value, long index)
+			{
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"Class.Invoke<{key.Name}>({{0}})", prefix: "in"));
+				return invoke0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public override void Invoke<T>(in T value)
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"Class.Invoke<{key.Name}>({{0}})", prefix: "in"));
+				invoke0Invocation.Register(_mock._invocationIndex, value);
+				((SetupWithInParameter<T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Invoke(in value);
+			}
+			""";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.ActionIn<T>> SetupInvoke<T>(in ItIn<T> value = default) =>
+				((ClassMock)@this).SetupInvoke<T>(value);
+
+			public void VerifyInvoke<T>(in ItIn<T> value, in Times times) =>
+				((ClassMock)@this).VerifyInvoke<T>(value, times);
+
+			public void VerifyInvoke<T>(in ItIn<T> value, System.Func<Times> times) =>
+				((ClassMock)@this).VerifyInvoke<T>(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke<T>(in ItIn<T> value)
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke<T>(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		var testCode = CreateClassTestCode(method);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateClassGenericWithInReturn()
+	{
+		const string method =
+			"""
+			public virtual T2 Invoke<T1, T2>(in T1 result) { return default!; }
+			protected virtual T2 Invoke2<T1, T2>(in T1 result) { return default!; }
+			public T2 Invoke3<T1, T2>(in T1 result) { return default!; }
+			""";
+
+		const string methods =
+			"""
+			// Invoke
+			private System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>? _invoke0;
+			private InvocationDictionary<(System.Type, System.Type)>? _invoke0Invocation;
+
+			public SetupWithInParameter<T1, T2> SetupInvoke<T1, T2>(in ItIn<T1> result)
+			{
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
+				var invoke0 = (SetupWithInParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithInParameter<T1, T2>());
+				invoke0.SetupParameter(result.ValueSetup);
+				return invoke0;
+			}
+
+			public void VerifyInvoke<T1, T2>(in ItIn<T1> result, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"Class.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "in"));
+				invoke0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke<T1, T2>(in ItIn<T1> result, long index)
+			{
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"Class.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "in"));
+				return invoke0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public override T2 Invoke<T1, T2>(in T1 result)
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"Class.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "in"));
+				invoke0Invocation.Register(_mock._invocationIndex, result);
+				return ((SetupWithInParameter<T1, T2>?)_mock._invoke0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(in result, out var returnValue) == true ? returnValue! : default!;
+			}
+			""";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.ActionIn<T1>, T2, System.FuncIn<T1, T2>> SetupInvoke<T1, T2>(in ItIn<T1> result = default) =>
+				((ClassMock)@this).SetupInvoke<T1, T2>(result);
+
+			public void VerifyInvoke<T1, T2>(in ItIn<T1> result, in Times times) =>
+				((ClassMock)@this).VerifyInvoke<T1, T2>(result, times);
+
+			public void VerifyInvoke<T1, T2>(in ItIn<T1> result, System.Func<Times> times) =>
+				((ClassMock)@this).VerifyInvoke<T1, T2>(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke<T1, T2>(in ItIn<T1> result)
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke<T1, T2>(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		var testCode = CreateClassTestCode(method);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateClassGenericWithRef()
+	{
+		const string method =
+			"""
+			public virtual void Invoke<T>(ref T value) {}
+			protected virtual void Invoke2<T>(ref T value) {}
+			public void Invoke3<T>(ref T value) {}
+			""";
+
+		const string methods =
+			"""
+			// Invoke
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
+			private InvocationDictionary? _invoke0Invocation;
+
+			public SetupWithRefParameter<T> SetupInvoke<T>(in ItRef<T> value)
+			{
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+				var invoke0 = (SetupWithRefParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithRefParameter<T>());
+				invoke0.SetupParameter(value.ValueSetup);
+				return invoke0;
+			}
+
+			public void VerifyInvoke<T>(in ItRef<T> value, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"Class.Invoke<{key.Name}>({{0}})", prefix: "ref"));
+				invoke0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke<T>(in ItRef<T> value, long index)
+			{
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"Class.Invoke<{key.Name}>({{0}})", prefix: "ref"));
+				return invoke0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public override void Invoke<T>(ref T value)
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"Class.Invoke<{key.Name}>({{0}})", prefix: "ref"));
+				invoke0Invocation.Register(_mock._invocationIndex, value);
+				((SetupWithRefParameter<T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Invoke(ref value);
+			}
+			""";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.ActionRef<T>> SetupInvoke<T>(in ItRef<T> value = default) =>
+				((ClassMock)@this).SetupInvoke<T>(value);
+
+			public void VerifyInvoke<T>(in ItRef<T> value, in Times times) =>
+				((ClassMock)@this).VerifyInvoke<T>(value, times);
+
+			public void VerifyInvoke<T>(in ItRef<T> value, System.Func<Times> times) =>
+				((ClassMock)@this).VerifyInvoke<T>(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke<T>(in ItRef<T> value)
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke<T>(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		var testCode = CreateClassTestCode(method);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateClassGenericWithRefReturn()
+	{
+		const string method =
+			"""
+			public virtual T2 Invoke<T1, T2>(ref T1 result) { return default!; }
+			protected virtual T2 Invoke2<T1, T2>(ref T1 result) { return default!; }
+			public T2 Invoke3<T1, T2>(ref T1 result) { return default!; }
+			""";
+
+		const string methods =
+			"""
+			// Invoke
+			private System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>? _invoke0;
+			private InvocationDictionary<(System.Type, System.Type)>? _invoke0Invocation;
+
+			public SetupWithRefParameter<T1, T2> SetupInvoke<T1, T2>(in ItRef<T1> result)
+			{
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
+				var invoke0 = (SetupWithRefParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithRefParameter<T1, T2>());
+				invoke0.SetupParameter(result.ValueSetup);
+				return invoke0;
+			}
+
+			public void VerifyInvoke<T1, T2>(in ItRef<T1> result, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"Class.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref"));
+				invoke0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke<T1, T2>(in ItRef<T1> result, long index)
+			{
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"Class.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref"));
+				return invoke0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public override T2 Invoke<T1, T2>(ref T1 result)
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"Class.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref"));
+				invoke0Invocation.Register(_mock._invocationIndex, result);
+				return ((SetupWithRefParameter<T1, T2>?)_mock._invoke0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(ref result, out var returnValue) == true ? returnValue! : default!;
+			}
+			""";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.ActionRef<T1>, T2, System.FuncRef<T1, T2>> SetupInvoke<T1, T2>(in ItRef<T1> result = default) =>
+				((ClassMock)@this).SetupInvoke<T1, T2>(result);
+
+			public void VerifyInvoke<T1, T2>(in ItRef<T1> result, in Times times) =>
+				((ClassMock)@this).VerifyInvoke<T1, T2>(result, times);
+
+			public void VerifyInvoke<T1, T2>(in ItRef<T1> result, System.Func<Times> times) =>
+				((ClassMock)@this).VerifyInvoke<T1, T2>(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke<T1, T2>(in ItRef<T1> result)
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke<T1, T2>(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		var testCode = CreateClassTestCode(method);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateClassGenericWithRefReadonly()
+	{
+		const string method =
+			"""
+			public virtual void Invoke<T>(ref readonly T value) {}
+			protected virtual void Invoke2<T>(ref readonly T value) {}
+			public void Invoke3<T>(ref readonly T value) {}
+			""";
+
+		const string methods =
+			"""
+			// Invoke
+			private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
+			private InvocationDictionary? _invoke0Invocation;
+
+			public SetupWithRefReadOnlyParameter<T> SetupInvoke<T>(in ItRefReadOnly<T> value)
+			{
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+				var invoke0 = (SetupWithRefReadOnlyParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithRefReadOnlyParameter<T>());
+				invoke0.SetupParameter(value.ValueSetup);
+				return invoke0;
+			}
+
+			public void VerifyInvoke<T>(in ItRefReadOnly<T> value, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"Class.Invoke<{key.Name}>({{0}})", prefix: "ref readonly"));
+				invoke0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke<T>(in ItRefReadOnly<T> value, long index)
+			{
+				_invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"Class.Invoke<{key.Name}>({{0}})", prefix: "ref readonly"));
+				return invoke0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public override void Invoke<T>(ref readonly T value)
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation<T>($"Class.Invoke<{key.Name}>({{0}})", prefix: "ref readonly"));
+				invoke0Invocation.Register(_mock._invocationIndex, value);
+				((SetupWithRefReadOnlyParameter<T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Invoke(in value);
+			}
+			""";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.ActionRefReadOnly<T>> SetupInvoke<T>(in ItRefReadOnly<T> value = default) =>
+				((ClassMock)@this).SetupInvoke<T>(value);
+
+			public void VerifyInvoke<T>(in ItRefReadOnly<T> value, in Times times) =>
+				((ClassMock)@this).VerifyInvoke<T>(value, times);
+
+			public void VerifyInvoke<T>(in ItRefReadOnly<T> value, System.Func<Times> times) =>
+				((ClassMock)@this).VerifyInvoke<T>(value, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke<T>(in ItRefReadOnly<T> value)
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke<T>(value, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		var testCode = CreateClassTestCode(method);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateClassGenericWithRefReadonlyReturn()
+	{
+		const string method =
+			"""
+			public virtual T2 Invoke<T1, T2>(ref readonly T1 result) { return default!; }
+			protected virtual T2 Invoke2<T1, T2>(ref readonly T1 result) { return default!; }
+			public T2 Invoke3<T1, T2>(ref readonly T1 result) { return default!; }
+			""";
+
+		const string methods =
+			"""
+			// Invoke
+			private System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>? _invoke0;
+			private InvocationDictionary<(System.Type, System.Type)>? _invoke0Invocation;
+
+			public SetupWithRefReadOnlyParameter<T1, T2> SetupInvoke<T1, T2>(in ItRefReadOnly<T1> result)
+			{
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
+				var invoke0 = (SetupWithRefReadOnlyParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithRefReadOnlyParameter<T1, T2>());
+				invoke0.SetupParameter(result.ValueSetup);
+				return invoke0;
+			}
+
+			public void VerifyInvoke<T1, T2>(in ItRefReadOnly<T1> result, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"Class.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref readonly"));
+				invoke0Invocation.Verify(result.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke<T1, T2>(in ItRefReadOnly<T1> result, long index)
+			{
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"Class.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref readonly"));
+				return invoke0Invocation.Verify(result.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public override T2 Invoke<T1, T2>(ref readonly T1 result)
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"Class.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref readonly"));
+				invoke0Invocation.Register(_mock._invocationIndex, result);
+				return ((SetupWithRefReadOnlyParameter<T1, T2>?)_mock._invoke0?.ValueOrDefault((typeof(T1), typeof(T2))))?.Execute(in result, out var returnValue) == true ? returnValue! : default!;
+			}
+			""";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<System.ActionRefReadOnly<T1>, T2, System.FuncRefReadOnly<T1, T2>> SetupInvoke<T1, T2>(in ItRefReadOnly<T1> result = default) =>
+				((ClassMock)@this).SetupInvoke<T1, T2>(result);
+
+			public void VerifyInvoke<T1, T2>(in ItRefReadOnly<T1> result, in Times times) =>
+				((ClassMock)@this).VerifyInvoke<T1, T2>(result, times);
+
+			public void VerifyInvoke<T1, T2>(in ItRefReadOnly<T1> result, System.Func<Times> times) =>
+				((ClassMock)@this).VerifyInvoke<T1, T2>(result, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke<T1, T2>(in ItRefReadOnly<T1> result)
+			{
+				var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke<T1, T2>(result, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		var testCode = CreateClassTestCode(method);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
 }
