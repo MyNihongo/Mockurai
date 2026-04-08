@@ -135,14 +135,14 @@ internal static class MockSetupGenerator
 
 		stringBuilder
 			.Indent(indent).Append("public delegate void CallbackDelegate(")
-			.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride)
+			.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
 			.AppendLine(");");
 
 		if (returnType is not null)
 		{
 			stringBuilder
 				.Indent(indent).Append($"public delegate {MockGeneratorConst.Suffixes.GenericReturnParameter}? ReturnsCallbackDelegate(")
-				.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride)
+				.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
 				.AppendLine(");");
 		}
 
@@ -208,8 +208,9 @@ internal static class MockSetupGenerator
 		stringBuilder.AppendLine();
 
 		// fields
-		foreach (var parameter in inputParameters)
+		for (var i = 0; i < inputParameters.Length; i++)
 		{
+			var parameter = inputParameters[i];
 			var typeOverride = genericTypeOverride.GetValueOrDefault(parameter);
 
 			stringBuilder
@@ -217,7 +218,7 @@ internal static class MockSetupGenerator
 				.Append("public readonly ")
 				.AppendItSetupType(parameter.Type, isNullable: true, typeOverride)
 				.Append(' ')
-				.AppendPropertyName(parameter.Name)
+				.AppendParameterPropertyName(i)
 				.AppendLine(";");
 		}
 
@@ -229,13 +230,13 @@ internal static class MockSetupGenerator
 			.AppendLine(")")
 			.Indent(indent++).AppendLine("{");
 
-		foreach (var parameter in inputParameters)
+		for (var i = 0; i < inputParameters.Length; i++)
 		{
 			stringBuilder
 				.Indent(indent)
-				.AppendPropertyName(parameter.Name)
+				.AppendParameterPropertyName(i)
 				.Append(" = ")
-				.AppendParameterName(parameter.Name)
+				.AppendParameterVariableName(i)
 				.AppendLine(";");
 		}
 
@@ -483,16 +484,14 @@ internal static class MockSetupGenerator
 
 		private StringBuilder AppendComparerDeclaration(ImmutableArray<IParameterSymbol> inputParameters, string item, int indent)
 		{
-			foreach (var parameter in inputParameters)
+			for (var i = 0; i < inputParameters.Length; i++)
 			{
-				var parameterName = parameter.Name;
-
 				@this
 					.Indent(indent)
 					.Append("if (")
 					.Append(item)
 					.Append('.')
-					.AppendPropertyName(parameterName)
+					.AppendParameterPropertyName(i)
 					.AppendLine(".HasValue)");
 
 				@this
@@ -501,7 +500,7 @@ internal static class MockSetupGenerator
 					.Append("Sort += ")
 					.Append(item)
 					.Append('.')
-					.AppendPropertyName(parameterName)
+					.AppendParameterPropertyName(i)
 					.AppendLine(".Value.Sort;");
 			}
 
@@ -530,14 +529,14 @@ file static class Extensions
 			{
 				stringBuilder
 					.Append("public void Invoke(")
-					.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride)
+					.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
 					.AppendLine(")");
 			}
 			else
 			{
 				stringBuilder
 					.Append("public bool Execute(")
-					.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride)
+					.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
 					.Append($", out {MockGeneratorConst.Suffixes.GenericReturnParameter}? ")
 					.Append(ReturnValueName)
 					.AppendLine(")");
@@ -560,16 +559,16 @@ file static class Extensions
 					.Indent(indent).AppendLine("foreach (var setup in _setups)")
 					.Indent(indent++).AppendLine("{");
 
-				foreach (var parameter in parameterSplit.InputParameters)
+				for (var i = 0; i < parameterSplit.InputParameters.Length; i++)
 				{
 					stringBuilder
 						.Indent(indent)
 						.Append("if (setup.")
-						.AppendPropertyName(parameter.Name)
+						.AppendParameterPropertyName(i)
 						.Append(".HasValue && !setup.")
-						.AppendPropertyName(parameter.Name)
+						.AppendParameterPropertyName(i)
 						.Append(".Value.Check(")
-						.Append(parameter.Name)
+						.AppendParameterVariableName(i)
 						.AppendLine("))");
 
 					stringBuilder
@@ -591,7 +590,7 @@ file static class Extensions
 				stringBuilder
 					.Indent(indent)
 					.Append("x.Callback?.Invoke(")
-					.AppendParameterNames(methodSymbol.Parameters, appendRefModifier: true)
+					.AppendParameterNames(methodSymbol.Parameters, appendRefModifier: true, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
 					.AppendLine(");");
 			}
 			else
@@ -603,7 +602,7 @@ file static class Extensions
 				stringBuilder
 					.Indent(indent + 1)
 					.Append("x.Callback.Invoke(")
-					.AppendParameterNames(methodSymbol.Parameters, appendRefModifier: true)
+					.AppendParameterNames(methodSymbol.Parameters, appendRefModifier: true, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
 					.AppendLine(");");
 
 				stringBuilder
@@ -611,11 +610,11 @@ file static class Extensions
 					.Indent(indent).AppendLine("else")
 					.Indent(indent).AppendLine("{");
 
-				foreach (var outputParameter in parameterSplit.OutputParameters)
+				for (var i = 0; i < parameterSplit.OutputParameters.Length; i++)
 				{
 					stringBuilder
 						.Indent(indent + 1)
-						.Append(outputParameter.Name)
+						.AppendParameterVariableName(i)
 						.AppendLine(DefaultAssign);
 				}
 
@@ -641,7 +640,7 @@ file static class Extensions
 					.Indent(indent)
 					.Append(ReturnValueName)
 					.Append(" = x.Returns(")
-					.AppendParameterNames(methodSymbol.Parameters, appendRefModifier: true)
+					.AppendParameterNames(methodSymbol.Parameters, appendRefModifier: true, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
 					.AppendLine(");");
 
 				stringBuilder
@@ -694,11 +693,11 @@ file static class Extensions
 						.AppendLine(DefaultAssign);
 				}
 
-				foreach (var parameter in parameterSplit.OutputParameters)
+				for (var i = 0; i < parameterSplit.OutputParameters.Length; i++)
 				{
 					stringBuilder
 						.Indent(indent)
-						.Append(parameter.Name)
+						.AppendParameterVariableName(i)
 						.AppendLine(DefaultAssign);
 				}
 
@@ -732,7 +731,7 @@ file static class Extensions
 
 			stringBuilder
 				.Indent(indent).Append("_currentSetup = new Item(")
-				.AppendParameterNames(inputParameters)
+				.AppendParameterNames(inputParameters, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
 				.AppendLine(");").AppendLine();
 
 			stringBuilder
@@ -783,11 +782,11 @@ file static class Extensions
 					.AppendLine()
 					.Indent(indent++).AppendLine("{");
 
-				foreach (var outParameter in parameterSplit.OutputParameters)
+				for (var i = 0; i < parameterSplit.OutputParameters.Length; i++)
 				{
 					stringBuilder
 						.Indent(indent)
-						.Append(outParameter.Name)
+						.AppendParameterVariableName(i)
 						.AppendLine(DefaultAssign);
 				}
 
