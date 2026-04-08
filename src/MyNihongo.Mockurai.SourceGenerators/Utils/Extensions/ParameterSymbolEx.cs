@@ -59,7 +59,7 @@ internal static class ParameterSymbolEx
 	// TODO: when there is more time try to optimize appending instead of appending strings of ITypeSymbol, IPropertySymbol, etc
 	extension(StringBuilder @this)
 	{
-		public StringBuilder AppendParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride = null, bool appendRefKind = true)
+		public StringBuilder AppendParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride = null, bool appendRefKind = true, Func<StringBuilder, int, StringBuilder>? appendParameterName = null)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
@@ -67,7 +67,12 @@ internal static class ParameterSymbolEx
 					@this.Append(", ");
 
 				var typeOverride = parameterTypeOverride?.GetValueOrDefault(parameters[i]);
-				@this.AppendParameter(parameters[i], typeOverride, appendRefKind);
+				@this.AppendParameterWithoutName(parameters[i], typeOverride, appendRefKind);
+
+				if (appendParameterName is not null)
+					appendParameterName(@this, i);
+				else
+					@this.Append(parameters[i].Name);
 
 				if (appendComma)
 					@this.Append(", ");
@@ -85,6 +90,13 @@ internal static class ParameterSymbolEx
 
 		private StringBuilder AppendParameter(IParameterSymbol parameter, string? typeOverride = null, bool appendRefKind = true)
 		{
+			return @this
+				.AppendParameterWithoutName(parameter, typeOverride, appendRefKind)
+				.Append(parameter.Name);
+		}
+
+		private StringBuilder AppendParameterWithoutName(IParameterSymbol parameter, string? typeOverride = null, bool appendRefKind = true)
+		{
 			if (appendRefKind)
 			{
 				var refKindString = parameter.RefKind.GetString();
@@ -94,11 +106,10 @@ internal static class ParameterSymbolEx
 
 			return @this
 				.AppendType(parameter.Type, typeOverride)
-				.Append(' ')
-				.Append(parameter.Name);
+				.Append(' ');
 		}
 
-		public StringBuilder AppendParameterNames(ImmutableArray<IParameterSymbol> parameters, string? suffix = null, bool appendComma = false, bool appendRefModifier = false)
+		public StringBuilder AppendParameterNames(ImmutableArray<IParameterSymbol> parameters, string? suffix = null, bool appendComma = false, bool appendRefModifier = false, Func<StringBuilder, int, StringBuilder>? appendParameterName = null)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
@@ -114,7 +125,10 @@ internal static class ParameterSymbolEx
 						@this.Append(refModifier).Append(' ');
 				}
 
-				@this.Append(parameters[i].Name);
+				if (appendParameterName is not null)
+					appendParameterName(@this, i);
+				else
+					@this.Append(parameters[i].Name);
 
 				if (appendRefModifier && refKind == RefKind.Out)
 					@this.Append('!');
