@@ -203,7 +203,9 @@ internal static class MockImplementationPropertyGenerator
 			stringBuilder
 				.Append(MockGeneratorConst.Suffixes.MockVariableCall)
 				.AppendFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
-				.Append("?.Invoke(value)");
+				.Append("?.Invoke(")
+				.AppendParameterNames(methodSymbol.Parameters)
+				.Append(')');
 		}
 	}
 }

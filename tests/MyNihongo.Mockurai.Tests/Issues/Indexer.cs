@@ -169,7 +169,7 @@ public sealed class Indexer : TestsBase
 							{
 								_mock._indexer0SetInvocation ??= new InvocationStringString("IInterface.This[{0}].set = {1}");
 								_mock._indexer0SetInvocation.Register(_mock._invocationIndex, key, value);
-								_mock._indexer0Set?.Invoke(value);
+								_mock._indexer0Set?.Invoke(key, value);
 							}
 						}
 					}
