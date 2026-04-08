@@ -7,5 +7,6 @@
     <Project Path="tests/MyNihongo.Mockurai.Tests/MyNihongo.Mockurai.Tests.csproj" />
   </Folder>
   <Project Path="src/MyNihongo.Mockurai.Abstractions/MyNihongo.Mockurai.Abstractions.csproj" />
+  <Project Path="src/MyNihongo.Mockurai.SourceGenerators/MyNihongo.Mockurai.SourceGenerators.csproj" />
   <Project Path="src/MyNihongo.Mockurai/MyNihongo.Mockurai.csproj" />
 </Solution>

@@ -1,24 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
-		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<IsRoslynComponent>true</IsRoslynComponent>
-		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+		<Nullable>enable</Nullable>
+		<RootNamespace>MyNihongo.Mockurai</RootNamespace>
+		<PackageId>Mockurai</PackageId>
+		<Version>0.0.0.1</Version>
+		<Authors>Mynihongo</Authors>
+		<Copyright>© Mynihongo 2026</Copyright>
+		<Product>Mockurai</Product>
+		<Description>A source generator–based mocking library for .NET.</Description>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="5.3.0">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.3.0" />
+		<ProjectReference Include="..\MyNihongo.Mockurai.Abstractions\MyNihongo.Mockurai.Abstractions.csproj" />
+		<ProjectReference Include="..\MyNihongo.Mockurai.SourceGenerators\MyNihongo.Mockurai.SourceGenerators.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" PrivateAssets="all" />
 	</ItemGroup>
+
+	<Target Name="PackSourceGenerator" BeforeTargets="_GetPackageFiles">
+		<ItemGroup>
+			<None Include="..\MyNihongo.Mockurai.SourceGenerators\bin\$(Configuration)\netstandard2.0\MyNihongo.Mockurai.SourceGenerators.dll"
+			      Pack="true"
+			      PackagePath="analyzers/dotnet/cs"
+			      Visible="false" />
+		</ItemGroup>
+	</Target>
 
 	<ItemGroup>
 		<None Remove="*.csproj.DotSettings" />
+		<None Include="..\..\README.md" Pack="True" PackagePath="\" />
 	</ItemGroup>
 
 </Project>

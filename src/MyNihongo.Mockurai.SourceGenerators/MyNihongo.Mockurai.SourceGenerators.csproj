@@ -1,24 +1,34 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net10.0</TargetFramework>
+		<TargetFramework>netstandard2.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
-		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<RootNamespace>MyNihongo.Mockurai</RootNamespace>
-		<PackageId>Mockurai.Abstractions</PackageId>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<IsRoslynComponent>true</IsRoslynComponent>
+		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+		<PackageId>Mockurai.SourceGenerators</PackageId>
 		<Version>0.0.0.1</Version>
 		<Authors>Mynihongo</Authors>
 		<Copyright>© Mynihongo 2026</Copyright>
 		<Product>Mockurai</Product>
 		<Description>A source generator–based mocking library for .NET.</Description>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RootNamespace>MyNihongo.Mockurai</RootNamespace>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="5.3.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.3.0" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<None Remove="*.csproj.DotSettings" />
