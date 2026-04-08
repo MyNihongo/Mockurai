@@ -38,11 +38,6 @@ internal static class ParameterSymbolEx
 			);
 		}
 
-		public string GetReturnValueName()
-		{
-			return @this.GetSafeVariableName("returnValue");
-		}
-
 		public string GetSafeVariableName(string variableName)
 		{
 			var parameterNames = @this

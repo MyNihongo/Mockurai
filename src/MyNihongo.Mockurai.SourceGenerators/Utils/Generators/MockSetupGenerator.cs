@@ -7,7 +7,6 @@ internal static class MockSetupGenerator
 		var stringBuilder = new StringBuilder();
 		var className = CreateSetupClassName(stringBuilder, methodSymbol, out var genericTypeOverride);
 		var returnType = methodSymbol.TryGetReturnType();
-		var returnValueName = methodSymbol.Parameters.GetReturnValueName();
 		var parameterSplit = methodSymbol.Parameters.SplitParameters();
 
 		var source =
@@ -20,7 +19,7 @@ internal static class MockSetupGenerator
 			  {{CreateFields(stringBuilder, parameterSplit, indent: 1)}}
 
 			  {{CreateDelegates(stringBuilder, methodSymbol, returnType, genericTypeOverride, indent: 1)}}
-			  {{CreateMethodImplementations(stringBuilder, methodSymbol, returnType, returnValueName, parameterSplit, genericTypeOverride, indent: 1)}}
+			  {{CreateMethodImplementations(stringBuilder, methodSymbol, returnType, parameterSplit, genericTypeOverride, indent: 1)}}
 			  {{CreateInterfaceMethodImplementations(stringBuilder, methodSymbol, returnType, parameterSplit.InputParameters, indent: 1)}}
 
 			  	private sealed class Item
@@ -154,13 +153,12 @@ internal static class MockSetupGenerator
 		StringBuilder stringBuilder,
 		IMethodSymbol methodSymbol,
 		ITypeSymbol? returnType,
-		string returnValueName,
 		ParameterSplit parameterSplit,
 		ImmutableDictionary<IParameterSymbol, string> genericTypeOverride,
 		int indent)
 	{
 		stringBuilder.Clear();
-		stringBuilder.AppendInvokeExecuteMethod(methodSymbol, returnType, returnValueName, parameterSplit, genericTypeOverride, indent);
+		stringBuilder.AppendInvokeExecuteMethod(methodSymbol, returnType, parameterSplit, genericTypeOverride, indent);
 
 		if (!parameterSplit.InputParameters.IsDefaultOrEmpty)
 		{
@@ -515,12 +513,12 @@ internal static class MockSetupGenerator
 file static class Extensions
 {
 	private const string DefaultAssign = MockGeneratorConst.Suffixes.DefaultAssign;
+	private const string ReturnValueName = MockGeneratorConst.Variables.ReturnValue;
 
 	extension(StringBuilder stringBuilder)
 	{
 		public void AppendInvokeExecuteMethod(IMethodSymbol methodSymbol,
 			ITypeSymbol? returnType,
-			string returnValueName,
 			ParameterSplit parameterSplit,
 			ImmutableDictionary<IParameterSymbol, string> genericTypeOverride,
 			int indent)
@@ -541,7 +539,7 @@ file static class Extensions
 					.Append("public bool Execute(")
 					.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride)
 					.Append($", out {MockGeneratorConst.Suffixes.GenericReturnParameter}? ")
-					.Append(returnValueName)
+					.Append(ReturnValueName)
 					.AppendLine(")");
 			}
 
@@ -641,7 +639,7 @@ file static class Extensions
 
 				stringBuilder
 					.Indent(indent)
-					.Append(returnValueName)
+					.Append(ReturnValueName)
 					.Append(" = x.Returns(")
 					.AppendParameterNames(methodSymbol.Parameters, appendRefModifier: true)
 					.AppendLine(");");
@@ -663,7 +661,7 @@ file static class Extensions
 				{
 					// Here we want to keep values assigned by the callback
 					stringBuilder
-						.Indent(indent).Append(returnValueName).AppendLine(DefaultAssign)
+						.Indent(indent).Append(ReturnValueName).AppendLine(DefaultAssign)
 						.Indent(indent).AppendLine("return false;");
 				}
 			}
@@ -692,7 +690,7 @@ file static class Extensions
 				{
 					stringBuilder
 						.Indent(indent)
-						.Append(returnValueName)
+						.Append(ReturnValueName)
 						.AppendLine(DefaultAssign);
 				}
 

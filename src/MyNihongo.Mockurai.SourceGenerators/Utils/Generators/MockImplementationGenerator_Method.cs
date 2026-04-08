@@ -256,7 +256,7 @@ internal static class MockImplementationMethodGenerator
 
 			if (hasReturnType)
 			{
-				var returnValueName = methodSymbol.Parameters.GetReturnValueName();
+				var returnValueName = methodSymbol.Parameters.GetSafeVariableName(MockGeneratorConst.Variables.ReturnValue);
 
 				stringBuilder
 					.Append("out var ")

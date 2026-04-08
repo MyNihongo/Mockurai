@@ -7,6 +7,11 @@ internal static class MockGeneratorConst
 	public const string SkipVerifyNoOtherCallsPropertyName = "SkipVerifyNoOtherCalls";
 	public const string Namespace = "MyNihongo.Mockurai";
 
+	public static class Variables
+	{
+		public const string ReturnValue = "returnValue";
+	}
+
 	public static class Suffixes
 	{
 		public const string Indexer = "Indexer";
