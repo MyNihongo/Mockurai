@@ -17,11 +17,6 @@
 		<RootNamespace>MyNihongo.Mockurai</RootNamespace>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="5.3.0">
 			<PrivateAssets>all</PrivateAssets>
