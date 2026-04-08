@@ -112,12 +112,22 @@ internal static class MockImplementationPropertyGenerator
 	{
 		private StringBuilder AppendPropertyDeclaration(IPropertySymbol propertySymbol)
 		{
-			return stringBuilder
+			stringBuilder
 				.AppendDeclaredAccessibility(propertySymbol)
 				.Append(' ')
 				.TryAppendOverride(propertySymbol)
 				.AppendType(propertySymbol.Type)
-				.Append(' ')
+				.Append(' ');
+
+			if (propertySymbol.IsIndexer)
+			{
+				return stringBuilder
+					.Append("this[")
+					.AppendParameters(propertySymbol.Parameters)
+					.Append(']');
+			}
+
+			return stringBuilder
 				.Append(propertySymbol.Name);
 		}
 
@@ -183,7 +193,9 @@ internal static class MockImplementationPropertyGenerator
 				.Append("return ")
 				.Append(MockGeneratorConst.Suffixes.MockVariableCall)
 				.AppendFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
-				.Append("?.Execute(out var returnValue) == true ? returnValue! : default!");
+				.Append("?.Execute(")
+				.AppendParameterNames(methodSymbol.Parameters, appendComma: true)
+				.Append("out var returnValue) == true ? returnValue! : default!");
 		}
 
 		private void AppendSetImplementation(IMethodSymbol methodSymbol, MockedMemberSymbol memberSymbol)

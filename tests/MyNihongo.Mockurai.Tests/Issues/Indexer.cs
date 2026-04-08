@@ -157,13 +157,13 @@ public sealed class Indexer : TestsBase
 							_mock = mock;
 						}
 
-						public string? this[]
+						public string? this[string key]
 						{
 							get
 							{
 								_mock._indexer0GetInvocation ??= new Invocation<string>("IInterface.This[{0}].get");
 								_mock._indexer0GetInvocation.Register(_mock._invocationIndex, key);
-								return _mock._indexer0Get?.Execute(out var returnValue) == true ? returnValue! : default!;
+								return _mock._indexer0Get?.Execute(key, out var returnValue) == true ? returnValue! : default!;
 							}
 							set
 							{

@@ -57,7 +57,7 @@ internal static class MockInvocationGenerator
 			  		{
 			  			var stringBuilder = new System.Text.StringBuilder();
 			  {{CreateToStringMethod(stringBuilder, methodSymbol, indent: 3)}}
-			  			return $"{Index}: {value}";
+			  			return $"{Index}: {stringValue}";
 			  		}
 			  	}
 			  }
@@ -560,7 +560,7 @@ internal static class MockInvocationGenerator
 		return stringBuilder
 			.AppendLine()
 			.Indent(indent)
-			.Append("var value = string.Format(_invocation._name, ")
+			.Append("var stringValue = string.Format(_invocation._name, ")
 			.AppendParameterNames(methodSymbol.Parameters)
 			.Append(");")
 			.ToString();
