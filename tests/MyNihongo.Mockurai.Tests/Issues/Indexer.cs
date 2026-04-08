@@ -21,6 +21,12 @@ public sealed class Indexer : TestsBase
 			}
 			""";
 
+		var types = new TypeModel[]
+		{
+			new("String", "key"),
+			new("String", "value", isNullable: true),
+		};
+
 		GeneratedSources generatedSources =
 		[
 			(
@@ -217,6 +223,8 @@ public sealed class Indexer : TestsBase
 				}
 				"""
 			),
+			CreateSetupCode(types),
+			CreateInvocationCode(types),
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);

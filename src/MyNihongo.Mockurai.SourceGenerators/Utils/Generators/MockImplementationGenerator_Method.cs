@@ -13,14 +13,7 @@ internal static class MockImplementationMethodGenerator
 		stringBuilder.AppendSetupInvocationFields(methodSymbol, mockedTypeSymbol, memberSymbol, indent);
 		stringBuilder.AppendMethods(methodSymbol, mockedTypeSymbol, memberSymbol, indent);
 
-		return TryGetMethodForSetupInvocationGeneration(methodSymbol);
-	}
-
-	private static IMethodSymbol? TryGetMethodForSetupInvocationGeneration(IMethodSymbol methodSymbol)
-	{
-		return methodSymbol.Parameters.Length >= 2
-			? methodSymbol
-			: null;
+		return methodSymbol;
 	}
 
 	public static IEnumerable<IMethodSymbol> GetMethodMethods(MockedMemberSymbol memberSymbol)

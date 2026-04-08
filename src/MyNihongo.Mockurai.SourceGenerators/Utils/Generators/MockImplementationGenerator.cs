@@ -139,7 +139,7 @@ internal static class MockImplementationGenerator
 					.AppendLine();
 
 			var methodSymbol = handler(stringBuilder, typeSymbol, member, indent);
-			if (methodSymbol is not null)
+			if (methodSymbol is not null && methodSymbol.Parameters.Length >= 2)
 			{
 				methodSymbolList ??= [];
 				methodSymbolList.Add(methodSymbol);
