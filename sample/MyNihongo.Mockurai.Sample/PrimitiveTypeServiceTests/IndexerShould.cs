@@ -659,10 +659,10 @@ public sealed class IndexerShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(in 123) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.This[123].get to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter(in 123)
-			- 2: IPrimitiveDependencyService.InvokeWithParameter(in 234)
+			- 1: IPrimitiveDependencyService.This[123].get
+			- 2: IPrimitiveDependencyService.This[234].get
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -686,10 +686,10 @@ public sealed class IndexerShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(in 123) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.This[234].set = "value1" to be invoked at index 1, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter(in 123)
-			- 2: IPrimitiveDependencyService.InvokeWithParameter(in 234)
+			- 1: IPrimitiveDependencyService.This[123].set = "value1"
+			- 2: IPrimitiveDependencyService.This[234].set = "value2"
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -713,10 +713,10 @@ public sealed class IndexerShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(in 123) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.This[123].set = "value2" to be invoked at index 1, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter(in 123)
-			- 2: IPrimitiveDependencyService.InvokeWithParameter(in 234)
+			- 1: IPrimitiveDependencyService.This[123].set = "value1"
+			- 2: IPrimitiveDependencyService.This[234].set = "value2"
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -740,10 +740,10 @@ public sealed class IndexerShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(in where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.This[where(predicate)].get to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter(in 123)
-			- 2: IPrimitiveDependencyService.InvokeWithParameter(in 234)
+			- 1: IPrimitiveDependencyService.This[123].get
+			- 2: IPrimitiveDependencyService.This[234].get
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -769,10 +769,10 @@ public sealed class IndexerShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(in where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.This[where(predicate)].set = where(predicate) to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter(in 123)
-			- 2: IPrimitiveDependencyService.InvokeWithParameter(in 234)
+			- 1: IPrimitiveDependencyService.This[123].set = "value1"
+			- 2: IPrimitiveDependencyService.This[234].set = "value2"
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -798,10 +798,10 @@ public sealed class IndexerShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(in where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.This[where(predicate)].set = where(predicate) to be invoked at index 3, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter(in 123)
-			- 2: IPrimitiveDependencyService.InvokeWithParameter(in 234)
+			- 1: IPrimitiveDependencyService.This[123].set = "value1"
+			- 2: IPrimitiveDependencyService.This[234].set = "value2"
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -827,8 +827,8 @@ public sealed class IndexerShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 234) to be invoked at index 2, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter(in 123)
-			- 2: IPrimitiveDependencyService.InvokeWithParameter(in 234)
+			- 1: IPrimitiveDependencyService.This[123].get
+			- 2: IPrimitiveDependencyService.This[234].get
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -855,8 +855,8 @@ public sealed class IndexerShould : PrimitiveTypeServiceTestsBase
 			"""
 			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 234) to be invoked at index 2, but it has not been called.
 			Performed invocations:
-			- 1: IPrimitiveDependencyService.InvokeWithParameter(in 123)
-			- 2: IPrimitiveDependencyService.InvokeWithParameter(in 234)
+			- 1: IPrimitiveDependencyService.This[123].set = "value1"
+			- 2: IPrimitiveDependencyService.This[234].set = "value2"
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
