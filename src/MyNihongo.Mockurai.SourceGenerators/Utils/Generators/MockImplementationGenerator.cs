@@ -122,7 +122,7 @@ internal static class MockImplementationGenerator
 		for (int i = 0, generateCount = 0; i < members.Count; i++)
 		{
 			var member = members[i];
-			Func<StringBuilder, MockedTypeSymbol, MockedMemberSymbol, int, IMethodSymbol?>? handler = member.Symbol.Kind switch
+			Func<StringBuilder, MockedTypeSymbol, MockedMemberSymbol, int, ImmutableArray<IMethodSymbol>>? handler = member.Symbol.Kind switch
 			{
 				SymbolKind.Event => MockImplementationEventGenerator.AppendEventMockMethod,
 				SymbolKind.Property => MockImplementationPropertyGenerator.AppendPropertyMockMethod,
@@ -138,11 +138,14 @@ internal static class MockImplementationGenerator
 					.AppendLine()
 					.AppendLine();
 
-			var methodSymbol = handler(stringBuilder, typeSymbol, member, indent);
-			if (methodSymbol is not null && methodSymbol.Parameters.Length >= 2)
+			var methodSymbolResults = handler(stringBuilder, typeSymbol, member, indent);
+			if (!methodSymbolResults.IsDefaultOrEmpty)
 			{
+				var methodSymbolsToAdd = methodSymbolResults
+					.Where(static x => x.Parameters.Length >= 2);
+
 				methodSymbolList ??= [];
-				methodSymbolList.Add(methodSymbol);
+				methodSymbolList.AddRange(methodSymbolsToAdd);
 			}
 
 			generateCount++;

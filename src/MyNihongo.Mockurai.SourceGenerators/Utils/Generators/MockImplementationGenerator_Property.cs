@@ -2,10 +2,10 @@
 
 internal static class MockImplementationPropertyGenerator
 {
-	public static IMethodSymbol? AppendPropertyMockMethod(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
+	public static ImmutableArray<IMethodSymbol> AppendPropertyMockMethod(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 	{
 		if (memberSymbol.Symbol is not IPropertySymbol propertySymbol)
-			return null;
+			return default;
 
 		stringBuilder.AppendNameComment(memberSymbol, indent);
 
@@ -17,8 +17,12 @@ internal static class MockImplementationPropertyGenerator
 			stringBuilder.AppendSetupInvocationFields(propertySymbol.SetMethod, mockedTypeSymbol, memberSymbol, indent);
 
 		// Methods
+		var methodBuilder = ImmutableArray.CreateBuilder<IMethodSymbol>();
 		if (propertySymbol.GetMethod is not null)
+		{
 			stringBuilder.AppendMethods(propertySymbol.GetMethod, mockedTypeSymbol, memberSymbol, indent);
+			methodBuilder.Add(propertySymbol.GetMethod);
+		}
 
 		if (propertySymbol.SetMethod is not null)
 		{
@@ -26,10 +30,10 @@ internal static class MockImplementationPropertyGenerator
 				stringBuilder.AppendLine();
 
 			stringBuilder.AppendMethods(propertySymbol.SetMethod, mockedTypeSymbol, memberSymbol, indent);
-			return propertySymbol.SetMethod;
+			methodBuilder.Add(propertySymbol.SetMethod);
 		}
 
-		return null;
+		return methodBuilder.ToImmutable();
 	}
 
 	public static IEnumerable<IMethodSymbol> GetPropertyMethods(MockedMemberSymbol memberSymbol)

@@ -2,10 +2,10 @@
 
 internal static class MockImplementationEventGenerator
 {
-	public static IMethodSymbol? AppendEventMockMethod(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
+	public static ImmutableArray<IMethodSymbol> AppendEventMockMethod(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 	{
 		if (memberSymbol.Symbol is not IEventSymbol eventSymbol)
-			return null;
+			return default;
 
 		var eventTypeString = eventSymbol.Type.ToString();
 		var parameterSymbol = eventSymbol.GetDelegateParameter();
@@ -46,7 +46,7 @@ internal static class MockImplementationEventGenerator
 		if (eventSymbol.RemoveMethod is not null)
 			stringBuilder.AppendMockMethods(eventSymbol.RemoveMethod, mockedTypeSymbol, memberSymbol, indent);
 
-		return null;
+		return default;
 	}
 
 	public static IEnumerable<IMethodSymbol> GetEventMethods(MockedMemberSymbol memberSymbol)

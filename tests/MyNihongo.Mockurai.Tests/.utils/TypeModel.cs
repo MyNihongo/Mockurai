@@ -74,6 +74,7 @@ public static class TypeModelEx
 				"Int64" => "long",
 				"Double" => "double",
 				"String" => "string",
+				"Boolean" => "bool",
 				"T" or "T1" or "T2" or "T3" => @this.Type,
 				_ => throw new NotImplementedException($"Unsupported type: `{@this}`"),
 			};
