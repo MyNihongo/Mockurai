@@ -819,16 +819,16 @@ internal static class MethodSymbolEx
 				return;
 
 			var customPrefixName = methodSymbol.Parameters.Length >= 2;
-			foreach (var parameter in methodSymbol.Parameters)
+			for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 			{
-				var refKindString = parameter.RefKind.GetString(pascalCase: false);
+				var refKindString = methodSymbol.Parameters[i].RefKind.GetString(pascalCase: false);
 				if (string.IsNullOrEmpty(refKindString))
 					continue;
 
 				@this.Append(", ");
 
 				if (customPrefixName)
-					@this.AppendPrefixParameter();
+					@this.AppendPrefixParameter(i);
 				else
 					@this.Append(MockGeneratorConst.Suffixes.Prefix);
 
@@ -839,18 +839,25 @@ internal static class MethodSymbolEx
 			}
 		}
 
-		public StringBuilder AppendPrefixField(string name)
+		public StringBuilder AppendPrefixField(int index)
 		{
 			return @this
 				.AppendFieldName(MockGeneratorConst.Suffixes.Prefix)
-				.AppendPropertyName(name);
+				.AppendParameter(index);
 		}
 
-		public StringBuilder AppendPrefixParameter()
+		public StringBuilder AppendPrefixParameter(int index)
 		{
 			return @this
 				.AppendParameterName(MockGeneratorConst.Suffixes.Prefix)
-				.AppendPropertyName(MockGeneratorConst.Variables.Parameter);
+				.AppendParameter(index);
+		}
+
+		private StringBuilder AppendParameter(int index)
+		{
+			return @this
+				.AppendPropertyName(MockGeneratorConst.Variables.Parameter)
+				.Append(index + 1); // 0-based index is usually passed, but we want to start from 1
 		}
 	}
 

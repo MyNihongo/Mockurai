@@ -78,7 +78,7 @@ internal static class MockInvocationGenerator
 			if (i != 0)
 				stringBuilder.Append(", ");
 
-			stringBuilder.AppendPrefixField(methodSymbol.Parameters[i].Name);
+			stringBuilder.AppendPrefixField(i);
 		}
 
 		return stringBuilder.ToString();
@@ -101,7 +101,7 @@ internal static class MockInvocationGenerator
 
 			stringBuilder
 				.Append("string? ")
-				.AppendPrefixParameter()
+				.AppendPrefixParameter(i)
 				.Append(" = null");
 		}
 
@@ -110,13 +110,13 @@ internal static class MockInvocationGenerator
 			.Indent(indent++).AppendLine("{")
 			.Indent(indent).AppendLine("_name = name;");
 
-		foreach (var parameter in methodSymbol.Parameters)
+		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
 			stringBuilder
 				.Indent(indent)
-				.AppendPrefixField(parameter.Name)
+				.AppendPrefixField(i)
 				.Append(" = ")
-				.AppendPrefixParameter()
+				.AppendPrefixParameter(i)
 				.AppendLine(";");
 		}
 
@@ -296,7 +296,7 @@ internal static class MockInvocationGenerator
 			stringBuilder
 				.AppendParameterName(parameterName)
 				.Append(".ToString(")
-				.AppendPrefixField(parameterName)
+				.AppendPrefixField(i)
 				.Append(')');
 		}
 
@@ -315,8 +315,9 @@ internal static class MockInvocationGenerator
 	{
 		stringBuilder.Clear();
 
-		foreach (var parameter in methodSymbol.Parameters)
+		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
+			var parameter =  methodSymbol.Parameters[i];
 			var typeOverride = genericTypeOverride.GetValueOrDefault(parameter);
 
 			stringBuilder
@@ -324,9 +325,9 @@ internal static class MockInvocationGenerator
 				.Append("var typeName")
 				.AppendPropertyName(parameter.Name)
 				.Append(" = !string.IsNullOrEmpty(")
-				.AppendPrefixField(parameter.Name)
+				.AppendPrefixField(i)
 				.Append(") ? $\"{")
-				.AppendPrefixField(parameter.Name)
+				.AppendPrefixField(i)
 				.Append("} ")
 				.AppendTypeInsideString(parameter.Type, typeOverride)
 				.Append("\" : ")
@@ -517,13 +518,13 @@ internal static class MockInvocationGenerator
 			stringBuilder
 				.Indent(indent)
 				.Append("if (!string.IsNullOrEmpty(_invocation.")
-				.AppendPrefixField(parameterName)
+				.AppendPrefixField(i)
 				.AppendLine("))");
 
 			stringBuilder
 				.Indent(indent + 1)
 				.Append("stringBuilder.Append($\"{_invocation.")
-				.AppendPrefixField(parameterName)
+				.AppendPrefixField(i)
 				.AppendLine("} \");");
 
 			stringBuilder
