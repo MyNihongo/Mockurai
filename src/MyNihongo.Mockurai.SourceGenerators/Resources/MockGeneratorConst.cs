@@ -10,6 +10,7 @@ internal static class MockGeneratorConst
 	public static class Variables
 	{
 		public const string ReturnValue = "returnValue";
+		public const string Parameter = "parameter";
 	}
 
 	public static class Suffixes

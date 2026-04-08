@@ -101,7 +101,7 @@ internal static class MockInvocationGenerator
 
 			stringBuilder
 				.Append("string? ")
-				.AppendPrefixParameter(methodSymbol.Parameters[i].Name)
+				.AppendPrefixParameter()
 				.Append(" = null");
 		}
 
@@ -116,7 +116,7 @@ internal static class MockInvocationGenerator
 				.Indent(indent)
 				.AppendPrefixField(parameter.Name)
 				.Append(" = ")
-				.AppendPrefixParameter(parameter.Name)
+				.AppendPrefixParameter()
 				.AppendLine(";");
 		}
 

@@ -828,7 +828,7 @@ internal static class MethodSymbolEx
 				@this.Append(", ");
 
 				if (customPrefixName)
-					@this.AppendPrefixParameter(parameter.Name);
+					@this.AppendPrefixParameter();
 				else
 					@this.Append(MockGeneratorConst.Suffixes.Prefix);
 
@@ -846,11 +846,11 @@ internal static class MethodSymbolEx
 				.AppendPropertyName(name);
 		}
 
-		public StringBuilder AppendPrefixParameter(string name)
+		public StringBuilder AppendPrefixParameter()
 		{
 			return @this
 				.AppendParameterName(MockGeneratorConst.Suffixes.Prefix)
-				.AppendPropertyName(name);
+				.AppendPropertyName(MockGeneratorConst.Variables.Parameter);
 		}
 	}
 
