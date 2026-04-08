@@ -151,7 +151,7 @@ public sealed class Indexer : TestsBase
 							_mock = mock;
 						}
 
-						public string? Indexer
+						public string? this[]
 						{
 							get
 							{
@@ -176,7 +176,7 @@ public sealed class Indexer : TestsBase
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
-						// Indexer
+						// this[]
 						public ISetup<System.Action<string>, string?, System.Func<string, string?>> SetupGetIndexer(in It<string> key = default) =>
 							((InterfaceMock)@this).SetupGetIndexer(key);
 
@@ -201,7 +201,7 @@ public sealed class Indexer : TestsBase
 				{
 					extension(IMockSequence<MyNihongo.Indexer.Tests.IInterface> @this)
 					{
-						// Indexer
+						// this[]
 						public void GetIndexer(in It<string> key)
 						{
 							var nextIndex = ((InterfaceMock)@this.Mock).VerifyGetIndexer(key, @this.VerifyIndex);
