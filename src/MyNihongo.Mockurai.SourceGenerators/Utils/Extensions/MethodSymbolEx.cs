@@ -599,7 +599,7 @@ internal static class MethodSymbolEx
 
 		private StringBuilder AppendMethodName(IMethodSymbol method)
 		{
-			var methodName = method.AssociatedSymbol?.Name ?? method.Name;
+			var methodName = method.AssociatedSymbol?.GetSymbolName() ?? method.Name;
 
 			return @this
 				.AppendMethodKind(method.MethodKind)

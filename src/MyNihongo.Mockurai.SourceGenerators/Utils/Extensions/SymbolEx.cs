@@ -7,6 +7,19 @@ internal static class SymbolEx
 		public bool IsPublic => @this.DeclaredAccessibility == Accessibility.Public;
 	}
 
+	extension<T>(T @this)
+		where T : ISymbol
+	{
+		public string GetSymbolName(Func<T, string>? defaultFunc = null)
+		{
+			return @this switch
+			{
+				IPropertySymbol { IsIndexer: true } => MockGeneratorConst.Suffixes.Indexer,
+				_ => defaultFunc?.Invoke(@this) ?? @this.Name,
+			};
+		}
+	}
+
 	extension(ISymbol? @this)
 	{
 		public T? GetAttributeValue<T>(string attributeName, string propertyName, T defaultValue)

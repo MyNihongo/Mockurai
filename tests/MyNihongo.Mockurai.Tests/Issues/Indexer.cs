@@ -86,7 +86,7 @@ public sealed class Indexer : TestsBase
 
 					public MyNihongo.Indexer.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
-					// Indexer
+					// this[]
 					private SetupWithParameter<string, string?>? _indexer0Get;
 					private Invocation<string>? _indexer0GetInvocation;
 					private SetupStringString? _indexer0Set;
