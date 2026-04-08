@@ -16,6 +16,8 @@ public interface IPrimitiveTypeService : IDisposable
 
 	string GetSetGeneric { get; set; }
 
+	string this[int key] { get; set; }
+
 	void Invoke();
 
 	void Invoke(out int result);

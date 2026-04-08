@@ -462,10 +462,9 @@ public abstract class TestsBase
 		var prefixes = string.Join(", ", types.Select(static x => $"_prefix{x.GetCamelCaseNameString()}"));
 		var jsonSnapshots = string.Join(", ", types.Select(static x => $"_jsonSnapshot{x.GetCamelCaseNameString()}"));
 		var prefixParameters = string.Join(", ", types.Select(static x => $"string? prefix{x.GetCamelCaseNameString()} = null"));
-		var parameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString()));
 		var parametersWithoutRef = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString(appendRefKind: false)));
 		var parameterNames = string.Join(", ", types.Select(static x => x.GetParameterNameString()));
-		var prefixAssignemnts = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"_prefix{x.GetCamelCaseNameString()} = prefix{x.GetCamelCaseNameString()};"));
+		var prefixAssignments = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"_prefix{x.GetCamelCaseNameString()} = prefix{x.GetCamelCaseNameString()};"));
 		var setupParameters = string.Join(", ", types.Select(static x => $"in ItSetup<{x.GetTypeString()}> {x.GetParameterNameString()}"));
 		var verifyParameters = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x => $"var verify{x.GetCamelCaseNameString()} = span[i].Get{x.GetCamelCaseNameString()}({x.GetParameterNameString()}.Type);"));
 		var parameterToString = string.Join(", ", types.Select(static x => $"{x.GetParameterNameString()}.ToString(_prefix{x.GetCamelCaseNameString()})"));
@@ -555,7 +554,7 @@ public abstract class TestsBase
 			  	public Invocation{{className}}(string name, {{prefixParameters}})
 			  	{
 			  		_name = name;
-			  		{{prefixAssignemnts}}
+			  		{{prefixAssignments}}
 			  	}
 
 			  	public void Register(in InvocationIndex.Counter index, {{parametersWithoutRef}})
@@ -677,8 +676,8 @@ public abstract class TestsBase
 
 			  			{{verifyItemParameterToString}}
 
-			  			var value = string.Format(_invocation._name, {{parameterNames}});
-			  			return $"{Index}: {value}";
+			  			var stringValue = string.Format(_invocation._name, {{parameterNames}});
+			  			return $"{Index}: {stringValue}";
 			  		}
 			  	}
 			  }

@@ -11,6 +11,8 @@ public interface IPrimitiveDependencyService
 
 	string GetInit { get; set; }
 
+	string? this[int key] { get; set; }
+
 	void Invoke();
 
 	void Invoke(out int result);

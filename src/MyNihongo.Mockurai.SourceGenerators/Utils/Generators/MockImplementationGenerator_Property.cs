@@ -2,10 +2,10 @@
 
 internal static class MockImplementationPropertyGenerator
 {
-	public static IMethodSymbol? AppendPropertyMockMethod(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
+	public static ImmutableArray<IMethodSymbol> AppendPropertyMockMethod(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
 	{
 		if (memberSymbol.Symbol is not IPropertySymbol propertySymbol)
-			return null;
+			return default;
 
 		stringBuilder.AppendNameComment(memberSymbol, indent);
 
@@ -17,8 +17,12 @@ internal static class MockImplementationPropertyGenerator
 			stringBuilder.AppendSetupInvocationFields(propertySymbol.SetMethod, mockedTypeSymbol, memberSymbol, indent);
 
 		// Methods
+		var methodBuilder = ImmutableArray.CreateBuilder<IMethodSymbol>();
 		if (propertySymbol.GetMethod is not null)
+		{
 			stringBuilder.AppendMethods(propertySymbol.GetMethod, mockedTypeSymbol, memberSymbol, indent);
+			methodBuilder.Add(propertySymbol.GetMethod);
+		}
 
 		if (propertySymbol.SetMethod is not null)
 		{
@@ -26,9 +30,10 @@ internal static class MockImplementationPropertyGenerator
 				stringBuilder.AppendLine();
 
 			stringBuilder.AppendMethods(propertySymbol.SetMethod, mockedTypeSymbol, memberSymbol, indent);
+			methodBuilder.Add(propertySymbol.SetMethod);
 		}
 
-		return null;
+		return methodBuilder.ToImmutable();
 	}
 
 	public static IEnumerable<IMethodSymbol> GetPropertyMethods(MockedMemberSymbol memberSymbol)
@@ -111,12 +116,22 @@ internal static class MockImplementationPropertyGenerator
 	{
 		private StringBuilder AppendPropertyDeclaration(IPropertySymbol propertySymbol)
 		{
-			return stringBuilder
+			stringBuilder
 				.AppendDeclaredAccessibility(propertySymbol)
 				.Append(' ')
 				.TryAppendOverride(propertySymbol)
 				.AppendType(propertySymbol.Type)
-				.Append(' ')
+				.Append(' ');
+
+			if (propertySymbol.IsIndexer)
+			{
+				return stringBuilder
+					.Append("this[")
+					.AppendParameters(propertySymbol.Parameters)
+					.Append(']');
+			}
+
+			return stringBuilder
 				.Append(propertySymbol.Name);
 		}
 
@@ -182,7 +197,9 @@ internal static class MockImplementationPropertyGenerator
 				.Append("return ")
 				.Append(MockGeneratorConst.Suffixes.MockVariableCall)
 				.AppendFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
-				.Append("?.Execute(out var returnValue) == true ? returnValue! : default!");
+				.Append("?.Execute(")
+				.AppendParameterNames(methodSymbol.Parameters, appendComma: true)
+				.Append("out var returnValue) == true ? returnValue! : default!");
 		}
 
 		private void AppendSetImplementation(IMethodSymbol methodSymbol, MockedMemberSymbol memberSymbol)
@@ -190,7 +207,9 @@ internal static class MockImplementationPropertyGenerator
 			stringBuilder
 				.Append(MockGeneratorConst.Suffixes.MockVariableCall)
 				.AppendFieldName(memberSymbol.MemberName, methodSymbol.MethodKind)
-				.Append("?.Invoke(value)");
+				.Append("?.Invoke(")
+				.AppendParameterNames(methodSymbol.Parameters)
+				.Append(')');
 		}
 	}
 }

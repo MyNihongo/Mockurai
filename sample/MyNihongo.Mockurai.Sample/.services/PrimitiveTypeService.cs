@@ -52,6 +52,12 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		set => _primitiveDependencyGenericService.GetSet = value;
 	}
 
+	public string this[int key]
+	{
+		get => _primitiveDependencyService[key] ?? string.Empty;
+		set => _primitiveDependencyService[key] = value;
+	}
+
 	public void Invoke()
 	{
 		_primitiveDependencyService.Invoke();

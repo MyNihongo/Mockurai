@@ -5,22 +5,24 @@ public readonly struct TypeModel
 	public readonly string Type;
 	public readonly int Index;
 	public readonly string? RefType, Name;
-	public readonly bool IsGeneric;
+	public readonly bool IsGeneric, IsNullable;
 
-	public TypeModel(string type, int index, string? refType = null, bool isGeneric = false)
+	public TypeModel(string type, int index, string? refType = null, bool isGeneric = false, bool isNullable = false)
 	{
 		Type = type;
 		Index = index;
 		RefType = refType;
 		IsGeneric = isGeneric;
+		IsNullable = isNullable;
 	}
 
-	public TypeModel(string type, string name, string? refType = null, bool isGeneric = false)
+	public TypeModel(string type, string name, string? refType = null, bool isGeneric = false, bool isNullable = false)
 	{
 		Type = type;
 		Name = name;
 		RefType = refType;
 		IsGeneric = isGeneric;
+		IsNullable = isNullable;
 	}
 
 	public override string ToString()
@@ -65,16 +67,21 @@ public static class TypeModelEx
 
 		public string GetTypeString()
 		{
-			return @this.Type switch
+			var typeString = @this.Type switch
 			{
 				"Int32" => "int",
 				"Single" => "float",
 				"Int64" => "long",
 				"Double" => "double",
 				"String" => "string",
+				"Boolean" => "bool",
 				"T" or "T1" or "T2" or "T3" => @this.Type,
 				_ => throw new NotImplementedException($"Unsupported type: `{@this}`"),
 			};
+
+			return @this.IsNullable
+				? $"{typeString}?"
+				: typeString;
 		}
 
 		public bool IsInputParameter => !"out".Equals(@this.RefType, StringComparison.InvariantCultureIgnoreCase);

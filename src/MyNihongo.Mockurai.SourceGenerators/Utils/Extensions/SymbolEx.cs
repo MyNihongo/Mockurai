@@ -5,6 +5,29 @@ internal static class SymbolEx
 	extension(ISymbol @this)
 	{
 		public bool IsPublic => @this.DeclaredAccessibility == Accessibility.Public;
+
+		public bool TryGetIndexerProperty(out IPropertySymbol indexerProperty)
+		{
+			if (@this is IPropertySymbol { IsIndexer: true } x)
+			{
+				indexerProperty = x;
+				return true;
+			}
+
+			indexerProperty = null!;
+			return false;
+		}
+	}
+
+	extension<T>(T @this)
+		where T : ISymbol
+	{
+		public string GetSymbolName()
+		{
+			return @this.TryGetIndexerProperty(out _)
+				? MockGeneratorConst.Suffixes.Indexer
+				: @this.Name;
+		}
 	}
 
 	extension(ISymbol? @this)

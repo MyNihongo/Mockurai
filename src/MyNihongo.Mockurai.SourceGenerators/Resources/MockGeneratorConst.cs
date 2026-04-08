@@ -9,6 +9,7 @@ internal static class MockGeneratorConst
 
 	public static class Suffixes
 	{
+		public const string Indexer = "Indexer";
 		public const string Invocation = "Invocation";
 		public const string ValueSetup = ".ValueSetup";
 		public const string Prefix = "prefix";

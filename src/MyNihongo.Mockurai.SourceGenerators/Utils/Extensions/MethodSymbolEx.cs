@@ -599,7 +599,7 @@ internal static class MethodSymbolEx
 
 		private StringBuilder AppendMethodName(IMethodSymbol method)
 		{
-			var methodName = method.AssociatedSymbol?.Name ?? method.Name;
+			var methodName = method.AssociatedSymbol?.GetSymbolName() ?? method.Name;
 
 			return @this
 				.AppendMethodKind(method.MethodKind)
@@ -698,7 +698,7 @@ internal static class MethodSymbolEx
 				.Append(mockedTypeSymbol.TypeSymbol.Name)
 				.AppendGenericTypes(mockedTypeSymbol.TypeSymbol, appendTypeOfName: true)
 				.Append('.')
-				.AppendPropertyName(memberSymbol.Symbol.Name)
+				.AppendInvocationDeclarationMethodName(memberSymbol.Symbol, out var parameterPlaceholderIndex)
 				.AppendInvocationMethodGenericParameters(methodSymbol, genericTypeNames);
 
 			switch (methodSymbol.MethodKind)
@@ -707,7 +707,7 @@ internal static class MethodSymbolEx
 					@this.Append(".get");
 					break;
 				case MethodKind.PropertySet:
-					@this.Append(".set = ").AppendStringFormat(index: 0, isStringInterpolated);
+					@this.Append(".set = ").AppendStringFormat(index: parameterPlaceholderIndex, isStringInterpolated);
 					break;
 				case MethodKind.EventAdd:
 					@this.Append(".add += ").AppendStringFormat(index: 0, isStringInterpolated);
@@ -729,6 +729,30 @@ internal static class MethodSymbolEx
 				@this.Append(')');
 
 			return @this.Append(");");
+		}
+
+		private StringBuilder AppendInvocationDeclarationMethodName(ISymbol symbol, out int parameterPlaceholderIndex)
+		{
+			if (symbol.TryGetIndexerProperty(out var indexerPropertySymbol))
+			{
+				@this.Append("This[");
+
+				for (parameterPlaceholderIndex = 0; parameterPlaceholderIndex < indexerPropertySymbol.Parameters.Length; parameterPlaceholderIndex++)
+				{
+					if (parameterPlaceholderIndex > 0)
+						@this.Append(", ");
+
+					@this
+						.Append('{')
+						.Append(parameterPlaceholderIndex)
+						.Append('}');
+				}
+
+				return @this.Append(']');
+			}
+
+			parameterPlaceholderIndex = 0;
+			return @this.AppendPropertyName(symbol.Name);
 		}
 
 		private void AppendInvocationMethodGenericParameters(IMethodSymbol methodSymbol, ImmutableArray<string> methodOnlyGenericTypeNames)
