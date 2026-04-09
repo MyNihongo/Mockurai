@@ -294,31 +294,59 @@ internal static class ParameterSymbolEx
 				: @this;
 		}
 
-		private void AppendParameterRefKinds(ImmutableArray<IParameterSymbol> parameters, bool appendRefKind, out ImmutableArray<IParameterSymbol> genericParameters)
+		private void AppendParameterRefKinds(ImmutableArray<IParameterSymbol> parameters, bool appendRefKind, out ImmutableArray<ITypeSymbol> genericParameters)
 		{
-			ImmutableArray<IParameterSymbol>.Builder? builder = null;
+			ImmutableHashSet<IParameterSymbol>.Builder? builder = null;
+			var genericParameterProcessQueue = new Queue<ITypeSymbol>();
 
 			foreach (var parameter in parameters)
 			{
 				if (appendRefKind)
 					@this.AppendRefKindPrefix(parameter.RefKind);
 
+				// TODO extract
 				if (parameter.Type is ITypeParameterSymbol)
 				{
-					builder ??= ImmutableArray.CreateBuilder<IParameterSymbol>();
-					builder.Add(parameter);
-
-					@this
-						.Append(MockGeneratorConst.Suffixes.GenericParameter)
-						.Append(builder.Count);
+					builder ??= ImmutableHashSet.CreateBuilder<IParameterSymbol>(SymbolEqualityComparer.Default);
+					if (builder.Add(parameter))
+					{
+						@this
+							.Append(MockGeneratorConst.Suffixes.GenericParameter)
+							.Append(builder.Count);
+					}
 				}
 				else
 				{
 					@this.Append(parameter.Type.Name);
+					genericParameterProcessQueue.Enqueue(parameter.Type);
+				}
+				
+				// Here we need to handle nested generic types like IList<T>, IList<ICollection<T>>, T[], etc.
+				while (genericParameterProcessQueue.Count > 0)
+				{
+					if (genericParameterProcessQueue.Dequeue() is not INamedTypeSymbol { TypeArguments.IsDefaultOrEmpty: false } typeSymbol)
+						continue;
+
+					foreach (var typeArgument in typeSymbol.TypeArguments)
+					{
+						// TODO extract
+						if (typeArgument is ITypeParameterSymbol)
+						{
+							builder ??= ImmutableHashSet.CreateBuilder<IParameterSymbol>(SymbolEqualityComparer.Default);
+							if (builder.Add(parameter))
+							{
+								@this
+									.Append(MockGeneratorConst.Suffixes.GenericParameter)
+									.Append(builder.Count);
+							}
+						}
+						
+						genericParameterProcessQueue.Enqueue(typeArgument);
+					}
 				}
 			}
 
-			genericParameters = builder?.ToImmutable() ?? ImmutableArray<IParameterSymbol>.Empty;
+			genericParameters = builder?.ToImmutableArray() ?? ImmutableArray<IParameterSymbol>.Empty;
 		}
 
 		private StringBuilder AppendGenericSetupInvocationParameters(
