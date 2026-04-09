@@ -181,7 +181,7 @@ internal static class MockSetupGenerator
 			.ToString();
 	}
 
-	private static string CreateInterfaceMethodImplementations(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, ImmutableArray<IParameterSymbol> inputParameters, int indent)
+	private static string CreateInterfaceMethodImplementations(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, ImmutableArray<ParameterSplit.Item> inputParameters, int indent)
 	{
 		stringBuilder.Clear();
 
@@ -197,7 +197,7 @@ internal static class MockSetupGenerator
 
 	private static string CreateItemDeclaration(
 		StringBuilder stringBuilder,
-		ImmutableArray<IParameterSymbol> inputParameters,
+		ImmutableArray<ParameterSplit.Item> inputParameters,
 		ImmutableDictionary<IParameterSymbol, string> genericTypeOverride,
 		int indent)
 	{
@@ -208,17 +208,16 @@ internal static class MockSetupGenerator
 		stringBuilder.AppendLine();
 
 		// fields
-		for (var i = 0; i < inputParameters.Length; i++)
+		foreach (var parameterItem in inputParameters)
 		{
-			var parameter = inputParameters[i];
-			var typeOverride = genericTypeOverride.GetValueOrDefault(parameter);
+			var typeOverride = genericTypeOverride.GetValueOrDefault(parameterItem.Parameter);
 
 			stringBuilder
 				.Indent(indent)
 				.Append("public readonly ")
-				.AppendItSetupType(parameter.Type, isNullable: true, typeOverride)
+				.AppendItSetupType(parameterItem.Parameter.Type, isNullable: true, typeOverride)
 				.Append(' ')
-				.AppendParameterPropertyName(i)
+				.AppendParameterPropertyName(parameterItem.Index)
 				.AppendLine(";");
 		}
 
@@ -230,13 +229,13 @@ internal static class MockSetupGenerator
 			.AppendLine(")")
 			.Indent(indent++).AppendLine("{");
 
-		for (var i = 0; i < inputParameters.Length; i++)
+		foreach (var parameterItem in inputParameters)
 		{
 			stringBuilder
 				.Indent(indent)
-				.AppendParameterPropertyName(i)
+				.AppendParameterPropertyName(parameterItem.Index)
 				.Append(" = ")
-				.AppendParameterVariableName(i)
+				.AppendParameterVariableName(parameterItem.Index)
 				.AppendLine(";");
 		}
 
@@ -306,7 +305,7 @@ internal static class MockSetupGenerator
 			.ToString();
 	}
 
-	private static string CreateComparer(StringBuilder stringBuilder, ImmutableArray<IParameterSymbol> inputParameters, int indent)
+	private static string CreateComparer(StringBuilder stringBuilder, ImmutableArray<ParameterSplit.Item> inputParameters, int indent)
 	{
 		if (inputParameters.IsDefaultOrEmpty)
 			return string.Empty;
@@ -435,7 +434,7 @@ internal static class MockSetupGenerator
 			}
 		}
 
-		private StringBuilder AppendAndInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, ImmutableArray<IParameterSymbol> inputParameters, int indent)
+		private StringBuilder AppendAndInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, ImmutableArray<ParameterSplit.Item> inputParameters, int indent)
 		{
 			const string methodDeclaration = ".And()";
 			var methodCall = inputParameters.IsDefaultOrEmpty
@@ -482,16 +481,16 @@ internal static class MockSetupGenerator
 				: @this.Append('}');
 		}
 
-		private StringBuilder AppendComparerDeclaration(ImmutableArray<IParameterSymbol> inputParameters, string item, int indent)
+		private StringBuilder AppendComparerDeclaration(ImmutableArray<ParameterSplit.Item> inputParameters, string item, int indent)
 		{
-			for (var i = 0; i < inputParameters.Length; i++)
+			foreach (var parameterItem in inputParameters)
 			{
 				@this
 					.Indent(indent)
 					.Append("if (")
 					.Append(item)
 					.Append('.')
-					.AppendParameterPropertyName(i)
+					.AppendParameterPropertyName(parameterItem.Index)
 					.AppendLine(".HasValue)");
 
 				@this
@@ -500,7 +499,7 @@ internal static class MockSetupGenerator
 					.Append("Sort += ")
 					.Append(item)
 					.Append('.')
-					.AppendParameterPropertyName(i)
+					.AppendParameterPropertyName(parameterItem.Index)
 					.AppendLine(".Value.Sort;");
 			}
 
@@ -559,16 +558,16 @@ file static class Extensions
 					.Indent(indent).AppendLine("foreach (var setup in _setups)")
 					.Indent(indent++).AppendLine("{");
 
-				for (var i = 0; i < parameterSplit.InputParameters.Length; i++)
+				foreach (var parameterItem in parameterSplit.InputParameters)
 				{
 					stringBuilder
 						.Indent(indent)
 						.Append("if (setup.")
-						.AppendParameterPropertyName(i)
+						.AppendParameterPropertyName(parameterItem.Index)
 						.Append(".HasValue && !setup.")
-						.AppendParameterPropertyName(i)
+						.AppendParameterPropertyName(parameterItem.Index)
 						.Append(".Value.Check(")
-						.AppendParameterVariableName(i)
+						.AppendParameterVariableName(parameterItem.Index)
 						.AppendLine("))");
 
 					stringBuilder
@@ -610,11 +609,11 @@ file static class Extensions
 					.Indent(indent).AppendLine("else")
 					.Indent(indent).AppendLine("{");
 
-				for (var i = 0; i < parameterSplit.OutputParameters.Length; i++)
+				foreach (var parameterItem in parameterSplit.OutputParameters)
 				{
 					stringBuilder
 						.Indent(indent + 1)
-						.AppendParameterVariableName(i)
+						.AppendParameterVariableName(parameterItem.Index)
 						.AppendLine(DefaultAssign);
 				}
 
@@ -693,11 +692,11 @@ file static class Extensions
 						.AppendLine(DefaultAssign);
 				}
 
-				for (var i = 0; i < parameterSplit.OutputParameters.Length; i++)
+				foreach (var parameterItem in parameterSplit.OutputParameters)
 				{
 					stringBuilder
 						.Indent(indent)
-						.AppendParameterVariableName(i)
+						.AppendParameterVariableName(parameterItem.Index)
 						.AppendLine(DefaultAssign);
 				}
 
@@ -716,7 +715,7 @@ file static class Extensions
 				.AppendLine("}");
 		}
 
-		public void AppendSetupParametersMethod(ImmutableArray<IParameterSymbol> inputParameters, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
+		public void AppendSetupParametersMethod(ImmutableArray<ParameterSplit.Item> inputParameters, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
 		{
 			stringBuilder
 				.Indent(indent)
@@ -742,7 +741,7 @@ file static class Extensions
 				.Indent(--indent).AppendLine("}");
 		}
 
-		public StringBuilder AppendCallbackMethod(ImmutableArray<IParameterSymbol> inputParameters, int indent)
+		public StringBuilder AppendCallbackMethod(ImmutableArray<ParameterSplit.Item> inputParameters, int indent)
 		{
 			stringBuilder
 				.Indent(indent).AppendLine("public void Callback(in CallbackDelegate callback)")
@@ -754,7 +753,7 @@ file static class Extensions
 				.Indent(--indent).AppendLine("}");
 		}
 
-		public StringBuilder AppendThrowsMethod(ImmutableArray<IParameterSymbol> inputParameters, int indent)
+		public StringBuilder AppendThrowsMethod(ImmutableArray<ParameterSplit.Item> inputParameters, int indent)
 		{
 			return stringBuilder
 				.Indent(indent).AppendLine("public void Throws(in System.Exception exception)")
@@ -770,7 +769,7 @@ file static class Extensions
 			stringBuilder
 				.Indent(indent).AppendLine($"public void Returns({MockGeneratorConst.Suffixes.GenericReturnParameter}? returns)")
 				.Indent(indent).AppendLine("{")
-				.Indent(++indent).Append("Returns((").AppendDiscardParameterNames(methodSymbol.Parameters).Append(") =>");
+				.Indent(++indent).Append("Returns((").AppendDiscardParameterNames(methodSymbol.Parameters, appendParameterName: MethodSymbolEx.AppendParameterVariableName).Append(") =>");
 
 			if (parameterSplit.OutputParameters.IsDefaultOrEmpty)
 			{
@@ -782,11 +781,11 @@ file static class Extensions
 					.AppendLine()
 					.Indent(indent++).AppendLine("{");
 
-				for (var i = 0; i < parameterSplit.OutputParameters.Length; i++)
+				foreach (var parameterItem in parameterSplit.OutputParameters)
 				{
 					stringBuilder
 						.Indent(indent)
-						.AppendParameterVariableName(i)
+						.AppendParameterVariableName(parameterItem.Index)
 						.AppendLine(DefaultAssign);
 				}
 
@@ -808,7 +807,7 @@ file static class Extensions
 				.Indent(--indent).AppendLine("}");
 		}
 
-		private StringBuilder TryAppendCurrentSetupCheck(ImmutableArray<IParameterSymbol> inputParameters, int indent)
+		private StringBuilder TryAppendCurrentSetupCheck(ImmutableArray<ParameterSplit.Item> inputParameters, int indent)
 		{
 			if (!inputParameters.IsDefaultOrEmpty)
 			{

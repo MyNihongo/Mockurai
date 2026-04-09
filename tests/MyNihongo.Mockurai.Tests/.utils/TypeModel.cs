@@ -4,22 +4,13 @@ public readonly struct TypeModel
 {
 	public readonly string Type;
 	public readonly int Index;
-	public readonly string? RefType, Name;
+	public readonly string? RefType;
 	public readonly bool IsGeneric, IsNullable;
 
 	public TypeModel(string type, int index, string? refType = null, bool isGeneric = false, bool isNullable = false)
 	{
 		Type = type;
 		Index = index;
-		RefType = refType;
-		IsGeneric = isGeneric;
-		IsNullable = isNullable;
-	}
-
-	public TypeModel(string type, string name, string? refType = null, bool isGeneric = false, bool isNullable = false)
-	{
-		Type = type;
-		Name = name;
 		RefType = refType;
 		IsGeneric = isGeneric;
 		IsNullable = isNullable;
@@ -39,9 +30,7 @@ public static class TypeModelEx
 	{
 		public string GetParameterNameString(bool appendRefKind = false)
 		{
-			var name = string.IsNullOrEmpty(@this.Name)
-				? $"parameter{@this.Index}"
-				: @this.Name;
+			var name = $"parameter{@this.Index}";
 
 			return appendRefKind && !string.IsNullOrEmpty(@this.RefType)
 				? $"{@this.RefType} {name}"

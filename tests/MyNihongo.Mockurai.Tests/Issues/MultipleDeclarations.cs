@@ -662,7 +662,7 @@ public sealed class MultipleDeclarations : TestsBase
 			""";
 
 		string[] types1 = ["Int32", "Int64"];
-		TypeModel[] types2 = [new("Int64", 2), new("Int32", 1)];
+		string[] types2 = ["Int64", "Int32"];
 		GeneratedSources generatedSources =
 		[
 			(
@@ -1001,13 +1001,13 @@ public sealed class MultipleDeclarations : TestsBase
 
 					public void VerifyInvoke2(in It<int> param1, in ItIn<long> param2, in Times times)
 					{
-						_invoke20Invocation ??= new InvocationInt32Int64("IInterface.Invoke2({0}, {1})", prefixParam2: "in");
+						_invoke20Invocation ??= new InvocationInt32Int64("IInterface.Invoke2({0}, {1})", parameter2Prefix: "in");
 						_invoke20Invocation.Verify(param1.ValueSetup, param2.ValueSetup, times, _invocationProviders);
 					}
 
 					public long VerifyInvoke2(in It<int> param1, in ItIn<long> param2, long index)
 					{
-						_invoke20Invocation ??= new InvocationInt32Int64("IInterface.Invoke2({0}, {1})", prefixParam2: "in");
+						_invoke20Invocation ??= new InvocationInt32Int64("IInterface.Invoke2({0}, {1})", parameter2Prefix: "in");
 						return _invoke20Invocation.Verify(param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
 					}
 
@@ -1042,7 +1042,7 @@ public sealed class MultipleDeclarations : TestsBase
 
 						public decimal Invoke2(int param1, in long param2)
 						{
-							_mock._invoke20Invocation ??= new InvocationInt32Int64("IInterface.Invoke2({0}, {1})", prefixParam2: "in");
+							_mock._invoke20Invocation ??= new InvocationInt32Int64("IInterface.Invoke2({0}, {1})", parameter2Prefix: "in");
 							_mock._invoke20Invocation.Register(_mock._invocationIndex, param1, param2);
 							return _mock._invoke20?.Execute(param1, in param2, out var returnValue) == true ? returnValue! : default!;
 						}

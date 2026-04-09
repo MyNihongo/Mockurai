@@ -510,14 +510,14 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 			public void VerifyInvoke<T>(in ItRef<T> param1, in It<T> param2, in Times times)
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
-				var invoke0Invocation = (InvocationT1T2<T, T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationT1T2<T, T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})", prefixParam1: "ref"));
+				var invoke0Invocation = (InvocationT1T2<T, T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationT1T2<T, T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})", parameter1Prefix: "ref"));
 				invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke<T>(in ItRef<T> param1, in It<T> param2, long index)
 			{
 				_invoke0Invocation ??= new InvocationDictionary();
-				var invoke0Invocation = (InvocationT1T2<T, T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationT1T2<T, T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})", prefixParam1: "ref"));
+				var invoke0Invocation = (InvocationT1T2<T, T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationT1T2<T, T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})", parameter1Prefix: "ref"));
 				return invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -527,7 +527,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 			public void Invoke<T>(ref T param1, T param2)
 			{
 				_mock._invoke0Invocation ??= new InvocationDictionary();
-				var invoke0Invocation = (InvocationT1T2<T, T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationT1T2<T, T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})", prefixParam1: "ref"));
+				var invoke0Invocation = (InvocationT1T2<T, T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationT1T2<T, T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})", parameter1Prefix: "ref"));
 				invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
 				((SetupRefT1T2<T, T>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Invoke(ref param1, param2);
 			}
@@ -853,13 +853,13 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 			public void VerifyInvoke(in ItIn<int> param1, in It<float> param2, in Times times)
 			{
-				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", prefixParam1: "in");
+				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", parameter1Prefix: "in");
 				_invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke(in ItIn<int> param1, in It<float> param2, long index)
 			{
-				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", prefixParam1: "in");
+				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", parameter1Prefix: "in");
 				return _invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -868,7 +868,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 			"""
 			public void Invoke(in int param1, float param2)
 			{
-				_mock._invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", prefixParam1: "in");
+				_mock._invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", parameter1Prefix: "in");
 				_mock._invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
 				_mock._invoke0?.Invoke(in param1, param2);
 			}
@@ -939,13 +939,13 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 			public void VerifyInvoke(in ItIn<int> param1, in ItOut<float> param2, in Times times)
 			{
-				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", prefixParam1: "in", prefixParam2: "out");
+				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", parameter1Prefix: "in", parameter2Prefix: "out");
 				_invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke(in ItIn<int> param1, in ItOut<float> param2, long index)
 			{
-				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", prefixParam1: "in", prefixParam2: "out");
+				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", parameter1Prefix: "in", parameter2Prefix: "out");
 				return _invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -954,7 +954,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 			"""
 			public void Invoke(in int param1, out float param2)
 			{
-				_mock._invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", prefixParam1: "in", prefixParam2: "out");
+				_mock._invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", parameter1Prefix: "in", parameter2Prefix: "out");
 				_mock._invoke0Invocation.Register(_mock._invocationIndex, param1, default!);
 				if (_mock._invoke0 is not null)
 				{
@@ -998,11 +998,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 			new("Int32", 1, refType: "in"),
 			new("Single", 2, refType: "out"),
 		];
-		TypeModel[] invocationTypes =
-		[
-			new("Int32", 1),
-			new("Single", 2),
-		];
+		string[] invocationTypes = ["Int32", "Single"];
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupCode(setupTypes);
 		var invocationCode = CreateInvocationCode(invocationTypes);
@@ -1032,13 +1028,13 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 			public void VerifyInvoke(in ItOut<int> param1, in ItRef<float> param2, in Times times)
 			{
-				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", prefixParam1: "out", prefixParam2: "ref");
+				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", parameter1Prefix: "out", parameter2Prefix: "ref");
 				_invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke(in ItOut<int> param1, in ItRef<float> param2, long index)
 			{
-				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", prefixParam1: "out", prefixParam2: "ref");
+				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", parameter1Prefix: "out", parameter2Prefix: "ref");
 				return _invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -1047,7 +1043,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 			"""
 			public decimal Invoke(out int param1, ref float param2)
 			{
-				_mock._invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", prefixParam1: "out", prefixParam2: "ref");
+				_mock._invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", parameter1Prefix: "out", parameter2Prefix: "ref");
 				_mock._invoke0Invocation.Register(_mock._invocationIndex, default!, param2);
 				if (_mock._invoke0 is not null)
 				{
@@ -1092,11 +1088,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 			new("Int32", 1, refType: "out"),
 			new("Single", 2, refType: "ref"),
 		];
-		TypeModel[] invocationTypes =
-		[
-			new("Int32", 1),
-			new("Single", 2),
-		];
+		string[] invocationTypes = ["Int32", "Single"];
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupReturnsCode(setupTypes);
 		var invocationCode = CreateInvocationCode(invocationTypes);
@@ -1125,13 +1117,13 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 			public void VerifyInvoke(in ItOut<int> param1, in ItOut<float> param2, in Times times)
 			{
-				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", prefixParam1: "out", prefixParam2: "out");
+				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", parameter1Prefix: "out", parameter2Prefix: "out");
 				_invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke(in ItOut<int> param1, in ItOut<float> param2, long index)
 			{
-				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", prefixParam1: "out", prefixParam2: "out");
+				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", parameter1Prefix: "out", parameter2Prefix: "out");
 				return _invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -1140,7 +1132,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 			"""
 			public void Invoke(out int param1, out float param2)
 			{
-				_mock._invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", prefixParam1: "out", prefixParam2: "out");
+				_mock._invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", parameter1Prefix: "out", parameter2Prefix: "out");
 				_mock._invoke0Invocation.Register(_mock._invocationIndex, default!, default!);
 				if (_mock._invoke0 is not null)
 				{
@@ -1218,13 +1210,13 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 
 			public void VerifyInvoke(in ItOut<int> param1, in ItOut<float> param2, in Times times)
 			{
-				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", prefixParam1: "out", prefixParam2: "out");
+				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", parameter1Prefix: "out", parameter2Prefix: "out");
 				_invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, times, _invocationProviders);
 			}
 
 			public long VerifyInvoke(in ItOut<int> param1, in ItOut<float> param2, long index)
 			{
-				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", prefixParam1: "out", prefixParam2: "out");
+				_invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", parameter1Prefix: "out", parameter2Prefix: "out");
 				return _invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
 			}
 			""";
@@ -1233,7 +1225,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 			"""
 			public decimal Invoke(out int param1, out float param2)
 			{
-				_mock._invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", prefixParam1: "out", prefixParam2: "out");
+				_mock._invoke0Invocation ??= new InvocationInt32Single("IInterface.Invoke({0}, {1})", parameter1Prefix: "out", parameter2Prefix: "out");
 				_mock._invoke0Invocation.Register(_mock._invocationIndex, default!, default!);
 				if (_mock._invoke0 is not null)
 				{

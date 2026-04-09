@@ -31,23 +31,20 @@ public abstract class TestsBase
 		return CreateSetupCode(useReturns: false, types);
 	}
 
-	protected static GeneratedSource CreateSetupReturnsCode(string[] types, string? returnValue = null)
+	protected static GeneratedSource CreateSetupReturnsCode(string[] types)
 	{
 		var typeModels = types.ToTypeModels();
-		return CreateSetupCode(useReturns: true, typeModels, returnValue);
+		return CreateSetupCode(useReturns: true, typeModels);
 	}
 
-	protected static GeneratedSource CreateSetupReturnsCode(TypeModel[] types, string? returnValue = null)
+	protected static GeneratedSource CreateSetupReturnsCode(TypeModel[] types)
 	{
-		return CreateSetupCode(useReturns: true, types, returnValue);
+		return CreateSetupCode(useReturns: true, types);
 	}
 
-	private static GeneratedSource CreateSetupCode(bool useReturns, TypeModel[] types, string? returnValue = null)
+	private static GeneratedSource CreateSetupCode(bool useReturns, TypeModel[] types)
 	{
-		if (string.IsNullOrEmpty(returnValue))
-			returnValue = "returnValue";
-
-		const string returns = "TReturns";
+		const string returns = "TReturns", returnValue = "returnValue";
 		var genericTypes = types.Where(x => x.IsGeneric).Select(x => x.Type).ToList();
 		var outTypes = types.Where(x => x.RefType == "out").ToArray();
 		var inputParameters = types.Where(static x => x.IsInputParameter).ToArray();

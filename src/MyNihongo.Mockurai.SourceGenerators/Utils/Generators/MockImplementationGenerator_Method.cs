@@ -175,7 +175,7 @@ internal static class MockImplementationMethodGenerator
 				{
 					stringBuilder
 						.Indent(indent)
-						.Append(parameter.Name)
+						.Append(parameter.Parameter.Name)
 						.AppendLine(MockGeneratorConst.Suffixes.DefaultAssign);
 				}
 

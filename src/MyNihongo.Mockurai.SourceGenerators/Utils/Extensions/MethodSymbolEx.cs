@@ -224,7 +224,7 @@ internal static class MethodSymbolEx
 				.Indent(--indent).Append('}');
 		}
 
-		public StringBuilder AppendSetupParametersMethodName(ImmutableArray<IParameterSymbol> parameters)
+		public StringBuilder AppendSetupParametersMethodName(ImmutableArray<ParameterSplit.Item> parameters)
 		{
 			@this.Append("SetupParameter");
 
@@ -633,24 +633,35 @@ internal static class MethodSymbolEx
 			return @this;
 		}
 
-		public StringBuilder AppendItSetupParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, bool isNullable = false, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride = null, Func<StringBuilder, int, StringBuilder>? appendParameterName = null)
+		public StringBuilder AppendItSetupParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, bool isNullable = false, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride = null, Func<StringBuilder, IParameterSymbol, int, StringBuilder>? appendParameterName = null)
+		{
+			return @this.AppendItSetupParameters(parameters, static x => x, appendComma, isNullable, parameterTypeOverride, appendParameterName);
+		}
+
+		public StringBuilder AppendItSetupParameters(ImmutableArray<ParameterSplit.Item> parameters, bool appendComma = false, bool isNullable = false, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride = null, Func<StringBuilder, ParameterSplit.Item, int, StringBuilder>? appendParameterName = null)
+		{
+			return @this.AppendItSetupParameters(parameters, static x => x.Parameter, appendComma, isNullable, parameterTypeOverride, appendParameterName);
+		}
+
+		private StringBuilder AppendItSetupParameters<T>(ImmutableArray<T> parameters, Func<T, IParameterSymbol> convert, bool appendComma, bool isNullable, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride, Func<StringBuilder, T, int, StringBuilder>? appendParameterName)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
 				if (!appendComma && i > 0)
 					@this.Append(", ");
 
-				var typeOverride = parameterTypeOverride?.GetValueOrDefault(parameters[i]);
+				var parameter = convert(parameters[i]);
+				var typeOverride = parameterTypeOverride?.GetValueOrDefault(parameter);
 
 				@this
 					.Append("in ")
-					.AppendItSetupType(parameters[i].Type, isNullable, typeOverride)
+					.AppendItSetupType(parameter.Type, isNullable, typeOverride)
 					.Append(' ');
 
 				if (appendParameterName is not null)
-					appendParameterName(@this, i);
+					appendParameterName(@this, parameters[i], i);
 				else
-					@this.AppendParameterName(parameters[i].Name);
+					@this.AppendParameterName(parameter.Name);
 
 				if (appendComma)
 					@this.Append(", ");
@@ -862,6 +873,18 @@ internal static class MethodSymbolEx
 			return @this
 				.AppendParameterVariableName(index)
 				.AppendPropertyName(MockGeneratorConst.Suffixes.Prefix);
+		}
+
+		public StringBuilder AppendParameterVariableName(ParameterSplit.Item parameter, int index)
+		{
+			return @this
+				.AppendParameterName(MockGeneratorConst.Variables.Parameter)
+				.Append(parameter.Index + 1);
+		}
+
+		public StringBuilder AppendParameterVariableName(IParameterSymbol parameterSymbol, int index)
+		{
+			return @this.AppendParameterVariableName(index);
 		}
 
 		public StringBuilder AppendParameterVariableName(int index)
