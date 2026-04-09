@@ -226,7 +226,7 @@ internal static class MockSetupGenerator
 		stringBuilder
 			.AppendLine()
 			.Indent(indent).Append("public Item(")
-			.AppendItSetupParameters(inputParameters, isNullable: true, parameterTypeOverride: genericTypeOverride)
+			.AppendItSetupParameters(inputParameters, isNullable: true, parameterTypeOverride: genericTypeOverride, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
 			.AppendLine(")")
 			.Indent(indent++).AppendLine("{");
 
@@ -723,7 +723,7 @@ file static class Extensions
 				.Append("public void ")
 				.AppendSetupParametersMethodName(inputParameters)
 				.Append('(')
-				.AppendItSetupParameters(inputParameters, parameterTypeOverride: genericTypeOverride)
+				.AppendItSetupParameters(inputParameters, parameterTypeOverride: genericTypeOverride, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
 				.AppendLine(")");
 
 			stringBuilder

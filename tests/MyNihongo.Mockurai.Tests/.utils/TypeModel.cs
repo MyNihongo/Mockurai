@@ -40,7 +40,7 @@ public static class TypeModelEx
 		public string GetParameterNameString(bool appendRefKind = false)
 		{
 			var name = string.IsNullOrEmpty(@this.Name)
-				? $"param{@this.Index}"
+				? $"parameter{@this.Index}"
 				: @this.Name;
 
 			return appendRefKind && !string.IsNullOrEmpty(@this.RefType)
