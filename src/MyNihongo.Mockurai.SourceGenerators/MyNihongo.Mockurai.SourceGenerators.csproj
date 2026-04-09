@@ -30,4 +30,8 @@
 		<None Include="..\..\README.md" Pack="True" PackagePath="\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Models\Interfaces\" />
+	</ItemGroup>
+
 </Project>

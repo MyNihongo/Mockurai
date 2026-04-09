@@ -24,7 +24,7 @@ public sealed class GenericSetup : TestsBase
 		var types = new TypeModel[]
 		{
 			new("Int32", 1),
-			new("T1", "returnValue", isGeneric: true),
+			new("T1", 2, isGeneric: true),
 		};
 
 		GeneratedSources generatedSources =
@@ -180,7 +180,7 @@ public sealed class GenericSetup : TestsBase
 				}
 				"""
 			),
-			CreateSetupReturnsCode(types, returnValue: "_returnValue"),
+			CreateSetupReturnsCode(types),
 			CreateInvocationCode(types),
 		];
 

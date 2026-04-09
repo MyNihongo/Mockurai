@@ -78,7 +78,7 @@ internal static class MockInvocationGenerator
 			if (i != 0)
 				stringBuilder.Append(", ");
 
-			stringBuilder.AppendPrefixField(methodSymbol.Parameters[i].Name);
+			stringBuilder.AppendParameterPrefixFieldName(i);
 		}
 
 		return stringBuilder.ToString();
@@ -101,7 +101,7 @@ internal static class MockInvocationGenerator
 
 			stringBuilder
 				.Append("string? ")
-				.AppendPrefixParameter(methodSymbol.Parameters[i].Name)
+				.AppendParameterPrefixVariableName(i)
 				.Append(" = null");
 		}
 
@@ -110,13 +110,13 @@ internal static class MockInvocationGenerator
 			.Indent(indent++).AppendLine("{")
 			.Indent(indent).AppendLine("_name = name;");
 
-		foreach (var parameter in methodSymbol.Parameters)
+		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
 			stringBuilder
 				.Indent(indent)
-				.AppendPrefixField(parameter.Name)
+				.AppendParameterPrefixFieldName(i)
 				.Append(" = ")
-				.AppendPrefixParameter(parameter.Name)
+				.AppendParameterPrefixVariableName(i)
 				.AppendLine(";");
 		}
 
@@ -132,14 +132,14 @@ internal static class MockInvocationGenerator
 		stringBuilder
 			.Indent(indent)
 			.Append("public void Register(in InvocationIndex.Counter index, ")
-			.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride, appendRefKind: false)
+			.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride, appendRefKind: false, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
 			.AppendLine(")");
 
 		stringBuilder
 			.Indent(indent++).AppendLine("{")
 			.Indent(indent).AppendLine("var invokedIndex = index.Increment();")
 			.Indent(indent).Append("_invocations.Add(new Item(invokedIndex, ")
-			.AppendParameterNames(methodSymbol.Parameters, appendComma: true)
+			.AppendParameterNames(methodSymbol.Parameters, appendComma: true, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
 			.AppendLine("invocation: this));")
 			.Indent(--indent).AppendLine("}");
 
@@ -156,7 +156,7 @@ internal static class MockInvocationGenerator
 			.Append("public ")
 			.AppendVerifyReturnType(type)
 			.Append(" Verify(")
-			.AppendItSetupParameters(methodSymbol.Parameters, appendComma: true, parameterTypeOverride: genericTypeOverride)
+			.AppendItSetupParameters(methodSymbol.Parameters, appendComma: true, parameterTypeOverride: genericTypeOverride, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
 			.AppendVerifyParameter(type)
 			.AppendLine(", System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>>? invocationProviders = null)");
 
@@ -182,16 +182,16 @@ internal static class MockInvocationGenerator
 			.Indent(indent).AppendLine("for (var i = 0; i < span.Length; i++)")
 			.Indent(indent++).AppendLine("{");
 
-		foreach (var parameter in methodSymbol.Parameters)
+		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
 			stringBuilder
 				.Indent(indent)
 				.Append("var verify")
-				.AppendPropertyName(parameter.Name)
+				.AppendParameterPropertyName(i)
 				.Append(" = span[i].Get")
-				.AppendPropertyName(parameter.Name)
+				.AppendParameterPropertyName(i)
 				.Append('(')
-				.Append(parameter.Name)
+				.AppendParameterVariableName(i)
 				.AppendLine(".Type);");
 		}
 
@@ -202,14 +202,12 @@ internal static class MockInvocationGenerator
 
 		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
-			var parameterName = methodSymbol.Parameters[i].Name;
-
 			stringBuilder
 				.Indent(indent)
 				.Append("if (!")
-				.Append(parameterName)
+				.AppendParameterVariableName(i)
 				.Append(".Check(verify")
-				.AppendPropertyName(parameterName)
+				.AppendParameterPropertyName(i)
 				.Append(", out ");
 
 			if (i == 0)
@@ -226,7 +224,7 @@ internal static class MockInvocationGenerator
 				stringBuilder
 					.AppendLine("verifyResults is not null")
 					.Indent(indent + 1).Append("? [..verifyResults, ")
-					.AppendVerifyResult(parameterName)
+					.AppendVerifyResult(i)
 					.AppendLine("]");
 
 				stringBuilder
@@ -235,7 +233,7 @@ internal static class MockInvocationGenerator
 
 			stringBuilder
 				.Append('[')
-				.AppendVerifyResult(parameterName)
+				.AppendVerifyResult(i)
 				.AppendLine("];");
 
 			stringBuilder
@@ -288,15 +286,13 @@ internal static class MockInvocationGenerator
 
 		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
-			var parameterName = methodSymbol.Parameters[i].Name;
-
 			if (i != 0)
 				stringBuilder.Append(", ");
 
 			stringBuilder
-				.AppendParameterName(parameterName)
+				.AppendParameterVariableName(i)
 				.Append(".ToString(")
-				.AppendPrefixField(parameterName)
+				.AppendParameterPrefixFieldName(i)
 				.Append(')');
 		}
 
@@ -315,18 +311,19 @@ internal static class MockInvocationGenerator
 	{
 		stringBuilder.Clear();
 
-		foreach (var parameter in methodSymbol.Parameters)
+		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
+			var parameter = methodSymbol.Parameters[i];
 			var typeOverride = genericTypeOverride.GetValueOrDefault(parameter);
 
 			stringBuilder
 				.Indent(indent)
 				.Append("var typeName")
-				.AppendPropertyName(parameter.Name)
+				.AppendParameterPropertyName(i)
 				.Append(" = !string.IsNullOrEmpty(")
-				.AppendPrefixField(parameter.Name)
+				.AppendParameterPrefixFieldName(i)
 				.Append(") ? $\"{")
-				.AppendPrefixField(parameter.Name)
+				.AppendParameterPrefixFieldName(i)
 				.Append("} ")
 				.AppendTypeInsideString(parameter.Type, typeOverride)
 				.Append("\" : ")
@@ -344,7 +341,7 @@ internal static class MockInvocationGenerator
 
 			stringBuilder
 				.Append("typeName")
-				.AppendPropertyName(methodSymbol.Parameters[i].Name);
+				.AppendParameterPropertyName(i);
 		}
 
 		return stringBuilder
@@ -356,8 +353,9 @@ internal static class MockInvocationGenerator
 	{
 		stringBuilder.Clear();
 
-		foreach (var parameter in methodSymbol.Parameters)
+		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
+			var parameter = methodSymbol.Parameters[i];
 			var typeOverride = genericTypeOverride.GetValueOrDefault(parameter);
 
 			stringBuilder
@@ -365,7 +363,7 @@ internal static class MockInvocationGenerator
 				.Append("private readonly ")
 				.AppendType(parameter.Type, typeOverride)
 				.Append(' ')
-				.AppendFieldName(parameter.Name)
+				.AppendParameterFieldName(i)
 				.AppendLine(";");
 		}
 
@@ -380,7 +378,7 @@ internal static class MockInvocationGenerator
 
 			stringBuilder
 				.AppendFieldName(JsonSnapshotName)
-				.AppendPropertyName(methodSymbol.Parameters[i].Name);
+				.AppendParameterPropertyName(i);
 		}
 
 		return stringBuilder
@@ -395,7 +393,7 @@ internal static class MockInvocationGenerator
 		stringBuilder
 			.Indent(indent)
 			.Append("public Item(long index, ")
-			.AppendParameters(methodSymbol.Parameters, appendComma: true, parameterTypeOverride: genericTypeOverride, appendRefKind: false)
+			.AppendParameters(methodSymbol.Parameters, appendComma: true, parameterTypeOverride: genericTypeOverride, appendRefKind: false, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
 			.AppendInvocationClassName(methodSymbol.Parameters, appendGenericDeclaration: true)
 			.AppendLine(" invocation)");
 
@@ -404,15 +402,15 @@ internal static class MockInvocationGenerator
 			.Indent(indent).AppendLine("_invocation = invocation;")
 			.Indent(indent).AppendLine("Index = index;");
 
-		foreach (var parameter in methodSymbol.Parameters)
+		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
 			stringBuilder.AppendLine();
-			
+
 			stringBuilder
 				.Indent(indent)
-				.AppendFieldName(parameter.Name)
+				.AppendParameterFieldName(i)
 				.Append(" = ")
-				.AppendParameterName(parameter.Name)
+				.AppendParameterVariableName(i)
 				.AppendLine(";");
 
 			stringBuilder
@@ -423,9 +421,9 @@ internal static class MockInvocationGenerator
 			stringBuilder
 				.Indent(indent)
 				.AppendFieldName(JsonSnapshotName)
-				.AppendPropertyName(parameter.Name)
+				.AppendParameterPropertyName(i)
 				.Append(" = System.Text.Json.JsonSerializer.Serialize(")
-				.AppendParameterName(parameter.Name)
+				.AppendParameterVariableName(i)
 				.AppendLine(");");
 
 			stringBuilder
@@ -459,7 +457,7 @@ internal static class MockInvocationGenerator
 				.Append("public ")
 				.AppendType(parameter.Type, typeOverride)
 				.Append(" Get")
-				.AppendPropertyName(parameter.Name)
+				.AppendParameterPropertyName(i)
 				.AppendLine("(SetupType setupType)")
 				.Indent(indent++).AppendLine("{");
 
@@ -467,7 +465,7 @@ internal static class MockInvocationGenerator
 				.Indent(indent)
 				.Append("return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(")
 				.AppendFieldName(JsonSnapshotName)
-				.AppendPropertyName(parameter.Name)
+				.AppendParameterPropertyName(i)
 				.AppendLine(")");
 
 			stringBuilder
@@ -476,13 +474,13 @@ internal static class MockInvocationGenerator
 				.AppendType(parameter.Type, typeOverride)
 				.Append(">(")
 				.AppendFieldName(JsonSnapshotName)
-				.AppendPropertyName(parameter.Name)
+				.AppendParameterPropertyName(i)
 				.AppendLine(")!");
 
 			stringBuilder
 				.Indent(indent + 1)
 				.Append(": ")
-				.AppendFieldName(parameter.Name)
+				.AppendParameterFieldName(i)
 				.AppendLine(";");
 
 			stringBuilder
@@ -500,13 +498,11 @@ internal static class MockInvocationGenerator
 
 		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
-			var parameterName = methodSymbol.Parameters[i].Name;
-
 			stringBuilder
 				.AppendLine()
 				.Indent(indent)
 				.Append("// ")
-				.AppendParameterName(parameterName)
+				.AppendParameterVariableName(i)
 				.AppendLine();
 
 			if (i != 0)
@@ -517,27 +513,27 @@ internal static class MockInvocationGenerator
 			stringBuilder
 				.Indent(indent)
 				.Append("if (!string.IsNullOrEmpty(_invocation.")
-				.AppendPrefixField(parameterName)
+				.AppendParameterPrefixFieldName(i)
 				.AppendLine("))");
 
 			stringBuilder
 				.Indent(indent + 1)
 				.Append("stringBuilder.Append($\"{_invocation.")
-				.AppendPrefixField(parameterName)
+				.AppendParameterPrefixFieldName(i)
 				.AppendLine("} \");");
 
 			stringBuilder
 				.Indent(indent)
 				.Append("if (!string.IsNullOrEmpty(")
 				.AppendFieldName(JsonSnapshotName)
-				.AppendPropertyName(parameterName)
+				.AppendParameterPropertyName(i)
 				.AppendLine("))");
 
 			stringBuilder
 				.Indent(indent + 1)
 				.Append("stringBuilder.Append(")
 				.AppendFieldName(JsonSnapshotName)
-				.AppendPropertyName(parameterName)
+				.AppendParameterPropertyName(i)
 				.AppendLine(");");
 
 			stringBuilder
@@ -547,13 +543,13 @@ internal static class MockInvocationGenerator
 			stringBuilder
 				.Indent(indent + 1)
 				.Append("stringBuilder.Append(")
-				.AppendFieldName(parameterName)
+				.AppendParameterFieldName(i)
 				.AppendLine(");");
 
 			stringBuilder
 				.Indent(indent)
 				.Append("var ")
-				.AppendParameterName(parameterName)
+				.AppendParameterVariableName(i)
 				.AppendLine(" = stringBuilder.ToString();");
 		}
 
@@ -561,7 +557,7 @@ internal static class MockInvocationGenerator
 			.AppendLine()
 			.Indent(indent)
 			.Append("var stringValue = string.Format(_invocation._name, ")
-			.AppendParameterNames(methodSymbol.Parameters)
+			.AppendParameterNames(methodSymbol.Parameters, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
 			.Append(");")
 			.ToString();
 	}
@@ -653,11 +649,11 @@ internal static class MockInvocationGenerator
 			return @this.Append(parameter);
 		}
 
-		private StringBuilder AppendVerifyResult(string parameterName)
+		private StringBuilder AppendVerifyResult(int index)
 		{
 			return @this
 				.Append("(\"")
-				.Append(parameterName)
+				.AppendParameterVariableName(index)
 				.Append("\", result)");
 		}
 

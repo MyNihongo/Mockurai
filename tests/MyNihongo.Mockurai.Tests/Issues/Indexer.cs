@@ -23,8 +23,8 @@ public sealed class Indexer : TestsBase
 
 		var types = new TypeModel[]
 		{
-			new("String", "key"),
-			new("String", "value", isNullable: true),
+			new("String", 1),
+			new("String", 2, isNullable: true),
 		};
 
 		GeneratedSources generatedSources =
@@ -253,15 +253,11 @@ public sealed class Indexer : TestsBase
 
 		var types1 = new TypeModel[]
 		{
-			new("String", "key"),
-			new("String", "value", isNullable: true),
+			new("String", 1),
+			new("String", 2, isNullable: true),
 		};
 
-		var types2 = new TypeModel[]
-		{
-			new("Int32", "key"),
-			new("String", "value"),
-		};
+		string[] types2 = ["Int32", "String"];
 
 		GeneratedSources generatedSources =
 		[
@@ -586,15 +582,15 @@ public sealed class Indexer : TestsBase
 
 		var typesGet = new TypeModel[]
 		{
-			new("String", "key"),
-			new("Int32", "param1"),
-			new("Boolean", "param2"),
+			new("String", 1),
+			new("Int32", 2),
+			new("Boolean", 3),
 		};
 
 		TypeModel[] typesSet =
 		[
 			..typesGet,
-			new("String", "value", isNullable: true),
+			new("String", 4, isNullable: true),
 		];
 
 		GeneratedSources generatedSources =

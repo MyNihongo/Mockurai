@@ -175,7 +175,7 @@ internal static class MockImplementationMethodGenerator
 				{
 					stringBuilder
 						.Indent(indent)
-						.Append(parameter.Name)
+						.Append(parameter.Parameter.Name)
 						.AppendLine(MockGeneratorConst.Suffixes.DefaultAssign);
 				}
 
@@ -256,7 +256,7 @@ internal static class MockImplementationMethodGenerator
 
 			if (hasReturnType)
 			{
-				var returnValueName = methodSymbol.Parameters.GetReturnValueName();
+				var returnValueName = methodSymbol.Parameters.GetSafeVariableName(MockGeneratorConst.Variables.ReturnValue);
 
 				stringBuilder
 					.Append("out var ")
