@@ -381,7 +381,97 @@ public sealed class GenericSetup : TestsBase
 	}
 
 	[Fact]
-	public async Task NestedGenericParametersDuplicated()
+	public async Task NestedGenericParametersDuplicated1()
+	{
+		const string testCode =
+			"""
+			namespace MyNihongo.Mockurai.Tests;
+
+			public interface IInterface
+			{
+				decimal Invoke<T>(System.Collections.Generic.IDictionary<T, System.Collections.Generic.IList<T>> param1, T param2);
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<IInterface> InterfaceMock { get; }
+			}
+			""";
+
+		var types = new TypeModel[]
+		{
+			new("T", 1, isGeneric: true),
+			new("Int32", 2),
+		};
+
+		GeneratedSources generatedSources =
+		[
+			(
+				"TestsBase.g.cs",
+				"""
+				#nullable enable
+				namespace MyNihongo.Mockurai.Tests;
+
+				public partial class TestsBase
+				{
+					// InterfaceMock
+					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
+					protected partial MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock => _interfaceMock;
+
+					protected void VerifyNoOtherCalls()
+					{
+						InterfaceMock.VerifyNoOtherCalls();
+					}
+
+					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
+					{
+						var ctx = new VerifySequenceContext(
+							interfaceMock: InterfaceMock
+						);
+
+						verify(ctx);
+					}
+
+					protected sealed class VerifySequenceContext
+					{
+						private readonly VerifyIndex _verifyIndex = new();
+						public readonly IMockSequence<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock;
+
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> interfaceMock)
+						{
+							InterfaceMock = new MockSequence<MyNihongo.Mockurai.Tests.IInterface>
+							{
+								VerifyIndex = _verifyIndex,
+								Mock = interfaceMock,
+							};
+						}
+					}
+				}
+				"""
+			),
+			(
+				"InterfaceMock.g.cs",
+				"""
+
+				"""
+			),
+			(
+				"SetupIReadOnlyListInt32_TReturns_.g.cs",
+				""
+			),
+			(
+				"InvocationIReadOnlyListInt32.g.cs",
+				""
+			),
+		];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task NestedGenericParametersDuplicated2()
 	{
 		const string testCode =
 			"""
@@ -649,7 +739,7 @@ public sealed class GenericSetup : TestsBase
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
 	}
-	
+
 	[Fact]
 	public async Task NestedGenericParametersDeepMultiple()
 	{
