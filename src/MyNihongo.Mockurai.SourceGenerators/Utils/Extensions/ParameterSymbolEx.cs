@@ -409,7 +409,7 @@ internal static class ParameterSymbolEx
 			return;
 
 		StringBuilder? stringBuilder = null;
-		Queue<ITypeSymbol>? typeQueue = null;
+		Stack<(ITypeSymbol, int, bool)>? typeStack = null;
 
 		foreach (var parameter in parametersWithGenericTypes)
 		{
@@ -424,37 +424,48 @@ internal static class ParameterSymbolEx
 			stringBuilder ??= new StringBuilder();
 			stringBuilder.Clear();
 
-			typeQueue ??= new Queue<ITypeSymbol>();
-			typeQueue.Enqueue(parameter.Type);
+			typeStack ??= new Stack<(ITypeSymbol, int, bool)>();
+			typeStack.Push((parameter.Type, 0, false));
 
-			while (typeQueue.Count > 0)
+			while (typeStack.Count > 0)
 			{
-				if (typeQueue.Dequeue() is not INamedTypeSymbol { TypeArguments.IsDefaultOrEmpty: false } typeSymbol)
-					continue;
-
-				stringBuilder
-					.AppendTypeNamespaceAndName(typeSymbol)
-					.Append('<');
-
-				for (var i = 0; i < typeSymbol.TypeArguments.Length; i++)
+				var (typeSymbol, index, isVisited) = typeStack.Pop();
+				if (isVisited)
 				{
-					if (i > 0)
-						stringBuilder.Append(", ");
-
-					var typeArgument = typeSymbol.TypeArguments[i];
-					if (typeArgument is ITypeParameterSymbol)
+					if (typeSymbol is INamedTypeSymbol { TypeArguments.IsDefaultOrEmpty: false })
+						stringBuilder.Append('>');
+				}
+				else
+				{
+					if (typeSymbol is ITypeParameterSymbol)
 					{
-						if (genericTypeMapping.TryGetValue(typeArgument, out var genericParameterName))
+						if (genericTypeMapping.TryGetValue(typeSymbol, out var genericParameterName))
 							stringBuilder.Append(genericParameterName);
 					}
-					else
+					else if (typeSymbol is INamedTypeSymbol namedTypeSymbol)
 					{
-						stringBuilder.AppendTypeNamespaceAndName(typeArgument);
-						typeQueue.Enqueue(typeArgument);
+						if (index > 0)
+							stringBuilder.Append(", ");
+
+						if (!namedTypeSymbol.TypeArguments.IsDefaultOrEmpty)
+						{
+							typeStack.Push((typeSymbol, index, true));
+
+							stringBuilder
+								.AppendTypeNamespaceAndName(typeSymbol)
+								.Append('<');
+
+							for (var i = namedTypeSymbol.TypeArguments.Length - 1; i >= 0; i--)
+							{
+								typeStack.Push((namedTypeSymbol.TypeArguments[i], i, false));
+							}
+						}
+						else
+						{
+							stringBuilder.AppendType(typeSymbol);
+						}
 					}
 				}
-
-				stringBuilder.Append('>');
 			}
 
 			typeOverrideBuilder.Add(parameter, stringBuilder.ToString());
