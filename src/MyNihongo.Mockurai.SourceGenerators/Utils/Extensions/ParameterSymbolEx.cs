@@ -440,8 +440,8 @@ internal static class ParameterSymbolEx
 				{
 					if (typeSymbol is ITypeParameterSymbol)
 					{
-						if (genericTypeMapping.TryGetValue(typeSymbol, out var genericParameterName))
-							stringBuilder.Append(genericParameterName);
+						if (genericTypeMapping.TryGetValue(typeSymbol, out var genericParameterData))
+							stringBuilder.Append(genericParameterData.Name);
 					}
 					else if (typeSymbol is INamedTypeSymbol namedTypeSymbol)
 					{
