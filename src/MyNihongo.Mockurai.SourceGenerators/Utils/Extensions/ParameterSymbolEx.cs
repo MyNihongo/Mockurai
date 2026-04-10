@@ -432,10 +432,32 @@ internal static class ParameterSymbolEx
 				if (typeQueue.Dequeue() is not INamedTypeSymbol { TypeArguments.IsDefaultOrEmpty: false } typeSymbol)
 					continue;
 
-				foreach (var typeArgument in typeSymbol.TypeArguments)
+				stringBuilder
+					.AppendTypeNamespaceAndName(typeSymbol)
+					.Append('<');
+
+				for (var i = 0; i < typeSymbol.TypeArguments.Length; i++)
 				{
+					if (i > 0)
+						stringBuilder.Append(", ");
+
+					var typeArgument = typeSymbol.TypeArguments[i];
+					if (typeArgument is ITypeParameterSymbol)
+					{
+						if (genericTypeMapping.TryGetValue(typeArgument, out var genericParameterName))
+							stringBuilder.Append(genericParameterName);
+					}
+					else
+					{
+						stringBuilder.AppendTypeNamespaceAndName(typeArgument);
+						typeQueue.Enqueue(typeArgument);
+					}
 				}
+
+				stringBuilder.Append('>');
 			}
+
+			typeOverrideBuilder.Add(parameter, stringBuilder.ToString());
 		}
 	}
 }
