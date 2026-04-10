@@ -136,6 +136,13 @@ internal static class TypeSymbolEx
 				namespaceSymbol = namespaceSymbol.ContainingNamespace;
 			}
 
+			var containingType = typeSymbol.ContainingType;
+			while (containingType is not null)
+			{
+				@this.Append(containingType.Name).Append('.');
+				containingType = containingType.ContainingType;
+			}
+
 			return @this.Append(typeSymbol.Name);
 		}
 	}
