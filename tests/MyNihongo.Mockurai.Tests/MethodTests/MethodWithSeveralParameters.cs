@@ -664,6 +664,91 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 	}
 
 	[Fact]
+	public async Task GenerateInterfaceMultipleGeneric2()
+	{
+		const string method = "void Invoke<T1, T2>(T1 param1, T2 param2);";
+
+		const string methods =
+			"""
+			// Invoke
+			private System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>? _invoke0;
+			private InvocationDictionary<(System.Type, System.Type)>? _invoke0Invocation;
+
+			public SetupT1Single<T1> SetupInvoke<T2, T1>(in It<T1> param1, in It<float> param2)
+			{
+				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
+				var invoke0 = (SetupT1Single<T1>)_invoke0.GetOrAdd((typeof(T2), typeof(T1)), static _ => new SetupT1Single<T1>());
+				invoke0.SetupParameters(param1.ValueSetup, param2.ValueSetup);
+				return invoke0;
+			}
+
+			public void VerifyInvoke<T2, T1>(in It<T1> param1, in It<float> param2, in Times times)
+			{
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (InvocationT1Single<T1>)_invoke0Invocation.GetOrAdd((typeof(T2), typeof(T1)), static key => new InvocationT1Single<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}}, {{1}})"));
+				invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, times, _invocationProviders);
+			}
+
+			public long VerifyInvoke<T2, T1>(in It<T1> param1, in It<float> param2, long index)
+			{
+				_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (InvocationT1Single<T1>)_invoke0Invocation.GetOrAdd((typeof(T2), typeof(T1)), static key => new InvocationT1Single<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}}, {{1}})"));
+				return invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
+			}
+			""";
+
+		const string proxy =
+			"""
+			public void Invoke<T2, T1>(T1 param1, float param2)
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (InvocationT1Single<T1>)_mock._invoke0Invocation.GetOrAdd((typeof(T2), typeof(T1)), static key => new InvocationT1Single<T1>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}}, {{1}})"));
+				invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
+				((SetupT1Single<T1>?)_mock._invoke0?.ValueOrDefault((typeof(T2), typeof(T1))))?.Invoke(param1, param2);
+			}
+			""";
+
+		const string extensions =
+			"""
+			// Invoke
+			public ISetup<SetupT1Single<T1>.CallbackDelegate> SetupInvoke<T2, T1>(in It<T1> param1 = default, in It<float> param2 = default) =>
+				((InterfaceMock)@this).SetupInvoke<T2, T1>(param1, param2);
+
+			public void VerifyInvoke<T2, T1>(in It<T1> param1, in It<float> param2, in Times times) =>
+				((InterfaceMock)@this).VerifyInvoke<T2, T1>(param1, param2, times);
+
+			public void VerifyInvoke<T2, T1>(in It<T1> param1, in It<float> param2, System.Func<Times> times) =>
+				((InterfaceMock)@this).VerifyInvoke<T2, T1>(param1, param2, times());
+			""";
+
+		const string sequenceExtensions =
+			"""
+			// Invoke
+			public void Invoke<T2, T1>(in It<T1> param1, in It<float> param2)
+			{
+				var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvoke<T2, T1>(param1, param2, @this.VerifyIndex);
+				@this.VerifyIndex.Set(nextIndex);
+			}
+			""";
+
+		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
+		const string invocations = "yield return _invoke0Invocation;";
+
+		TypeModel[] types =
+		[
+			new("T1", 1, isGeneric: true),
+			new("Single", 2),
+		];
+		var testCode = CreateInterfaceTestCode(method);
+		var setupCode = CreateSetupCode(types);
+		var invocationCode = CreateInvocationCode(types);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
 	public async Task GenerateInterfaceReturnGeneric1()
 	{
 		const string method = "T Invoke<T>(T param1, T param2);";

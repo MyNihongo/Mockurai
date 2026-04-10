@@ -298,10 +298,10 @@ internal static class ParameterSymbolEx
 				: @this;
 		}
 
-		private void AppendParameterRefKinds(ImmutableArray<IParameterSymbol> parameters, bool appendRefKind, out ImmutableArray<IParameterSymbol> parametersWithGenericTypes, out ImmutableDictionary<ITypeSymbol, string> genericTypeMapping)
+		private void AppendParameterRefKinds(ImmutableArray<IParameterSymbol> parameters, bool appendRefKind, out ImmutableArray<IParameterSymbol> parametersWithGenericTypes, out ImmutableDictionary<ITypeSymbol, GenericTypeData> genericTypeMapping)
 		{
 			ImmutableHashSet<IParameterSymbol>.Builder? parameterBuilder = null;
-			ImmutableDictionary<ITypeSymbol, string>.Builder? genericTypeMappingBuilder = null;
+			ImmutableDictionary<ITypeSymbol, GenericTypeData>.Builder? genericTypeMappingBuilder = null;
 			Queue<ITypeSymbol>? typeQueue = null;
 
 			foreach (var parameter in parameters)
@@ -343,18 +343,19 @@ internal static class ParameterSymbolEx
 			}
 
 			parametersWithGenericTypes = parameterBuilder?.ToImmutableArray() ?? ImmutableArray<IParameterSymbol>.Empty;
-			genericTypeMapping = genericTypeMappingBuilder?.ToImmutable() ?? ImmutableDictionary<ITypeSymbol, string>.Empty;
+			genericTypeMapping = genericTypeMappingBuilder?.ToImmutable() ?? ImmutableDictionary<ITypeSymbol, GenericTypeData>.Empty;
 			return;
 
-			static void TryAddGenericTypeParameter(StringBuilder stringBuilder, ref ImmutableDictionary<ITypeSymbol, string>.Builder? builder, ITypeSymbol type)
+			static void TryAddGenericTypeParameter(StringBuilder stringBuilder, ref ImmutableDictionary<ITypeSymbol, GenericTypeData>.Builder? builder, ITypeSymbol type)
 			{
-				builder ??= ImmutableDictionary.CreateBuilder<ITypeSymbol, string>(SymbolEqualityComparer.Default);
+				builder ??= ImmutableDictionary.CreateBuilder<ITypeSymbol, GenericTypeData>(SymbolEqualityComparer.Default);
 				if (!builder.ContainsKey(type))
 				{
-					var genericParameter = MockGeneratorConst.Suffixes.GenericParameter + (builder.Count + 1);
+					var sort = builder.Count + 1;
+					var genericParameter = MockGeneratorConst.Suffixes.GenericParameter + sort;
 					stringBuilder.Append(genericParameter);
 
-					builder[type] = genericParameter;
+					builder[type] = new GenericTypeData(genericParameter, sort);
 				}
 			}
 
@@ -366,7 +367,7 @@ internal static class ParameterSymbolEx
 		}
 
 		private StringBuilder AppendGenericSetupInvocationParameters(
-			ImmutableDictionary<ITypeSymbol, string> genericParameters,
+			ImmutableDictionary<ITypeSymbol, GenericTypeData> genericParameters,
 			bool useOverriddenGenericNames,
 			bool appendGenericSymbols = true,
 			bool appendTrailingComma = false)
@@ -378,13 +379,13 @@ internal static class ParameterSymbolEx
 				@this.Append('<');
 
 			var i = 0;
-			foreach (var genericParameter in genericParameters)
+			foreach (var genericParameter in genericParameters.OrderBy(static x => x.Value.Sort))
 			{
 				if (i > 0)
 					@this.Append(", ");
 
 				if (useOverriddenGenericNames)
-					@this.Append(genericParameter.Value);
+					@this.Append(genericParameter.Value.Name);
 				else
 					@this.AppendType(genericParameter.Key);
 
@@ -403,7 +404,7 @@ internal static class ParameterSymbolEx
 	private static void TryAppendPropertyTypeOverride(
 		ImmutableDictionary<IParameterSymbol, string>.Builder? typeOverrideBuilder,
 		ImmutableArray<IParameterSymbol> parametersWithGenericTypes,
-		ImmutableDictionary<ITypeSymbol, string> genericTypeMapping)
+		ImmutableDictionary<ITypeSymbol, GenericTypeData> genericTypeMapping)
 	{
 		if (typeOverrideBuilder is null || parametersWithGenericTypes.IsDefaultOrEmpty)
 			return;
@@ -416,7 +417,7 @@ internal static class ParameterSymbolEx
 			if (parameter.Type is ITypeParameterSymbol)
 			{
 				if (genericTypeMapping.TryGetValue(parameter.Type, out var genericParameterName))
-					typeOverrideBuilder.Add(parameter, genericParameterName);
+					typeOverrideBuilder.Add(parameter, genericParameterName.Name);
 
 				continue;
 			}
@@ -470,5 +471,22 @@ internal static class ParameterSymbolEx
 
 			typeOverrideBuilder.Add(parameter, stringBuilder.ToString());
 		}
+	}
+
+	private readonly struct GenericTypeData(string name, int sort) : IEquatable<GenericTypeData>
+	{
+		public readonly string Name = name;
+		public readonly int Sort = sort;
+
+		public bool Equals(GenericTypeData other)
+		{
+			return Name == other.Name;
+		}
+
+		public override bool Equals(object? obj) =>
+			obj is GenericTypeData other && Equals(other);
+
+		public override int GetHashCode() =>
+			Name.GetHashCode();
 	}
 }
