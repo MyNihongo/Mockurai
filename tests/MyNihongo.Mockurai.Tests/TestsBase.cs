@@ -50,7 +50,7 @@ public abstract class TestsBase
 		var inputParameters = types.Where(static x => x.IsInputParameter).ToArray();
 		if (useReturns) genericTypes.Add(returns);
 
-		var returnsGenericType = genericTypes.Count > 0 ? $"<{string.Join(", ", genericTypes)}>" : string.Empty;
+		var returnsGenericType = genericTypes.Count > 0 ? $"<{string.Join(", ", genericTypes.Distinct())}>" : string.Empty;
 		var classNameReturns = string.Join(null, types) + returnsGenericType;
 		var parameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString()));
 		var discardedParameters = string.Join(", ", types.Select(static x => x.GetParameterDeclarationString(typeNameOverride: "_")));
@@ -453,7 +453,7 @@ public abstract class TestsBase
 	protected static GeneratedSource CreateInvocationCode(params TypeModel[] types)
 	{
 		var genericTypes = types.Where(x => x.IsGeneric).Select(x => x.Type).ToList();
-		var genericType = genericTypes.Count > 0 ? $"<{string.Join(", ", genericTypes)}>" : string.Empty;
+		var genericType = genericTypes.Count > 0 ? $"<{string.Join(", ", genericTypes.Distinct())}>" : string.Empty;
 		var className = string.Join(null, types);
 		var classNameGenerics = className + genericType;
 		var prefixes = string.Join(", ", types.Select(static x => $"_{x.GetParameterNameString()}Prefix"));

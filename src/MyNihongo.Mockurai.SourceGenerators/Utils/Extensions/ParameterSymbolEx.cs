@@ -349,14 +349,14 @@ internal static class ParameterSymbolEx
 			static void TryAddGenericTypeParameter(StringBuilder stringBuilder, ref ImmutableDictionary<ITypeSymbol, GenericTypeData>.Builder? builder, ITypeSymbol type)
 			{
 				builder ??= ImmutableDictionary.CreateBuilder<ITypeSymbol, GenericTypeData>(SymbolEqualityComparer.Default);
-				if (!builder.ContainsKey(type))
+				if (!builder.TryGetValue(type, out var genericParameter))
 				{
 					var sort = builder.Count + 1;
-					var genericParameter = MockGeneratorConst.Suffixes.GenericParameter + sort;
-					stringBuilder.Append(genericParameter);
-
-					builder[type] = new GenericTypeData(genericParameter, sort);
+					var name = MockGeneratorConst.Suffixes.GenericParameter + sort;
+					genericParameter = builder[type] = new GenericTypeData(name, sort);
 				}
+
+				stringBuilder.Append(genericParameter.Name);
 			}
 
 			static void TryAddParameter(ref ImmutableHashSet<IParameterSymbol>.Builder? builder, IParameterSymbol parameter)

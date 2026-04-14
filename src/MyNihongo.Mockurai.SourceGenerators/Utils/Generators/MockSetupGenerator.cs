@@ -344,7 +344,7 @@ internal static class MockSetupGenerator
 		stringBuilder.Clear();
 
 		return stringBuilder
-			.AppendSetupClassName(methodSymbol, out genericTypeOverride)
+			.AppendSetupClassName(methodSymbol, useOverriddenGenericNames: true, out genericTypeOverride)
 			.ToString();
 	}
 
@@ -353,11 +353,6 @@ internal static class MockSetupGenerator
 		private StringBuilder AppendInterface(string interfaceName, IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol)
 		{
 			return @this.AppendInterface(interfaceName, methodSymbol, returnTypeSymbol, useOverriddenGenericNames: true);
-		}
-
-		private StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol, out ImmutableDictionary<IParameterSymbol, string> genericTypeOverride)
-		{
-			return @this.AppendSetupClassName(methodSymbol, useOverriddenGenericNames: true, out genericTypeOverride);
 		}
 
 		private StringBuilder AppendCallbackInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, int indent)
