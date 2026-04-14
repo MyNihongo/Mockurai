@@ -2,25 +2,97 @@
 
 public readonly struct TypeModel
 {
-	public readonly string Type;
+	public readonly string Name;
 	public readonly int Index;
-	public readonly string? RefType;
-	public readonly bool IsGeneric, IsNullable;
+	public readonly string? Namespace, RefType;
+	public readonly bool IsNullable;
+	public readonly string[] GenericTypes = [];
+	private readonly Nested[]? _genericParameters;
 
 	public TypeModel(string type, int index, string? refType = null, bool isGeneric = false, bool isNullable = false)
 	{
-		Type = type;
+		Name = type;
 		Index = index;
 		RefType = refType;
-		IsGeneric = isGeneric;
 		IsNullable = isNullable;
+
+		if (isGeneric)
+			GenericTypes = [type];
+	}
+
+	public TypeModel(string type, Nested[] genericParameters, int index, string? @namespace = null, string? refType = null, bool isNullable = false)
+	{
+		_genericParameters = genericParameters;
+
+		Name = type;
+		Namespace = @namespace;
+		Index = index;
+		RefType = refType;
+		IsNullable = isNullable;
+
+		var hashSet = new HashSet<string>();
+		var queue = new Queue<Nested>();
+
+		foreach (var nested in genericParameters)
+			queue.Enqueue(nested);
+
+		while (queue.TryDequeue(out var nested))
+		{
+			if (nested.IsGeneric)
+				hashSet.Add(nested.Type);
+
+			if (nested.NestedTypes is not null)
+			{
+				foreach (var nestedType in nested.NestedTypes)
+					queue.Enqueue(nestedType);
+			}
+		}
+
+		GenericTypes = hashSet.ToArray();
 	}
 
 	public override string ToString()
 	{
-		return !string.IsNullOrEmpty(RefType)
-			? $"{char.ToUpperInvariant(RefType[0])}{RefType[1..]}{Type}"
-			: Type;
+		var name = !string.IsNullOrEmpty(RefType)
+			? $"{char.ToUpperInvariant(RefType[0])}{RefType[1..]}{Name}"
+			: Name;
+
+		if (_genericParameters is not null)
+		{
+			foreach (var genericParameter in _genericParameters)
+				name += genericParameter;
+		}
+
+		return name;
+	}
+
+	public readonly struct Nested(string type, Nested[]? nestedTypes, bool isGeneric)
+	{
+		public readonly string Type = type;
+		public readonly Nested[]? NestedTypes = nestedTypes;
+		public readonly bool IsGeneric = isGeneric;
+
+		public static implicit operator Nested(string value) =>
+			new(value, null, false);
+
+		public static implicit operator Nested((string, bool) value) =>
+			new(value.Item1, null, value.Item2);
+
+		public static implicit operator Nested((string, Nested[]) value) =>
+			new(value.Item1, value.Item2, false);
+
+		public override string ToString()
+		{
+			var name = Type;
+
+			if (NestedTypes is not null)
+			{
+				foreach (var nestedType in NestedTypes)
+					name += nestedType;
+			}
+
+			return name;
+		}
 	}
 }
 
@@ -56,7 +128,7 @@ public static class TypeModelEx
 
 		public string GetTypeString()
 		{
-			var typeString = @this.Type switch
+			var typeString = @this.Name switch
 			{
 				"Int32" => "int",
 				"Single" => "float",
@@ -64,13 +136,31 @@ public static class TypeModelEx
 				"Double" => "double",
 				"String" => "string",
 				"Boolean" => "bool",
-				"T" or "T1" or "T2" or "T3" => @this.Type,
-				_ => throw new NotImplementedException($"Unsupported type: `{@this}`"),
+				_ => @this.GetFullTypeName(),
 			};
 
 			return @this.IsNullable
 				? $"{typeString}?"
 				: typeString;
+		}
+
+		private string GetFullTypeName()
+		{
+			var value = !string.IsNullOrEmpty(@this.Namespace)
+				? $"{@this.Namespace}.{@this.Name}"
+				: @this.Name;
+
+			if (@this.GenericTypes.Length > 0)
+			{
+				value += "<";
+
+				foreach (var genericType in @this.GenericTypes)
+					value += genericType;
+
+				value += ">";
+			}
+
+			return value;
 		}
 
 		public bool IsInputParameter => !"out".Equals(@this.RefType, StringComparison.InvariantCultureIgnoreCase);

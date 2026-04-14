@@ -45,7 +45,7 @@ public abstract class TestsBase
 	private static GeneratedSource CreateSetupCode(bool useReturns, TypeModel[] types)
 	{
 		const string returns = "TReturns", returnValue = "returnValue";
-		var genericTypes = types.Where(x => x.IsGeneric).Select(x => x.Type).ToList();
+		var genericTypes = types.SelectMany(x => x.GenericTypes).ToList();
 		var outTypes = types.Where(x => x.RefType == "out").ToArray();
 		var inputParameters = types.Where(static x => x.IsInputParameter).ToArray();
 		if (useReturns) genericTypes.Add(returns);
@@ -452,7 +452,7 @@ public abstract class TestsBase
 
 	protected static GeneratedSource CreateInvocationCode(params TypeModel[] types)
 	{
-		var genericTypes = types.Where(x => x.IsGeneric).Select(x => x.Type).ToList();
+		var genericTypes = types.SelectMany(x => x.GenericTypes).ToList();
 		var genericType = genericTypes.Count > 0 ? $"<{string.Join(", ", genericTypes.Distinct())}>" : string.Empty;
 		var className = string.Join(null, types);
 		var classNameGenerics = className + genericType;
@@ -465,7 +465,7 @@ public abstract class TestsBase
 		var setupParameters = string.Join(", ", types.Select(static x => $"in ItSetup<{x.GetTypeString()}> {x.GetParameterNameString()}"));
 		var verifyParameters = string.Join(Environment.NewLine + "\t\t\t", types.Select(static x => $"var verify{x.GetCamelCaseNameString()} = span[i].Get{x.GetCamelCaseNameString()}({x.GetParameterNameString()}.Type);"));
 		var parameterToString = string.Join(", ", types.Select(static x => $"{x.GetParameterNameString()}.ToString(_{x.GetParameterNameString()}Prefix)"));
-		var typeNameParameters = string.Join(Environment.NewLine + "\t\t", types.Select(static x => { return $"var typeName{x.GetCamelCaseNameString()} = !string.IsNullOrEmpty(_{x.GetParameterNameString()}Prefix) ? $\"{{_{x.GetParameterNameString()}Prefix}} {(x.IsGeneric ? $"{{typeof({x.GetTypeString()}).Name}}" : x.GetTypeString())}\" : {(x.IsGeneric ? $"typeof({x.GetTypeString()}).Name" : $"\"{x.GetTypeString()}\"")};"; }));
+		var typeNameParameters = string.Join(Environment.NewLine + "\t\t", types.Select(static x => { return $"var typeName{x.GetCamelCaseNameString()} = !string.IsNullOrEmpty(_{x.GetParameterNameString()}Prefix) ? $\"{{_{x.GetParameterNameString()}Prefix}} {(x.GenericTypes.Length > 0 ? $"{{typeof({x.GetTypeString()}).Name}}" : x.GetTypeString())}\" : {(x.GenericTypes.Length > 0 ? $"typeof({x.GetTypeString()}).Name" : $"\"{x.GetTypeString()}\"")};"; }));
 		var typeParameterNames = string.Join(", ", types.Select(static x => $"typeName{x.GetCamelCaseNameString()}"));
 		var parameterFields = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"private readonly {x.GetTypeString()} _{x.GetParameterNameString()};"));
 		var verifyChecks = string.Join(Environment.NewLine + "\t\t\t", types.Select(static (x, i) =>

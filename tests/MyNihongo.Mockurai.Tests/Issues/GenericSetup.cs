@@ -581,7 +581,7 @@ public sealed class GenericSetup : TestsBase
 
 		var types = new TypeModel[]
 		{
-			new("T", 1, isGeneric: true),
+			new("System.Collections.Generic.IDictionary", ["String", ("System.Collections.Generic.IList", [("T", true)])], 1),
 			new("Int32", 2),
 		};
 
