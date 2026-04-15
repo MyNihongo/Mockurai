@@ -633,17 +633,17 @@ internal static class MethodSymbolEx
 			return @this;
 		}
 
-		public StringBuilder AppendItSetupParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, bool isNullable = false, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride = null, Func<StringBuilder, IParameterSymbol, int, StringBuilder>? appendParameterName = null)
+		public StringBuilder AppendItSetupParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, bool isNullable = false, ImmutableDictionary<IParameterSymbol, StringTemplate>? parameterTypeOverride = null, Func<StringBuilder, IParameterSymbol, int, StringBuilder>? appendParameterName = null)
 		{
 			return @this.AppendItSetupParameters(parameters, static x => x, appendComma, isNullable, parameterTypeOverride, appendParameterName);
 		}
 
-		public StringBuilder AppendItSetupParameters(ImmutableArray<ParameterSplit.Item> parameters, bool appendComma = false, bool isNullable = false, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride = null, Func<StringBuilder, ParameterSplit.Item, int, StringBuilder>? appendParameterName = null)
+		public StringBuilder AppendItSetupParameters(ImmutableArray<ParameterSplit.Item> parameters, bool appendComma = false, bool isNullable = false, ImmutableDictionary<IParameterSymbol, StringTemplate>? parameterTypeOverride = null, Func<StringBuilder, ParameterSplit.Item, int, StringBuilder>? appendParameterName = null)
 		{
 			return @this.AppendItSetupParameters(parameters, static x => x.Parameter, appendComma, isNullable, parameterTypeOverride, appendParameterName);
 		}
 
-		private StringBuilder AppendItSetupParameters<T>(ImmutableArray<T> parameters, Func<T, IParameterSymbol> convert, bool appendComma, bool isNullable, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride, Func<StringBuilder, T, int, StringBuilder>? appendParameterName)
+		private StringBuilder AppendItSetupParameters<T>(ImmutableArray<T> parameters, Func<T, IParameterSymbol> convert, bool appendComma, bool isNullable, ImmutableDictionary<IParameterSymbol, StringTemplate>? parameterTypeOverride, Func<StringBuilder, T, int, StringBuilder>? appendParameterName)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
@@ -651,7 +651,10 @@ internal static class MethodSymbolEx
 					@this.Append(", ");
 
 				var parameter = convert(parameters[i]);
-				var typeOverride = parameterTypeOverride?.GetValueOrDefault(parameter);
+
+				var typeOverride = parameterTypeOverride
+					?.GetValueOrDefault(parameter)
+					.Build();
 
 				@this
 					.Append("in ")

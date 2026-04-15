@@ -125,7 +125,7 @@ internal static class MockInvocationGenerator
 			.ToString();
 	}
 
-	private static string CreateRegisterMethod(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
+	private static string CreateRegisterMethod(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
 	{
 		stringBuilder.Clear();
 
@@ -147,7 +147,7 @@ internal static class MockInvocationGenerator
 			.ToString();
 	}
 
-	private static string CreateVerifyMethod(StringBuilder stringBuilder, IMethodSymbol methodSymbol, VerifyMethodType type, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent, bool appendNewLine = true)
+	private static string CreateVerifyMethod(StringBuilder stringBuilder, IMethodSymbol methodSymbol, VerifyMethodType type, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent, bool appendNewLine = true)
 	{
 		stringBuilder.Clear();
 
@@ -307,14 +307,17 @@ internal static class MockInvocationGenerator
 			: stringBuilder.ToString();
 	}
 
-	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
+	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
 	{
 		stringBuilder.Clear();
 
 		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
 			var parameter = methodSymbol.Parameters[i];
-			var typeOverride = genericTypeOverride.GetValueOrDefault(parameter);
+			
+			var typeOverride = genericTypeOverride
+				.GetValueOrDefault(parameter)
+				.Build();
 
 			stringBuilder
 				.Indent(indent)
@@ -349,14 +352,17 @@ internal static class MockInvocationGenerator
 			.ToString();
 	}
 
-	private static string CreateItemFields(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
+	private static string CreateItemFields(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
 	{
 		stringBuilder.Clear();
 
 		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
 			var parameter = methodSymbol.Parameters[i];
-			var typeOverride = genericTypeOverride.GetValueOrDefault(parameter);
+			
+			var typeOverride = genericTypeOverride
+				.GetValueOrDefault(parameter)
+				.Build();
 
 			stringBuilder
 				.Indent(indent)
@@ -386,7 +392,7 @@ internal static class MockInvocationGenerator
 			.ToString();
 	}
 
-	private static string CreateItemConstructor(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
+	private static string CreateItemConstructor(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
 	{
 		stringBuilder.Clear();
 
@@ -440,14 +446,17 @@ internal static class MockInvocationGenerator
 			.ToString();
 	}
 
-	private static string CreateItemGetMethods(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
+	private static string CreateItemGetMethods(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
 	{
 		stringBuilder.Clear();
 
 		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
 			var parameter = methodSymbol.Parameters[i];
-			var typeOverride = genericTypeOverride.GetValueOrDefault(parameter);
+			
+			var typeOverride = genericTypeOverride
+				.GetValueOrDefault(parameter)
+				.Build();
 
 			if (i != 0)
 				stringBuilder.AppendLine().AppendLine();
@@ -562,7 +571,7 @@ internal static class MockInvocationGenerator
 			.ToString();
 	}
 
-	private static string CreateSetupClassName(StringBuilder stringBuilder, IMethodSymbol methodSymbol, out ImmutableDictionary<IParameterSymbol, string> genericTypeOverride)
+	private static string CreateSetupClassName(StringBuilder stringBuilder, IMethodSymbol methodSymbol, out ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride)
 	{
 		stringBuilder.Clear();
 
@@ -584,7 +593,7 @@ internal static class MockInvocationGenerator
 			return @this.AppendInvocationClassName(parameters, useOverriddenGenericNames: true, appendGenericDeclaration);
 		}
 
-		private StringBuilder AppendInvocationClassName(ImmutableArray<IParameterSymbol> parameters, out ImmutableDictionary<IParameterSymbol, string> genericTypeOverride)
+		private StringBuilder AppendInvocationClassName(ImmutableArray<IParameterSymbol> parameters, out ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride)
 		{
 			return @this.AppendInvocationClassName(parameters, useOverriddenGenericNames: true, out genericTypeOverride);
 		}

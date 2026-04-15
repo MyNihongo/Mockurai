@@ -62,14 +62,17 @@ internal static class ParameterSymbolEx
 	// TODO: when there is more time try to optimize appending instead of appending strings of ITypeSymbol, IPropertySymbol, etc
 	extension(StringBuilder @this)
 	{
-		public StringBuilder AppendParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, ImmutableDictionary<IParameterSymbol, string>? parameterTypeOverride = null, bool appendRefKind = true, Func<StringBuilder, int, StringBuilder>? appendParameterName = null)
+		public StringBuilder AppendParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, ImmutableDictionary<IParameterSymbol, StringTemplate>? parameterTypeOverride = null, bool appendRefKind = true, Func<StringBuilder, int, StringBuilder>? appendParameterName = null)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
 				if (!appendComma && i > 0)
 					@this.Append(", ");
 
-				var typeOverride = parameterTypeOverride?.GetValueOrDefault(parameters[i]);
+				var typeOverride = parameterTypeOverride
+					?.GetValueOrDefault(parameters[i])
+					.Build();
+
 				@this.AppendParameterWithoutName(parameters[i], typeOverride, appendRefKind);
 
 				if (appendParameterName is not null)
@@ -213,12 +216,12 @@ internal static class ParameterSymbolEx
 			return @this.AppendSetupClassName(parameters, returnTypeSymbol, typeOverrideBuilder: null, useOverriddenGenericNames);
 		}
 
-		public StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol, bool useOverriddenGenericNames, out ImmutableDictionary<IParameterSymbol, string> typeOverride)
+		public StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol, bool useOverriddenGenericNames, out ImmutableDictionary<IParameterSymbol, StringTemplate> typeOverride)
 		{
 			var parameters = methodSymbol.Parameters;
 			var returnTypeSymbol = methodSymbol.TryGetReturnType();
 
-			var builder = ImmutableDictionary.CreateBuilder<IParameterSymbol, string>(SymbolEqualityComparer.Default);
+			var builder = ImmutableDictionary.CreateBuilder<IParameterSymbol, StringTemplate>(SymbolEqualityComparer.Default);
 			@this.AppendSetupClassName(parameters, returnTypeSymbol, builder, useOverriddenGenericNames);
 
 			typeOverride = builder.ToImmutable();
@@ -233,7 +236,7 @@ internal static class ParameterSymbolEx
 		private StringBuilder AppendSetupClassName(
 			ImmutableArray<IParameterSymbol> parameters,
 			ITypeSymbol? returnTypeSymbol,
-			ImmutableDictionary<IParameterSymbol, string>.Builder? typeOverrideBuilder,
+			ImmutableDictionary<IParameterSymbol, StringTemplate>.Builder? typeOverrideBuilder,
 			bool useOverriddenGenericNames)
 		{
 			const bool appendRefKind = true;
@@ -265,9 +268,9 @@ internal static class ParameterSymbolEx
 			return @this;
 		}
 
-		public StringBuilder AppendInvocationClassName(ImmutableArray<IParameterSymbol> parameters, bool useOverriddenGenericNames, out ImmutableDictionary<IParameterSymbol, string> typeOverride)
+		public StringBuilder AppendInvocationClassName(ImmutableArray<IParameterSymbol> parameters, bool useOverriddenGenericNames, out ImmutableDictionary<IParameterSymbol, StringTemplate> typeOverride)
 		{
-			var builder = ImmutableDictionary.CreateBuilder<IParameterSymbol, string>(SymbolEqualityComparer.Default);
+			var builder = ImmutableDictionary.CreateBuilder<IParameterSymbol, StringTemplate>(SymbolEqualityComparer.Default);
 			@this.AppendInvocationClassName(parameters, useOverriddenGenericNames, builder, appendGenericDeclaration: true);
 
 			typeOverride = builder.ToImmutable();
@@ -282,7 +285,7 @@ internal static class ParameterSymbolEx
 		private StringBuilder AppendInvocationClassName(
 			ImmutableArray<IParameterSymbol> parameters,
 			bool useOverriddenGenericNames,
-			ImmutableDictionary<IParameterSymbol, string>.Builder? typeOverrideBuilder,
+			ImmutableDictionary<IParameterSymbol, StringTemplate>.Builder? typeOverrideBuilder,
 			bool appendGenericDeclaration)
 		{
 			const bool appendRefKind = false;
@@ -402,7 +405,7 @@ internal static class ParameterSymbolEx
 	}
 
 	private static void TryAppendPropertyTypeOverride(
-		ImmutableDictionary<IParameterSymbol, string>.Builder? typeOverrideBuilder,
+		ImmutableDictionary<IParameterSymbol, StringTemplate>.Builder? typeOverrideBuilder,
 		ImmutableArray<IParameterSymbol> parametersWithGenericTypes,
 		ImmutableDictionary<ITypeSymbol, GenericTypeData> genericTypeMapping)
 	{
@@ -411,6 +414,7 @@ internal static class ParameterSymbolEx
 
 		StringBuilder? stringBuilder = null;
 		Stack<(ITypeSymbol, int, bool)>? typeStack = null;
+		List<object>? parameterList = null;
 
 		foreach (var parameter in parametersWithGenericTypes)
 		{
@@ -428,6 +432,9 @@ internal static class ParameterSymbolEx
 			typeStack ??= new Stack<(ITypeSymbol, int, bool)>();
 			typeStack.Push((parameter.Type, 0, false));
 
+			parameterList ??= [];
+			parameterList.Clear();
+
 			while (typeStack.Count > 0)
 			{
 				var (typeSymbol, index, isVisited) = typeStack.Pop();
@@ -441,7 +448,10 @@ internal static class ParameterSymbolEx
 					if (typeSymbol is ITypeParameterSymbol)
 					{
 						if (genericTypeMapping.TryGetValue(typeSymbol, out var genericParameterData))
-							stringBuilder.Append(genericParameterData.Name);
+						{
+							stringBuilder.Append('{').Append(parameterList.Count).Append('}');
+							parameterList.Add(genericParameterData.Name);
+						}
 					}
 					else if (typeSymbol is INamedTypeSymbol namedTypeSymbol)
 					{
@@ -469,7 +479,7 @@ internal static class ParameterSymbolEx
 				}
 			}
 
-			typeOverrideBuilder.Add(parameter, stringBuilder.ToString());
+			typeOverrideBuilder.Add(parameter, new StringTemplate(stringBuilder.ToString(), parameterList.ToArray()));
 		}
 	}
 

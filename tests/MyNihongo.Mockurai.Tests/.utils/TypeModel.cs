@@ -5,7 +5,7 @@ public readonly struct TypeModel
 	public readonly string Name;
 	public readonly int Index;
 	public readonly string? Namespace, RefType;
-	public readonly bool IsNullable;
+	public readonly bool IsGeneric, IsNullable;
 	public readonly string[] GenericTypes = [];
 	private readonly Nested[]? _genericParameters;
 
@@ -14,6 +14,7 @@ public readonly struct TypeModel
 		Name = type;
 		Index = index;
 		RefType = refType;
+		IsGeneric = isGeneric;
 		IsNullable = isNullable;
 
 		if (isGeneric)
@@ -150,7 +151,7 @@ public static class TypeModelEx
 				? $"{@this.Namespace}.{@this.Name}"
 				: @this.Name;
 
-			if (@this.GenericTypes.Length > 0)
+			if (@this is { IsGeneric: false, GenericTypes.Length: > 0 })
 			{
 				value += "<";
 
