@@ -52,6 +52,8 @@ public readonly struct TypeModel
 		GenericTypes = hashSet.ToArray();
 	}
 
+	public bool HasGenericTypes => IsGeneric || GenericTypes.Length > 0;
+
 	public override string ToString()
 	{
 		var name = !string.IsNullOrEmpty(RefType)
@@ -125,6 +127,16 @@ public static class TypeModelEx
 			return appendRefKind && !string.IsNullOrEmpty(@this.RefType)
 				? $"{@this.RefType} {result}"
 				: result;
+		}
+
+		public string GetTypeofTypeString()
+		{
+			var typeString = @this.GetTypeString();
+
+			foreach (var genericType in @this.GenericTypes)
+				typeString = typeString.Replace(genericType, $"{{typeof({genericType}).Name}}");
+
+			return typeString;
 		}
 
 		public string GetTypeString()

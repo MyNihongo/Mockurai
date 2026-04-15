@@ -7,6 +7,8 @@ public sealed class NestedClasses : TestsBase
 	{
 		const string testCode =
 			"""
+			using System.Threading.Tasks;
+
 			namespace MyNihongo.Mockurai.Tests;
 
 			public abstract class Container
