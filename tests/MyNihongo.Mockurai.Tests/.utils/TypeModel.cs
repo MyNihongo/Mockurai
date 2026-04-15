@@ -129,12 +129,18 @@ public static class TypeModelEx
 				: result;
 		}
 
-		public string GetTypeofTypeString()
+		public string GetTypeofTypeString(bool appendBrackets = true)
 		{
 			var typeString = @this.GetTypeString();
 
 			foreach (var genericType in @this.GenericTypes)
-				typeString = typeString.Replace(genericType, $"{{typeof({genericType}).Name}}");
+			{
+				var replace = $"typeof({genericType}).Name";
+				if (appendBrackets)
+					replace = '{' + replace + '}';
+
+				typeString = typeString.Replace(genericType, replace);
+			}
 
 			return typeString;
 		}
