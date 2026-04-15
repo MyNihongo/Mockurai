@@ -314,10 +314,9 @@ internal static class MockInvocationGenerator
 		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
 			var parameter = methodSymbol.Parameters[i];
-			
-			var typeOverride = genericTypeOverride
-				.GetValueOrDefault(parameter)
-				.Build();
+
+			var template = genericTypeOverride.GetValueOrDefault(parameter);
+			var typeOverride = template.Build(Fuck);
 
 			stringBuilder
 				.Indent(indent)
@@ -330,7 +329,7 @@ internal static class MockInvocationGenerator
 				.Append("} ")
 				.AppendTypeInsideString(parameter.Type, typeOverride)
 				.Append("\" : ")
-				.AppendTypeSeparate(parameter.Type, typeOverride)
+				.AppendTypeSeparate(parameter.Type, template, typeOverride)
 				.AppendLine(";");
 		}
 
@@ -350,6 +349,11 @@ internal static class MockInvocationGenerator
 		return stringBuilder
 			.Append(");")
 			.ToString();
+
+		static object Fuck(object x)
+		{
+			return $"{{typeof({x}).Name}}";
+		}
 	}
 
 	private static string CreateItemFields(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
@@ -359,7 +363,7 @@ internal static class MockInvocationGenerator
 		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
 			var parameter = methodSymbol.Parameters[i];
-			
+
 			var typeOverride = genericTypeOverride
 				.GetValueOrDefault(parameter)
 				.Build();
@@ -453,7 +457,7 @@ internal static class MockInvocationGenerator
 		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
 			var parameter = methodSymbol.Parameters[i];
-			
+
 			var typeOverride = genericTypeOverride
 				.GetValueOrDefault(parameter)
 				.Build();
@@ -683,7 +687,7 @@ internal static class MockInvocationGenerator
 			return @this;
 		}
 
-		private StringBuilder AppendTypeSeparate(ITypeSymbol typeSymbol, string? typeOverride)
+		private StringBuilder AppendTypeSeparate(ITypeSymbol typeSymbol, StringTemplate template, string? typeOverride)
 		{
 			if (typeSymbol is ITypeParameterSymbol typeParameterSymbol)
 			{
@@ -692,6 +696,7 @@ internal static class MockInvocationGenerator
 			else
 			{
 				@this
+					.AppendIf(template.HasParameters, "$")
 					.Append('"')
 					.AppendType(typeSymbol, typeOverride)
 					.Append('"');

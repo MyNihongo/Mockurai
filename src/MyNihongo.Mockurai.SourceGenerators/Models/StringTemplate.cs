@@ -5,16 +5,27 @@ internal readonly struct StringTemplate(string template, object[]? parameters) :
 	private readonly string _template = template;
 	private readonly object[]? _parameters = parameters;
 
-	public static implicit operator StringTemplate(string template)
-	{
-		return new StringTemplate(template, parameters: null);
-	}
+	public bool HasParameters => _parameters?.Length > 0;
 
 	public string Build()
 	{
 		return _parameters is not null
 			? string.Format(_template, _parameters)
 			: _template;
+	}
+
+	public string Build(Func<object, object> parameterMapping)
+	{
+		if (_parameters is null)
+			return _template;
+
+		var args = _parameters.Select(parameterMapping).ToArray();
+		return string.Format(_template, args);
+	}
+
+	public static implicit operator StringTemplate(string template)
+	{
+		return new StringTemplate(template, parameters: null);
 	}
 
 	public bool Equals(StringTemplate other) =>
