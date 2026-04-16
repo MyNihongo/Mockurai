@@ -84,6 +84,9 @@ public readonly struct TypeModel
 		public static implicit operator Nested((string, Nested[]) value) =>
 			new(value.Item1, value.Item2, false);
 
+		public static implicit operator Nested((string, Nested[], bool) value) =>
+			new(value.Item1, value.Item2, value.Item3);
+
 		public override string ToString()
 		{
 			var name = Type;

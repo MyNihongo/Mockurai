@@ -209,7 +209,7 @@ public sealed class GenericSetup : TestsBase
 
 		var types = new TypeModel[]
 		{
-			new("T", 1, isGeneric: true),
+			new("IReadOnlyList", [("T1", true)], 1, @namespace: "System.Collections.Generic"),
 			new("Int32", 2),
 		};
 
@@ -293,14 +293,14 @@ public sealed class GenericSetup : TestsBase
 					public void VerifyInvoke<T>(in It<System.Collections.Generic.IReadOnlyList<T>> param1, in It<int> param2, in Times times)
 					{
 						_invoke0Invocation ??= new InvocationDictionary();
-						var invoke0Invocation = (InvocationIReadOnlyListInt32)_invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationIReadOnlyListInt32($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+						var invoke0Invocation = (InvocationIReadOnlyListT1Int32<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationIReadOnlyListT1Int32<T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
 						invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, times, _invocationProviders);
 					}
 
 					public long VerifyInvoke<T>(in It<System.Collections.Generic.IReadOnlyList<T>> param1, in It<int> param2, long index)
 					{
 						_invoke0Invocation ??= new InvocationDictionary();
-						var invoke0Invocation = (InvocationIReadOnlyListInt32)_invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationIReadOnlyListInt32($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+						var invoke0Invocation = (InvocationIReadOnlyListT1Int32<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationIReadOnlyListT1Int32<T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
 						return invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
 					}
 
@@ -326,9 +326,9 @@ public sealed class GenericSetup : TestsBase
 						public decimal Invoke<T>(System.Collections.Generic.IReadOnlyList<T> param1, int param2)
 						{
 							_mock._invoke0Invocation ??= new InvocationDictionary();
-							var invoke0Invocation = (InvocationIReadOnlyListInt32)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationIReadOnlyListInt32($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+							var invoke0Invocation = (InvocationIReadOnlyListT1Int32<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationIReadOnlyListT1Int32<T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
 							invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
-							return ((SetupIReadOnlyListInt32<decimal>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
+							return ((SetupIReadOnlyListT1Int32<T, decimal>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 						}
 					}
 				}
@@ -341,7 +341,7 @@ public sealed class GenericSetup : TestsBase
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
 						// Invoke
-						public ISetup<SetupIReadOnlyListInt32<decimal>.CallbackDelegate, decimal, SetupIReadOnlyListInt32<decimal>.ReturnsCallbackDelegate> SetupInvoke<T>(in It<System.Collections.Generic.IReadOnlyList<T>> param1 = default, in It<int> param2 = default) =>
+						public ISetup<SetupIReadOnlyListT1Int32<T, decimal>.CallbackDelegate, decimal, SetupIReadOnlyListT1Int32<T, decimal>.ReturnsCallbackDelegate> SetupInvoke<T>(in It<System.Collections.Generic.IReadOnlyList<T>> param1 = default, in It<int> param2 = default) =>
 							((InterfaceMock)@this).SetupInvoke<T>(param1, param2);
 
 						public void VerifyInvoke<T>(in It<System.Collections.Generic.IReadOnlyList<T>> param1, in It<int> param2, in Times times) =>
@@ -366,14 +366,8 @@ public sealed class GenericSetup : TestsBase
 				}
 				"""
 			),
-			(
-				"SetupIReadOnlyListInt32_TReturns_.g.cs",
-				""
-			),
-			(
-				"InvocationIReadOnlyListInt32.g.cs",
-				""
-			),
+			CreateSetupReturnsCode(types),
+			CreateInvocationCode(types),
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
@@ -401,8 +395,8 @@ public sealed class GenericSetup : TestsBase
 
 		var types = new TypeModel[]
 		{
-			new("T", 1, isGeneric: true),
-			new("Int32", 2),
+			new("IDictionary", [("T1", true), ("IList", [("T1", true)])], 1, @namespace: "System.Collections.Generic"),
+			new("T1", 2),
 		};
 
 		GeneratedSources generatedSources =
@@ -456,14 +450,8 @@ public sealed class GenericSetup : TestsBase
 
 				"""
 			),
-			(
-				"SetupIReadOnlyListInt32_TReturns_.g.cs",
-				""
-			),
-			(
-				"InvocationIReadOnlyListInt32.g.cs",
-				""
-			),
+			CreateSetupReturnsCode(types),
+			CreateInvocationCode(types),
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);

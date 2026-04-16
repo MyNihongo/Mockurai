@@ -339,6 +339,7 @@ internal static class ParameterSymbolEx
 						}
 						else
 						{
+							@this.Append(typeArgument.Name);
 							typeQueue.Enqueue(typeArgument);
 						}
 					}
