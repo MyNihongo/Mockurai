@@ -305,44 +305,43 @@ internal static class ParameterSymbolEx
 		{
 			ImmutableHashSet<IParameterSymbol>.Builder? parameterBuilder = null;
 			ImmutableDictionary<ITypeSymbol, GenericTypeData>.Builder? genericTypeMappingBuilder = null;
-			Queue<ITypeSymbol>? typeQueue = null;
+			var typeQueue = new Queue<ITypeSymbol>();
 
 			foreach (var parameter in parameters)
 			{
 				if (appendRefKind)
 					@this.AppendRefKindPrefix(parameter.RefKind);
 
-				if (parameter.Type is ITypeParameterSymbol)
-				{
-					TryAddGenericTypeParameter(@this, ref genericTypeMappingBuilder, parameter.Type);
-					TryAddParameter(ref parameterBuilder, parameter);
-					continue;
-				}
-
-				@this.Append(parameter.Type.Name);
-
-				typeQueue ??= new Queue<ITypeSymbol>();
 				typeQueue.Enqueue(parameter.Type);
 
-				// Here we need to handle nested generic types like IList<T>, IList<ICollection<T>>, T[], etc.
 				while (typeQueue.Count > 0)
 				{
-					if (typeQueue.Dequeue() is not INamedTypeSymbol { TypeArguments.IsDefaultOrEmpty: false } typeSymbol)
+					var typeSymbol = typeQueue.Dequeue();
+
+					if (typeSymbol is ITypeParameterSymbol)
+					{
+						TryAddGenericTypeParameter(@this, ref genericTypeMappingBuilder, typeSymbol);
+						TryAddParameter(ref parameterBuilder, parameter);
+						continue;
+					}
+
+					if (typeSymbol is IArrayTypeSymbol arrayTypeSymbol)
+					{
+						@this
+							.Append("Array")
+							.Append(arrayTypeSymbol.Rank);
+
+						typeQueue.Enqueue(arrayTypeSymbol.ElementType);
+						continue;
+					}
+
+					@this.Append(typeSymbol.Name);
+
+					if (typeSymbol is not INamedTypeSymbol namedTypeSymbol)
 						continue;
 
-					foreach (var typeArgument in typeSymbol.TypeArguments)
-					{
-						if (typeArgument is ITypeParameterSymbol)
-						{
-							TryAddGenericTypeParameter(@this, ref genericTypeMappingBuilder, typeArgument);
-							TryAddParameter(ref parameterBuilder, parameter);
-						}
-						else
-						{
-							@this.Append(typeArgument.Name);
-							typeQueue.Enqueue(typeArgument);
-						}
-					}
+					foreach (var typeArgument in namedTypeSymbol.TypeArguments)
+						typeQueue.Enqueue(typeArgument);
 				}
 			}
 
