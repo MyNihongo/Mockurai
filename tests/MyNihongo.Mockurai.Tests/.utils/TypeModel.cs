@@ -1,5 +1,6 @@
 ﻿namespace MyNihongo.Mockurai.Tests;
 
+// TODO: this class is super mess. Consider refactoring it at a later point
 public readonly struct TypeModel
 {
 	public readonly string Name;
@@ -7,7 +8,7 @@ public readonly struct TypeModel
 	public readonly string? Namespace, RefType;
 	public readonly bool IsGeneric, IsNullable;
 	public readonly string[] GenericTypes = [];
-	private readonly Nested[]? _genericParameters;
+	public readonly Nested[]? GenericParameters;
 
 	public TypeModel(string type, int index, string? refType = null, bool isGeneric = false, bool isNullable = false)
 	{
@@ -23,7 +24,7 @@ public readonly struct TypeModel
 
 	public TypeModel(string type, Nested[] genericParameters, int index, string? @namespace = null, string? refType = null, bool isNullable = false)
 	{
-		_genericParameters = genericParameters;
+		GenericParameters = genericParameters;
 
 		Name = type;
 		Namespace = @namespace;
@@ -60,32 +61,36 @@ public readonly struct TypeModel
 			? $"{char.ToUpperInvariant(RefType[0])}{RefType[1..]}{Name}"
 			: Name;
 
-		if (_genericParameters is not null)
+		if (GenericParameters is not null)
 		{
-			foreach (var genericParameter in _genericParameters)
+			foreach (var genericParameter in GenericParameters)
 				name += genericParameter;
 		}
 
 		return name;
 	}
 
-	public readonly struct Nested(string type, Nested[]? nestedTypes, bool isGeneric)
+	public readonly struct Nested(string type, string? @namespace, Nested[]? nestedTypes, bool isGeneric)
 	{
 		public readonly string Type = type;
+		public readonly string? Namespace = @namespace;
 		public readonly Nested[]? NestedTypes = nestedTypes;
 		public readonly bool IsGeneric = isGeneric;
 
 		public static implicit operator Nested(string value) =>
-			new(value, null, false);
+			new(value, null, null, false);
 
 		public static implicit operator Nested((string, bool) value) =>
-			new(value.Item1, null, value.Item2);
+			new(value.Item1, null, null, value.Item2);
 
 		public static implicit operator Nested((string, Nested[]) value) =>
-			new(value.Item1, value.Item2, false);
+			new(value.Item1, null, value.Item2, false);
+
+		public static implicit operator Nested((string, string, Nested[]) value) =>
+			new(value.Item2, value.Item1, value.Item3, false);
 
 		public static implicit operator Nested((string, Nested[], bool) value) =>
-			new(value.Item1, value.Item2, value.Item3);
+			new(value.Item1, null, value.Item2, value.Item3);
 
 		public override string ToString()
 		{
@@ -95,6 +100,25 @@ public readonly struct TypeModel
 			{
 				foreach (var nestedType in NestedTypes)
 					name += nestedType;
+			}
+
+			return name;
+		}
+
+		public string ToString2()
+		{
+			var name = !string.IsNullOrEmpty(Namespace)
+				? $"{Namespace}.{Type}"
+				: Type;
+
+			if (NestedTypes is not null)
+			{
+				name += '<';
+
+				foreach (var nestedType in NestedTypes)
+					name += nestedType.ToString2();
+
+				name += '>';
 			}
 
 			return name;
@@ -172,12 +196,17 @@ public static class TypeModelEx
 				? $"{@this.Namespace}.{@this.Name}"
 				: @this.Name;
 
-			if (@this is { IsGeneric: false, GenericTypes.Length: > 0 })
+			if (@this is { IsGeneric: false, GenericParameters.Length: > 0 })
 			{
 				value += "<";
 
-				foreach (var genericType in @this.GenericTypes)
-					value += genericType;
+				for (var i = 0; i < @this.GenericParameters.Length; i++)
+				{
+					if (i > 0)
+						value += ", ";
+
+					value += @this.GenericParameters[i].ToString2();
+				}
 
 				value += ">";
 			}

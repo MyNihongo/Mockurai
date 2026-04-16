@@ -395,8 +395,8 @@ public sealed class GenericSetup : TestsBase
 
 		var types = new TypeModel[]
 		{
-			new("IDictionary", [("T1", true), ("IList", [("T1", true)])], 1, @namespace: "System.Collections.Generic"),
-			new("T1", 2),
+			new("IDictionary", [("T1", true), ("System.Collections.Generic", "IList", [("T1", true)])], 1, @namespace: "System.Collections.Generic"),
+			new("T1", 2, isGeneric: true),
 		};
 
 		GeneratedSources generatedSources =
@@ -447,7 +447,109 @@ public sealed class GenericSetup : TestsBase
 			(
 				"InterfaceMock.g.cs",
 				"""
+				#nullable enable
+				namespace MyNihongo.Mockurai;
 
+				public sealed class InterfaceMock : IMock<MyNihongo.Mockurai.Tests.IInterface>
+				{
+					private readonly InvocationIndex.Counter _invocationIndex;
+					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
+					private Proxy? _proxy;
+
+					public InterfaceMock(InvocationIndex.Counter invocationIndex)
+					{
+						_invocationIndex = invocationIndex;
+						_invocationProviders = GetInvocations;
+					}
+
+					public MyNihongo.Mockurai.Tests.IInterface Object => _proxy ??= new Proxy(this);
+
+					// Invoke
+					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
+					private InvocationDictionary? _invoke0Invocation;
+
+					public SetupIDictionaryT1IListT1T1<T, decimal> SetupInvoke<T>(in It<System.Collections.Generic.IDictionary<T, System.Collections.Generic.IList<T>>> param1, in It<T> param2)
+					{
+						_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+						var invoke0 = (SetupIDictionaryT1IListT1T1<T, decimal>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupIDictionaryT1IListT1T1<T, decimal>());
+						invoke0.SetupParameters(param1.ValueSetup, param2.ValueSetup);
+						return invoke0;
+					}
+
+					public void VerifyInvoke<T>(in It<System.Collections.Generic.IDictionary<T, System.Collections.Generic.IList<T>>> param1, in It<T> param2, in Times times)
+					{
+						_invoke0Invocation ??= new InvocationDictionary();
+						var invoke0Invocation = (InvocationIDictionaryT1IListT1T1<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationIDictionaryT1IListT1T1<T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+						invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, times, _invocationProviders);
+					}
+
+					public long VerifyInvoke<T>(in It<System.Collections.Generic.IDictionary<T, System.Collections.Generic.IList<T>>> param1, in It<T> param2, long index)
+					{
+						_invoke0Invocation ??= new InvocationDictionary();
+						var invoke0Invocation = (InvocationIDictionaryT1IListT1T1<T>)_invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationIDictionaryT1IListT1T1<T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+						return invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
+					}
+
+					public void VerifyNoOtherCalls()
+					{
+						_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);
+					}
+
+					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
+					{
+						yield return _invoke0Invocation;
+					}
+
+					private sealed class Proxy : MyNihongo.Mockurai.Tests.IInterface
+					{
+						private readonly InterfaceMock _mock;
+
+						public Proxy(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public decimal Invoke<T>(System.Collections.Generic.IDictionary<T, System.Collections.Generic.IList<T>> param1, T param2)
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationIDictionaryT1IListT1T1<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationIDictionaryT1IListT1T1<T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+							invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
+							return ((SetupIDictionaryT1IListT1T1<T, decimal>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
+						}
+					}
+				}
+
+				public static partial class MockExtensions
+				{
+					extension(IMock<MyNihongo.Mockurai.Tests.IInterface> @this)
+					{
+						public void VerifyNoOtherCalls() =>
+							((InterfaceMock)@this).VerifyNoOtherCalls();
+
+						// Invoke
+						public ISetup<SetupIDictionaryT1IListT1T1<T, decimal>.CallbackDelegate, decimal, SetupIDictionaryT1IListT1T1<T, decimal>.ReturnsCallbackDelegate> SetupInvoke<T>(in It<System.Collections.Generic.IDictionary<T, System.Collections.Generic.IList<T>>> param1 = default, in It<T> param2 = default) =>
+							((InterfaceMock)@this).SetupInvoke<T>(param1, param2);
+
+						public void VerifyInvoke<T>(in It<System.Collections.Generic.IDictionary<T, System.Collections.Generic.IList<T>>> param1, in It<T> param2, in Times times) =>
+							((InterfaceMock)@this).VerifyInvoke<T>(param1, param2, times);
+
+						public void VerifyInvoke<T>(in It<System.Collections.Generic.IDictionary<T, System.Collections.Generic.IList<T>>> param1, in It<T> param2, System.Func<Times> times) =>
+							((InterfaceMock)@this).VerifyInvoke<T>(param1, param2, times());
+					}
+				}
+
+				public static partial class MockSequenceExtensions
+				{
+					extension(IMockSequence<MyNihongo.Mockurai.Tests.IInterface> @this)
+					{
+						// Invoke
+						public void Invoke<T>(in It<System.Collections.Generic.IDictionary<T, System.Collections.Generic.IList<T>>> param1, in It<T> param2)
+						{
+							var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvoke<T>(param1, param2, @this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+					}
+				}
 				"""
 			),
 			CreateSetupReturnsCode(types),
