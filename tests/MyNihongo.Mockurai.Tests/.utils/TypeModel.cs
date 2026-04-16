@@ -108,8 +108,8 @@ public readonly struct TypeModel
 		public string ToString2()
 		{
 			var name = !string.IsNullOrEmpty(Namespace)
-				? $"{Namespace}.{Type}"
-				: Type;
+				? $"{Namespace}.{Type.TryGetTypeName() ?? Type}"
+				: Type.TryGetTypeName() ?? Type;
 
 			if (NestedTypes is not null)
 			{
@@ -174,16 +174,7 @@ public static class TypeModelEx
 
 		public string GetTypeString()
 		{
-			var typeString = @this.Name switch
-			{
-				"Int32" => "int",
-				"Single" => "float",
-				"Int64" => "long",
-				"Double" => "double",
-				"String" => "string",
-				"Boolean" => "bool",
-				_ => @this.GetFullTypeName(),
-			};
+			var typeString = @this.Name.TryGetTypeName() ?? @this.GetFullTypeName();
 
 			return @this.IsNullable
 				? $"{typeString}?"
@@ -215,5 +206,22 @@ public static class TypeModelEx
 		}
 
 		public bool IsInputParameter => !"out".Equals(@this.RefType, StringComparison.InvariantCultureIgnoreCase);
+	}
+
+	extension(string @this)
+	{
+		public string? TryGetTypeName()
+		{
+			return @this switch
+			{
+				"Int32" => "int",
+				"Single" => "float",
+				"Int64" => "long",
+				"Double" => "double",
+				"String" => "string",
+				"Boolean" => "bool",
+				_ => null,
+			};
+		}
 	}
 }
