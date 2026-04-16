@@ -123,5 +123,27 @@ internal static class TypeSymbolEx
 				? @this.Append(typeSymbol)
 				: @this.Append(typeOverride);
 		}
+
+		public StringBuilder AppendTypeNamespaceAndName(ITypeSymbol typeSymbol)
+		{
+			var startIndex = @this.Length;
+			var namespaceSymbol = typeSymbol.ContainingNamespace;
+
+			while (namespaceSymbol is not null && !namespaceSymbol.IsGlobalNamespace)
+			{
+				@this.Insert(startIndex, '.');
+				@this.Insert(startIndex, namespaceSymbol.Name);
+				namespaceSymbol = namespaceSymbol.ContainingNamespace;
+			}
+
+			var containingType = typeSymbol.ContainingType;
+			while (containingType is not null)
+			{
+				@this.Append(containingType.Name).Append('.');
+				containingType = containingType.ContainingType;
+			}
+
+			return @this.Append(typeSymbol.Name);
+		}
 	}
 }

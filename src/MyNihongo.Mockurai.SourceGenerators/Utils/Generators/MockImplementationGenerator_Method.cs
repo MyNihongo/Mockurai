@@ -171,11 +171,11 @@ internal static class MockImplementationMethodGenerator
 					.Indent(indent).AppendLine("else")
 					.Indent(indent++).AppendLine("{");
 
-				foreach (var parameter in parameterSplit.OutputParameters)
+				foreach (var parameterItem in parameterSplit.OutputParameters)
 				{
 					stringBuilder
 						.Indent(indent)
-						.Append(parameter.Parameter.Name)
+						.Append(parameterItem.Parameter.Name)
 						.AppendLine(MockGeneratorConst.Suffixes.DefaultAssign);
 				}
 

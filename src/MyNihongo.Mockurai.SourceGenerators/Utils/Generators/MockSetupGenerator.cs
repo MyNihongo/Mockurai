@@ -129,7 +129,7 @@ internal static class MockSetupGenerator
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateDelegates(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
+	private static string CreateDelegates(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ITypeSymbol? returnType, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
 	{
 		stringBuilder.Clear();
 
@@ -154,7 +154,7 @@ internal static class MockSetupGenerator
 		IMethodSymbol methodSymbol,
 		ITypeSymbol? returnType,
 		ParameterSplit parameterSplit,
-		ImmutableDictionary<IParameterSymbol, string> genericTypeOverride,
+		ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride,
 		int indent)
 	{
 		stringBuilder.Clear();
@@ -198,7 +198,7 @@ internal static class MockSetupGenerator
 	private static string CreateItemDeclaration(
 		StringBuilder stringBuilder,
 		ImmutableArray<ParameterSplit.Item> inputParameters,
-		ImmutableDictionary<IParameterSymbol, string> genericTypeOverride,
+		ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride,
 		int indent)
 	{
 		if (inputParameters.IsDefaultOrEmpty)
@@ -210,7 +210,9 @@ internal static class MockSetupGenerator
 		// fields
 		foreach (var parameterItem in inputParameters)
 		{
-			var typeOverride = genericTypeOverride.GetValueOrDefault(parameterItem.Parameter);
+			var typeOverride = genericTypeOverride
+				.GetValueOrDefault(parameterItem.Parameter)
+				.Build();
 
 			stringBuilder
 				.Indent(indent)
@@ -339,12 +341,12 @@ internal static class MockSetupGenerator
 			.ToString();
 	}
 
-	private static string CreateSetupClassName(StringBuilder stringBuilder, IMethodSymbol methodSymbol, out ImmutableDictionary<IParameterSymbol, string> genericTypeOverride)
+	private static string CreateSetupClassName(StringBuilder stringBuilder, IMethodSymbol methodSymbol, out ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride)
 	{
 		stringBuilder.Clear();
 
 		return stringBuilder
-			.AppendSetupClassName(methodSymbol, out genericTypeOverride)
+			.AppendSetupClassName(methodSymbol, useOverriddenGenericNames: true, out genericTypeOverride)
 			.ToString();
 	}
 
@@ -353,11 +355,6 @@ internal static class MockSetupGenerator
 		private StringBuilder AppendInterface(string interfaceName, IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol)
 		{
 			return @this.AppendInterface(interfaceName, methodSymbol, returnTypeSymbol, useOverriddenGenericNames: true);
-		}
-
-		private StringBuilder AppendSetupClassName(IMethodSymbol methodSymbol, out ImmutableDictionary<IParameterSymbol, string> genericTypeOverride)
-		{
-			return @this.AppendSetupClassName(methodSymbol, useOverriddenGenericNames: true, out genericTypeOverride);
 		}
 
 		private StringBuilder AppendCallbackInterfaceImplementation(IMethodSymbol methodSymbol, ITypeSymbol? returnTypeSymbol, int indent)
@@ -518,7 +515,7 @@ file static class Extensions
 		public void AppendInvokeExecuteMethod(IMethodSymbol methodSymbol,
 			ITypeSymbol? returnType,
 			ParameterSplit parameterSplit,
-			ImmutableDictionary<IParameterSymbol, string> genericTypeOverride,
+			ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride,
 			int indent)
 		{
 			stringBuilder.Indent(indent);
@@ -715,7 +712,7 @@ file static class Extensions
 				.AppendLine("}");
 		}
 
-		public void AppendSetupParametersMethod(ImmutableArray<ParameterSplit.Item> inputParameters, ImmutableDictionary<IParameterSymbol, string> genericTypeOverride, int indent)
+		public void AppendSetupParametersMethod(ImmutableArray<ParameterSplit.Item> inputParameters, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
 		{
 			stringBuilder
 				.Indent(indent)
