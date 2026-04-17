@@ -255,9 +255,30 @@ internal static class MockClassGenerator
 
 		stringBuilder
 			.Indent(--indent)
-			.AppendLine("}");
+			.AppendLine("}")
+			.AppendLine();
+
+		// Copy constructor
+		stringBuilder
+			.Indent(indent).AppendLine("protected VerifySequenceContext(VerifySequenceContext ctx)")
+			.Indent(indent++).AppendLine("{")
+			.Indent(indent).AppendLine("VerifyIndex = ctx.VerifyIndex;");
+
+		foreach (var mock in mocks)
+		{
+			var symbolName = mock.PropertyOrField?.Name;
+
+			stringBuilder
+				.Indent(indent)
+				.AppendPropertyName(symbolName)
+				.Append(" = ")
+				.Append("ctx.")
+				.AppendPropertyName(symbolName)
+				.AppendLine(";");
+		}
 
 		return stringBuilder
+			.Indent(--indent).AppendLine("}")
 			.Indent(--indent).Append('}')
 			.ToString();
 	}
