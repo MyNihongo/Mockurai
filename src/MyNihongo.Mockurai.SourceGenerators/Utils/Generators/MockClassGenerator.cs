@@ -142,9 +142,9 @@ internal static class MockClassGenerator
 		stringBuilder.Clear();
 
 		stringBuilder
-			.Indent(indent).AppendLine("protected sealed class VerifySequenceContext")
+			.Indent(indent).AppendLine("protected class VerifySequenceContext")
 			.Indent(indent++).AppendLine("{")
-			.Indent(indent).AppendLine("private readonly VerifyIndex _verifyIndex = new();");
+			.Indent(indent).AppendLine("protected readonly VerifyIndex VerifyIndex;");
 
 		// Generate properties
 		foreach (var mock in mocks)
@@ -198,6 +198,10 @@ internal static class MockClassGenerator
 			.AppendLine("{");
 
 		// Constructor - initialize properties
+		stringBuilder
+			.Indent(indent)
+			.AppendLine("VerifyIndex = new VerifyIndex();");
+
 		foreach (var mock in mocks)
 		{
 			var symbol = mock.PropertyOrField;
@@ -232,7 +236,7 @@ internal static class MockClassGenerator
 
 			stringBuilder
 				.Indent(indent)
-				.AppendLine("VerifyIndex = _verifyIndex,")
+				.AppendLine("VerifyIndex = VerifyIndex,")
 				.Indent(indent)
 				.Append("Mock = ").AppendParameterName(symbolName)
 				.AppendLine(",");
