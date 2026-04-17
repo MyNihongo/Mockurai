@@ -10,10 +10,12 @@ internal sealed class MethodSymbolSetupComparer : MethodSymbolComparerBase
 		{
 			var typeHashCode = GetParameterHashCode(symbolComparer, parameter);
 			var refHashCode = parameter.RefKind.GetHashCode();
+			var nullableHashCode = GetIsNullableHashCode(parameter);
 
 			var parameterHash = new HashCode();
 			parameterHash.Append(typeHashCode);
 			parameterHash.Append(refHashCode);
+			parameterHash.Append(nullableHashCode);
 			hash.Append(parameterHash);
 		}
 
