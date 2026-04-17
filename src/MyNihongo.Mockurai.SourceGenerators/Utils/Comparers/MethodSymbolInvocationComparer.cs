@@ -9,9 +9,11 @@ internal sealed class MethodSymbolInvocationComparer : MethodSymbolComparerBase
 		foreach (var parameter in obj.Parameters)
 		{
 			var typeHashCode = GetParameterHashCode(symbolComparer, parameter);
+			var nullableHashCode = GetIsNullableHashCode(parameter);
 
 			var parameterHash = new HashCode();
 			parameterHash.Append(typeHashCode);
+			parameterHash.Append(nullableHashCode);
 			hash.Append(parameterHash);
 		}
 

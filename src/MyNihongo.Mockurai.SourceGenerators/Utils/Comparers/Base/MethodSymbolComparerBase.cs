@@ -40,6 +40,12 @@ internal abstract class MethodSymbolComparerBase : IEqualityComparer<IMethodSymb
 		};
 	}
 
+	protected static int GetIsNullableHashCode(IParameterSymbol parameter)
+	{
+		var isNullable = parameter.Type.NullableAnnotation == NullableAnnotation.Annotated;
+		return isNullable.GetHashCode();
+	}
+
 	protected ref struct HashCode()
 	{
 		private int _hash = 17;
