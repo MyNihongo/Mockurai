@@ -1484,11 +1484,477 @@ public sealed class GenericSetup : TestsBase
 			),
 			(
 				"SetupArray1T1Int32_T1_TReturns_.g.cs",
-				""
+				"""
+				#nullable enable
+				namespace MyNihongo.Mockurai;
+
+				public sealed class SetupArray1T1Int32<T1, TReturns> : ISetupCallbackJoin<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>, ISetupCallbackReset<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>, ISetupReturnsThrowsJoin<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>, ISetupReturnsThrowsReset<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>
+				{
+					private static readonly Comparer SortComparer = new();
+					private SetupContainer<Item>? _setups;
+					private Item? _currentSetup;
+
+					public delegate void CallbackDelegate(T1[] parameter1, int parameter2);
+					public delegate TReturns? ReturnsCallbackDelegate(T1[] parameter1, int parameter2);
+
+					public bool Execute(T1[] parameter1, int parameter2, out TReturns? returnValue)
+					{
+						if (_setups is null)
+							goto Default;
+
+						foreach (var setup in _setups)
+						{
+							if (setup.Parameter1.HasValue && !setup.Parameter1.Value.Check(parameter1))
+								continue;
+							if (setup.Parameter2.HasValue && !setup.Parameter2.Value.Check(parameter2))
+								continue;
+
+							var x = setup.GetSetup();
+							x.Callback?.Invoke(parameter1, parameter2);
+
+							if (x.Exception is not null)
+								throw x.Exception;
+
+							if (x.Returns is not null)
+							{
+								returnValue = x.Returns(parameter1, parameter2);
+								return true;
+							}
+
+							goto Default;
+						}
+
+						Default:
+						returnValue = default!;
+						return false;
+					}
+
+					public void SetupParameters(in ItSetup<T1[]> parameter1, in ItSetup<int> parameter2)
+					{
+						_currentSetup = new Item(parameter1, parameter2);
+
+						_setups ??= new SetupContainer<Item>(SortComparer);
+						_setups.Add(_currentSetup);
+					}
+
+					public void Returns(TReturns? returns)
+					{
+						Returns((_, _) => returns);
+					}
+
+					public void Returns(in ReturnsCallbackDelegate returns)
+					{
+						if (_currentSetup is null)
+							throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
+
+						_currentSetup.Add(returns);
+					}
+
+					public void Callback(in CallbackDelegate callback)
+					{
+						if (_currentSetup is null)
+							throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
+
+						_currentSetup.Add(callback);
+					}
+
+					public void Throws(in System.Exception exception)
+					{
+						if (_currentSetup is null)
+							throw new System.InvalidOperationException("Parameters are not set, call SetupParameters first!");
+
+						_currentSetup.Add(exception);
+					}
+
+					ISetupReturnsThrowsJoin<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate> ISetupReturnsThrowsStart<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>.Returns(in TReturns returns)
+					{
+						Returns(returns);
+						return this;
+					}
+
+					ISetup<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate> ISetupReturnsThrowsReset<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>.Returns(in TReturns returns)
+					{
+						Returns(returns);
+						return this;
+					}
+
+					ISetupReturnsThrowsJoin<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate> ISetupReturnsThrowsStart<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>.Returns(in ReturnsCallbackDelegate returns)
+					{
+						Returns(returns);
+						return this;
+					}
+
+					ISetup<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate> ISetupReturnsThrowsReset<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>.Returns(in ReturnsCallbackDelegate returns)
+					{
+						Returns(returns);
+						return this;
+					}
+
+					ISetupCallbackJoin<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate> ISetupCallbackStart<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>.Callback(in CallbackDelegate callback)
+					{
+						Callback(callback);
+						return this;
+					}
+
+					ISetup<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate> ISetupCallbackReset<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>.Callback(in CallbackDelegate callback)
+					{
+						Callback(callback);
+						return this;
+					}
+
+					ISetupReturnsThrowsJoin<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate> ISetupReturnsThrowsStart<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>.Throws(in System.Exception exception)
+					{
+						Throws(exception);
+						return this;
+					}
+
+					ISetup<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate> ISetupReturnsThrowsReset<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>.Throws(in System.Exception exception)
+					{
+						Throws(exception);
+						return this;
+					}
+
+					ISetupCallbackReset<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate> ISetupReturnsThrowsJoin<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>.And()
+					{
+						_currentSetup?.AndContinue = true;
+						return this;
+					}
+
+					ISetupReturnsThrowsReset<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate> ISetupCallbackJoin<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>.And()
+					{
+						_currentSetup?.AndContinue = true;
+						return this;
+					}
+
+					private sealed class Item
+					{
+						private readonly System.Collections.Generic.Queue<ItemSetup> _queue = [];
+						private ItemSetup? _currentSetup;
+						public bool AndContinue;
+
+						public readonly ItSetup<T1[]>? Parameter1;
+						public readonly ItSetup<int>? Parameter2;
+
+						public Item(in ItSetup<T1[]>? parameter1, in ItSetup<int>? parameter2)
+						{
+							Parameter1 = parameter1;
+							Parameter2 = parameter2;
+						}
+
+						public void Add(in CallbackDelegate callback)
+						{
+							if (AndContinue && _currentSetup is not null)
+							{
+								_currentSetup.Callback = callback;
+								AndContinue = false;
+								_currentSetup = null;
+							}
+							else
+							{
+								_currentSetup = new ItemSetup(callback: callback);
+								_queue.Enqueue(_currentSetup);
+							}
+						}
+
+						public void Add(in ReturnsCallbackDelegate returns)
+						{
+							if (AndContinue && _currentSetup is not null)
+							{
+								_currentSetup.Returns = returns;
+								AndContinue = false;
+								_currentSetup = null;
+							}
+							else
+							{
+								_currentSetup = new ItemSetup(returns: returns);
+								_queue.Enqueue(_currentSetup);
+							}
+						}
+
+						public void Add(in System.Exception exception)
+						{
+							if (AndContinue && _currentSetup is not null)
+							{
+								_currentSetup.Exception = exception;
+								AndContinue = false;
+								_currentSetup = null;
+							}
+							else
+							{
+								_currentSetup = new ItemSetup(exception: exception);
+								_queue.Enqueue(_currentSetup);
+							}
+						}
+
+						public ItemSetup GetSetup()
+						{
+							return _queue.Count switch
+							{
+								0 => ItemSetup.Default,
+								1 => _queue.Peek(),
+								_ => _queue.Dequeue(),
+							};
+						}
+					}
+
+					private sealed class ItemSetup
+					{
+						public static readonly ItemSetup Default = new();
+
+						public CallbackDelegate? Callback;
+						public System.Exception? Exception;
+						public ReturnsCallbackDelegate? Returns;
+
+						public ItemSetup(in ReturnsCallbackDelegate? returns = null, in CallbackDelegate? callback = null, in System.Exception? exception = null)
+						{
+							Returns = returns;
+							Callback = callback;
+							Exception = exception;
+						}
+					}
+
+					private sealed class Comparer: System.Collections.Generic.IComparer<Item>
+					{
+						public int Compare(Item? x, Item? y)
+						{
+							var xSort = 0;
+							var ySort = 0;
+
+							if (x is not null)
+							{
+								if (x.Parameter1.HasValue)
+									xSort += x.Parameter1.Value.Sort;
+								if (x.Parameter2.HasValue)
+									xSort += x.Parameter2.Value.Sort;
+							}
+
+							if (y is not null)
+							{
+								if (y.Parameter1.HasValue)
+									ySort += y.Parameter1.Value.Sort;
+								if (y.Parameter2.HasValue)
+									ySort += y.Parameter2.Value.Sort;
+							}
+
+							return xSort.CompareTo(ySort);
+						}
+					}
+				}
+				"""
 			),
 			(
 				"InvocationArray1T1Int32_T1_.g.cs",
-				""
+				"""
+				#nullable enable
+				namespace MyNihongo.Mockurai;
+
+				public sealed class InvocationArray1T1Int32<T1> : IInvocationVerify
+				{
+					private readonly string _name;
+					private readonly string? _parameter1Prefix, _parameter2Prefix;
+					private readonly InvocationContainer<Item> _invocations = [];
+
+					public InvocationArray1T1Int32(string name, string? parameter1Prefix = null, string? parameter2Prefix = null)
+					{
+						_name = name;
+						_parameter1Prefix = parameter1Prefix;
+						_parameter2Prefix = parameter2Prefix;
+					}
+
+					public void Register(in InvocationIndex.Counter index, T1[] parameter1, int parameter2)
+					{
+						var invokedIndex = index.Increment();
+						_invocations.Add(new Item(invokedIndex, parameter1, parameter2, invocation: this));
+					}
+
+					public void Verify(in ItSetup<T1[]> parameter1, in ItSetup<int> parameter2, in Times times, System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>>? invocationProviders = null)
+					{
+						var span = _invocations.GetItemsSpan();
+
+						var verifyOutput = new System.Collections.Generic.List<(Item, (string, ComparisonResult?)[]?)>();
+						System.Runtime.InteropServices.CollectionsMarshal.SetCount(verifyOutput, span.Length);
+
+						var count = 0;
+						for (var i = 0; i < span.Length; i++)
+						{
+							var verifyParameter1 = span[i].GetParameter1(parameter1.Type);
+							var verifyParameter2 = span[i].GetParameter2(parameter2.Type);
+							(string, ComparisonResult?)[]? verifyResults = null;
+
+							if (!parameter1.Check(verifyParameter1, out var result))
+							{
+								verifyResults = [("parameter1", result)];
+							}
+							if (!parameter2.Check(verifyParameter2, out result))
+							{
+								verifyResults = verifyResults is not null
+									? [..verifyResults, ("parameter2", result)]
+									: [("parameter2", result)];
+							}
+
+							if (verifyResults is not null)
+							{
+								verifyOutput[i] = (span[i], verifyResults);
+								continue;
+							}
+
+							verifyOutput[i] = (span[i], null);
+							span[i].IsVerified = true;
+							count++;
+						}
+
+						if (times.Predicate(count))
+							return;
+
+						var invocations = verifyOutput.GetStrings(invocationProviders);
+						var verifyName = string.Format(_name, parameter1.ToString(_parameter1Prefix), parameter2.ToString(_parameter2Prefix));
+						throw new MockVerifyCountException(verifyName, times, count, invocations);
+					}
+
+					public long Verify(in ItSetup<T1[]> parameter1, in ItSetup<int> parameter2, long index, System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>>? invocationProviders = null)
+					{
+						var span = _invocations.GetItemsSpanFrom(index);
+
+						var verifyOutput = new System.Collections.Generic.List<(Item, (string, ComparisonResult?)[]?)>();
+						System.Runtime.InteropServices.CollectionsMarshal.SetCount(verifyOutput, span.Length);
+
+						for (var i = 0; i < span.Length; i++)
+						{
+							var verifyParameter1 = span[i].GetParameter1(parameter1.Type);
+							var verifyParameter2 = span[i].GetParameter2(parameter2.Type);
+							(string, ComparisonResult?)[]? verifyResults = null;
+
+							if (!parameter1.Check(verifyParameter1, out var result))
+							{
+								verifyResults = [("parameter1", result)];
+							}
+							if (!parameter2.Check(verifyParameter2, out result))
+							{
+								verifyResults = verifyResults is not null
+									? [..verifyResults, ("parameter2", result)]
+									: [("parameter2", result)];
+							}
+
+							if (verifyResults is not null)
+							{
+								verifyOutput[i] = (span[i], verifyResults);
+								continue;
+							}
+
+							verifyOutput[i] = (span[i], null);
+							span[i].IsVerified = true;
+							return span[i].Index + 1;
+						}
+
+						if (invocationProviders is null)
+						{
+							span = _invocations.GetItemsSpanBefore(index);
+							for (var i = 0; i < span.Length; i++)
+								verifyOutput.Insert(i, (span[i], null));
+						}
+
+						var invocations = verifyOutput.GetStrings(invocationProviders);
+						var verifyName = string.Format(_name, parameter1.ToString(_parameter1Prefix), parameter2.ToString(_parameter2Prefix));
+						throw new MockVerifySequenceOutOfRangeException(verifyName, index, invocations);
+					}
+
+					public void VerifyNoOtherCalls(System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>>? invocationProviders = null)
+					{
+						var unverifiedItems = _invocations.GetUnverifiedInvocations(invocationProviders);
+						if (unverifiedItems is null)
+							return;
+
+						var typeNameParameter1 = !string.IsNullOrEmpty(_parameter1Prefix) ? $"{_parameter1Prefix} {typeof(T1).Name}[]" : $"{typeof(T1).Name}[]";
+						var typeNameParameter2 = !string.IsNullOrEmpty(_parameter2Prefix) ? $"{_parameter2Prefix} int" : "int";
+						var verifyName = string.Format(_name, typeNameParameter1, typeNameParameter2);
+						throw new MockUnverifiedException(verifyName, unverifiedItems);
+					}
+
+					public System.Collections.Generic.IEnumerable<IInvocation> GetInvocations()
+					{
+						return _invocations;
+					}
+
+					private sealed class Item : IInvocation
+					{
+						private readonly T1[] _parameter1;
+						private readonly int _parameter2;
+						private readonly string? _jsonSnapshotParameter1, _jsonSnapshotParameter2;
+						private readonly InvocationArray1T1Int32<T1> _invocation;
+
+						public Item(long index, T1[] parameter1, int parameter2, InvocationArray1T1Int32<T1> invocation)
+						{
+							_invocation = invocation;
+							Index = index;
+
+							_parameter1 = parameter1;
+							try
+							{
+								_jsonSnapshotParameter1 = System.Text.Json.JsonSerializer.Serialize(parameter1);
+							}
+							catch
+							{
+								// Swallow
+							}
+
+							_parameter2 = parameter2;
+							try
+							{
+								_jsonSnapshotParameter2 = System.Text.Json.JsonSerializer.Serialize(parameter2);
+							}
+							catch
+							{
+								// Swallow
+							}
+						}
+
+						public long Index { get; }
+
+						public bool IsVerified { get; set; }
+
+						public T1[] GetParameter1(SetupType setupType)
+						{
+							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParameter1)
+								? System.Text.Json.JsonSerializer.Deserialize<T1[]>(_jsonSnapshotParameter1)!
+								: _parameter1;
+						}
+
+						public int GetParameter2(SetupType setupType)
+						{
+							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParameter2)
+								? System.Text.Json.JsonSerializer.Deserialize<int>(_jsonSnapshotParameter2)!
+								: _parameter2;
+						}
+
+						public override string ToString()
+						{
+							var stringBuilder = new System.Text.StringBuilder();
+
+							// parameter1
+							if (!string.IsNullOrEmpty(_invocation._parameter1Prefix))
+								stringBuilder.Append($"{_invocation._parameter1Prefix} ");
+							if (!string.IsNullOrEmpty(_jsonSnapshotParameter1))
+								stringBuilder.Append(_jsonSnapshotParameter1);
+							else
+								stringBuilder.Append(_parameter1);
+							var parameter1 = stringBuilder.ToString();
+
+							// parameter2
+							stringBuilder.Clear();
+							if (!string.IsNullOrEmpty(_invocation._parameter2Prefix))
+								stringBuilder.Append($"{_invocation._parameter2Prefix} ");
+							if (!string.IsNullOrEmpty(_jsonSnapshotParameter2))
+								stringBuilder.Append(_jsonSnapshotParameter2);
+							else
+								stringBuilder.Append(_parameter2);
+							var parameter2 = stringBuilder.ToString();
+
+							var stringValue = string.Format(_invocation._name, parameter1, parameter2);
+							return $"{Index}: {stringValue}";
+						}
+					}
+				}
+				"""
 			),
 		];
 

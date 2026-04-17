@@ -442,6 +442,8 @@ internal static class ParameterSymbolEx
 				{
 					if (typeSymbol is INamedTypeSymbol { TypeArguments.IsDefaultOrEmpty: false })
 						stringBuilder.Append('>');
+					else if (typeSymbol is IArrayTypeSymbol arrayTypeSymbol)
+						stringBuilder.AppendArrayBrackets(arrayTypeSymbol);
 				}
 				else
 				{
@@ -449,7 +451,7 @@ internal static class ParameterSymbolEx
 					{
 						if (genericTypeMapping.TryGetValue(typeSymbol, out var genericParameterData))
 						{
-							stringBuilder.Append('{').Append(parameterList.Count).Append('}');
+							stringBuilder.AppendFormatParameter(parameterList.Count);
 							parameterList.Add(genericParameterData.Name);
 						}
 					}
@@ -474,6 +476,19 @@ internal static class ParameterSymbolEx
 						else
 						{
 							stringBuilder.AppendType(typeSymbol);
+						}
+					}
+					else if (typeSymbol is IArrayTypeSymbol arrayTypeSymbol)
+					{
+						if (genericTypeMapping.TryGetValue(arrayTypeSymbol.ElementType, out var genericParameterData))
+						{
+							stringBuilder.AppendFormatParameter(parameterList.Count).AppendArrayBrackets(arrayTypeSymbol);
+							parameterList.Add(genericParameterData.Name);
+						}
+						else
+						{
+							typeStack.Push((typeSymbol, index, true));
+							typeStack.Push((arrayTypeSymbol.ElementType, 0, false));
 						}
 					}
 				}
