@@ -337,6 +337,9 @@ internal static class ParameterSymbolEx
 
 					@this.Append(typeSymbol.Name);
 
+					if (typeSymbol.NullableAnnotation == NullableAnnotation.Annotated)
+						@this.Append("Nullable");
+
 					if (typeSymbol is not INamedTypeSymbol namedTypeSymbol)
 						continue;
 
