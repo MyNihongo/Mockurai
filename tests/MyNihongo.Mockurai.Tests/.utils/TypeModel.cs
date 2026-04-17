@@ -61,6 +61,9 @@ public readonly struct TypeModel
 			? $"{char.ToUpperInvariant(RefType[0])}{RefType[1..]}{Name}"
 			: Name;
 
+		if (IsNullable)
+			name += "Nullable";
+
 		if (GenericParameters is not null)
 		{
 			foreach (var genericParameter in GenericParameters)

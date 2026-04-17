@@ -95,8 +95,8 @@ public sealed class Indexer : TestsBase
 					// this[]
 					private SetupWithParameter<string, string?>? _indexer0Get;
 					private Invocation<string>? _indexer0GetInvocation;
-					private SetupStringString? _indexer0Set;
-					private InvocationStringString? _indexer0SetInvocation;
+					private SetupStringStringNullable? _indexer0Set;
+					private InvocationStringStringNullable? _indexer0SetInvocation;
 
 					public SetupWithParameter<string, string?> SetupGetIndexer(in It<string> key)
 					{
@@ -117,22 +117,22 @@ public sealed class Indexer : TestsBase
 						return _indexer0GetInvocation.Verify(key.ValueSetup, index, _invocationProviders);
 					}
 
-					public SetupStringString SetupSetIndexer(in It<string> key, in It<string?> value)
+					public SetupStringStringNullable SetupSetIndexer(in It<string> key, in It<string?> value)
 					{
-						_indexer0Set ??= new SetupStringString();
+						_indexer0Set ??= new SetupStringStringNullable();
 						_indexer0Set.SetupParameters(key.ValueSetup, value.ValueSetup);
 						return _indexer0Set;
 					}
 
 					public void VerifySetIndexer(in It<string> key, in It<string?> value, in Times times)
 					{
-						_indexer0SetInvocation ??= new InvocationStringString("IInterface.This[{0}].set = {1}");
+						_indexer0SetInvocation ??= new InvocationStringStringNullable("IInterface.This[{0}].set = {1}");
 						_indexer0SetInvocation.Verify(key.ValueSetup, value.ValueSetup, times, _invocationProviders);
 					}
 
 					public long VerifySetIndexer(in It<string> key, in It<string?> value, long index)
 					{
-						_indexer0SetInvocation ??= new InvocationStringString("IInterface.This[{0}].set = {1}");
+						_indexer0SetInvocation ??= new InvocationStringStringNullable("IInterface.This[{0}].set = {1}");
 						return _indexer0SetInvocation.Verify(key.ValueSetup, value.ValueSetup, index, _invocationProviders);
 					}
 
@@ -167,7 +167,7 @@ public sealed class Indexer : TestsBase
 							}
 							set
 							{
-								_mock._indexer0SetInvocation ??= new InvocationStringString("IInterface.This[{0}].set = {1}");
+								_mock._indexer0SetInvocation ??= new InvocationStringStringNullable("IInterface.This[{0}].set = {1}");
 								_mock._indexer0SetInvocation.Register(_mock._invocationIndex, key, value);
 								_mock._indexer0Set?.Invoke(key, value);
 							}
@@ -192,7 +192,7 @@ public sealed class Indexer : TestsBase
 						public void VerifyGetIndexer(in It<string> key, System.Func<Times> times) =>
 							((InterfaceMock)@this).VerifyGetIndexer(key, times());
 
-						public ISetup<SetupStringString.CallbackDelegate> SetupSetIndexer(in It<string> key = default, in It<string?> value = default) =>
+						public ISetup<SetupStringStringNullable.CallbackDelegate> SetupSetIndexer(in It<string> key = default, in It<string?> value = default) =>
 							((InterfaceMock)@this).SetupSetIndexer(key, value);
 
 						public void VerifySetIndexer(in It<string> key, in It<string?> value, in Times times) =>
@@ -327,8 +327,8 @@ public sealed class Indexer : TestsBase
 					// this[]
 					private SetupWithParameter<string, string?>? _indexer0Get;
 					private Invocation<string>? _indexer0GetInvocation;
-					private SetupStringString? _indexer0Set;
-					private InvocationStringString? _indexer0SetInvocation;
+					private SetupStringStringNullable? _indexer0Set;
+					private InvocationStringStringNullable? _indexer0SetInvocation;
 
 					public SetupWithParameter<string, string?> SetupGetIndexer(in It<string> key)
 					{
@@ -349,22 +349,22 @@ public sealed class Indexer : TestsBase
 						return _indexer0GetInvocation.Verify(key.ValueSetup, index, _invocationProviders);
 					}
 
-					public SetupStringString SetupSetIndexer(in It<string> key, in It<string?> value)
+					public SetupStringStringNullable SetupSetIndexer(in It<string> key, in It<string?> value)
 					{
-						_indexer0Set ??= new SetupStringString();
+						_indexer0Set ??= new SetupStringStringNullable();
 						_indexer0Set.SetupParameters(key.ValueSetup, value.ValueSetup);
 						return _indexer0Set;
 					}
 
 					public void VerifySetIndexer(in It<string> key, in It<string?> value, in Times times)
 					{
-						_indexer0SetInvocation ??= new InvocationStringString("IInterface.This[{0}].set = {1}");
+						_indexer0SetInvocation ??= new InvocationStringStringNullable("IInterface.This[{0}].set = {1}");
 						_indexer0SetInvocation.Verify(key.ValueSetup, value.ValueSetup, times, _invocationProviders);
 					}
 
 					public long VerifySetIndexer(in It<string> key, in It<string?> value, long index)
 					{
-						_indexer0SetInvocation ??= new InvocationStringString("IInterface.This[{0}].set = {1}");
+						_indexer0SetInvocation ??= new InvocationStringStringNullable("IInterface.This[{0}].set = {1}");
 						return _indexer0SetInvocation.Verify(key.ValueSetup, value.ValueSetup, index, _invocationProviders);
 					}
 
@@ -447,7 +447,7 @@ public sealed class Indexer : TestsBase
 							}
 							set
 							{
-								_mock._indexer0SetInvocation ??= new InvocationStringString("IInterface.This[{0}].set = {1}");
+								_mock._indexer0SetInvocation ??= new InvocationStringStringNullable("IInterface.This[{0}].set = {1}");
 								_mock._indexer0SetInvocation.Register(_mock._invocationIndex, key, value);
 								_mock._indexer0Set?.Invoke(key, value);
 							}
@@ -488,7 +488,7 @@ public sealed class Indexer : TestsBase
 						public void VerifyGetIndexer(in It<string> key, System.Func<Times> times) =>
 							((InterfaceMock)@this).VerifyGetIndexer(key, times());
 
-						public ISetup<SetupStringString.CallbackDelegate> SetupSetIndexer(in It<string> key = default, in It<string?> value = default) =>
+						public ISetup<SetupStringStringNullable.CallbackDelegate> SetupSetIndexer(in It<string> key = default, in It<string?> value = default) =>
 							((InterfaceMock)@this).SetupSetIndexer(key, value);
 
 						public void VerifySetIndexer(in It<string> key, in It<string?> value, in Times times) =>
@@ -661,8 +661,8 @@ public sealed class Indexer : TestsBase
 					// this[]
 					private SetupStringInt32Boolean<string?>? _indexer0Get;
 					private InvocationStringInt32Boolean? _indexer0GetInvocation;
-					private SetupStringInt32BooleanString? _indexer0Set;
-					private InvocationStringInt32BooleanString? _indexer0SetInvocation;
+					private SetupStringInt32BooleanStringNullable? _indexer0Set;
+					private InvocationStringInt32BooleanStringNullable? _indexer0SetInvocation;
 
 					public SetupStringInt32Boolean<string?> SetupGetIndexer(in It<string> key, in It<int> param1, in It<bool> param2)
 					{
@@ -683,22 +683,22 @@ public sealed class Indexer : TestsBase
 						return _indexer0GetInvocation.Verify(key.ValueSetup, param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
 					}
 
-					public SetupStringInt32BooleanString SetupSetIndexer(in It<string> key, in It<int> param1, in It<bool> param2, in It<string?> value)
+					public SetupStringInt32BooleanStringNullable SetupSetIndexer(in It<string> key, in It<int> param1, in It<bool> param2, in It<string?> value)
 					{
-						_indexer0Set ??= new SetupStringInt32BooleanString();
+						_indexer0Set ??= new SetupStringInt32BooleanStringNullable();
 						_indexer0Set.SetupParameters(key.ValueSetup, param1.ValueSetup, param2.ValueSetup, value.ValueSetup);
 						return _indexer0Set;
 					}
 
 					public void VerifySetIndexer(in It<string> key, in It<int> param1, in It<bool> param2, in It<string?> value, in Times times)
 					{
-						_indexer0SetInvocation ??= new InvocationStringInt32BooleanString("IInterface.This[{0}, {1}, {2}].set = {3}");
+						_indexer0SetInvocation ??= new InvocationStringInt32BooleanStringNullable("IInterface.This[{0}, {1}, {2}].set = {3}");
 						_indexer0SetInvocation.Verify(key.ValueSetup, param1.ValueSetup, param2.ValueSetup, value.ValueSetup, times, _invocationProviders);
 					}
 
 					public long VerifySetIndexer(in It<string> key, in It<int> param1, in It<bool> param2, in It<string?> value, long index)
 					{
-						_indexer0SetInvocation ??= new InvocationStringInt32BooleanString("IInterface.This[{0}, {1}, {2}].set = {3}");
+						_indexer0SetInvocation ??= new InvocationStringInt32BooleanStringNullable("IInterface.This[{0}, {1}, {2}].set = {3}");
 						return _indexer0SetInvocation.Verify(key.ValueSetup, param1.ValueSetup, param2.ValueSetup, value.ValueSetup, index, _invocationProviders);
 					}
 
@@ -733,7 +733,7 @@ public sealed class Indexer : TestsBase
 							}
 							set
 							{
-								_mock._indexer0SetInvocation ??= new InvocationStringInt32BooleanString("IInterface.This[{0}, {1}, {2}].set = {3}");
+								_mock._indexer0SetInvocation ??= new InvocationStringInt32BooleanStringNullable("IInterface.This[{0}, {1}, {2}].set = {3}");
 								_mock._indexer0SetInvocation.Register(_mock._invocationIndex, key, param1, param2, value);
 								_mock._indexer0Set?.Invoke(key, param1, param2, value);
 							}
@@ -758,7 +758,7 @@ public sealed class Indexer : TestsBase
 						public void VerifyGetIndexer(in It<string> key, in It<int> param1, in It<bool> param2, System.Func<Times> times) =>
 							((InterfaceMock)@this).VerifyGetIndexer(key, param1, param2, times());
 
-						public ISetup<SetupStringInt32BooleanString.CallbackDelegate> SetupSetIndexer(in It<string> key = default, in It<int> param1 = default, in It<bool> param2 = default, in It<string?> value = default) =>
+						public ISetup<SetupStringInt32BooleanStringNullable.CallbackDelegate> SetupSetIndexer(in It<string> key = default, in It<int> param1 = default, in It<bool> param2 = default, in It<string?> value = default) =>
 							((InterfaceMock)@this).SetupSetIndexer(key, param1, param2, value);
 
 						public void VerifySetIndexer(in It<string> key, in It<int> param1, in It<bool> param2, in It<string?> value, in Times times) =>
