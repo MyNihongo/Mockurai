@@ -119,9 +119,13 @@ internal static class TypeSymbolEx
 
 		public StringBuilder AppendType(ITypeSymbol typeSymbol, string? typeOverride = null)
 		{
-			return string.IsNullOrEmpty(typeOverride)
-				? @this.Append(typeSymbol)
-				: @this.Append(typeOverride);
+			if (!string.IsNullOrEmpty(typeOverride))
+				return @this.Append(typeOverride);
+
+			// TODO: should not be needed after refactoring
+			return typeSymbol is IArrayTypeSymbol
+				? @this.Append(typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat))
+				: @this.Append(typeSymbol);
 		}
 
 		public StringBuilder AppendTypeNamespaceAndName(ITypeSymbol typeSymbol)
