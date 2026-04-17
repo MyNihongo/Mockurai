@@ -1,6 +1,6 @@
 ﻿namespace MyNihongo.Mockurai.Tests.Issues;
 
-public sealed class NullableFields : TestsBase
+public sealed class Nullability : TestsBase
 {
 	[Fact]
 	public async Task GenerateNullableProperties()
@@ -140,5 +140,36 @@ public sealed class NullableFields : TestsBase
 	public async Task GenerateNullableFields()
 	{
 		throw new NotImplementedException();
+	}
+
+	[Fact]
+	public async Task GenerateDifferentForNullability()
+	{
+		const string testCode =
+			"""
+			namespace MyNihongo.Mockurai.Tests;
+
+			public interface IInterface
+			{
+				void Invoke(string param1, float param2);
+			}
+
+			public abstract class Class
+			{
+				public abstract void Invoke(string? param1, float param2);
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<IInterface> InterfaceMock { get; }
+				protected partial IMock<Class> ClassMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources = [];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
 	}
 }
