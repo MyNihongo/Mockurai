@@ -158,5 +158,10 @@ internal static class StringBuilderEx
 				? @this.Append(value)
 				: @this;
 		}
+
+		public StringBuilder AppendFormatParameter(int index)
+		{
+			return @this.Append('{').Append(index).Append('}');
+		}
 	}
 }
