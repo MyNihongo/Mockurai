@@ -2,30 +2,32 @@
 
 public sealed class BaseClasses : TestsBase
 {
-	[Fact]
-	public async Task InvokeBaseClassMethods()
+	[Theory]
+	[InlineData("MockuraiGenerate")]
+	[InlineData("MyNihongo.Mockurai.MockuraiGenerate")]
+	public async Task InvokeBaseClassMethods(string attribute)
 	{
-		const string testCode =
-			"""
-			namespace MyNihongo.BaseClasses.Tests;
+		var testCode =
+			$$"""
+			  namespace MyNihongo.BaseClasses.Tests;
 
-			public interface IInterface
-			{
-				void Invoke();
-			}
+			  public interface IInterface
+			  {
+			  	void Invoke();
+			  }
 
-			[MockuraiGenerate]
-			public abstract partial class TestsBase
-			{
-				protected partial IMock<IInterface> Interface1Mock { get; }
-			}
+			  [{{attribute}}]
+			  public abstract partial class TestsBase
+			  {
+			  	protected partial IMock<IInterface> Interface1Mock { get; }
+			  }
 
-			[MockuraiGenerate]
-			public abstract partial class TestsDerivedBase : TestsBase
-			{
-				protected partial IMock<IInterface> Interface2Mock { get; }
-			}
-			""";
+			  [{{attribute}}]
+			  public abstract partial class TestsDerivedBase : TestsBase
+			  {
+			  	protected partial IMock<IInterface> Interface2Mock { get; }
+			  }
+			  """;
 
 		GeneratedSources generatedSources =
 		[
