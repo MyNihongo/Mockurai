@@ -16,8 +16,8 @@ internal static class MockClassGenerator
 			  {
 			  {{CreateProperties(stringBuilder, mocks, indent)}}
 			  {{CreateVerifyNoOtherCalls(stringBuilder, classSymbol, mocks, indent)}}
-			  {{CreateVerifyInSequence(stringBuilder, mocks, indent)}}
-			  {{CreateVerifySequenceContext(stringBuilder, mocks, indent)}}
+			  {{CreateVerifyInSequence(stringBuilder, classSymbol, mocks, indent)}}
+			  {{CreateVerifySequenceContext(stringBuilder, classSymbol, mocks, indent)}}
 			  }
 			  """;
 	}
@@ -114,14 +114,47 @@ internal static class MockClassGenerator
 			.ToString();
 	}
 
-	private static string CreateVerifyInSequence(StringBuilder stringBuilder, List<MockClassDeclaration> mocks, int indent)
+	private static string CreateVerifyInSequence(StringBuilder stringBuilder, INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks, int indent)
 	{
 		stringBuilder.Clear();
 
+		var baseClass = classSymbol.TryGetBaseClassWithFunctionName("VerifyInSequence");
+
 		stringBuilder
 			.Indent(indent).AppendLine("protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)")
-			.Indent(indent++).AppendLine("{")
-			.Indent(indent++).AppendLine("var ctx = new VerifySequenceContext(");
+			.Indent(indent++).AppendLine("{");
+
+		string ctxVariableName;
+		if (baseClass is not null)
+		{
+			ctxVariableName = "thisCtx";
+
+			stringBuilder
+				.Indent(indent).AppendLine("base.VerifyInSequence(ctx =>")
+				.Indent(indent++).AppendLine("{");
+		}
+		else
+		{
+			ctxVariableName = "ctx";
+		}
+
+		stringBuilder
+			.Indent(indent++)
+			.Append("var ")
+			.Append(ctxVariableName)
+			.AppendLine(" = new VerifySequenceContext(");
+
+		if (baseClass is not null)
+		{
+			stringBuilder
+				.Indent(indent)
+				.Append("ctx: ctx");
+
+			if (mocks.Count > 0)
+				stringBuilder.Append(',');
+
+			stringBuilder.AppendLine();
+		}
 
 		for (int i = 0, lastIndex = mocks.Count - 1; i < mocks.Count; i++)
 		{
@@ -140,14 +173,23 @@ internal static class MockClassGenerator
 			stringBuilder.AppendLine();
 		}
 
-		return stringBuilder
+		stringBuilder
 			.Indent(--indent).AppendLine(");").AppendLine()
-			.Indent(indent).AppendLine("verify(ctx);")
+			.Indent(indent).Append("verify(").Append(ctxVariableName).AppendLine(");");
+
+		if (baseClass is not null)
+		{
+			stringBuilder
+				.Indent(--indent)
+				.AppendLine("});");
+		}
+
+		return stringBuilder
 			.Indent(--indent).AppendLine("}")
 			.ToString();
 	}
 
-	private static string CreateVerifySequenceContext(StringBuilder stringBuilder, List<MockClassDeclaration> mocks, int indent)
+	private static string CreateVerifySequenceContext(StringBuilder stringBuilder, INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks, int indent)
 	{
 		stringBuilder.Clear();
 
