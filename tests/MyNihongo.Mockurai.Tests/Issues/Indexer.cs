@@ -29,7 +29,7 @@ public sealed class Indexer : IssuesTestsBase
 
 		GeneratedSources generatedSources =
 		[
-			TestsBase,
+			GetTestsBaseSource(),
 			(
 				"InterfaceMock.g.cs",
 				"""
@@ -219,7 +219,7 @@ public sealed class Indexer : IssuesTestsBase
 
 		GeneratedSources generatedSources =
 		[
-			TestsBase,
+			GetTestsBaseSource(),
 			(
 				"InterfaceMock.g.cs",
 				"""
@@ -511,7 +511,7 @@ public sealed class Indexer : IssuesTestsBase
 
 		GeneratedSources generatedSources =
 		[
-			TestsBase,
+			GetTestsBaseSource(),
 			(
 				"InterfaceMock.g.cs",
 				"""

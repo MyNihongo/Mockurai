@@ -29,7 +29,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 		GeneratedSources generatedSources =
 		[
-			TestsBase,
+			GetTestsBaseSource(),
 			(
 				"InterfaceMock.g.cs",
 				"""
@@ -173,7 +173,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 		GeneratedSources generatedSources =
 		[
-			TestsBase,
+			GetTestsBaseSource(),
 			(
 				"InterfaceMock.g.cs",
 				"""
@@ -317,7 +317,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 		GeneratedSources generatedSources =
 		[
-			TestsBase,
+			GetTestsBaseSource(),
 			(
 				"InterfaceMock.g.cs",
 				"""
@@ -461,7 +461,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 		GeneratedSources generatedSources =
 		[
-			TestsBase,
+			GetTestsBaseSource(),
 			(
 				"InterfaceMock.g.cs",
 				"""
@@ -605,7 +605,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 		GeneratedSources generatedSources =
 		[
-			TestsBase,
+			GetTestsBaseSource(),
 			(
 				"InterfaceMock.g.cs",
 				"""
@@ -749,7 +749,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 		GeneratedSources generatedSources =
 		[
-			TestsBase,
+			GetTestsBaseSource(),
 			(
 				"InterfaceMock.g.cs",
 				"""
@@ -893,7 +893,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 		GeneratedSources generatedSources =
 		[
-			TestsBase,
+			GetTestsBaseSource(),
 			(
 				"InterfaceMock.g.cs",
 				"""
@@ -1031,7 +1031,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 		GeneratedSources generatedSources =
 		[
-			TestsBase,
+			GetTestsBaseSource(),
 			(
 				"InterfaceMock.g.cs",
 				"""
@@ -1641,7 +1641,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 		GeneratedSources generatedSources =
 		[
-			TestsBase,
+			GetTestsBaseSource(),
 			(
 				"InterfaceMock.g.cs",
 				"""
@@ -2251,7 +2251,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 		GeneratedSources generatedSources =
 		[
-			TestsBase,
+			GetTestsBaseSource(),
 			(
 				"InterfaceMock.g.cs",
 				"""
@@ -2861,7 +2861,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 		GeneratedSources generatedSources =
 		[
-			TestsBase,
+			GetTestsBaseSource(),
 			(
 				"InterfaceMock.g.cs",
 				"""
