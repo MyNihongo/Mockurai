@@ -15,7 +15,7 @@ internal static class MockClassGenerator
 			  {{classSymbol.DeclaredAccessibility.GetString()}} partial class {{classSymbol.Name}}
 			  {
 			  {{CreateProperties(stringBuilder, mocks, indent)}}
-			  {{CreateVerifyNoOtherCalls(stringBuilder, mocks, indent)}}
+			  {{CreateVerifyNoOtherCalls(stringBuilder, classSymbol, mocks, indent)}}
 			  {{CreateVerifyInSequence(stringBuilder, mocks, indent)}}
 			  {{CreateVerifySequenceContext(stringBuilder, mocks, indent)}}
 			  }
@@ -71,13 +71,23 @@ internal static class MockClassGenerator
 			.ToString();
 	}
 
-	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, List<MockClassDeclaration> mocks, int indent)
+	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks, int indent)
 	{
 		stringBuilder.Clear();
 
+		var isNotSealed = !classSymbol.IsSealed;
+		var baseClass = classSymbol.TryGetBaseClassWithFunctionName(functionName: "VerifyNoOtherCalls");
+
 		stringBuilder
-			.Indent(indent).AppendLine("protected void VerifyNoOtherCalls()")
+			.Indent(indent).Append("protected ").AppendIf(isNotSealed, "virtual ").AppendLine("void VerifyNoOtherCalls()")
 			.Indent(indent++).AppendLine("{");
+
+		if (baseClass is not null)
+		{
+			stringBuilder
+				.Indent(indent)
+				.AppendLine("base.VerifyNoOtherCalls();");
+		}
 
 		foreach (var mock in mocks)
 		{
