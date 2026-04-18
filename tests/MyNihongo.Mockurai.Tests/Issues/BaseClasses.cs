@@ -112,7 +112,7 @@ public sealed class BaseClasses : TestsBase
 						});
 					}
 
-					protected class VerifySequenceContext : MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext
+					protected new class VerifySequenceContext : MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext
 					{
 						public readonly IMockSequence<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock;
 

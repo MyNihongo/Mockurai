@@ -199,7 +199,9 @@ internal static class MockClassGenerator
 
 		stringBuilder
 			.Indent(indent)
-			.Append("protected class VerifySequenceContext");
+			.Append("protected ")
+			.AppendIf(baseClass is not null, "new ")
+			.Append("class VerifySequenceContext");
 
 		if (baseClass is not null)
 		{
