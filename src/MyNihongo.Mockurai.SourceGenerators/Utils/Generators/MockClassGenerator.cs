@@ -193,12 +193,33 @@ internal static class MockClassGenerator
 
 	private static string CreateVerifySequenceContext(StringBuilder stringBuilder, INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks, int indent)
 	{
+		var baseClass = classSymbol.TryGetBaseClassWithNestedClassName("VerifySequenceContext");
+
 		stringBuilder.Clear();
 
 		stringBuilder
-			.Indent(indent).AppendLine("protected class VerifySequenceContext")
-			.Indent(indent++).AppendLine("{")
-			.Indent(indent).AppendLine("protected readonly VerifyIndex VerifyIndex;");
+			.Indent(indent)
+			.Append("protected class VerifySequenceContext");
+
+		if (baseClass is not null)
+		{
+			stringBuilder
+				.Append(" : ")
+				.AppendType(baseClass)
+				.Append(".VerifySequenceContext");
+		}
+
+		stringBuilder
+			.AppendLine()
+			.Indent(indent++)
+			.AppendLine("{");
+
+		if (baseClass is null)
+		{
+			stringBuilder
+				.Indent(indent)
+				.AppendLine("protected readonly VerifyIndex VerifyIndex;");
+		}
 
 		// Generate properties
 		foreach (var mock in mocks)
@@ -223,6 +244,16 @@ internal static class MockClassGenerator
 			.Indent(indent).Append("public VerifySequenceContext(");
 
 		// Constructor - parameters
+		if (baseClass is not null)
+		{
+			stringBuilder
+				.AppendType(baseClass)
+				.Append(".VerifySequenceContext ctx");
+
+			if (mocks.Count > 0)
+				stringBuilder.Append(", ");
+		}
+
 		for (int i = 0, lastIndex = mocks.Count - 1; i < mocks.Count; i++)
 		{
 			var mock = mocks[i];
@@ -246,15 +277,26 @@ internal static class MockClassGenerator
 				stringBuilder.Append(", ");
 		}
 
+		stringBuilder.AppendLine(")");
+
+		if (baseClass is not null)
+		{
+			stringBuilder
+				.Indent(indent + 1)
+				.AppendLine(": base(ctx)");
+		}
+
 		stringBuilder
-			.AppendLine(")")
 			.Indent(indent++)
 			.AppendLine("{");
 
 		// Constructor - initialize properties
-		stringBuilder
-			.Indent(indent)
-			.AppendLine("VerifyIndex = new VerifyIndex();");
+		if (baseClass is null)
+		{
+			stringBuilder
+				.Indent(indent)
+				.AppendLine("VerifyIndex = new VerifyIndex();");
+		}
 
 		foreach (var mock in mocks)
 		{
@@ -314,9 +356,26 @@ internal static class MockClassGenerator
 
 		// Copy constructor
 		stringBuilder
-			.Indent(indent).AppendLine("protected VerifySequenceContext(VerifySequenceContext ctx)")
-			.Indent(indent++).AppendLine("{")
-			.Indent(indent).AppendLine("VerifyIndex = ctx.VerifyIndex;");
+			.Indent(indent)
+			.AppendLine("protected VerifySequenceContext(VerifySequenceContext ctx)");
+
+		if (baseClass is not null)
+		{
+			stringBuilder
+				.Indent(indent + 1)
+				.AppendLine(": base(ctx)");
+		}
+
+		stringBuilder
+			.Indent(indent++)
+			.AppendLine("{");
+
+		if (baseClass is null)
+		{
+			stringBuilder
+				.Indent(indent)
+				.AppendLine("VerifyIndex = ctx.VerifyIndex;");
+		}
 
 		foreach (var mock in mocks)
 		{
