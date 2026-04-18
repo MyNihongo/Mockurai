@@ -44,6 +44,12 @@ internal static class MockClassCollector
 
 	private static ITypeSymbol? TryGetMockedType(this ITypeSymbol @this)
 	{
+		if (@this.Name == "Nullable" && @this.ContainingNamespace.Name == "System")
+		{
+			if (@this is INamedTypeSymbol { TypeArguments.IsDefaultOrEmpty: false } type)
+				@this = type.TypeArguments[0];
+		}
+
 		if (@this.Name == "IMock" && @this is INamedTypeSymbol { TypeArguments.Length: 1 } namedType)
 			return namedType.TypeArguments[0];
 

@@ -1,13 +1,13 @@
 ﻿namespace MyNihongo.Mockurai.Tests.Issues;
 
-public sealed class Nullability : TestsBase
+public sealed class Nullability : IssuesTestsBase
 {
 	[Fact]
 	public async Task GenerateNullableProperties()
 	{
 		const string testCode =
 			"""
-			namespace MyNihongo.Mockurai.Tests;
+			namespace Issues.Tests;
 
 			public interface IInterface
 			{
@@ -26,12 +26,12 @@ public sealed class Nullability : TestsBase
 				"TestsBase.g.cs",
 				"""
 				#nullable enable
-				namespace MyNihongo.Mockurai.Tests;
+				namespace Issues.Tests;
 
 				public partial class TestsBase
 				{
 
-					protected void VerifyNoOtherCalls()
+					protected virtual void VerifyNoOtherCalls()
 					{
 						InterfaceMock?.VerifyNoOtherCalls();
 					}
@@ -45,21 +45,28 @@ public sealed class Nullability : TestsBase
 						verify(ctx);
 					}
 
-					protected sealed class VerifySequenceContext
+					protected class VerifySequenceContext
 					{
-						private readonly VerifyIndex _verifyIndex = new();
-						public readonly IMockSequence<MyNihongo.Mockurai.Tests.IInterface>? InterfaceMock;
+						protected readonly VerifyIndex VerifyIndex;
+						public readonly IMockSequence<Issues.Tests.IInterface>? InterfaceMock;
 
-						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface>? interfaceMock)
+						public VerifySequenceContext(IMock<Issues.Tests.IInterface>? interfaceMock)
 						{
+							VerifyIndex = new VerifyIndex();
 							if (interfaceMock is not null)
 							{
-								InterfaceMock = new MockSequence<MyNihongo.Mockurai.Tests.IInterface>
+								InterfaceMock = new MockSequence<Issues.Tests.IInterface>
 								{
-									VerifyIndex = _verifyIndex,
+									VerifyIndex = VerifyIndex,
 									Mock = interfaceMock,
 								};
 							}
+						}
+
+						protected VerifySequenceContext(VerifySequenceContext ctx)
+						{
+							VerifyIndex = ctx.VerifyIndex;
+							InterfaceMock = ctx.InterfaceMock;
 						}
 					}
 				}
@@ -71,7 +78,7 @@ public sealed class Nullability : TestsBase
 				#nullable enable
 				namespace MyNihongo.Mockurai;
 
-				public sealed class InterfaceMock : IMock<MyNihongo.Mockurai.Tests.IInterface>
+				public sealed class InterfaceMock : IMock<Issues.Tests.IInterface>
 				{
 					private readonly InvocationIndex.Counter _invocationIndex;
 					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
@@ -83,7 +90,7 @@ public sealed class Nullability : TestsBase
 						_invocationProviders = GetInvocations;
 					}
 
-					public MyNihongo.Mockurai.Tests.IInterface Object => _proxy ??= new Proxy(this);
+					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
 
 
@@ -97,7 +104,7 @@ public sealed class Nullability : TestsBase
 						yield break;
 					}
 
-					private sealed class Proxy : MyNihongo.Mockurai.Tests.IInterface
+					private sealed class Proxy : Issues.Tests.IInterface
 					{
 						private readonly InterfaceMock _mock;
 
@@ -112,7 +119,7 @@ public sealed class Nullability : TestsBase
 
 				public static partial class MockExtensions
 				{
-					extension(IMock<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMock<Issues.Tests.IInterface> @this)
 					{
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
@@ -123,7 +130,7 @@ public sealed class Nullability : TestsBase
 
 				public static partial class MockSequenceExtensions
 				{
-					extension(IMockSequence<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMockSequence<Issues.Tests.IInterface> @this)
 					{
 
 					}
@@ -147,7 +154,7 @@ public sealed class Nullability : TestsBase
 	{
 		const string testCode =
 			"""
-			namespace MyNihongo.Mockurai.Tests;
+			namespace Issues.Tests;
 
 			public interface IInterface
 			{
@@ -180,19 +187,19 @@ public sealed class Nullability : TestsBase
 				"TestsBase.g.cs",
 				"""
 				#nullable enable
-				namespace MyNihongo.Mockurai.Tests;
+				namespace Issues.Tests;
 
 				public partial class TestsBase
 				{
 					// InterfaceMock
 					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-					protected partial MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock => _interfaceMock;
+					protected partial IMock<Issues.Tests.IInterface> InterfaceMock => _interfaceMock;
 
 					// ClassMock
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
-					protected partial MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.Class> ClassMock => _classMock;
+					protected partial IMock<Issues.Tests.Class> ClassMock => _classMock;
 
-					protected void VerifyNoOtherCalls()
+					protected virtual void VerifyNoOtherCalls()
 					{
 						InterfaceMock.VerifyNoOtherCalls();
 						ClassMock.VerifyNoOtherCalls();
@@ -208,24 +215,32 @@ public sealed class Nullability : TestsBase
 						verify(ctx);
 					}
 
-					protected sealed class VerifySequenceContext
+					protected class VerifySequenceContext
 					{
-						private readonly VerifyIndex _verifyIndex = new();
-						public readonly IMockSequence<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock;
-						public readonly IMockSequence<MyNihongo.Mockurai.Tests.Class> ClassMock;
+						protected readonly VerifyIndex VerifyIndex;
+						public readonly IMockSequence<Issues.Tests.IInterface> InterfaceMock;
+						public readonly IMockSequence<Issues.Tests.Class> ClassMock;
 
-						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> interfaceMock, MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.Class> classMock)
+						public VerifySequenceContext(IMock<Issues.Tests.IInterface> interfaceMock, IMock<Issues.Tests.Class> classMock)
 						{
-							InterfaceMock = new MockSequence<MyNihongo.Mockurai.Tests.IInterface>
+							VerifyIndex = new VerifyIndex();
+							InterfaceMock = new MockSequence<Issues.Tests.IInterface>
 							{
-								VerifyIndex = _verifyIndex,
+								VerifyIndex = VerifyIndex,
 								Mock = interfaceMock,
 							};
-							ClassMock = new MockSequence<MyNihongo.Mockurai.Tests.Class>
+							ClassMock = new MockSequence<Issues.Tests.Class>
 							{
-								VerifyIndex = _verifyIndex,
+								VerifyIndex = VerifyIndex,
 								Mock = classMock,
 							};
+						}
+
+						protected VerifySequenceContext(VerifySequenceContext ctx)
+						{
+							VerifyIndex = ctx.VerifyIndex;
+							InterfaceMock = ctx.InterfaceMock;
+							ClassMock = ctx.ClassMock;
 						}
 					}
 				}
@@ -237,7 +252,7 @@ public sealed class Nullability : TestsBase
 				#nullable enable
 				namespace MyNihongo.Mockurai;
 
-				public sealed class InterfaceMock : IMock<MyNihongo.Mockurai.Tests.IInterface>
+				public sealed class InterfaceMock : IMock<Issues.Tests.IInterface>
 				{
 					private readonly InvocationIndex.Counter _invocationIndex;
 					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
@@ -249,7 +264,7 @@ public sealed class Nullability : TestsBase
 						_invocationProviders = GetInvocations;
 					}
 
-					public MyNihongo.Mockurai.Tests.IInterface Object => _proxy ??= new Proxy(this);
+					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
 					// Invoke
 					private SetupStringSingle? _invoke0;
@@ -284,7 +299,7 @@ public sealed class Nullability : TestsBase
 						yield return _invoke0Invocation;
 					}
 
-					private sealed class Proxy : MyNihongo.Mockurai.Tests.IInterface
+					private sealed class Proxy : Issues.Tests.IInterface
 					{
 						private readonly InterfaceMock _mock;
 
@@ -304,7 +319,7 @@ public sealed class Nullability : TestsBase
 
 				public static partial class MockExtensions
 				{
-					extension(IMock<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMock<Issues.Tests.IInterface> @this)
 					{
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
@@ -323,7 +338,7 @@ public sealed class Nullability : TestsBase
 
 				public static partial class MockSequenceExtensions
 				{
-					extension(IMockSequence<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMockSequence<Issues.Tests.IInterface> @this)
 					{
 						// Invoke
 						public void Invoke(in It<string> param1, in It<float> param2)
@@ -341,7 +356,7 @@ public sealed class Nullability : TestsBase
 				#nullable enable
 				namespace MyNihongo.Mockurai;
 
-				public sealed class ClassMock : IMock<MyNihongo.Mockurai.Tests.Class>
+				public sealed class ClassMock : IMock<Issues.Tests.Class>
 				{
 					private readonly InvocationIndex.Counter _invocationIndex;
 					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
@@ -353,7 +368,7 @@ public sealed class Nullability : TestsBase
 						_invocationProviders = GetInvocations;
 					}
 
-					public MyNihongo.Mockurai.Tests.Class Object => _proxy ??= new Proxy(this);
+					public Issues.Tests.Class Object => _proxy ??= new Proxy(this);
 
 					// Invoke
 					private SetupStringNullableSingle? _invoke0;
@@ -388,7 +403,7 @@ public sealed class Nullability : TestsBase
 						yield return _invoke0Invocation;
 					}
 
-					private sealed class Proxy : MyNihongo.Mockurai.Tests.Class
+					private sealed class Proxy : Issues.Tests.Class
 					{
 						private readonly ClassMock _mock;
 
@@ -408,7 +423,7 @@ public sealed class Nullability : TestsBase
 
 				public static partial class MockExtensions
 				{
-					extension(IMock<MyNihongo.Mockurai.Tests.Class> @this)
+					extension(IMock<Issues.Tests.Class> @this)
 					{
 						public void VerifyNoOtherCalls() =>
 							((ClassMock)@this).VerifyNoOtherCalls();
@@ -427,7 +442,7 @@ public sealed class Nullability : TestsBase
 
 				public static partial class MockSequenceExtensions
 				{
-					extension(IMockSequence<MyNihongo.Mockurai.Tests.Class> @this)
+					extension(IMockSequence<Issues.Tests.Class> @this)
 					{
 						// Invoke
 						public void Invoke(in It<string?> param1, in It<float> param2)
