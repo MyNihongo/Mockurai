@@ -38,7 +38,7 @@ public abstract class TestsNonGenericBase : TestsBase
 				private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
 				protected partial IMock<MyNihongo.Example.Tests.IInterface> InterfaceMock => _interfaceMock;
 
-				protected void VerifyNoOtherCalls()
+				protected virtual void VerifyNoOtherCalls()
 				{
 					InterfaceMock.VerifyNoOtherCalls();
 				}
@@ -52,18 +52,25 @@ public abstract class TestsNonGenericBase : TestsBase
 					verify(ctx);
 				}
 
-				protected sealed class VerifySequenceContext
+				protected class VerifySequenceContext
 				{
-					private readonly VerifyIndex _verifyIndex = new();
+					protected readonly VerifyIndex VerifyIndex;
 					public readonly IMockSequence<MyNihongo.Example.Tests.IInterface> InterfaceMock;
 
 					public VerifySequenceContext(IMock<MyNihongo.Example.Tests.IInterface> interfaceMock)
 					{
+						VerifyIndex = new VerifyIndex();
 						InterfaceMock = new MockSequence<MyNihongo.Example.Tests.IInterface>
 						{
-							VerifyIndex = _verifyIndex,
+							VerifyIndex = VerifyIndex,
 							Mock = interfaceMock,
 						};
+					}
+
+					protected VerifySequenceContext(VerifySequenceContext ctx)
+					{
+						VerifyIndex = ctx.VerifyIndex;
+						InterfaceMock = ctx.InterfaceMock;
 					}
 				}
 			}
@@ -175,7 +182,7 @@ public abstract class TestsNonGenericBase : TestsBase
 				private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
 				protected partial IMock<MyNihongo.Example.Tests.Class> ClassMock => _classMock;
 
-				protected void VerifyNoOtherCalls()
+				protected virtual void VerifyNoOtherCalls()
 				{
 					ClassMock.VerifyNoOtherCalls();
 				}
@@ -189,18 +196,25 @@ public abstract class TestsNonGenericBase : TestsBase
 					verify(ctx);
 				}
 
-				protected sealed class VerifySequenceContext
+				protected class VerifySequenceContext
 				{
-					private readonly VerifyIndex _verifyIndex = new();
+					protected readonly VerifyIndex VerifyIndex;
 					public readonly IMockSequence<MyNihongo.Example.Tests.Class> ClassMock;
 
 					public VerifySequenceContext(IMock<MyNihongo.Example.Tests.Class> classMock)
 					{
+						VerifyIndex = new VerifyIndex();
 						ClassMock = new MockSequence<MyNihongo.Example.Tests.Class>
 						{
-							VerifyIndex = _verifyIndex,
+							VerifyIndex = VerifyIndex,
 							Mock = classMock,
 						};
+					}
+
+					protected VerifySequenceContext(VerifySequenceContext ctx)
+					{
+						VerifyIndex = ctx.VerifyIndex;
+						ClassMock = ctx.ClassMock;
 					}
 				}
 			}
