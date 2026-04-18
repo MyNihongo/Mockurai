@@ -73,13 +73,15 @@ internal static class MockClassGenerator
 
 	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks, int indent)
 	{
-		stringBuilder.Clear();
-
-		var isNotSealed = !classSymbol.IsSealed;
 		var baseClass = classSymbol.TryGetBaseClassWithFunctionName(functionName: "VerifyNoOtherCalls");
 
+		stringBuilder.Clear();
+
 		stringBuilder
-			.Indent(indent).Append("protected ").AppendIf(isNotSealed, "virtual ").AppendLine("void VerifyNoOtherCalls()")
+			.Indent(indent)
+			.Append("protected ")
+			.TryAppendFunctionOverrideModifier(classSymbol, baseClass)
+			.AppendLine("void VerifyNoOtherCalls()")
 			.Indent(indent++).AppendLine("{");
 
 		if (baseClass is not null)
@@ -116,9 +118,9 @@ internal static class MockClassGenerator
 
 	private static string CreateVerifyInSequence(StringBuilder stringBuilder, INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks, int indent)
 	{
-		stringBuilder.Clear();
-
 		var baseClass = classSymbol.TryGetBaseClassWithFunctionName("VerifyInSequence");
+
+		stringBuilder.Clear();
 
 		stringBuilder
 			.Indent(indent).AppendLine("protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)")
@@ -333,5 +335,15 @@ internal static class MockClassGenerator
 			.Indent(--indent).AppendLine("}")
 			.Indent(--indent).Append('}')
 			.ToString();
+	}
+
+	private static StringBuilder TryAppendFunctionOverrideModifier(this StringBuilder @this, INamedTypeSymbol classSymbol, INamedTypeSymbol? baseClassSymbol)
+	{
+		if (baseClassSymbol is not null)
+			@this.Append("override ");
+		else if (!classSymbol.IsSealed)
+			@this.Append("virtual ");
+
+		return @this;
 	}
 }

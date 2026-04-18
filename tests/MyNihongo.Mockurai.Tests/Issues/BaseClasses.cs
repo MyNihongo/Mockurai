@@ -55,18 +55,25 @@ public sealed class BaseClasses : TestsBase
 						verify(ctx);
 					}
 
-					protected sealed class VerifySequenceContext
+					protected class VerifySequenceContext
 					{
-						private readonly VerifyIndex _verifyIndex = new();
+						protected readonly VerifyIndex VerifyIndex;
 						public readonly IMockSequence<MyNihongo.BaseClasses.Tests.IInterface> Interface1Mock;
 
 						public VerifySequenceContext(IMock<MyNihongo.BaseClasses.Tests.IInterface> interface1Mock)
 						{
+							VerifyIndex = new VerifyIndex();
 							Interface1Mock = new MockSequence<MyNihongo.BaseClasses.Tests.IInterface>
 							{
-								VerifyIndex = _verifyIndex,
+								VerifyIndex = VerifyIndex,
 								Mock = interface1Mock,
 							};
+						}
+
+						protected VerifySequenceContext(VerifySequenceContext ctx)
+						{
+							VerifyIndex = ctx.VerifyIndex;
+							Interface1Mock = ctx.Interface1Mock;
 						}
 					}
 				}
@@ -92,25 +99,35 @@ public sealed class BaseClasses : TestsBase
 
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
-						var ctx = new VerifySequenceContext(
-							interface2Mock: Interface2Mock
-						);
+						base.VerifyInSequence(ctx =>
+						{
+							var thisCtx = new VerifySequenceContext(
+								ctx: ctx,
+								interface2Mock: Interface2Mock
+							);
 
-						verify(ctx);
+							verify(thisCtx);
+						});
 					}
 
-					protected sealed class VerifySequenceContext
+					protected class VerifySequenceContext : TestsBase.VerifySequenceContext
 					{
-						private readonly VerifyIndex _verifyIndex = new();
 						public readonly IMockSequence<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock;
 
-						public VerifySequenceContext(IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
+						public VerifySequenceContext(TestsBase.VerifySequenceContext ctx, IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
+							: base(ctx)
 						{
 							Interface2Mock = new MockSequence<MyNihongo.BaseClasses.Tests.IInterface>
 							{
 								VerifyIndex = _verifyIndex,
 								Mock = interface2Mock,
 							};
+						}
+
+						protected VerifySequenceContext(VerifySequenceContext ctx)
+							: base(ctx)
+						{
+							Interface2Mock = ctx.Interface2Mock;
 						}
 					}
 				}
