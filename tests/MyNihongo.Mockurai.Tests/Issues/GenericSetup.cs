@@ -1,13 +1,13 @@
 ﻿namespace MyNihongo.Mockurai.Tests.Issues;
 
-public sealed class GenericSetup : TestsBase
+public sealed class GenericSetup : IssuesTestsBase
 {
 	[Fact]
 	public async Task AdjustGenericTypeNameForTReturns()
 	{
 		const string testCode =
 			"""
-			namespace MyNihongo.Mockurai.Tests;
+			namespace Issues.Tests;
 
 			public interface IInterface
 			{
@@ -29,56 +29,14 @@ public sealed class GenericSetup : TestsBase
 
 		GeneratedSources generatedSources =
 		[
-			(
-				"TestsBase.g.cs",
-				"""
-				#nullable enable
-				namespace MyNihongo.Mockurai.Tests;
-
-				public partial class TestsBase
-				{
-					// InterfaceMock
-					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-					protected partial MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock => _interfaceMock;
-
-					protected void VerifyNoOtherCalls()
-					{
-						InterfaceMock.VerifyNoOtherCalls();
-					}
-
-					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
-					{
-						var ctx = new VerifySequenceContext(
-							interfaceMock: InterfaceMock
-						);
-
-						verify(ctx);
-					}
-
-					protected sealed class VerifySequenceContext
-					{
-						private readonly VerifyIndex _verifyIndex = new();
-						public readonly IMockSequence<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock;
-
-						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> interfaceMock)
-						{
-							InterfaceMock = new MockSequence<MyNihongo.Mockurai.Tests.IInterface>
-							{
-								VerifyIndex = _verifyIndex,
-								Mock = interfaceMock,
-							};
-						}
-					}
-				}
-				"""
-			),
+			TestsBase,
 			(
 				"InterfaceMock.g.cs",
 				"""
 				#nullable enable
 				namespace MyNihongo.Mockurai;
 
-				public sealed class InterfaceMock : IMock<MyNihongo.Mockurai.Tests.IInterface>
+				public sealed class InterfaceMock : IMock<Issues.Tests.IInterface>
 				{
 					private readonly InvocationIndex.Counter _invocationIndex;
 					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
@@ -90,7 +48,7 @@ public sealed class GenericSetup : TestsBase
 						_invocationProviders = GetInvocations;
 					}
 
-					public MyNihongo.Mockurai.Tests.IInterface Object => _proxy ??= new Proxy(this);
+					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
@@ -128,7 +86,7 @@ public sealed class GenericSetup : TestsBase
 						yield return _invoke0Invocation;
 					}
 
-					private sealed class Proxy : MyNihongo.Mockurai.Tests.IInterface
+					private sealed class Proxy : Issues.Tests.IInterface
 					{
 						private readonly InterfaceMock _mock;
 
@@ -149,7 +107,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockExtensions
 				{
-					extension(IMock<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMock<Issues.Tests.IInterface> @this)
 					{
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
@@ -168,7 +126,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockSequenceExtensions
 				{
-					extension(IMockSequence<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMockSequence<Issues.Tests.IInterface> @this)
 					{
 						// Invoke
 						public void Invoke<TReturns>(in It<int> param1, in It<TReturns> returnValue)
@@ -193,7 +151,7 @@ public sealed class GenericSetup : TestsBase
 	{
 		const string testCode =
 			"""
-			namespace MyNihongo.Mockurai.Tests;
+			namespace Issues.Tests;
 
 			public interface IInterface
 			{
@@ -215,56 +173,14 @@ public sealed class GenericSetup : TestsBase
 
 		GeneratedSources generatedSources =
 		[
-			(
-				"TestsBase.g.cs",
-				"""
-				#nullable enable
-				namespace MyNihongo.Mockurai.Tests;
-
-				public partial class TestsBase
-				{
-					// InterfaceMock
-					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-					protected partial MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock => _interfaceMock;
-
-					protected void VerifyNoOtherCalls()
-					{
-						InterfaceMock.VerifyNoOtherCalls();
-					}
-
-					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
-					{
-						var ctx = new VerifySequenceContext(
-							interfaceMock: InterfaceMock
-						);
-
-						verify(ctx);
-					}
-
-					protected sealed class VerifySequenceContext
-					{
-						private readonly VerifyIndex _verifyIndex = new();
-						public readonly IMockSequence<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock;
-
-						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> interfaceMock)
-						{
-							InterfaceMock = new MockSequence<MyNihongo.Mockurai.Tests.IInterface>
-							{
-								VerifyIndex = _verifyIndex,
-								Mock = interfaceMock,
-							};
-						}
-					}
-				}
-				"""
-			),
+			TestsBase,
 			(
 				"InterfaceMock.g.cs",
 				"""
 				#nullable enable
 				namespace MyNihongo.Mockurai;
 
-				public sealed class InterfaceMock : IMock<MyNihongo.Mockurai.Tests.IInterface>
+				public sealed class InterfaceMock : IMock<Issues.Tests.IInterface>
 				{
 					private readonly InvocationIndex.Counter _invocationIndex;
 					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
@@ -276,7 +192,7 @@ public sealed class GenericSetup : TestsBase
 						_invocationProviders = GetInvocations;
 					}
 
-					public MyNihongo.Mockurai.Tests.IInterface Object => _proxy ??= new Proxy(this);
+					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
@@ -314,7 +230,7 @@ public sealed class GenericSetup : TestsBase
 						yield return _invoke0Invocation;
 					}
 
-					private sealed class Proxy : MyNihongo.Mockurai.Tests.IInterface
+					private sealed class Proxy : Issues.Tests.IInterface
 					{
 						private readonly InterfaceMock _mock;
 
@@ -335,7 +251,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockExtensions
 				{
-					extension(IMock<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMock<Issues.Tests.IInterface> @this)
 					{
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
@@ -354,7 +270,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockSequenceExtensions
 				{
-					extension(IMockSequence<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMockSequence<Issues.Tests.IInterface> @this)
 					{
 						// Invoke
 						public void Invoke<T>(in It<System.Collections.Generic.IReadOnlyList<T>> param1, in It<int> param2)
@@ -379,7 +295,7 @@ public sealed class GenericSetup : TestsBase
 	{
 		const string testCode =
 			"""
-			namespace MyNihongo.Mockurai.Tests;
+			namespace Issues.Tests;
 
 			public interface IInterface
 			{
@@ -401,56 +317,14 @@ public sealed class GenericSetup : TestsBase
 
 		GeneratedSources generatedSources =
 		[
-			(
-				"TestsBase.g.cs",
-				"""
-				#nullable enable
-				namespace MyNihongo.Mockurai.Tests;
-
-				public partial class TestsBase
-				{
-					// InterfaceMock
-					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-					protected partial MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock => _interfaceMock;
-
-					protected void VerifyNoOtherCalls()
-					{
-						InterfaceMock.VerifyNoOtherCalls();
-					}
-
-					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
-					{
-						var ctx = new VerifySequenceContext(
-							interfaceMock: InterfaceMock
-						);
-
-						verify(ctx);
-					}
-
-					protected sealed class VerifySequenceContext
-					{
-						private readonly VerifyIndex _verifyIndex = new();
-						public readonly IMockSequence<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock;
-
-						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> interfaceMock)
-						{
-							InterfaceMock = new MockSequence<MyNihongo.Mockurai.Tests.IInterface>
-							{
-								VerifyIndex = _verifyIndex,
-								Mock = interfaceMock,
-							};
-						}
-					}
-				}
-				"""
-			),
+			TestsBase,
 			(
 				"InterfaceMock.g.cs",
 				"""
 				#nullable enable
 				namespace MyNihongo.Mockurai;
 
-				public sealed class InterfaceMock : IMock<MyNihongo.Mockurai.Tests.IInterface>
+				public sealed class InterfaceMock : IMock<Issues.Tests.IInterface>
 				{
 					private readonly InvocationIndex.Counter _invocationIndex;
 					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
@@ -462,7 +336,7 @@ public sealed class GenericSetup : TestsBase
 						_invocationProviders = GetInvocations;
 					}
 
-					public MyNihongo.Mockurai.Tests.IInterface Object => _proxy ??= new Proxy(this);
+					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
@@ -500,7 +374,7 @@ public sealed class GenericSetup : TestsBase
 						yield return _invoke0Invocation;
 					}
 
-					private sealed class Proxy : MyNihongo.Mockurai.Tests.IInterface
+					private sealed class Proxy : Issues.Tests.IInterface
 					{
 						private readonly InterfaceMock _mock;
 
@@ -521,7 +395,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockExtensions
 				{
-					extension(IMock<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMock<Issues.Tests.IInterface> @this)
 					{
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
@@ -540,7 +414,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockSequenceExtensions
 				{
-					extension(IMockSequence<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMockSequence<Issues.Tests.IInterface> @this)
 					{
 						// Invoke
 						public void Invoke<T>(in It<System.Collections.Generic.IDictionary<T, System.Collections.Generic.IList<T>>> param1, in It<T> param2)
@@ -565,7 +439,7 @@ public sealed class GenericSetup : TestsBase
 	{
 		const string testCode =
 			"""
-			namespace MyNihongo.Mockurai.Tests;
+			namespace Issues.Tests;
 
 			public interface IInterface
 			{
@@ -587,56 +461,14 @@ public sealed class GenericSetup : TestsBase
 
 		GeneratedSources generatedSources =
 		[
-			(
-				"TestsBase.g.cs",
-				"""
-				#nullable enable
-				namespace MyNihongo.Mockurai.Tests;
-
-				public partial class TestsBase
-				{
-					// InterfaceMock
-					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-					protected partial MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock => _interfaceMock;
-
-					protected void VerifyNoOtherCalls()
-					{
-						InterfaceMock.VerifyNoOtherCalls();
-					}
-
-					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
-					{
-						var ctx = new VerifySequenceContext(
-							interfaceMock: InterfaceMock
-						);
-
-						verify(ctx);
-					}
-
-					protected sealed class VerifySequenceContext
-					{
-						private readonly VerifyIndex _verifyIndex = new();
-						public readonly IMockSequence<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock;
-
-						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> interfaceMock)
-						{
-							InterfaceMock = new MockSequence<MyNihongo.Mockurai.Tests.IInterface>
-							{
-								VerifyIndex = _verifyIndex,
-								Mock = interfaceMock,
-							};
-						}
-					}
-				}
-				"""
-			),
+			TestsBase,
 			(
 				"InterfaceMock.g.cs",
 				"""
 				#nullable enable
 				namespace MyNihongo.Mockurai;
 
-				public sealed class InterfaceMock : IMock<MyNihongo.Mockurai.Tests.IInterface>
+				public sealed class InterfaceMock : IMock<Issues.Tests.IInterface>
 				{
 					private readonly InvocationIndex.Counter _invocationIndex;
 					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
@@ -648,7 +480,7 @@ public sealed class GenericSetup : TestsBase
 						_invocationProviders = GetInvocations;
 					}
 
-					public MyNihongo.Mockurai.Tests.IInterface Object => _proxy ??= new Proxy(this);
+					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
@@ -686,7 +518,7 @@ public sealed class GenericSetup : TestsBase
 						yield return _invoke0Invocation;
 					}
 
-					private sealed class Proxy : MyNihongo.Mockurai.Tests.IInterface
+					private sealed class Proxy : Issues.Tests.IInterface
 					{
 						private readonly InterfaceMock _mock;
 
@@ -707,7 +539,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockExtensions
 				{
-					extension(IMock<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMock<Issues.Tests.IInterface> @this)
 					{
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
@@ -726,7 +558,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockSequenceExtensions
 				{
-					extension(IMockSequence<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMockSequence<Issues.Tests.IInterface> @this)
 					{
 						// Invoke
 						public void Invoke<T>(in It<System.Collections.Generic.IDictionary<T, System.Collections.Generic.IList<T>>> param1, in It<System.Collections.Generic.ICollection<T>> param2)
@@ -751,7 +583,7 @@ public sealed class GenericSetup : TestsBase
 	{
 		const string testCode =
 			"""
-			namespace MyNihongo.Mockurai.Tests;
+			namespace Issues.Tests;
 
 			public interface IInterface
 			{
@@ -773,56 +605,14 @@ public sealed class GenericSetup : TestsBase
 
 		GeneratedSources generatedSources =
 		[
-			(
-				"TestsBase.g.cs",
-				"""
-				#nullable enable
-				namespace MyNihongo.Mockurai.Tests;
-
-				public partial class TestsBase
-				{
-					// InterfaceMock
-					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-					protected partial MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock => _interfaceMock;
-
-					protected void VerifyNoOtherCalls()
-					{
-						InterfaceMock.VerifyNoOtherCalls();
-					}
-
-					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
-					{
-						var ctx = new VerifySequenceContext(
-							interfaceMock: InterfaceMock
-						);
-
-						verify(ctx);
-					}
-
-					protected sealed class VerifySequenceContext
-					{
-						private readonly VerifyIndex _verifyIndex = new();
-						public readonly IMockSequence<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock;
-
-						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> interfaceMock)
-						{
-							InterfaceMock = new MockSequence<MyNihongo.Mockurai.Tests.IInterface>
-							{
-								VerifyIndex = _verifyIndex,
-								Mock = interfaceMock,
-							};
-						}
-					}
-				}
-				"""
-			),
+			TestsBase,
 			(
 				"InterfaceMock.g.cs",
 				"""
 				#nullable enable
 				namespace MyNihongo.Mockurai;
 
-				public sealed class InterfaceMock : IMock<MyNihongo.Mockurai.Tests.IInterface>
+				public sealed class InterfaceMock : IMock<Issues.Tests.IInterface>
 				{
 					private readonly InvocationIndex.Counter _invocationIndex;
 					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
@@ -834,7 +624,7 @@ public sealed class GenericSetup : TestsBase
 						_invocationProviders = GetInvocations;
 					}
 
-					public MyNihongo.Mockurai.Tests.IInterface Object => _proxy ??= new Proxy(this);
+					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
@@ -872,7 +662,7 @@ public sealed class GenericSetup : TestsBase
 						yield return _invoke0Invocation;
 					}
 
-					private sealed class Proxy : MyNihongo.Mockurai.Tests.IInterface
+					private sealed class Proxy : Issues.Tests.IInterface
 					{
 						private readonly InterfaceMock _mock;
 
@@ -893,7 +683,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockExtensions
 				{
-					extension(IMock<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMock<Issues.Tests.IInterface> @this)
 					{
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
@@ -912,7 +702,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockSequenceExtensions
 				{
-					extension(IMockSequence<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMockSequence<Issues.Tests.IInterface> @this)
 					{
 						// Invoke
 						public void Invoke<T>(in It<System.Collections.Generic.IDictionary<string, System.Collections.Generic.IList<T>>> param1, in It<int> param2)
@@ -937,7 +727,7 @@ public sealed class GenericSetup : TestsBase
 	{
 		const string testCode =
 			"""
-			namespace MyNihongo.Mockurai.Tests;
+			namespace Issues.Tests;
 
 			public interface IInterface
 			{
@@ -959,56 +749,14 @@ public sealed class GenericSetup : TestsBase
 
 		GeneratedSources generatedSources =
 		[
-			(
-				"TestsBase.g.cs",
-				"""
-				#nullable enable
-				namespace MyNihongo.Mockurai.Tests;
-
-				public partial class TestsBase
-				{
-					// InterfaceMock
-					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-					protected partial MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock => _interfaceMock;
-
-					protected void VerifyNoOtherCalls()
-					{
-						InterfaceMock.VerifyNoOtherCalls();
-					}
-
-					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
-					{
-						var ctx = new VerifySequenceContext(
-							interfaceMock: InterfaceMock
-						);
-
-						verify(ctx);
-					}
-
-					protected sealed class VerifySequenceContext
-					{
-						private readonly VerifyIndex _verifyIndex = new();
-						public readonly IMockSequence<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock;
-
-						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> interfaceMock)
-						{
-							InterfaceMock = new MockSequence<MyNihongo.Mockurai.Tests.IInterface>
-							{
-								VerifyIndex = _verifyIndex,
-								Mock = interfaceMock,
-							};
-						}
-					}
-				}
-				"""
-			),
+			TestsBase,
 			(
 				"InterfaceMock.g.cs",
 				"""
 				#nullable enable
 				namespace MyNihongo.Mockurai;
 
-				public sealed class InterfaceMock : IMock<MyNihongo.Mockurai.Tests.IInterface>
+				public sealed class InterfaceMock : IMock<Issues.Tests.IInterface>
 				{
 					private readonly InvocationIndex.Counter _invocationIndex;
 					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
@@ -1020,7 +768,7 @@ public sealed class GenericSetup : TestsBase
 						_invocationProviders = GetInvocations;
 					}
 
-					public MyNihongo.Mockurai.Tests.IInterface Object => _proxy ??= new Proxy(this);
+					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>? _invoke0;
@@ -1058,7 +806,7 @@ public sealed class GenericSetup : TestsBase
 						yield return _invoke0Invocation;
 					}
 
-					private sealed class Proxy : MyNihongo.Mockurai.Tests.IInterface
+					private sealed class Proxy : Issues.Tests.IInterface
 					{
 						private readonly InterfaceMock _mock;
 
@@ -1079,7 +827,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockExtensions
 				{
-					extension(IMock<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMock<Issues.Tests.IInterface> @this)
 					{
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
@@ -1098,7 +846,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockSequenceExtensions
 				{
-					extension(IMockSequence<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMockSequence<Issues.Tests.IInterface> @this)
 					{
 						// Invoke
 						public void Invoke<TParam, TReturn>(in It<System.Collections.Generic.IList<TParam>> param1, in It<System.Collections.Generic.ICollection<TReturn>> param2)
@@ -1123,7 +871,7 @@ public sealed class GenericSetup : TestsBase
 	{
 		const string testCode =
 			"""
-			namespace MyNihongo.Mockurai.Tests;
+			namespace Issues.Tests;
 
 			public interface IInterface
 			{
@@ -1145,56 +893,14 @@ public sealed class GenericSetup : TestsBase
 
 		GeneratedSources generatedSources =
 		[
-			(
-				"TestsBase.g.cs",
-				"""
-				#nullable enable
-				namespace MyNihongo.Mockurai.Tests;
-
-				public partial class TestsBase
-				{
-					// InterfaceMock
-					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-					protected partial MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock => _interfaceMock;
-
-					protected void VerifyNoOtherCalls()
-					{
-						InterfaceMock.VerifyNoOtherCalls();
-					}
-
-					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
-					{
-						var ctx = new VerifySequenceContext(
-							interfaceMock: InterfaceMock
-						);
-
-						verify(ctx);
-					}
-
-					protected sealed class VerifySequenceContext
-					{
-						private readonly VerifyIndex _verifyIndex = new();
-						public readonly IMockSequence<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock;
-
-						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> interfaceMock)
-						{
-							InterfaceMock = new MockSequence<MyNihongo.Mockurai.Tests.IInterface>
-							{
-								VerifyIndex = _verifyIndex,
-								Mock = interfaceMock,
-							};
-						}
-					}
-				}
-				"""
-			),
+			TestsBase,
 			(
 				"InterfaceMock.g.cs",
 				"""
 				#nullable enable
 				namespace MyNihongo.Mockurai;
 
-				public sealed class InterfaceMock : IMock<MyNihongo.Mockurai.Tests.IInterface>
+				public sealed class InterfaceMock : IMock<Issues.Tests.IInterface>
 				{
 					private readonly InvocationIndex.Counter _invocationIndex;
 					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
@@ -1206,7 +912,7 @@ public sealed class GenericSetup : TestsBase
 						_invocationProviders = GetInvocations;
 					}
 
-					public MyNihongo.Mockurai.Tests.IInterface Object => _proxy ??= new Proxy(this);
+					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>? _invoke0;
@@ -1244,7 +950,7 @@ public sealed class GenericSetup : TestsBase
 						yield return _invoke0Invocation;
 					}
 
-					private sealed class Proxy : MyNihongo.Mockurai.Tests.IInterface
+					private sealed class Proxy : Issues.Tests.IInterface
 					{
 						private readonly InterfaceMock _mock;
 
@@ -1265,7 +971,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockExtensions
 				{
-					extension(IMock<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMock<Issues.Tests.IInterface> @this)
 					{
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
@@ -1284,7 +990,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockSequenceExtensions
 				{
-					extension(IMockSequence<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMockSequence<Issues.Tests.IInterface> @this)
 					{
 						// Invoke
 						public void Invoke<TParam, TReturn>(in It<System.Collections.Generic.IDictionary<string, System.Collections.Generic.IList<TParam>>> param1, in It<System.Collections.Generic.ICollection<TReturn>> param2)
@@ -1309,7 +1015,7 @@ public sealed class GenericSetup : TestsBase
 	{
 		const string testCode =
 			"""
-			namespace MyNihongo.Mockurai.Tests;
+			namespace Issues.Tests;
 
 			public interface IInterface
 			{
@@ -1325,56 +1031,14 @@ public sealed class GenericSetup : TestsBase
 
 		GeneratedSources generatedSources =
 		[
-			(
-				"TestsBase.g.cs",
-				"""
-				#nullable enable
-				namespace MyNihongo.Mockurai.Tests;
-
-				public partial class TestsBase
-				{
-					// InterfaceMock
-					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-					protected partial MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock => _interfaceMock;
-
-					protected void VerifyNoOtherCalls()
-					{
-						InterfaceMock.VerifyNoOtherCalls();
-					}
-
-					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
-					{
-						var ctx = new VerifySequenceContext(
-							interfaceMock: InterfaceMock
-						);
-
-						verify(ctx);
-					}
-
-					protected sealed class VerifySequenceContext
-					{
-						private readonly VerifyIndex _verifyIndex = new();
-						public readonly IMockSequence<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock;
-
-						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> interfaceMock)
-						{
-							InterfaceMock = new MockSequence<MyNihongo.Mockurai.Tests.IInterface>
-							{
-								VerifyIndex = _verifyIndex,
-								Mock = interfaceMock,
-							};
-						}
-					}
-				}
-				"""
-			),
+			TestsBase,
 			(
 				"InterfaceMock.g.cs",
 				"""
 				#nullable enable
 				namespace MyNihongo.Mockurai;
 
-				public sealed class InterfaceMock : IMock<MyNihongo.Mockurai.Tests.IInterface>
+				public sealed class InterfaceMock : IMock<Issues.Tests.IInterface>
 				{
 					private readonly InvocationIndex.Counter _invocationIndex;
 					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
@@ -1386,7 +1050,7 @@ public sealed class GenericSetup : TestsBase
 						_invocationProviders = GetInvocations;
 					}
 
-					public MyNihongo.Mockurai.Tests.IInterface Object => _proxy ??= new Proxy(this);
+					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
@@ -1424,7 +1088,7 @@ public sealed class GenericSetup : TestsBase
 						yield return _invoke0Invocation;
 					}
 
-					private sealed class Proxy : MyNihongo.Mockurai.Tests.IInterface
+					private sealed class Proxy : Issues.Tests.IInterface
 					{
 						private readonly InterfaceMock _mock;
 
@@ -1445,7 +1109,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockExtensions
 				{
-					extension(IMock<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMock<Issues.Tests.IInterface> @this)
 					{
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
@@ -1464,7 +1128,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockSequenceExtensions
 				{
-					extension(IMockSequence<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMockSequence<Issues.Tests.IInterface> @this)
 					{
 						// Invoke
 						public void Invoke<T>(in It<T[]> param1, in It<int> param2)
@@ -1961,7 +1625,7 @@ public sealed class GenericSetup : TestsBase
 	{
 		const string testCode =
 			"""
-			namespace MyNihongo.Mockurai.Tests;
+			namespace Issues.Tests;
 
 			public interface IInterface
 			{
@@ -1977,56 +1641,14 @@ public sealed class GenericSetup : TestsBase
 
 		GeneratedSources generatedSources =
 		[
-			(
-				"TestsBase.g.cs",
-				"""
-				#nullable enable
-				namespace MyNihongo.Mockurai.Tests;
-
-				public partial class TestsBase
-				{
-					// InterfaceMock
-					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-					protected partial MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock => _interfaceMock;
-
-					protected void VerifyNoOtherCalls()
-					{
-						InterfaceMock.VerifyNoOtherCalls();
-					}
-
-					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
-					{
-						var ctx = new VerifySequenceContext(
-							interfaceMock: InterfaceMock
-						);
-
-						verify(ctx);
-					}
-
-					protected sealed class VerifySequenceContext
-					{
-						private readonly VerifyIndex _verifyIndex = new();
-						public readonly IMockSequence<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock;
-
-						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> interfaceMock)
-						{
-							InterfaceMock = new MockSequence<MyNihongo.Mockurai.Tests.IInterface>
-							{
-								VerifyIndex = _verifyIndex,
-								Mock = interfaceMock,
-							};
-						}
-					}
-				}
-				"""
-			),
+			TestsBase,
 			(
 				"InterfaceMock.g.cs",
 				"""
 				#nullable enable
 				namespace MyNihongo.Mockurai;
 
-				public sealed class InterfaceMock : IMock<MyNihongo.Mockurai.Tests.IInterface>
+				public sealed class InterfaceMock : IMock<Issues.Tests.IInterface>
 				{
 					private readonly InvocationIndex.Counter _invocationIndex;
 					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
@@ -2038,7 +1660,7 @@ public sealed class GenericSetup : TestsBase
 						_invocationProviders = GetInvocations;
 					}
 
-					public MyNihongo.Mockurai.Tests.IInterface Object => _proxy ??= new Proxy(this);
+					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
@@ -2076,7 +1698,7 @@ public sealed class GenericSetup : TestsBase
 						yield return _invoke0Invocation;
 					}
 
-					private sealed class Proxy : MyNihongo.Mockurai.Tests.IInterface
+					private sealed class Proxy : Issues.Tests.IInterface
 					{
 						private readonly InterfaceMock _mock;
 
@@ -2097,7 +1719,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockExtensions
 				{
-					extension(IMock<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMock<Issues.Tests.IInterface> @this)
 					{
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
@@ -2116,7 +1738,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockSequenceExtensions
 				{
-					extension(IMockSequence<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMockSequence<Issues.Tests.IInterface> @this)
 					{
 						// Invoke
 						public void Invoke<T>(in It<global::System.Collections.Generic.ICollection<T>[]> param1, in It<int> param2)
@@ -2613,7 +2235,7 @@ public sealed class GenericSetup : TestsBase
 	{
 		const string testCode =
 			"""
-			namespace MyNihongo.Mockurai.Tests;
+			namespace Issues.Tests;
 
 			public interface IInterface
 			{
@@ -2629,56 +2251,14 @@ public sealed class GenericSetup : TestsBase
 
 		GeneratedSources generatedSources =
 		[
-			(
-				"TestsBase.g.cs",
-				"""
-				#nullable enable
-				namespace MyNihongo.Mockurai.Tests;
-
-				public partial class TestsBase
-				{
-					// InterfaceMock
-					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-					protected partial MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock => _interfaceMock;
-
-					protected void VerifyNoOtherCalls()
-					{
-						InterfaceMock.VerifyNoOtherCalls();
-					}
-
-					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
-					{
-						var ctx = new VerifySequenceContext(
-							interfaceMock: InterfaceMock
-						);
-
-						verify(ctx);
-					}
-
-					protected sealed class VerifySequenceContext
-					{
-						private readonly VerifyIndex _verifyIndex = new();
-						public readonly IMockSequence<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock;
-
-						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> interfaceMock)
-						{
-							InterfaceMock = new MockSequence<MyNihongo.Mockurai.Tests.IInterface>
-							{
-								VerifyIndex = _verifyIndex,
-								Mock = interfaceMock,
-							};
-						}
-					}
-				}
-				"""
-			),
+			TestsBase,
 			(
 				"InterfaceMock.g.cs",
 				"""
 				#nullable enable
 				namespace MyNihongo.Mockurai;
 
-				public sealed class InterfaceMock : IMock<MyNihongo.Mockurai.Tests.IInterface>
+				public sealed class InterfaceMock : IMock<Issues.Tests.IInterface>
 				{
 					private readonly InvocationIndex.Counter _invocationIndex;
 					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
@@ -2690,7 +2270,7 @@ public sealed class GenericSetup : TestsBase
 						_invocationProviders = GetInvocations;
 					}
 
-					public MyNihongo.Mockurai.Tests.IInterface Object => _proxy ??= new Proxy(this);
+					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
@@ -2728,7 +2308,7 @@ public sealed class GenericSetup : TestsBase
 						yield return _invoke0Invocation;
 					}
 
-					private sealed class Proxy : MyNihongo.Mockurai.Tests.IInterface
+					private sealed class Proxy : Issues.Tests.IInterface
 					{
 						private readonly InterfaceMock _mock;
 
@@ -2749,7 +2329,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockExtensions
 				{
-					extension(IMock<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMock<Issues.Tests.IInterface> @this)
 					{
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
@@ -2768,7 +2348,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockSequenceExtensions
 				{
-					extension(IMockSequence<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMockSequence<Issues.Tests.IInterface> @this)
 					{
 						// Invoke
 						public void Invoke<T>(in It<T[,]> param1, in It<int> param2)
@@ -3265,7 +2845,7 @@ public sealed class GenericSetup : TestsBase
 	{
 		const string testCode =
 			"""
-			namespace MyNihongo.Mockurai.Tests;
+			namespace Issues.Tests;
 
 			public interface IInterface
 			{
@@ -3281,56 +2861,14 @@ public sealed class GenericSetup : TestsBase
 
 		GeneratedSources generatedSources =
 		[
-			(
-				"TestsBase.g.cs",
-				"""
-				#nullable enable
-				namespace MyNihongo.Mockurai.Tests;
-
-				public partial class TestsBase
-				{
-					// InterfaceMock
-					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-					protected partial MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock => _interfaceMock;
-
-					protected void VerifyNoOtherCalls()
-					{
-						InterfaceMock.VerifyNoOtherCalls();
-					}
-
-					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
-					{
-						var ctx = new VerifySequenceContext(
-							interfaceMock: InterfaceMock
-						);
-
-						verify(ctx);
-					}
-
-					protected sealed class VerifySequenceContext
-					{
-						private readonly VerifyIndex _verifyIndex = new();
-						public readonly IMockSequence<MyNihongo.Mockurai.Tests.IInterface> InterfaceMock;
-
-						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.IInterface> interfaceMock)
-						{
-							InterfaceMock = new MockSequence<MyNihongo.Mockurai.Tests.IInterface>
-							{
-								VerifyIndex = _verifyIndex,
-								Mock = interfaceMock,
-							};
-						}
-					}
-				}
-				"""
-			),
+			TestsBase,
 			(
 				"InterfaceMock.g.cs",
 				"""
 				#nullable enable
 				namespace MyNihongo.Mockurai;
 
-				public sealed class InterfaceMock : IMock<MyNihongo.Mockurai.Tests.IInterface>
+				public sealed class InterfaceMock : IMock<Issues.Tests.IInterface>
 				{
 					private readonly InvocationIndex.Counter _invocationIndex;
 					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
@@ -3342,7 +2880,7 @@ public sealed class GenericSetup : TestsBase
 						_invocationProviders = GetInvocations;
 					}
 
-					public MyNihongo.Mockurai.Tests.IInterface Object => _proxy ??= new Proxy(this);
+					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
@@ -3380,7 +2918,7 @@ public sealed class GenericSetup : TestsBase
 						yield return _invoke0Invocation;
 					}
 
-					private sealed class Proxy : MyNihongo.Mockurai.Tests.IInterface
+					private sealed class Proxy : Issues.Tests.IInterface
 					{
 						private readonly InterfaceMock _mock;
 
@@ -3401,7 +2939,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockExtensions
 				{
-					extension(IMock<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMock<Issues.Tests.IInterface> @this)
 					{
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
@@ -3420,7 +2958,7 @@ public sealed class GenericSetup : TestsBase
 
 				public static partial class MockSequenceExtensions
 				{
-					extension(IMockSequence<MyNihongo.Mockurai.Tests.IInterface> @this)
+					extension(IMockSequence<Issues.Tests.IInterface> @this)
 					{
 						// Invoke
 						public void Invoke<T>(in It<T[][]> param1, in It<int> param2)
