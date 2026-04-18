@@ -15,9 +15,9 @@ internal static class MockClassGenerator
 			  {{classSymbol.DeclaredAccessibility.GetString()}} partial class {{classSymbol.Name}}
 			  {
 			  {{CreateProperties(stringBuilder, mocks, indent)}}
-			  {{CreateVerifyNoOtherCalls(stringBuilder, mocks, indent)}}
-			  {{CreateVerifyInSequence(stringBuilder, mocks, indent)}}
-			  {{CreateVerifySequenceContext(stringBuilder, mocks, indent)}}
+			  {{CreateVerifyNoOtherCalls(stringBuilder, classSymbol, mocks, indent)}}
+			  {{CreateVerifyInSequence(stringBuilder, classSymbol, mocks, indent)}}
+			  {{CreateVerifySequenceContext(stringBuilder, classSymbol, mocks, indent)}}
 			  }
 			  """;
 	}
@@ -71,13 +71,25 @@ internal static class MockClassGenerator
 			.ToString();
 	}
 
-	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, List<MockClassDeclaration> mocks, int indent)
+	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks, int indent)
 	{
+		var baseClass = classSymbol.TryGetBaseClassWithFunctionName(functionName: "VerifyNoOtherCalls");
+
 		stringBuilder.Clear();
 
 		stringBuilder
-			.Indent(indent).AppendLine("protected void VerifyNoOtherCalls()")
+			.Indent(indent)
+			.Append("protected ")
+			.TryAppendFunctionOverrideModifier(classSymbol, baseClass)
+			.AppendLine("void VerifyNoOtherCalls()")
 			.Indent(indent++).AppendLine("{");
+
+		if (baseClass is not null)
+		{
+			stringBuilder
+				.Indent(indent)
+				.AppendLine("base.VerifyNoOtherCalls();");
+		}
 
 		foreach (var mock in mocks)
 		{
@@ -104,14 +116,47 @@ internal static class MockClassGenerator
 			.ToString();
 	}
 
-	private static string CreateVerifyInSequence(StringBuilder stringBuilder, List<MockClassDeclaration> mocks, int indent)
+	private static string CreateVerifyInSequence(StringBuilder stringBuilder, INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks, int indent)
 	{
+		var baseClass = classSymbol.TryGetBaseClassWithFunctionName("VerifyInSequence");
+
 		stringBuilder.Clear();
 
 		stringBuilder
 			.Indent(indent).AppendLine("protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)")
-			.Indent(indent++).AppendLine("{")
-			.Indent(indent++).AppendLine("var ctx = new VerifySequenceContext(");
+			.Indent(indent++).AppendLine("{");
+
+		string ctxVariableName;
+		if (baseClass is not null)
+		{
+			ctxVariableName = "thisCtx";
+
+			stringBuilder
+				.Indent(indent).AppendLine("base.VerifyInSequence(ctx =>")
+				.Indent(indent++).AppendLine("{");
+		}
+		else
+		{
+			ctxVariableName = "ctx";
+		}
+
+		stringBuilder
+			.Indent(indent++)
+			.Append("var ")
+			.Append(ctxVariableName)
+			.AppendLine(" = new VerifySequenceContext(");
+
+		if (baseClass is not null)
+		{
+			stringBuilder
+				.Indent(indent)
+				.Append("ctx: ctx");
+
+			if (mocks.Count > 0)
+				stringBuilder.Append(',');
+
+			stringBuilder.AppendLine();
+		}
 
 		for (int i = 0, lastIndex = mocks.Count - 1; i < mocks.Count; i++)
 		{
@@ -130,21 +175,53 @@ internal static class MockClassGenerator
 			stringBuilder.AppendLine();
 		}
 
-		return stringBuilder
+		stringBuilder
 			.Indent(--indent).AppendLine(");").AppendLine()
-			.Indent(indent).AppendLine("verify(ctx);")
+			.Indent(indent).Append("verify(").Append(ctxVariableName).AppendLine(");");
+
+		if (baseClass is not null)
+		{
+			stringBuilder
+				.Indent(--indent)
+				.AppendLine("});");
+		}
+
+		return stringBuilder
 			.Indent(--indent).AppendLine("}")
 			.ToString();
 	}
 
-	private static string CreateVerifySequenceContext(StringBuilder stringBuilder, List<MockClassDeclaration> mocks, int indent)
+	private static string CreateVerifySequenceContext(StringBuilder stringBuilder, INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks, int indent)
 	{
+		var baseClass = classSymbol.TryGetBaseClassWithNestedClassName("VerifySequenceContext");
+
 		stringBuilder.Clear();
 
 		stringBuilder
-			.Indent(indent).AppendLine("protected sealed class VerifySequenceContext")
-			.Indent(indent++).AppendLine("{")
-			.Indent(indent).AppendLine("private readonly VerifyIndex _verifyIndex = new();");
+			.Indent(indent)
+			.Append("protected ")
+			.AppendIf(baseClass is not null, "new ")
+			.Append("class VerifySequenceContext");
+
+		if (baseClass is not null)
+		{
+			stringBuilder
+				.Append(" : ")
+				.AppendType(baseClass)
+				.Append(".VerifySequenceContext");
+		}
+
+		stringBuilder
+			.AppendLine()
+			.Indent(indent++)
+			.AppendLine("{");
+
+		if (baseClass is null)
+		{
+			stringBuilder
+				.Indent(indent)
+				.AppendLine("protected readonly VerifyIndex VerifyIndex;");
+		}
 
 		// Generate properties
 		foreach (var mock in mocks)
@@ -169,6 +246,16 @@ internal static class MockClassGenerator
 			.Indent(indent).Append("public VerifySequenceContext(");
 
 		// Constructor - parameters
+		if (baseClass is not null)
+		{
+			stringBuilder
+				.AppendType(baseClass)
+				.Append(".VerifySequenceContext ctx");
+
+			if (mocks.Count > 0)
+				stringBuilder.Append(", ");
+		}
+
 		for (int i = 0, lastIndex = mocks.Count - 1; i < mocks.Count; i++)
 		{
 			var mock = mocks[i];
@@ -192,12 +279,27 @@ internal static class MockClassGenerator
 				stringBuilder.Append(", ");
 		}
 
+		stringBuilder.AppendLine(")");
+
+		if (baseClass is not null)
+		{
+			stringBuilder
+				.Indent(indent + 1)
+				.AppendLine(": base(ctx)");
+		}
+
 		stringBuilder
-			.AppendLine(")")
 			.Indent(indent++)
 			.AppendLine("{");
 
 		// Constructor - initialize properties
+		if (baseClass is null)
+		{
+			stringBuilder
+				.Indent(indent)
+				.AppendLine("VerifyIndex = new VerifyIndex();");
+		}
+
 		foreach (var mock in mocks)
 		{
 			var symbol = mock.PropertyOrField;
@@ -232,7 +334,7 @@ internal static class MockClassGenerator
 
 			stringBuilder
 				.Indent(indent)
-				.AppendLine("VerifyIndex = _verifyIndex,")
+				.AppendLine("VerifyIndex = VerifyIndex,")
 				.Indent(indent)
 				.Append("Mock = ").AppendParameterName(symbolName)
 				.AppendLine(",");
@@ -251,10 +353,58 @@ internal static class MockClassGenerator
 
 		stringBuilder
 			.Indent(--indent)
-			.AppendLine("}");
+			.AppendLine("}")
+			.AppendLine();
+
+		// Copy constructor
+		stringBuilder
+			.Indent(indent)
+			.AppendLine("protected VerifySequenceContext(VerifySequenceContext ctx)");
+
+		if (baseClass is not null)
+		{
+			stringBuilder
+				.Indent(indent + 1)
+				.AppendLine(": base(ctx)");
+		}
+
+		stringBuilder
+			.Indent(indent++)
+			.AppendLine("{");
+
+		if (baseClass is null)
+		{
+			stringBuilder
+				.Indent(indent)
+				.AppendLine("VerifyIndex = ctx.VerifyIndex;");
+		}
+
+		foreach (var mock in mocks)
+		{
+			var symbolName = mock.PropertyOrField?.Name;
+
+			stringBuilder
+				.Indent(indent)
+				.AppendPropertyName(symbolName)
+				.Append(" = ")
+				.Append("ctx.")
+				.AppendPropertyName(symbolName)
+				.AppendLine(";");
+		}
 
 		return stringBuilder
+			.Indent(--indent).AppendLine("}")
 			.Indent(--indent).Append('}')
 			.ToString();
+	}
+
+	private static StringBuilder TryAppendFunctionOverrideModifier(this StringBuilder @this, INamedTypeSymbol classSymbol, INamedTypeSymbol? baseClassSymbol)
+	{
+		if (baseClassSymbol is not null)
+			@this.Append("override ");
+		else if (!classSymbol.IsSealed)
+			@this.Append("virtual ");
+
+		return @this;
 	}
 }

@@ -9,7 +9,7 @@ public sealed class NestedClasses : TestsBase
 			"""
 			using System.Threading.Tasks;
 
-			namespace MyNihongo.Mockurai.Tests;
+			namespace Issues.Tests;
 
 			public abstract class Container
 			{
@@ -28,7 +28,7 @@ public sealed class NestedClasses : TestsBase
 		TypeModel[] types =
 		[
 			new("String", 1),
-			new("ChangesHandler", [("T1", true)], 2, @namespace: "MyNihongo.Mockurai.Tests.Container"),
+			new("ChangesHandler", [("T1", true)], 2, @namespace: "Issues.Tests.Container"),
 		];
 
 		GeneratedSources generatedSources =
@@ -37,15 +37,15 @@ public sealed class NestedClasses : TestsBase
 				"TestsBase.g.cs",
 				"""
 				#nullable enable
-				namespace MyNihongo.Mockurai.Tests;
+				namespace Issues.Tests;
 
 				public partial class TestsBase
 				{
 					// ContainerMock
 					private readonly ContainerMock _containerMock = new(InvocationIndex.CounterValue);
-					protected partial MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.Container> ContainerMock => _containerMock;
+					protected partial IMock<Issues.Tests.Container> ContainerMock => _containerMock;
 
-					protected void VerifyNoOtherCalls()
+					protected virtual void VerifyNoOtherCalls()
 					{
 						ContainerMock.VerifyNoOtherCalls();
 					}
@@ -59,18 +59,25 @@ public sealed class NestedClasses : TestsBase
 						verify(ctx);
 					}
 
-					protected sealed class VerifySequenceContext
+					protected class VerifySequenceContext
 					{
-						private readonly VerifyIndex _verifyIndex = new();
-						public readonly IMockSequence<MyNihongo.Mockurai.Tests.Container> ContainerMock;
+						protected readonly VerifyIndex VerifyIndex;
+						public readonly IMockSequence<Issues.Tests.Container> ContainerMock;
 
-						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Mockurai.Tests.Container> containerMock)
+						public VerifySequenceContext(IMock<Issues.Tests.Container> containerMock)
 						{
-							ContainerMock = new MockSequence<MyNihongo.Mockurai.Tests.Container>
+							VerifyIndex = new VerifyIndex();
+							ContainerMock = new MockSequence<Issues.Tests.Container>
 							{
-								VerifyIndex = _verifyIndex,
+								VerifyIndex = VerifyIndex,
 								Mock = containerMock,
 							};
+						}
+
+						protected VerifySequenceContext(VerifySequenceContext ctx)
+						{
+							VerifyIndex = ctx.VerifyIndex;
+							ContainerMock = ctx.ContainerMock;
 						}
 					}
 				}
@@ -82,7 +89,7 @@ public sealed class NestedClasses : TestsBase
 				#nullable enable
 				namespace MyNihongo.Mockurai;
 
-				public sealed class ContainerMock : IMock<MyNihongo.Mockurai.Tests.Container>
+				public sealed class ContainerMock : IMock<Issues.Tests.Container>
 				{
 					private readonly InvocationIndex.Counter _invocationIndex;
 					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
@@ -94,13 +101,13 @@ public sealed class NestedClasses : TestsBase
 						_invocationProviders = GetInvocations;
 					}
 
-					public MyNihongo.Mockurai.Tests.Container Object => _proxy ??= new Proxy(this);
+					public Issues.Tests.Container Object => _proxy ??= new Proxy(this);
 
 					// Execute
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _execute0;
 					private InvocationDictionary? _execute0Invocation;
 
-					public SetupStringChangesHandlerT1<T> SetupExecute<T>(in It<string> processorName, in It<MyNihongo.Mockurai.Tests.Container.ChangesHandler<T>> onChangesDelegate)
+					public SetupStringChangesHandlerT1<T> SetupExecute<T>(in It<string> processorName, in It<Issues.Tests.Container.ChangesHandler<T>> onChangesDelegate)
 					{
 						_execute0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
 						var execute0 = (SetupStringChangesHandlerT1<T>)_execute0.GetOrAdd(typeof(T), static _ => new SetupStringChangesHandlerT1<T>());
@@ -108,14 +115,14 @@ public sealed class NestedClasses : TestsBase
 						return execute0;
 					}
 
-					public void VerifyExecute<T>(in It<string> processorName, in It<MyNihongo.Mockurai.Tests.Container.ChangesHandler<T>> onChangesDelegate, in Times times)
+					public void VerifyExecute<T>(in It<string> processorName, in It<Issues.Tests.Container.ChangesHandler<T>> onChangesDelegate, in Times times)
 					{
 						_execute0Invocation ??= new InvocationDictionary();
 						var execute0Invocation = (InvocationStringChangesHandlerT1<T>)_execute0Invocation.GetOrAdd(typeof(T), static key => new InvocationStringChangesHandlerT1<T>($"Container.Execute<{key.Name}>({{0}}, {{1}})"));
 						execute0Invocation.Verify(processorName.ValueSetup, onChangesDelegate.ValueSetup, times, _invocationProviders);
 					}
 
-					public long VerifyExecute<T>(in It<string> processorName, in It<MyNihongo.Mockurai.Tests.Container.ChangesHandler<T>> onChangesDelegate, long index)
+					public long VerifyExecute<T>(in It<string> processorName, in It<Issues.Tests.Container.ChangesHandler<T>> onChangesDelegate, long index)
 					{
 						_execute0Invocation ??= new InvocationDictionary();
 						var execute0Invocation = (InvocationStringChangesHandlerT1<T>)_execute0Invocation.GetOrAdd(typeof(T), static key => new InvocationStringChangesHandlerT1<T>($"Container.Execute<{key.Name}>({{0}}, {{1}})"));
@@ -132,7 +139,7 @@ public sealed class NestedClasses : TestsBase
 						yield return _execute0Invocation;
 					}
 
-					private sealed class Proxy : MyNihongo.Mockurai.Tests.Container
+					private sealed class Proxy : Issues.Tests.Container
 					{
 						private readonly ContainerMock _mock;
 
@@ -141,7 +148,7 @@ public sealed class NestedClasses : TestsBase
 							_mock = mock;
 						}
 
-						public override void Execute<T>(string processorName, MyNihongo.Mockurai.Tests.Container.ChangesHandler<T> onChangesDelegate)
+						public override void Execute<T>(string processorName, Issues.Tests.Container.ChangesHandler<T> onChangesDelegate)
 						{
 							_mock._execute0Invocation ??= new InvocationDictionary();
 							var execute0Invocation = (InvocationStringChangesHandlerT1<T>)_mock._execute0Invocation.GetOrAdd(typeof(T), static key => new InvocationStringChangesHandlerT1<T>($"Container.Execute<{key.Name}>({{0}}, {{1}})"));
@@ -153,29 +160,29 @@ public sealed class NestedClasses : TestsBase
 
 				public static partial class MockExtensions
 				{
-					extension(IMock<MyNihongo.Mockurai.Tests.Container> @this)
+					extension(IMock<Issues.Tests.Container> @this)
 					{
 						public void VerifyNoOtherCalls() =>
 							((ContainerMock)@this).VerifyNoOtherCalls();
 
 						// Execute
-						public ISetup<SetupStringChangesHandlerT1<T>.CallbackDelegate> SetupExecute<T>(in It<string> processorName = default, in It<MyNihongo.Mockurai.Tests.Container.ChangesHandler<T>> onChangesDelegate = default) =>
+						public ISetup<SetupStringChangesHandlerT1<T>.CallbackDelegate> SetupExecute<T>(in It<string> processorName = default, in It<Issues.Tests.Container.ChangesHandler<T>> onChangesDelegate = default) =>
 							((ContainerMock)@this).SetupExecute<T>(processorName, onChangesDelegate);
 
-						public void VerifyExecute<T>(in It<string> processorName, in It<MyNihongo.Mockurai.Tests.Container.ChangesHandler<T>> onChangesDelegate, in Times times) =>
+						public void VerifyExecute<T>(in It<string> processorName, in It<Issues.Tests.Container.ChangesHandler<T>> onChangesDelegate, in Times times) =>
 							((ContainerMock)@this).VerifyExecute<T>(processorName, onChangesDelegate, times);
 
-						public void VerifyExecute<T>(in It<string> processorName, in It<MyNihongo.Mockurai.Tests.Container.ChangesHandler<T>> onChangesDelegate, System.Func<Times> times) =>
+						public void VerifyExecute<T>(in It<string> processorName, in It<Issues.Tests.Container.ChangesHandler<T>> onChangesDelegate, System.Func<Times> times) =>
 							((ContainerMock)@this).VerifyExecute<T>(processorName, onChangesDelegate, times());
 					}
 				}
 
 				public static partial class MockSequenceExtensions
 				{
-					extension(IMockSequence<MyNihongo.Mockurai.Tests.Container> @this)
+					extension(IMockSequence<Issues.Tests.Container> @this)
 					{
 						// Execute
-						public void Execute<T>(in It<string> processorName, in It<MyNihongo.Mockurai.Tests.Container.ChangesHandler<T>> onChangesDelegate)
+						public void Execute<T>(in It<string> processorName, in It<Issues.Tests.Container.ChangesHandler<T>> onChangesDelegate)
 						{
 							var nextIndex = ((ContainerMock)@this.Mock).VerifyExecute<T>(processorName, onChangesDelegate, @this.VerifyIndex);
 							@this.VerifyIndex.Set(nextIndex);
