@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace MyNihongo.Mockurai;
 
-public sealed class Invocation<TParameter> : IInvocationVerify
+public sealed class Invocation<TParameter> : IInvocationVerify, IInvocationProvider<TParameter>
 {
 	private readonly string _name;
 	private readonly string? _prefix;
@@ -94,7 +94,7 @@ public sealed class Invocation<TParameter> : IInvocationVerify
 		var typeName = !string.IsNullOrEmpty(_prefix)
 			? $"{_prefix} {typeof(TParameter).Name}"
 			: typeof(TParameter).Name;
-		
+
 		var verifyName = string.Format(_name, typeName);
 		throw new MockUnverifiedException(verifyName, unverifiedItems);
 	}
@@ -104,7 +104,12 @@ public sealed class Invocation<TParameter> : IInvocationVerify
 		return _invocations;
 	}
 
-	private sealed class Item : IInvocation
+	public IEnumerable<IInvocation<TParameter>> GetInvocationsWithArguments()
+	{
+		return _invocations;
+	}
+
+	private sealed class Item : IInvocation<TParameter>
 	{
 		private readonly TParameter _parameter;
 		private readonly string? _jsonSnapshot;
@@ -129,6 +134,8 @@ public sealed class Invocation<TParameter> : IInvocationVerify
 		public long Index { get; }
 
 		public bool IsVerified { get; set; }
+
+		public TParameter Arguments => _parameter;
 
 		public TParameter GetParameter(SetupType? setupType)
 		{

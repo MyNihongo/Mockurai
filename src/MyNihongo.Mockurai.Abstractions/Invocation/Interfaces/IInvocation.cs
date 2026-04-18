@@ -8,3 +8,8 @@ public interface IInvocation
 
 	string ToString();
 }
+
+public interface IInvocation<out TArguments> : IInvocation
+{
+	TArguments Arguments { get; }
+}
