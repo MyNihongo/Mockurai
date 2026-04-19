@@ -126,7 +126,7 @@ internal static class MockImplementationGenerator
 		return symbols
 			.FilterMockableSymbols()
 			.ToLookup(static x => x.GetSymbolName())
-			.SelectMany(static x => x.Select((y, i) => new MockedMemberSymbol($"{x.Key}{i}", y)))
+			.SelectMany(static x => x.Select((y, i) => new MockedMemberSymbol($"{x.Key}{i}", i, y)))
 			.ToArray();
 	}
 
@@ -340,6 +340,11 @@ internal static class MockImplementationGenerator
 					.AppendInvocationInterface(method)
 					.Append("> ")
 					.AppendPropertyName(symbolName, method.MethodKind);
+
+				// For not this is meant to solve method overload naming collisions.
+				// maybe in the future we can come up with something better
+				if (memberSymbol.Index > 0)
+					stringBuilder.Append(memberSymbol.Index + 1);
 
 				if (method.TypeArguments.IsDefaultOrEmpty)
 				{
