@@ -329,6 +329,7 @@ internal static class MockImplementationGenerator
 			foreach (var method in handler(memberSymbol))
 			{
 				const string fieldPrefix = MockGeneratorConst.Suffixes.MockVariableCall;
+				var symbolName = memberSymbol.Symbol.GetSymbolName();
 
 				if (generatedCount > 0)
 					stringBuilder.AppendLine().AppendLine();
@@ -338,7 +339,7 @@ internal static class MockImplementationGenerator
 					.Append("public IEnumerable<")
 					.AppendInvocationInterface(method)
 					.Append("> ")
-					.AppendPropertyName(memberSymbol.Symbol.Name, method.MethodKind);
+					.AppendPropertyName(symbolName, method.MethodKind);
 
 				if (method.TypeArguments.IsDefaultOrEmpty)
 				{
