@@ -335,12 +335,27 @@ internal static class MockImplementationGenerator
 					.Append("public IEnumerable<")
 					.AppendInvocationInterface(method)
 					.Append("> ")
-					.AppendPropertyName(members[i].Symbol.Name, method.MethodKind)
-					.Append(" => _mock.")
-					.AppendInvocationFieldName(members[i].MemberName, method.MethodKind)
-					.Append("?.")
-					.AppendInvocationGetMethodName(method)
-					.Append("() ?? [];");
+					.AppendPropertyName(members[i].Symbol.Name, method.MethodKind);
+
+				if (method.TypeArguments.IsDefaultOrEmpty)
+				{
+					stringBuilder
+						.Append(" => _mock.")
+						.AppendInvocationFieldName(members[i].MemberName, method.MethodKind)
+						.Append("?.")
+						.AppendInvocationGetMethodName(method)
+						.Append("() ?? [];");
+				}
+				else
+				{
+					stringBuilder
+						.AppendGenericTypes(method.TypeArguments).AppendLine("()")
+						.Indent(indent++).AppendLine("{");
+
+					TODO
+
+					stringBuilder.Append('}');
+				}
 
 				generatedCount++;
 			}
