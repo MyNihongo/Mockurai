@@ -31,6 +31,8 @@ internal static class MockImplementationGenerator
 
 			  	public {{typeString}} Object => _proxy ??= new Proxy(this);
 
+			  	public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 			  {{CreateMockMethods(stringBuilder, mockedTypeSymbol, mockableMembers, indent: 1, out var methodSymbols)}}
 
 			  	public void VerifyNoOtherCalls()
@@ -54,12 +56,26 @@ internal static class MockImplementationGenerator
 
 			  {{CreateProxyMethods(stringBuilder, mockedTypeSymbol, mockableMembers, indent: 2)}}
 			  	}
+
+			  	public sealed class InvocationContainer
+			  	{
+			  		private readonly {{mockClassName}} _mock;
+
+			  		public InvocationContainer({{mockClassName}} mock)
+			  		{
+			  			_mock = mock;
+			  		}
+
+			  {{CreateInvocationContainerProperties(stringBuilder, mockableMembers, indent: 2)}}
+			  	}
 			  }
 
 			  public static partial class MockExtensions
 			  {
 			  	extension{{genericTypes}}(IMock<{{typeString}}> @this)
 			  	{
+			  		public {{mockClassName}}.InvocationContainer Invocations => (({{mockClassName}})@this).Invocations;
+
 			  		public void VerifyNoOtherCalls() =>
 			  			(({{mockClassName}})@this).VerifyNoOtherCalls();
 
@@ -287,6 +303,47 @@ internal static class MockImplementationGenerator
 
 			handler(stringBuilder, member, indent);
 			generatedCount++;
+		}
+
+		return stringBuilder.ToString();
+	}
+
+	private static string CreateInvocationContainerProperties(StringBuilder stringBuilder, IReadOnlyList<MockedMemberSymbol> members, int indent)
+	{
+		stringBuilder.Clear();
+
+		for (int i = 0, generatedCount = 0; i < members.Count; i++)
+		{
+			Func<MockedMemberSymbol, IEnumerable<IMethodSymbol>>? handler = members[i].Symbol.Kind switch
+			{
+				SymbolKind.Event => MockImplementationEventGenerator.GetEventMethods,
+				SymbolKind.Property => MockImplementationPropertyGenerator.GetPropertyMethods,
+				SymbolKind.Method => MockImplementationMethodGenerator.GetMethodMethods,
+				_ => null,
+			};
+
+			if (handler is null)
+				continue;
+
+			foreach (var method in handler(members[i]))
+			{
+				if (generatedCount > 0)
+					stringBuilder.AppendLine().AppendLine();
+
+				stringBuilder
+					.Indent(indent)
+					.Append("public IEnumerable<")
+					.AppendInvocationInterface(method)
+					.Append("> ")
+					.AppendPropertyName(members[i].Symbol.Name, method.MethodKind)
+					.Append(" => _mock.")
+					.AppendInvocationFieldName(members[i].MemberName, method.MethodKind)
+					.Append("?.")
+					.AppendInvocationGetMethodName(method)
+					.Append("() ?? [];");
+
+				generatedCount++;
+			}
 		}
 
 		return stringBuilder.ToString();

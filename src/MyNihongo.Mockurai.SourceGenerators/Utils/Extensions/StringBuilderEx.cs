@@ -69,7 +69,7 @@ internal static class StringBuilderEx
 				.Append(suffix);
 		}
 
-		public StringBuilder AppendPropertyName(string? name)
+		public StringBuilder AppendPropertyName(string? name, MethodKind? methodKind = null)
 		{
 			if (string.IsNullOrEmpty(name))
 				return @this;
@@ -83,9 +83,10 @@ internal static class StringBuilderEx
 
 			@this.Append(char.ToUpper(name[startIndex]));
 
-			return startIndex + 1 < name.Length
-				? @this.Append(name.Substring(startIndex + 1))
-				: @this;
+			if (startIndex + 1 < name.Length)
+				@this.Append(name.Substring(startIndex + 1));
+
+			return @this.AppendMethodKind(methodKind);
 		}
 
 		public StringBuilder AppendMethodKind(MethodKind? methodKind)
