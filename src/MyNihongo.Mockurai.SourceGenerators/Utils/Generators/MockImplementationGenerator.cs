@@ -66,7 +66,7 @@ internal static class MockImplementationGenerator
 			  			_mock = mock;
 			  		}
 
-			  {{CreateInvocationContainerProperties(stringBuilder, mockableMembers, indent: 2)}}
+			  {{CreateInvocationContainerProperties(stringBuilder, mockedTypeSymbol, mockableMembers, indent: 2)}}
 			  	}
 			  }
 
@@ -308,13 +308,14 @@ internal static class MockImplementationGenerator
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateInvocationContainerProperties(StringBuilder stringBuilder, IReadOnlyList<MockedMemberSymbol> members, int indent)
+	private static string CreateInvocationContainerProperties(StringBuilder stringBuilder, MockedTypeSymbol typeSymbol, IReadOnlyList<MockedMemberSymbol> members, int indent)
 	{
 		stringBuilder.Clear();
 
 		for (int i = 0, generatedCount = 0; i < members.Count; i++)
 		{
-			Func<MockedMemberSymbol, IEnumerable<IMethodSymbol>>? handler = members[i].Symbol.Kind switch
+			var memberSymbol = members[i];
+			Func<MockedMemberSymbol, IEnumerable<IMethodSymbol>>? handler = memberSymbol.Symbol.Kind switch
 			{
 				SymbolKind.Event => MockImplementationEventGenerator.GetEventMethods,
 				SymbolKind.Property => MockImplementationPropertyGenerator.GetPropertyMethods,
@@ -325,8 +326,10 @@ internal static class MockImplementationGenerator
 			if (handler is null)
 				continue;
 
-			foreach (var method in handler(members[i]))
+			foreach (var method in handler(memberSymbol))
 			{
+				const string fieldPrefix = MockGeneratorConst.Suffixes.MockVariableCall;
+
 				if (generatedCount > 0)
 					stringBuilder.AppendLine().AppendLine();
 
@@ -335,13 +338,13 @@ internal static class MockImplementationGenerator
 					.Append("public IEnumerable<")
 					.AppendInvocationInterface(method)
 					.Append("> ")
-					.AppendPropertyName(members[i].Symbol.Name, method.MethodKind);
+					.AppendPropertyName(memberSymbol.Symbol.Name, method.MethodKind);
 
 				if (method.TypeArguments.IsDefaultOrEmpty)
 				{
 					stringBuilder
-						.Append(" => _mock.")
-						.AppendInvocationFieldName(members[i].MemberName, method.MethodKind)
+						.Append($" => {fieldPrefix}")
+						.AppendInvocationFieldName(memberSymbol.MemberName, method.MethodKind)
 						.Append("?.")
 						.AppendInvocationGetMethodName(method)
 						.Append("() ?? [];");
@@ -350,11 +353,20 @@ internal static class MockImplementationGenerator
 				{
 					stringBuilder
 						.AppendGenericTypes(method.TypeArguments).AppendLine("()")
-						.Indent(indent++).AppendLine("{");
+						.Indent(indent++).AppendLine("{")
+						.Indent(indent).AppendInvocationDeclaration(method, typeSymbol, memberSymbol, fieldPrefix, indent, out _).AppendLine();
 
-					TODO
+					stringBuilder
+						.Indent(indent)
+						.Append("return ")
+						.AppendParameterName(memberSymbol.MemberName, method.MethodKind, suffix: MockGeneratorConst.Suffixes.Invocation)
+						.Append('.')
+						.AppendInvocationGetMethodName(method)
+						.AppendLine("() ?? [];");
 
-					stringBuilder.Append('}');
+					stringBuilder
+						.Indent(--indent)
+						.Append('}');
 				}
 
 				generatedCount++;
