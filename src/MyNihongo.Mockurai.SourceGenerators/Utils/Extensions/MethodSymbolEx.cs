@@ -809,7 +809,7 @@ internal static class MethodSymbolEx
 			{
 				0 => @this.Append(interfaceName),
 				1 => @this.Append(interfaceName).AppendGenericTypes([methodSymbol.Parameters[0].Type]),
-				_ => @this.Append(interfaceName).Append("<(").AppendParameters(methodSymbol.Parameters, appendRefKind: false).Append(")>"),
+				_ => @this.Append(interfaceName).Append('<').AppendParameterTuple(methodSymbol.Parameters).Append('>'),
 			};
 		}
 
