@@ -336,7 +336,7 @@ internal static class MockImplementationGenerator
 
 				stringBuilder
 					.Indent(indent)
-					.Append("public IEnumerable<")
+					.Append("public System.Collections.Generic.IEnumerable<")
 					.AppendInvocationInterface(method)
 					.Append("> ")
 					.AppendPropertyName(symbolName, method.MethodKind);
