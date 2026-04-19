@@ -575,7 +575,7 @@ internal static class MockInvocationGenerator
 		stringBuilder.Clear();
 
 		return stringBuilder
-			.AppendParameterTuple(methodSymbol.Parameters, genericTypeOverride)
+			.AppendParameterTuple(methodSymbol.Parameters, genericTypeOverride, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
 			.ToString();
 	}
 

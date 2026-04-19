@@ -406,11 +406,11 @@ internal static class ParameterSymbolEx
 			return @this;
 		}
 
-		public StringBuilder AppendParameterTuple(ImmutableArray<IParameterSymbol> parameters, ImmutableDictionary<IParameterSymbol, StringTemplate>? parameterTypeOverride = null)
+		public StringBuilder AppendParameterTuple(ImmutableArray<IParameterSymbol> parameters, ImmutableDictionary<IParameterSymbol, StringTemplate>? parameterTypeOverride = null, Func<StringBuilder, int, StringBuilder>? appendParameterName = null)
 		{
 			return @this
 				.Append('(')
-				.AppendParameters(parameters, appendRefKind: false, parameterTypeOverride: parameterTypeOverride)
+				.AppendParameters(parameters, appendRefKind: false, parameterTypeOverride: parameterTypeOverride, appendParameterName: appendParameterName)
 				.Append(')');
 		}
 
