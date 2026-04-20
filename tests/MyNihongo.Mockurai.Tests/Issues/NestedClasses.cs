@@ -103,6 +103,8 @@ public sealed class NestedClasses : TestsBase
 
 					public Issues.Tests.Container Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Execute
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _execute0;
 					private InvocationDictionary? _execute0Invocation;
@@ -156,12 +158,31 @@ public sealed class NestedClasses : TestsBase
 							((SetupStringChangesHandlerT1<T>?)_mock._execute0?.ValueOrDefault(typeof(T)))?.Invoke(processorName, onChangesDelegate);
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly ContainerMock _mock;
+
+						public InvocationContainer(ContainerMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(string processorName, Issues.Tests.Container.ChangesHandler<T> onChangesDelegate)>> Execute<T>()
+						{
+							_mock._execute0Invocation ??= new InvocationDictionary();
+							var execute0Invocation = (InvocationStringChangesHandlerT1<T>)_mock._execute0Invocation.GetOrAdd(typeof(T), static key => new InvocationStringChangesHandlerT1<T>($"Container.Execute<{key.Name}>({{0}}, {{1}})"));
+							return execute0Invocation.GetInvocationsWithArguments() ?? [];
+						}
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.Container> @this)
 					{
+						public ContainerMock.InvocationContainer Invocations => ((ContainerMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((ContainerMock)@this).VerifyNoOtherCalls();
 
