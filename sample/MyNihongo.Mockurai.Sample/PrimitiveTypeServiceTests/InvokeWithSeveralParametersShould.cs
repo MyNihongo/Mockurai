@@ -710,4 +710,19 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 		DependencyServiceMock.VerifyInvokeWithSeveralParameters(setValue1, setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void GetInvocations()
+	{
+		var fixture = CreateFixture();
+
+		fixture.InvokeWithSeveralParameters(1, 2);
+		fixture.InvokeWithSeveralParameters(3, 4);
+
+		var actual = DependencyServiceMock.Invocations.InvokeWithSeveralParameters
+			.Sum(x => x.Arguments.parameter1 + x.Arguments.parameter2);
+
+		const int expected = 10;
+		Assert.Equal(expected, actual);
+	}
 }

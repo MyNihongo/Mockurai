@@ -8,6 +8,7 @@ internal static class MockInvocationGenerator
 	{
 		var stringBuilder = new StringBuilder();
 		var className = CreateSetupClassName(stringBuilder, methodSymbol, out var genericTypeOverride);
+		var argumentTuple = CreateArgumentTuple(stringBuilder, methodSymbol, genericTypeOverride);
 
 		var source =
 			$$"""
@@ -40,9 +41,15 @@ internal static class MockInvocationGenerator
 			  		return _invocations;
 			  	}
 
-			  	private sealed class Item : IInvocation
+			  	public System.Collections.Generic.IEnumerable<IInvocation<{{argumentTuple}}>> GetInvocationsWithArguments()
 			  	{
-			  {{CreateItemFields(stringBuilder, methodSymbol, genericTypeOverride, indent: 2)}}
+			  		return _invocations;
+			  	}
+
+			  	private sealed class Item : IInvocation<{{argumentTuple}}>
+			  	{
+			  		private readonly {{argumentTuple}} _argument;
+			  {{CreateItemFields(stringBuilder, methodSymbol, indent: 2)}}
 			  		private readonly {{className}} _invocation;
 
 			  {{CreateItemConstructor(stringBuilder, methodSymbol, genericTypeOverride, indent: 2)}}
@@ -50,6 +57,8 @@ internal static class MockInvocationGenerator
 			  		public long Index { get; }
 
 			  		public bool IsVerified { get; set; }
+
+			  		public {{argumentTuple}} Arguments => _argument;
 
 			  {{CreateItemGetMethods(stringBuilder, methodSymbol, genericTypeOverride, indent: 2)}}
 
@@ -356,26 +365,9 @@ internal static class MockInvocationGenerator
 		}
 	}
 
-	private static string CreateItemFields(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
+	private static string CreateItemFields(StringBuilder stringBuilder, IMethodSymbol methodSymbol, int indent)
 	{
 		stringBuilder.Clear();
-
-		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
-		{
-			var parameter = methodSymbol.Parameters[i];
-
-			var typeOverride = genericTypeOverride
-				.GetValueOrDefault(parameter)
-				.Build();
-
-			stringBuilder
-				.Indent(indent)
-				.Append("private readonly ")
-				.AppendType(parameter.Type, typeOverride)
-				.Append(' ')
-				.AppendParameterFieldName(i)
-				.AppendLine(";");
-		}
 
 		stringBuilder
 			.Indent(indent)
@@ -409,19 +401,13 @@ internal static class MockInvocationGenerator
 
 		stringBuilder
 			.Indent(indent++).AppendLine("{")
+			.Indent(indent).Append("_argument = ").AppendParameterVariableTupleNames(methodSymbol.Parameters).AppendLine(";")
 			.Indent(indent).AppendLine("_invocation = invocation;")
 			.Indent(indent).AppendLine("Index = index;");
 
 		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
 			stringBuilder.AppendLine();
-
-			stringBuilder
-				.Indent(indent)
-				.AppendParameterFieldName(i)
-				.Append(" = ")
-				.AppendParameterVariableName(i)
-				.AppendLine(";");
 
 			stringBuilder
 				.Indent(indent)
@@ -492,8 +478,8 @@ internal static class MockInvocationGenerator
 
 			stringBuilder
 				.Indent(indent + 1)
-				.Append(": ")
-				.AppendParameterFieldName(i)
+				.Append(": _argument.")
+				.AppendParameterVariableName(i)
 				.AppendLine(";");
 
 			stringBuilder
@@ -555,8 +541,8 @@ internal static class MockInvocationGenerator
 
 			stringBuilder
 				.Indent(indent + 1)
-				.Append("stringBuilder.Append(")
-				.AppendParameterFieldName(i)
+				.Append("stringBuilder.Append(_argument.")
+				.AppendParameterVariableName(i)
 				.AppendLine(");");
 
 			stringBuilder
@@ -581,6 +567,15 @@ internal static class MockInvocationGenerator
 
 		return stringBuilder
 			.AppendInvocationClassName(methodSymbol.Parameters, out genericTypeOverride)
+			.ToString();
+	}
+
+	private static string CreateArgumentTuple(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride)
+	{
+		stringBuilder.Clear();
+
+		return stringBuilder
+			.AppendParameterTuple(methodSymbol.Parameters, genericTypeOverride, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
 			.ToString();
 	}
 

@@ -981,4 +981,21 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.VerifySetGetInit(setValue, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void GetInvocations()
+	{
+		const string argument1 = nameof(argument1), argument2 = nameof(argument2);
+
+		var fixture = CreateFixture();
+		fixture.GetInit = argument1;
+		fixture.GetInit = argument2;
+
+		var arguments = DependencyServiceMock.Invocations.GetInitSet
+			.Select(x => x.Arguments);
+		var actual = string.Join(null, arguments);
+
+		const string expected = argument1 + argument2;
+		Assert.Equal(expected, actual);
+	}
 }

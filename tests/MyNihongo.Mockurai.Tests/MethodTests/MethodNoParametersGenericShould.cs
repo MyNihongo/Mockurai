@@ -44,6 +44,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation> Invoke => _mock._invoke0Invocation?.GetInvocations() ?? [];";
 
 		const string extensions =
 			"""
@@ -69,7 +70,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			""";
 
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -117,6 +118,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation> Invoke => _mock._invoke0Invocation?.GetInvocations() ?? [];";
 
 		const string extensions =
 			"""
@@ -142,7 +144,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			""";
 
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -194,6 +196,15 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation> Invoke<TInvoke>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation)_mock._invoke0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation($"IInterface<{typeof(T).Name}>.Invoke<{key.Name}>()"));
+				return invoke0Invocation.GetInvocations() ?? [];
+			}
+			""";
 
 		const string extensions =
 			"""
@@ -219,7 +230,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			""";
 
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -267,6 +278,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation> Invoke => _mock._invoke0Invocation?.GetInvocations() ?? [];";
 
 		const string extensions =
 			"""
@@ -292,7 +304,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			""";
 
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -344,6 +356,15 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation> Invoke<TReturn>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation)_mock._invoke0Invocation.GetOrAdd(typeof(TReturn), static key => new Invocation($"IInterface<{typeof(T).Name}>.Invoke<{key.Name}>()"));
+				return invoke0Invocation.GetInvocations() ?? [];
+			}
+			""";
 
 		const string extensions =
 			"""
@@ -369,7 +390,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			""";
 
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -445,9 +466,10 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation> Invoke => _mock._invoke0Invocation?.GetInvocations() ?? [];";
 
 		var testCode = CreateClassTestCode(method);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -523,9 +545,10 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation> Invoke => _mock._invoke0Invocation?.GetInvocations() ?? [];";
 
 		var testCode = CreateClassTestCode(method);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -603,9 +626,10 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation> Invoke => _mock._invoke0Invocation?.GetInvocations() ?? [];";
 
 		var testCode = CreateClassTestCode(method, isAbstract: true);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -683,9 +707,10 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation> Invoke => _mock._invoke0Invocation?.GetInvocations() ?? [];";
 
 		var testCode = CreateClassTestCode(method, isAbstract: true);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -765,9 +790,18 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation> Invoke<TInvoke>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation)_mock._invoke0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation($"Class<{typeof(T).Name}>.Invoke<{key.Name}>()"));
+				return invoke0Invocation.GetInvocations() ?? [];
+			}
+			""";
 
 		var testCode = CreateClassTestCode(method);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -847,9 +881,18 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation> Invoke<TInvoke>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation)_mock._invoke0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation($"Class<{typeof(T).Name}>.Invoke<{key.Name}>()"));
+				return invoke0Invocation.GetInvocations() ?? [];
+			}
+			""";
 
 		var testCode = CreateClassTestCode(method);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -931,9 +974,18 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation> Invoke<TInvoke>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation)_mock._invoke0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation($"Class<{typeof(T).Name}>.Invoke<{key.Name}>()"));
+				return invoke0Invocation.GetInvocations() ?? [];
+			}
+			""";
 
 		var testCode = CreateClassTestCode(method, isAbstract: true);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1015,9 +1067,18 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation> Invoke<TInvoke>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation)_mock._invoke0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation($"Class<{typeof(T).Name}>.Invoke<{key.Name}>()"));
+				return invoke0Invocation.GetInvocations() ?? [];
+			}
+			""";
 
 		var testCode = CreateClassTestCode(method, isAbstract: true);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1093,9 +1154,10 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation> Invoke => _mock._invoke0Invocation?.GetInvocations() ?? [];";
 
 		var testCode = CreateClassTestCode(method);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1173,9 +1235,10 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation> Invoke => _mock._invoke0Invocation?.GetInvocations() ?? [];";
 
 		var testCode = CreateClassTestCode(method, isAbstract: true);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1255,9 +1318,18 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation> Invoke<TReturn>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation)_mock._invoke0Invocation.GetOrAdd(typeof(TReturn), static key => new Invocation($"Class<{typeof(T).Name}>.Invoke<{key.Name}>()"));
+				return invoke0Invocation.GetInvocations() ?? [];
+			}
+			""";
 
 		var testCode = CreateClassTestCode(method);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1339,9 +1411,18 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 
 		const string verifyNoOtherCalls = "_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);";
 		const string invocations = "yield return _invoke0Invocation;";
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation> Invoke<TReturn>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation)_mock._invoke0Invocation.GetOrAdd(typeof(TReturn), static key => new Invocation($"Class<{typeof(T).Name}>.Invoke<{key.Name}>()"));
+				return invoke0Invocation.GetInvocations() ?? [];
+			}
+			""";
 
 		var testCode = CreateClassTestCode(method, isAbstract: true);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();

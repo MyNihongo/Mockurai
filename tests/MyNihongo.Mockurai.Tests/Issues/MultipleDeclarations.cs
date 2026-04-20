@@ -107,6 +107,8 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private Setup? _invoke0;
 					private Invocation? _invoke0Invocation;
@@ -155,12 +157,26 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 							_mock._invoke0?.Invoke();
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation> Invoke => _mock._invoke0Invocation?.GetInvocations() ?? [];
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -245,6 +261,8 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private Setup? _invoke0;
 					private Invocation? _invoke0Invocation;
@@ -293,12 +311,26 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 							_mock._invoke0?.Invoke();
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation> Invoke => _mock._invoke0Invocation?.GetInvocations() ?? [];
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -377,6 +409,8 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 					}
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
+
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
 
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
@@ -463,12 +497,33 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 							return _mock._invoke20?.Execute(param2, param1, out var returnValue) == true ? returnValue! : default!;
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(int param1, long param2)>> Invoke<T>()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationInt32Int64)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationInt32Int64($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+							return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(int param2, long param1)>> Invoke2 => _mock._invoke20Invocation?.GetInvocationsWithArguments() ?? [];
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -568,6 +623,8 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
 					private InvocationDictionary? _invoke0Invocation;
@@ -653,12 +710,33 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 							return _mock._invoke20?.Execute(param2, param1, out var returnValue) == true ? returnValue! : default!;
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(int param1, long param2)>> Invoke<T>()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationInt32Int64)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationInt32Int64($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+							return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(long param2, int param1)>> Invoke2 => _mock._invoke20Invocation?.GetInvocationsWithArguments() ?? [];
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -760,6 +838,8 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
 					private InvocationDictionary? _invoke0Invocation;
@@ -845,12 +925,33 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 							return _mock._invoke20?.Execute(param1, in param2, out var returnValue) == true ? returnValue! : default!;
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(int param1, long param2)>> Invoke<T>()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationInt32Int64)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationInt32Int64($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+							return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(int param1, long param2)>> Invoke2 => _mock._invoke20Invocation?.GetInvocationsWithArguments() ?? [];
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -1017,6 +1118,8 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private SetupInt32Double? _invoke0;
 					private InvocationInt32Double? _invoke0Invocation;
@@ -1066,12 +1169,26 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 							_mock._invoke0?.Invoke(param1, param2);
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(int param1, double param2)>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -1120,6 +1237,8 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 					}
 
 					public Issues.Tests.AbstractClass Object => _proxy ??= new Proxy(this);
+
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
 
 					// Invoke
 					private SetupInt32Double? _invoke0;
@@ -1170,12 +1289,26 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 							_mock._invoke0?.Invoke(value1, value2);
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly AbstractClassMock _mock;
+
+						public InvocationContainer(AbstractClassMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(int value1, double value2)>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.AbstractClass> @this)
 					{
+						public AbstractClassMock.InvocationContainer Invocations => ((AbstractClassMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((AbstractClassMock)@this).VerifyNoOtherCalls();
 
@@ -1261,6 +1394,8 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 					}
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
+
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
 
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
@@ -1351,12 +1486,38 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 							((SetupInt32T1<TValue>?)_mock._invoke20?.ValueOrDefault(typeof(TValue)))?.Invoke(param1, param2);
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(int param1, TStuff param2)>> Invoke<TStuff>()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationInt32T1<TStuff>)_mock._invoke0Invocation.GetOrAdd(typeof(TStuff), static key => new InvocationInt32T1<TStuff>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+							return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(int param1, TValue param2)>> Invoke2<TValue>()
+						{
+							_mock._invoke20Invocation ??= new InvocationDictionary();
+							var invoke20Invocation = (InvocationInt32T1<TValue>)_mock._invoke20Invocation.GetOrAdd(typeof(TValue), static key => new InvocationInt32T1<TValue>($"IInterface.Invoke2<{key.Name}>({{0}}, {{1}})"));
+							return invoke20Invocation.GetInvocationsWithArguments() ?? [];
+						}
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -1466,6 +1627,8 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
 					private InvocationDictionary? _invoke0Invocation;
@@ -1555,12 +1718,38 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 							((SetupT1Int32<TValue>?)_mock._invoke20?.ValueOrDefault(typeof(TValue)))?.Invoke(param1, param2);
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(int param1, TStuff param2)>> Invoke<TStuff>()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationInt32T1<TStuff>)_mock._invoke0Invocation.GetOrAdd(typeof(TStuff), static key => new InvocationInt32T1<TStuff>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+							return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(TValue param1, int param2)>> Invoke2<TValue>()
+						{
+							_mock._invoke20Invocation ??= new InvocationDictionary();
+							var invoke20Invocation = (InvocationT1Int32<TValue>)_mock._invoke20Invocation.GetOrAdd(typeof(TValue), static key => new InvocationT1Int32<TValue>($"IInterface.Invoke2<{key.Name}>({{0}}, {{1}})"));
+							return invoke20Invocation.GetInvocationsWithArguments() ?? [];
+						}
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -1661,6 +1850,8 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private SetupInt32Int32? _invoke0;
 					private InvocationInt32Int32? _invoke0Invocation;
@@ -1742,12 +1933,28 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 							return _mock._invoke20?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(int param1, int param2)>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(int param1, int param2)>> Invoke2 => _mock._invoke20Invocation?.GetInvocationsWithArguments() ?? [];
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 

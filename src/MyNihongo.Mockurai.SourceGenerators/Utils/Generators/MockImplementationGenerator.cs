@@ -31,6 +31,8 @@ internal static class MockImplementationGenerator
 
 			  	public {{typeString}} Object => _proxy ??= new Proxy(this);
 
+			  	public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 			  {{CreateMockMethods(stringBuilder, mockedTypeSymbol, mockableMembers, indent: 1, out var methodSymbols)}}
 
 			  	public void VerifyNoOtherCalls()
@@ -54,12 +56,26 @@ internal static class MockImplementationGenerator
 
 			  {{CreateProxyMethods(stringBuilder, mockedTypeSymbol, mockableMembers, indent: 2)}}
 			  	}
+
+			  	public sealed class InvocationContainer
+			  	{
+			  		private readonly {{mockClassName}} _mock;
+
+			  		public InvocationContainer({{mockClassName}} mock)
+			  		{
+			  			_mock = mock;
+			  		}
+
+			  {{CreateInvocationContainerProperties(stringBuilder, mockedTypeSymbol, mockableMembers, indent: 2)}}
+			  	}
 			  }
 
 			  public static partial class MockExtensions
 			  {
 			  	extension{{genericTypes}}(IMock<{{typeString}}> @this)
 			  	{
+			  		public {{mockClassName}}.InvocationContainer Invocations => (({{mockClassName}})@this).Invocations;
+
 			  		public void VerifyNoOtherCalls() =>
 			  			(({{mockClassName}})@this).VerifyNoOtherCalls();
 
@@ -110,7 +126,7 @@ internal static class MockImplementationGenerator
 		return symbols
 			.FilterMockableSymbols()
 			.ToLookup(static x => x.GetSymbolName())
-			.SelectMany(static x => x.Select((y, i) => new MockedMemberSymbol($"{x.Key}{i}", y)))
+			.SelectMany(static x => x.Select((y, i) => new MockedMemberSymbol($"{x.Key}{i}", i, y)))
 			.ToArray();
 	}
 
@@ -287,6 +303,80 @@ internal static class MockImplementationGenerator
 
 			handler(stringBuilder, member, indent);
 			generatedCount++;
+		}
+
+		return stringBuilder.ToString();
+	}
+
+	private static string CreateInvocationContainerProperties(StringBuilder stringBuilder, MockedTypeSymbol typeSymbol, IReadOnlyList<MockedMemberSymbol> members, int indent)
+	{
+		stringBuilder.Clear();
+
+		for (int i = 0, generatedCount = 0; i < members.Count; i++)
+		{
+			var memberSymbol = members[i];
+			Func<MockedMemberSymbol, IEnumerable<IMethodSymbol>>? handler = memberSymbol.Symbol.Kind switch
+			{
+				SymbolKind.Event => MockImplementationEventGenerator.GetEventMethods,
+				SymbolKind.Property => MockImplementationPropertyGenerator.GetPropertyMethods,
+				SymbolKind.Method => MockImplementationMethodGenerator.GetMethodMethods,
+				_ => null,
+			};
+
+			if (handler is null)
+				continue;
+
+			foreach (var method in handler(memberSymbol))
+			{
+				const string fieldPrefix = MockGeneratorConst.Suffixes.MockVariableCall;
+				var symbolName = memberSymbol.Symbol.GetSymbolName();
+
+				if (generatedCount > 0)
+					stringBuilder.AppendLine().AppendLine();
+
+				stringBuilder
+					.Indent(indent)
+					.Append("public System.Collections.Generic.IEnumerable<")
+					.AppendInvocationInterface(method)
+					.Append("> ")
+					.AppendPropertyName(symbolName, method.MethodKind);
+
+				// For not this is meant to solve method overload naming collisions.
+				// maybe in the future we can come up with something better
+				if (memberSymbol.Index > 0)
+					stringBuilder.Append(memberSymbol.Index + 1);
+
+				if (method.TypeArguments.IsDefaultOrEmpty)
+				{
+					stringBuilder
+						.Append($" => {fieldPrefix}")
+						.AppendInvocationFieldName(memberSymbol.MemberName, method.MethodKind)
+						.Append("?.")
+						.AppendInvocationGetMethodName(method)
+						.Append("() ?? [];");
+				}
+				else
+				{
+					stringBuilder
+						.AppendGenericTypes(method.TypeArguments).AppendLine("()")
+						.Indent(indent++).AppendLine("{")
+						.Indent(indent).AppendInvocationDeclaration(method, typeSymbol, memberSymbol, fieldPrefix, indent, out _).AppendLine();
+
+					stringBuilder
+						.Indent(indent)
+						.Append("return ")
+						.AppendParameterName(memberSymbol.MemberName, method.MethodKind, suffix: MockGeneratorConst.Suffixes.Invocation)
+						.Append('.')
+						.AppendInvocationGetMethodName(method)
+						.AppendLine("() ?? [];");
+
+					stringBuilder
+						.Indent(--indent)
+						.Append('}');
+				}
+
+				generatedCount++;
+			}
 		}
 
 		return stringBuilder.ToString();

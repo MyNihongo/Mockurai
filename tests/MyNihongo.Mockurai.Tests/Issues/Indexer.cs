@@ -50,6 +50,8 @@ public sealed class Indexer : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// this[]
 					private SetupWithParameter<string, string?>? _indexer0Get;
 					private Invocation<string>? _indexer0GetInvocation;
@@ -131,12 +133,28 @@ public sealed class Indexer : IssuesTestsBase
 							}
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<string>> IndexerGet => _mock._indexer0GetInvocation?.GetInvocationsWithArguments() ?? [];
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(string key, string? value)>> IndexerSet => _mock._indexer0SetInvocation?.GetInvocationsWithArguments() ?? [];
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -239,6 +257,8 @@ public sealed class Indexer : IssuesTestsBase
 					}
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
+
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
 
 					// this[]
 					private SetupWithParameter<string, string?>? _indexer0Get;
@@ -385,12 +405,32 @@ public sealed class Indexer : IssuesTestsBase
 							}
 						}
 					}
+				
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<string>> IndexerGet => _mock._indexer0GetInvocation?.GetInvocationsWithArguments() ?? [];
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(string key, string? value)>> IndexerSet => _mock._indexer0SetInvocation?.GetInvocationsWithArguments() ?? [];
+				
+						public System.Collections.Generic.IEnumerable<IInvocation<int>> IndexerGet2 => _mock._indexer1GetInvocation?.GetInvocationsWithArguments() ?? [];
+				
+						public System.Collections.Generic.IEnumerable<IInvocation<(int key, string value)>> IndexerSet2 => _mock._indexer1SetInvocation?.GetInvocationsWithArguments() ?? [];
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -532,6 +572,8 @@ public sealed class Indexer : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// this[]
 					private SetupStringInt32Boolean<string?>? _indexer0Get;
 					private InvocationStringInt32Boolean? _indexer0GetInvocation;
@@ -613,12 +655,28 @@ public sealed class Indexer : IssuesTestsBase
 							}
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(string key, int param1, bool param2)>> IndexerGet => _mock._indexer0GetInvocation?.GetInvocationsWithArguments() ?? [];
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(string key, int param1, bool param2, string? value)>> IndexerSet => _mock._indexer0SetInvocation?.GetInvocationsWithArguments() ?? [];
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 

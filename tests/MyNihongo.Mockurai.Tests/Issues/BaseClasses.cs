@@ -155,6 +155,8 @@ public sealed class BaseClasses : TestsBase
 
 					public MyNihongo.BaseClasses.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private Setup? _invoke0;
 					private Invocation? _invoke0Invocation;
@@ -203,12 +205,26 @@ public sealed class BaseClasses : TestsBase
 							_mock._invoke0?.Invoke();
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation> Invoke => _mock._invoke0Invocation?.GetInvocations() ?? [];
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<MyNihongo.BaseClasses.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 

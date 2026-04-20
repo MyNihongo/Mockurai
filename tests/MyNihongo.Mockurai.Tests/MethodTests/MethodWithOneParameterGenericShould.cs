@@ -69,8 +69,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<int>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -143,8 +145,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<int>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -223,8 +227,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<int>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -304,8 +310,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<int>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -378,8 +386,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<int>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -452,8 +462,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<int>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -526,8 +538,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<int>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -600,8 +614,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<int>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -674,8 +690,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<int>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -748,8 +766,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<int>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -826,8 +846,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<TInvoke>> Invoke<TInvoke>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<TInvoke>)_mock._invoke0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation<TInvoke>($"IInterface<{typeof(T).Name}>.Invoke<{key.Name}>({{0}})"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -904,8 +934,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<TInvoke>> Invoke<TInvoke>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<TInvoke>)_mock._invoke0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation<TInvoke>($"IInterface<{typeof(T).Name}>.Invoke<{key.Name}>({{0}})"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -988,8 +1028,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<TInvoke>> Invoke<TInvoke>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<TInvoke>)_mock._invoke0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation<TInvoke>($"IInterface<{typeof(T).Name}>.Invoke<{key.Name}>({{0}})", prefix: "out"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1073,8 +1123,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<TInvoke>> Invoke<TInvoke>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<TInvoke>)_mock._invoke0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation<TInvoke>($"IInterface<{typeof(T).Name}>.Invoke<{key.Name}>({{0}})", prefix: "out"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1151,8 +1211,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<TInvoke>> Invoke<TInvoke>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<TInvoke>)_mock._invoke0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation<TInvoke>($"IInterface<{typeof(T).Name}>.Invoke<{key.Name}>({{0}})", prefix: "in"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1229,8 +1299,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<TInvoke>> Invoke<TInvoke>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<TInvoke>)_mock._invoke0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation<TInvoke>($"IInterface<{typeof(T).Name}>.Invoke<{key.Name}>({{0}})", prefix: "in"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1307,8 +1387,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<TInvoke>> Invoke<TInvoke>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<TInvoke>)_mock._invoke0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation<TInvoke>($"IInterface<{typeof(T).Name}>.Invoke<{key.Name}>({{0}})", prefix: "ref"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1385,8 +1475,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<TInvoke>> Invoke<TInvoke>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<TInvoke>)_mock._invoke0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation<TInvoke>($"IInterface<{typeof(T).Name}>.Invoke<{key.Name}>({{0}})", prefix: "ref"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1463,8 +1563,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<TInvoke>> Invoke<TInvoke>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<TInvoke>)_mock._invoke0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation<TInvoke>($"IInterface<{typeof(T).Name}>.Invoke<{key.Name}>({{0}})", prefix: "ref readonly"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1541,8 +1651,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<TInvoke>> Invoke<TInvoke>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary();
+				var invoke0Invocation = (Invocation<TInvoke>)_mock._invoke0Invocation.GetOrAdd(typeof(TInvoke), static key => new Invocation<TInvoke>($"IInterface<{typeof(T).Name}>.Invoke<{key.Name}>({{0}})", prefix: "ref readonly"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1615,8 +1735,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<T>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1689,8 +1811,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<T>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1769,8 +1893,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<T>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1850,8 +1976,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<T>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1924,8 +2052,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<T>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1998,8 +2128,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<T>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -2072,8 +2204,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<T>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -2146,8 +2280,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<T>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -2220,8 +2356,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<T>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -2294,8 +2432,10 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer = "public System.Collections.Generic.IEnumerable<IInvocation<T>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -2372,8 +2512,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<T1>> Invoke<T1, T2>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface<{typeof(T).Name}>.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -2450,8 +2600,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<T1>> Invoke<T1, T2>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface<{typeof(T).Name}>.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -2534,8 +2694,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<T1>> Invoke<T1, T2>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface<{typeof(T).Name}>.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "out"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -2619,8 +2789,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<T1>> Invoke<T1, T2>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface<{typeof(T).Name}>.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "out"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -2697,8 +2877,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<T1>> Invoke<T1, T2>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface<{typeof(T).Name}>.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "in"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -2775,8 +2965,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<T1>> Invoke<T1, T2>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface<{typeof(T).Name}>.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "in"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -2853,8 +3053,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<T1>> Invoke<T1, T2>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface<{typeof(T).Name}>.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -2931,8 +3141,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<T1>> Invoke<T1, T2>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface<{typeof(T).Name}>.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -3009,8 +3229,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<T1>> Invoke<T1, T2>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface<{typeof(T).Name}>.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref readonly"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -3087,8 +3317,18 @@ public sealed class MethodWithOneParameterGenericShould : MethodGenericTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<T1>> Invoke<T1, T2>()
+			{
+				_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+				var invoke0Invocation = (Invocation<T1>)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2)), static key => new Invocation<T1>($"IInterface<{typeof(T).Name}>.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}})", prefix: "ref readonly"));
+				return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+			}
+			""";
+
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();

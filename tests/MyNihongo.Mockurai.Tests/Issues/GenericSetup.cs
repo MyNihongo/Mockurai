@@ -50,6 +50,8 @@ public sealed class GenericSetup : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
 					private InvocationDictionary? _invoke0Invocation;
@@ -103,12 +105,31 @@ public sealed class GenericSetup : IssuesTestsBase
 							return ((SetupInt32T1<TReturns, TReturns>?)_mock._invoke0?.ValueOrDefault(typeof(TReturns)))?.Execute(param1, returnValue, out var _returnValue) == true ? _returnValue! : default!;
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(int param1, TReturns returnValue)>> Invoke<TReturns>()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationInt32T1<TReturns>)_mock._invoke0Invocation.GetOrAdd(typeof(TReturns), static key => new InvocationInt32T1<TReturns>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+							return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+						}
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -194,6 +215,8 @@ public sealed class GenericSetup : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
 					private InvocationDictionary? _invoke0Invocation;
@@ -247,12 +270,31 @@ public sealed class GenericSetup : IssuesTestsBase
 							return ((SetupIReadOnlyListT1Int32<T, decimal>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(System.Collections.Generic.IReadOnlyList<T> param1, int param2)>> Invoke<T>()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationIReadOnlyListT1Int32<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationIReadOnlyListT1Int32<T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+							return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+						}
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -338,6 +380,8 @@ public sealed class GenericSetup : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
 					private InvocationDictionary? _invoke0Invocation;
@@ -391,12 +435,31 @@ public sealed class GenericSetup : IssuesTestsBase
 							return ((SetupIDictionaryT1IListT1T1<T, decimal>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(System.Collections.Generic.IDictionary<T, System.Collections.Generic.IList<T>> param1, T param2)>> Invoke<T>()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationIDictionaryT1IListT1T1<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationIDictionaryT1IListT1T1<T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+							return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+						}
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -482,6 +545,8 @@ public sealed class GenericSetup : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
 					private InvocationDictionary? _invoke0Invocation;
@@ -535,12 +600,31 @@ public sealed class GenericSetup : IssuesTestsBase
 							return ((SetupIDictionaryT1IListT1ICollectionT1<T, decimal>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(System.Collections.Generic.IDictionary<T, System.Collections.Generic.IList<T>> param1, System.Collections.Generic.ICollection<T> param2)>> Invoke<T>()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationIDictionaryT1IListT1ICollectionT1<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationIDictionaryT1IListT1ICollectionT1<T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+							return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+						}
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -626,6 +710,8 @@ public sealed class GenericSetup : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
 					private InvocationDictionary? _invoke0Invocation;
@@ -679,12 +765,31 @@ public sealed class GenericSetup : IssuesTestsBase
 							return ((SetupIDictionaryStringIListT1Int32<T, decimal>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(System.Collections.Generic.IDictionary<string, System.Collections.Generic.IList<T>> param1, int param2)>> Invoke<T>()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationIDictionaryStringIListT1Int32<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationIDictionaryStringIListT1Int32<T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+							return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+						}
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -770,6 +875,8 @@ public sealed class GenericSetup : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>? _invoke0;
 					private InvocationDictionary<(System.Type, System.Type)>? _invoke0Invocation;
@@ -823,12 +930,31 @@ public sealed class GenericSetup : IssuesTestsBase
 							return ((SetupIListT1ICollectionT2<TParam, TReturn, decimal>?)_mock._invoke0?.ValueOrDefault((typeof(TParam), typeof(TReturn))))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(System.Collections.Generic.IList<TParam> param1, System.Collections.Generic.ICollection<TReturn> param2)>> Invoke<TParam, TReturn>()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+							var invoke0Invocation = (InvocationIListT1ICollectionT2<TParam, TReturn>)_mock._invoke0Invocation.GetOrAdd((typeof(TParam), typeof(TReturn)), static key => new InvocationIListT1ICollectionT2<TParam, TReturn>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}}, {{1}})"));
+							return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+						}
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -914,6 +1040,8 @@ public sealed class GenericSetup : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>? _invoke0;
 					private InvocationDictionary<(System.Type, System.Type)>? _invoke0Invocation;
@@ -967,12 +1095,31 @@ public sealed class GenericSetup : IssuesTestsBase
 							return ((SetupIDictionaryStringIListT1ICollectionT2<TParam, TReturn, decimal>?)_mock._invoke0?.ValueOrDefault((typeof(TParam), typeof(TReturn))))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(System.Collections.Generic.IDictionary<string, System.Collections.Generic.IList<TParam>> param1, System.Collections.Generic.ICollection<TReturn> param2)>> Invoke<TParam, TReturn>()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type)>();
+							var invoke0Invocation = (InvocationIDictionaryStringIListT1ICollectionT2<TParam, TReturn>)_mock._invoke0Invocation.GetOrAdd((typeof(TParam), typeof(TReturn)), static key => new InvocationIDictionaryStringIListT1ICollectionT2<TParam, TReturn>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}>({{0}}, {{1}})"));
+							return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+						}
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -1052,6 +1199,8 @@ public sealed class GenericSetup : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
 					private InvocationDictionary? _invoke0Invocation;
@@ -1105,12 +1254,31 @@ public sealed class GenericSetup : IssuesTestsBase
 							return ((SetupArray1T1Int32<T, decimal>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(T[] param1, int param2)>> Invoke<T>()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationArray1T1Int32<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationArray1T1Int32<T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+							return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+						}
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -1533,19 +1701,23 @@ public sealed class GenericSetup : IssuesTestsBase
 						return _invocations;
 					}
 
-					private sealed class Item : IInvocation
+					public System.Collections.Generic.IEnumerable<IInvocation<(T1[] parameter1, int parameter2)>> GetInvocationsWithArguments()
 					{
-						private readonly T1[] _parameter1;
-						private readonly int _parameter2;
+						return _invocations;
+					}
+
+					private sealed class Item : IInvocation<(T1[] parameter1, int parameter2)>
+					{
+						private readonly (T1[] parameter1, int parameter2) _argument;
 						private readonly string? _jsonSnapshotParameter1, _jsonSnapshotParameter2;
 						private readonly InvocationArray1T1Int32<T1> _invocation;
 
 						public Item(long index, T1[] parameter1, int parameter2, InvocationArray1T1Int32<T1> invocation)
 						{
+							_argument = (parameter1, parameter2);
 							_invocation = invocation;
 							Index = index;
 
-							_parameter1 = parameter1;
 							try
 							{
 								_jsonSnapshotParameter1 = System.Text.Json.JsonSerializer.Serialize(parameter1);
@@ -1555,7 +1727,6 @@ public sealed class GenericSetup : IssuesTestsBase
 								// Swallow
 							}
 
-							_parameter2 = parameter2;
 							try
 							{
 								_jsonSnapshotParameter2 = System.Text.Json.JsonSerializer.Serialize(parameter2);
@@ -1570,18 +1741,20 @@ public sealed class GenericSetup : IssuesTestsBase
 
 						public bool IsVerified { get; set; }
 
+						public (T1[] parameter1, int parameter2) Arguments => _argument;
+
 						public T1[] GetParameter1(SetupType setupType)
 						{
 							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParameter1)
 								? System.Text.Json.JsonSerializer.Deserialize<T1[]>(_jsonSnapshotParameter1)!
-								: _parameter1;
+								: _argument.parameter1;
 						}
 
 						public int GetParameter2(SetupType setupType)
 						{
 							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParameter2)
 								? System.Text.Json.JsonSerializer.Deserialize<int>(_jsonSnapshotParameter2)!
-								: _parameter2;
+								: _argument.parameter2;
 						}
 
 						public override string ToString()
@@ -1594,7 +1767,7 @@ public sealed class GenericSetup : IssuesTestsBase
 							if (!string.IsNullOrEmpty(_jsonSnapshotParameter1))
 								stringBuilder.Append(_jsonSnapshotParameter1);
 							else
-								stringBuilder.Append(_parameter1);
+								stringBuilder.Append(_argument.parameter1);
 							var parameter1 = stringBuilder.ToString();
 
 							// parameter2
@@ -1604,7 +1777,7 @@ public sealed class GenericSetup : IssuesTestsBase
 							if (!string.IsNullOrEmpty(_jsonSnapshotParameter2))
 								stringBuilder.Append(_jsonSnapshotParameter2);
 							else
-								stringBuilder.Append(_parameter2);
+								stringBuilder.Append(_argument.parameter2);
 							var parameter2 = stringBuilder.ToString();
 
 							var stringValue = string.Format(_invocation._name, parameter1, parameter2);
@@ -1662,6 +1835,8 @@ public sealed class GenericSetup : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
 					private InvocationDictionary? _invoke0Invocation;
@@ -1715,12 +1890,31 @@ public sealed class GenericSetup : IssuesTestsBase
 							return ((SetupArray1ICollectionT1Int32<T, decimal>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(global::System.Collections.Generic.ICollection<T>[] param1, int param2)>> Invoke<T>()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationArray1ICollectionT1Int32<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationArray1ICollectionT1Int32<T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+							return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+						}
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -2143,19 +2337,23 @@ public sealed class GenericSetup : IssuesTestsBase
 						return _invocations;
 					}
 
-					private sealed class Item : IInvocation
+					public System.Collections.Generic.IEnumerable<IInvocation<(System.Collections.Generic.ICollection<T1>[] parameter1, int parameter2)>> GetInvocationsWithArguments()
 					{
-						private readonly System.Collections.Generic.ICollection<T1>[] _parameter1;
-						private readonly int _parameter2;
+						return _invocations;
+					}
+
+					private sealed class Item : IInvocation<(System.Collections.Generic.ICollection<T1>[] parameter1, int parameter2)>
+					{
+						private readonly (System.Collections.Generic.ICollection<T1>[] parameter1, int parameter2) _argument;
 						private readonly string? _jsonSnapshotParameter1, _jsonSnapshotParameter2;
 						private readonly InvocationArray1ICollectionT1Int32<T1> _invocation;
 
 						public Item(long index, System.Collections.Generic.ICollection<T1>[] parameter1, int parameter2, InvocationArray1ICollectionT1Int32<T1> invocation)
 						{
+							_argument = (parameter1, parameter2);
 							_invocation = invocation;
 							Index = index;
 
-							_parameter1 = parameter1;
 							try
 							{
 								_jsonSnapshotParameter1 = System.Text.Json.JsonSerializer.Serialize(parameter1);
@@ -2165,7 +2363,6 @@ public sealed class GenericSetup : IssuesTestsBase
 								// Swallow
 							}
 
-							_parameter2 = parameter2;
 							try
 							{
 								_jsonSnapshotParameter2 = System.Text.Json.JsonSerializer.Serialize(parameter2);
@@ -2180,18 +2377,20 @@ public sealed class GenericSetup : IssuesTestsBase
 
 						public bool IsVerified { get; set; }
 
+						public (System.Collections.Generic.ICollection<T1>[] parameter1, int parameter2) Arguments => _argument;
+
 						public System.Collections.Generic.ICollection<T1>[] GetParameter1(SetupType setupType)
 						{
 							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParameter1)
 								? System.Text.Json.JsonSerializer.Deserialize<System.Collections.Generic.ICollection<T1>[]>(_jsonSnapshotParameter1)!
-								: _parameter1;
+								: _argument.parameter1;
 						}
 
 						public int GetParameter2(SetupType setupType)
 						{
 							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParameter2)
 								? System.Text.Json.JsonSerializer.Deserialize<int>(_jsonSnapshotParameter2)!
-								: _parameter2;
+								: _argument.parameter2;
 						}
 
 						public override string ToString()
@@ -2204,7 +2403,7 @@ public sealed class GenericSetup : IssuesTestsBase
 							if (!string.IsNullOrEmpty(_jsonSnapshotParameter1))
 								stringBuilder.Append(_jsonSnapshotParameter1);
 							else
-								stringBuilder.Append(_parameter1);
+								stringBuilder.Append(_argument.parameter1);
 							var parameter1 = stringBuilder.ToString();
 
 							// parameter2
@@ -2214,7 +2413,7 @@ public sealed class GenericSetup : IssuesTestsBase
 							if (!string.IsNullOrEmpty(_jsonSnapshotParameter2))
 								stringBuilder.Append(_jsonSnapshotParameter2);
 							else
-								stringBuilder.Append(_parameter2);
+								stringBuilder.Append(_argument.parameter2);
 							var parameter2 = stringBuilder.ToString();
 
 							var stringValue = string.Format(_invocation._name, parameter1, parameter2);
@@ -2272,6 +2471,8 @@ public sealed class GenericSetup : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
 					private InvocationDictionary? _invoke0Invocation;
@@ -2325,12 +2526,31 @@ public sealed class GenericSetup : IssuesTestsBase
 							return ((SetupArray2T1Int32<T, decimal>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(T[,] param1, int param2)>> Invoke<T>()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationArray2T1Int32<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationArray2T1Int32<T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+							return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+						}
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -2753,19 +2973,23 @@ public sealed class GenericSetup : IssuesTestsBase
 						return _invocations;
 					}
 
-					private sealed class Item : IInvocation
+					public System.Collections.Generic.IEnumerable<IInvocation<(T1[,] parameter1, int parameter2)>> GetInvocationsWithArguments()
 					{
-						private readonly T1[,] _parameter1;
-						private readonly int _parameter2;
+						return _invocations;
+					}
+
+					private sealed class Item : IInvocation<(T1[,] parameter1, int parameter2)>
+					{
+						private readonly (T1[,] parameter1, int parameter2) _argument;
 						private readonly string? _jsonSnapshotParameter1, _jsonSnapshotParameter2;
 						private readonly InvocationArray2T1Int32<T1> _invocation;
 
 						public Item(long index, T1[,] parameter1, int parameter2, InvocationArray2T1Int32<T1> invocation)
 						{
+							_argument = (parameter1, parameter2);
 							_invocation = invocation;
 							Index = index;
 
-							_parameter1 = parameter1;
 							try
 							{
 								_jsonSnapshotParameter1 = System.Text.Json.JsonSerializer.Serialize(parameter1);
@@ -2775,7 +2999,6 @@ public sealed class GenericSetup : IssuesTestsBase
 								// Swallow
 							}
 
-							_parameter2 = parameter2;
 							try
 							{
 								_jsonSnapshotParameter2 = System.Text.Json.JsonSerializer.Serialize(parameter2);
@@ -2790,18 +3013,20 @@ public sealed class GenericSetup : IssuesTestsBase
 
 						public bool IsVerified { get; set; }
 
+						public (T1[,] parameter1, int parameter2) Arguments => _argument;
+
 						public T1[,] GetParameter1(SetupType setupType)
 						{
 							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParameter1)
 								? System.Text.Json.JsonSerializer.Deserialize<T1[,]>(_jsonSnapshotParameter1)!
-								: _parameter1;
+								: _argument.parameter1;
 						}
 
 						public int GetParameter2(SetupType setupType)
 						{
 							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParameter2)
 								? System.Text.Json.JsonSerializer.Deserialize<int>(_jsonSnapshotParameter2)!
-								: _parameter2;
+								: _argument.parameter2;
 						}
 
 						public override string ToString()
@@ -2814,7 +3039,7 @@ public sealed class GenericSetup : IssuesTestsBase
 							if (!string.IsNullOrEmpty(_jsonSnapshotParameter1))
 								stringBuilder.Append(_jsonSnapshotParameter1);
 							else
-								stringBuilder.Append(_parameter1);
+								stringBuilder.Append(_argument.parameter1);
 							var parameter1 = stringBuilder.ToString();
 
 							// parameter2
@@ -2824,7 +3049,7 @@ public sealed class GenericSetup : IssuesTestsBase
 							if (!string.IsNullOrEmpty(_jsonSnapshotParameter2))
 								stringBuilder.Append(_jsonSnapshotParameter2);
 							else
-								stringBuilder.Append(_parameter2);
+								stringBuilder.Append(_argument.parameter2);
 							var parameter2 = stringBuilder.ToString();
 
 							var stringValue = string.Format(_invocation._name, parameter1, parameter2);
@@ -2882,6 +3107,8 @@ public sealed class GenericSetup : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
 					private InvocationDictionary? _invoke0Invocation;
@@ -2935,12 +3162,31 @@ public sealed class GenericSetup : IssuesTestsBase
 							return ((SetupArray1Array1T1Int32<T, decimal>?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(T[][] param1, int param2)>> Invoke<T>()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationArray1Array1T1Int32<T>)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new InvocationArray1Array1T1Int32<T>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+							return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+						}
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -3363,19 +3609,23 @@ public sealed class GenericSetup : IssuesTestsBase
 						return _invocations;
 					}
 
-					private sealed class Item : IInvocation
+					public System.Collections.Generic.IEnumerable<IInvocation<(T1[][] parameter1, int parameter2)>> GetInvocationsWithArguments()
 					{
-						private readonly T1[][] _parameter1;
-						private readonly int _parameter2;
+						return _invocations;
+					}
+
+					private sealed class Item : IInvocation<(T1[][] parameter1, int parameter2)>
+					{
+						private readonly (T1[][] parameter1, int parameter2) _argument;
 						private readonly string? _jsonSnapshotParameter1, _jsonSnapshotParameter2;
 						private readonly InvocationArray1Array1T1Int32<T1> _invocation;
 
 						public Item(long index, T1[][] parameter1, int parameter2, InvocationArray1Array1T1Int32<T1> invocation)
 						{
+							_argument = (parameter1, parameter2);
 							_invocation = invocation;
 							Index = index;
 
-							_parameter1 = parameter1;
 							try
 							{
 								_jsonSnapshotParameter1 = System.Text.Json.JsonSerializer.Serialize(parameter1);
@@ -3385,7 +3635,6 @@ public sealed class GenericSetup : IssuesTestsBase
 								// Swallow
 							}
 
-							_parameter2 = parameter2;
 							try
 							{
 								_jsonSnapshotParameter2 = System.Text.Json.JsonSerializer.Serialize(parameter2);
@@ -3400,18 +3649,20 @@ public sealed class GenericSetup : IssuesTestsBase
 
 						public bool IsVerified { get; set; }
 
+						public (T1[][] parameter1, int parameter2) Arguments => _argument;
+
 						public T1[][] GetParameter1(SetupType setupType)
 						{
 							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParameter1)
 								? System.Text.Json.JsonSerializer.Deserialize<T1[][]>(_jsonSnapshotParameter1)!
-								: _parameter1;
+								: _argument.parameter1;
 						}
 
 						public int GetParameter2(SetupType setupType)
 						{
 							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParameter2)
 								? System.Text.Json.JsonSerializer.Deserialize<int>(_jsonSnapshotParameter2)!
-								: _parameter2;
+								: _argument.parameter2;
 						}
 
 						public override string ToString()
@@ -3424,7 +3675,7 @@ public sealed class GenericSetup : IssuesTestsBase
 							if (!string.IsNullOrEmpty(_jsonSnapshotParameter1))
 								stringBuilder.Append(_jsonSnapshotParameter1);
 							else
-								stringBuilder.Append(_parameter1);
+								stringBuilder.Append(_argument.parameter1);
 							var parameter1 = stringBuilder.ToString();
 
 							// parameter2
@@ -3434,7 +3685,7 @@ public sealed class GenericSetup : IssuesTestsBase
 							if (!string.IsNullOrEmpty(_jsonSnapshotParameter2))
 								stringBuilder.Append(_jsonSnapshotParameter2);
 							else
-								stringBuilder.Append(_parameter2);
+								stringBuilder.Append(_argument.parameter2);
 							var parameter2 = stringBuilder.ToString();
 
 							var stringValue = string.Format(_invocation._name, parameter1, parameter2);

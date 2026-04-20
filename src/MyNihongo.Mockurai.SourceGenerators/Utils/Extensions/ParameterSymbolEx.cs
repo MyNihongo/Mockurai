@@ -405,6 +405,29 @@ internal static class ParameterSymbolEx
 
 			return @this;
 		}
+
+		public StringBuilder AppendParameterTuple(ImmutableArray<IParameterSymbol> parameters, ImmutableDictionary<IParameterSymbol, StringTemplate>? parameterTypeOverride = null, Func<StringBuilder, int, StringBuilder>? appendParameterName = null)
+		{
+			return @this
+				.Append('(')
+				.AppendParameters(parameters, appendRefKind: false, parameterTypeOverride: parameterTypeOverride, appendParameterName: appendParameterName)
+				.Append(')');
+		}
+
+		public StringBuilder AppendParameterVariableTupleNames(ImmutableArray<IParameterSymbol> parameters)
+		{
+			@this.Append('(');
+
+			for (var i = 0; i < parameters.Length; i++)
+			{
+				if (i > 0)
+					@this.Append(", ");
+
+				@this.AppendParameterVariableName(parameters[i], i);
+			}
+
+			return @this.Append(')');
+		}
 	}
 
 	private static void TryAppendPropertyTypeOverride(

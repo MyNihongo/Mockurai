@@ -801,6 +801,27 @@ internal static class MethodSymbolEx
 			@this.Append('>');
 		}
 
+		public StringBuilder AppendInvocationInterface(IMethodSymbol methodSymbol)
+		{
+			const string interfaceName = "IInvocation";
+
+			return methodSymbol.Parameters.Length switch
+			{
+				0 => @this.Append(interfaceName),
+				1 => @this.Append(interfaceName).AppendGenericTypes([methodSymbol.Parameters[0].Type]),
+				_ => @this.Append(interfaceName).Append('<').AppendParameterTuple(methodSymbol.Parameters).Append('>'),
+			};
+		}
+
+		public StringBuilder AppendInvocationGetMethodName(IMethodSymbol methodSymbol)
+		{
+			var name = !methodSymbol.Parameters.IsDefaultOrEmpty
+				? "GetInvocationsWithArguments"
+				: "GetInvocations";
+
+			return @this.Append(name);
+		}
+
 		private void AppendParameterPlaceholders(IMethodSymbol methodSymbol, bool isStringInterpolated)
 		{
 			@this.Append('(');
