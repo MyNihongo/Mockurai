@@ -92,6 +92,8 @@ public sealed class Nullability : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 
 
 					public void VerifyNoOtherCalls()
@@ -115,12 +117,26 @@ public sealed class Nullability : IssuesTestsBase
 
 
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -266,6 +282,8 @@ public sealed class Nullability : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private SetupStringSingle? _invoke0;
 					private InvocationStringSingle? _invoke0Invocation;
@@ -315,12 +333,26 @@ public sealed class Nullability : IssuesTestsBase
 							_mock._invoke0?.Invoke(param1, param2);
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(string param1, float param2)>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
@@ -369,6 +401,8 @@ public sealed class Nullability : IssuesTestsBase
 					}
 
 					public Issues.Tests.Class Object => _proxy ??= new Proxy(this);
+
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
 
 					// Invoke
 					private SetupStringNullableSingle? _invoke0;
@@ -419,12 +453,26 @@ public sealed class Nullability : IssuesTestsBase
 							_mock._invoke0?.Invoke(param1, param2);
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly ClassMock _mock;
+
+						public InvocationContainer(ClassMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(string? param1, float param2)>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.Class> @this)
 					{
+						public ClassMock.InvocationContainer Invocations => ((ClassMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((ClassMock)@this).VerifyNoOtherCalls();
 
