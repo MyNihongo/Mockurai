@@ -79,7 +79,7 @@ public abstract class TestsGenericBase : TestsBase
 		return ("TestsBase.g.cs", testsBase);
 	}
 
-	protected static GeneratedSource GetInterfaceMock(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions, string extensionsSequence)
+	protected static GeneratedSource GetInterfaceMock(string methods, string proxy, string invocationContainer, string verifyNoOtherCalls, string invocations, string extensions, string extensionsSequence)
 	{
 		var mock =
 			$$"""
@@ -99,6 +99,8 @@ public abstract class TestsGenericBase : TestsBase
 			  	}
 
 			  	public MyNihongo.Example.Tests.IInterface<T> Object => _proxy ??= new Proxy(this);
+
+			  	public InvocationContainer Invocations => field ??= new InvocationContainer(this);
 
 			  {{methods.Indent(1)}}
 
@@ -123,12 +125,26 @@ public abstract class TestsGenericBase : TestsBase
 
 			  {{proxy.Indent(2)}}
 			  	}
+
+			  	public sealed class InvocationContainer
+			  	{
+			  		private readonly InterfaceMock<T> _mock;
+
+			  		public InvocationContainer(InterfaceMock<T> mock)
+			  		{
+			  			_mock = mock;
+			  		}
+
+			  {{invocationContainer.Indent(2)}}
+			  	}
 			  }
 
 			  public static partial class MockExtensions
 			  {
 			  	extension<T>(IMock<MyNihongo.Example.Tests.IInterface<T>> @this)
 			  	{
+			  		public InterfaceMock<T>.InvocationContainer Invocations => ((InterfaceMock<T>)@this).Invocations;
+
 			  		public void VerifyNoOtherCalls() =>
 			  			((InterfaceMock<T>)@this).VerifyNoOtherCalls();
 
@@ -223,7 +239,7 @@ public abstract class TestsGenericBase : TestsBase
 		return ("TestsBase.g.cs", testsBase);
 	}
 
-	protected static GeneratedSource GetClassMock(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions, string extensionsSequence)
+	protected static GeneratedSource GetClassMock(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions, string extensionsSequence, string invocationContainer = "")
 	{
 		var mock =
 			$$"""
@@ -243,6 +259,8 @@ public abstract class TestsGenericBase : TestsBase
 			  	}
 
 			  	public MyNihongo.Example.Tests.Class<T> Object => _proxy ??= new Proxy(this);
+
+			  	public InvocationContainer Invocations => field ??= new InvocationContainer(this);
 
 			  {{methods.Indent(1)}}
 
@@ -267,12 +285,26 @@ public abstract class TestsGenericBase : TestsBase
 
 			  {{proxy.Indent(2)}}
 			  	}
+
+			  	public sealed class InvocationContainer
+			  	{
+			  		private readonly ClassMock<T> _mock;
+
+			  		public InvocationContainer(ClassMock<T> mock)
+			  		{
+			  			_mock = mock;
+			  		}
+
+			  {{invocationContainer.Indent(2)}}
+			  	}
 			  }
 
 			  public static partial class MockExtensions
 			  {
 			  	extension<T>(IMock<MyNihongo.Example.Tests.Class<T>> @this)
 			  	{
+			  		public ClassMock<T>.InvocationContainer Invocations => ((ClassMock<T>)@this).Invocations;
+
 			  		public void VerifyNoOtherCalls() =>
 			  			((ClassMock<T>)@this).VerifyNoOtherCalls();
 

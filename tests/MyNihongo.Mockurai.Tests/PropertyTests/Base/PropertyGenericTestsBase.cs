@@ -12,7 +12,7 @@ public class PropertyGenericTestsBase : TestsGenericBase
 	protected static GeneratedSources CreateInterfaceGeneratedSources(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions, string extensionsSequence)
 	{
 		var testsBase = GetInterfaceTestsBase();
-		var mock = GetInterfaceMock(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
+		var mock = GetInterfaceMock(methods, proxy, "", verifyNoOtherCalls, invocations, extensions, extensionsSequence);
 
 		return
 		[
