@@ -9,10 +9,10 @@ public abstract class EventTestsBase : TestsNonGenericBase
 		return CreateInterfaceTestCode(@event, CustomCode);
 	}
 
-	protected static GeneratedSources CreateInterfaceGeneratedSources(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions, string sequenceExtensions)
+	protected static GeneratedSources CreateInterfaceGeneratedSources(string methods, string proxy, string invocationContainer, string verifyNoOtherCalls, string invocations, string extensions, string sequenceExtensions)
 	{
 		var testsBase = GetInterfaceTestsBase();
-		var mock = GetInterfaceMock(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var mock = GetInterfaceMock(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		return
 		[
@@ -26,10 +26,10 @@ public abstract class EventTestsBase : TestsNonGenericBase
 		return CreateClassTestCode(@event, CustomCode, isAbstract);
 	}
 
-	protected static GeneratedSources CreateClassGeneratedSources(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions, string sequenceExtensions)
+	protected static GeneratedSources CreateClassGeneratedSources(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions, string sequenceExtensions, string invocationContainer)
 	{
 		var testsBase = GetClassTestsBase();
-		var mock = GetClassMock(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var mock = GetClassMock(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		return
 		[

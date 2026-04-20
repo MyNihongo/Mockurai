@@ -110,8 +110,15 @@ public sealed class EventShould : EventTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<MyNihongo.Example.Tests.SampleHandler1?>> HandlerEventAdd => _mock._handlerEvent0AddInvocation?.GetInvocationsWithArguments() ?? [];
+
+			public System.Collections.Generic.IEnumerable<IInvocation<MyNihongo.Example.Tests.SampleHandler1?>> HandlerEventRemove => _mock._handlerEvent0RemoveInvocation?.GetInvocationsWithArguments() ?? [];
+			""";
+
 		var testCode = CreateInterfaceTestCode(@event);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -225,8 +232,15 @@ public sealed class EventShould : EventTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<System.EventHandler<string>?>> HandlerEventAdd => _mock._handlerEvent0AddInvocation?.GetInvocationsWithArguments() ?? [];
+
+			public System.Collections.Generic.IEnumerable<IInvocation<System.EventHandler<string>?>> HandlerEventRemove => _mock._handlerEvent0RemoveInvocation?.GetInvocationsWithArguments() ?? [];
+			""";
+
 		var testCode = CreateInterfaceTestCode(@event);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -427,8 +441,19 @@ public sealed class EventShould : EventTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<MyNihongo.Example.Tests.SampleHandler1?>> HandlerEvent1Add => _mock._handlerEvent10AddInvocation?.GetInvocationsWithArguments() ?? [];
+
+			public System.Collections.Generic.IEnumerable<IInvocation<MyNihongo.Example.Tests.SampleHandler1?>> HandlerEvent1Remove => _mock._handlerEvent10RemoveInvocation?.GetInvocationsWithArguments() ?? [];
+
+			public System.Collections.Generic.IEnumerable<IInvocation<System.EventHandler<string>?>> HandlerEvent2Add => _mock._handlerEvent20AddInvocation?.GetInvocationsWithArguments() ?? [];
+
+			public System.Collections.Generic.IEnumerable<IInvocation<System.EventHandler<string>?>> HandlerEvent2Remove => _mock._handlerEvent20RemoveInvocation?.GetInvocationsWithArguments() ?? [];
+			""";
+
 		var testCode = CreateInterfaceTestCode(@event);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -547,8 +572,15 @@ public sealed class EventShould : EventTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<MyNihongo.Example.Tests.SampleHandler1?>> HandlerEventAdd => _mock._handlerEvent0AddInvocation?.GetInvocationsWithArguments() ?? [];
+
+			public System.Collections.Generic.IEnumerable<IInvocation<MyNihongo.Example.Tests.SampleHandler1?>> HandlerEventRemove => _mock._handlerEvent0RemoveInvocation?.GetInvocationsWithArguments() ?? [];
+			""";
+
 		var testCode = CreateClassTestCode(@event);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -749,8 +781,19 @@ public sealed class EventShould : EventTestsBase
 			}
 			""";
 
+		const string invocationContainer =
+			"""
+			public System.Collections.Generic.IEnumerable<IInvocation<MyNihongo.Example.Tests.SampleHandler1?>> HandlerEventAdd => _mock._handlerEvent0AddInvocation?.GetInvocationsWithArguments() ?? [];
+
+			public System.Collections.Generic.IEnumerable<IInvocation<MyNihongo.Example.Tests.SampleHandler1?>> HandlerEventRemove => _mock._handlerEvent0RemoveInvocation?.GetInvocationsWithArguments() ?? [];
+
+			public System.Collections.Generic.IEnumerable<IInvocation<System.EventHandler<string>?>> HandlerAnotherEventAdd => _mock._handlerAnotherEvent0AddInvocation?.GetInvocationsWithArguments() ?? [];
+
+			public System.Collections.Generic.IEnumerable<IInvocation<System.EventHandler<string>?>> HandlerAnotherEventRemove => _mock._handlerAnotherEvent0RemoveInvocation?.GetInvocationsWithArguments() ?? [];
+			""";
+
 		var testCode = CreateClassTestCode(@event, isAbstract: true);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
