@@ -467,7 +467,7 @@ public abstract class TestsBase
 		var parameterToString = string.Join(", ", types.Select(static x => $"{x.GetParameterNameString()}.ToString(_{x.GetParameterNameString()}Prefix)"));
 		var typeNameParameters = string.Join(Environment.NewLine + "\t\t", types.Select(static x => { return $"var typeName{x.GetCamelCaseNameString()} = !string.IsNullOrEmpty(_{x.GetParameterNameString()}Prefix) ? $\"{{_{x.GetParameterNameString()}Prefix}} {(x.HasGenericTypes ? $"{x.GetTypeofTypeString()}" : x.GetTypeString())}\" : {(x.HasGenericTypes ? x.IsGeneric ? x.GetTypeofTypeString(appendBrackets: false) : $"$\"{x.GetTypeofTypeString()}\"" : $"\"{x.GetTypeString()}\"")};"; }));
 		var typeParameterNames = string.Join(", ", types.Select(static x => $"typeName{x.GetCamelCaseNameString()}"));
-		var parameterFields = string.Join(Environment.NewLine + "\t\t", types.Select(static x => $"private readonly {x.GetTypeString()} _{x.GetParameterNameString()};"));
+		var tupleType = '(' + string.Join(", ", types.Select(static x => $"{x.GetTypeString()} {x.GetParameterNameString()}")) + ')';
 		var verifyChecks = string.Join(Environment.NewLine + "\t\t\t", types.Select(static (x, i) =>
 		{
 			return i == 0
@@ -493,8 +493,7 @@ public abstract class TestsBase
 
 			return
 				$$"""
-				  _{{name}} = {{name}};
-				  			try
+				  try
 				  			{
 				  				_jsonSnapshot{{camelCase}} = System.Text.Json.JsonSerializer.Serialize({{name}});
 				  			}
@@ -514,7 +513,7 @@ public abstract class TestsBase
 				  		{
 				  			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshot{{x.GetCamelCaseNameString()}})
 				  				? System.Text.Json.JsonSerializer.Deserialize<{{typeString}}>(_jsonSnapshot{{x.GetCamelCaseNameString()}})!
-				  				: _{{x.GetParameterNameString()}};
+				  				: _argument.{{x.GetParameterNameString()}};
 				  		}
 				  """;
 		}));
@@ -532,7 +531,7 @@ public abstract class TestsBase
 				  			if (!string.IsNullOrEmpty(_jsonSnapshot{{x.GetCamelCaseNameString()}}))
 				  				stringBuilder.Append(_jsonSnapshot{{x.GetCamelCaseNameString()}});
 				  			else
-				  				stringBuilder.Append(_{{x.GetParameterNameString()}});
+				  				stringBuilder.Append(_argument.{{x.GetParameterNameString()}});
 				  			var {{x.GetParameterNameString()}} = stringBuilder.ToString();
 				  """;
 		}));
@@ -647,14 +646,20 @@ public abstract class TestsBase
 			  		return _invocations;
 			  	}
 
-			  	private sealed class Item : IInvocation
+			  	public System.Collections.Generic.IEnumerable<IInvocation<{{tupleType}}>> GetInvocationsWithArguments()
 			  	{
-			  		{{parameterFields}}
+			  		return _invocations;
+			  	}
+
+			  	private sealed class Item : IInvocation<{{tupleType}}>
+			  	{
+			  		private readonly {{tupleType}} _argument;
 			  		private readonly string? {{jsonSnapshots}};
 			  		private readonly Invocation{{classNameGenerics}} _invocation;
 
 			  		public Item(long index, {{parametersWithoutRef}}, Invocation{{classNameGenerics}} invocation)
 			  		{
+			  			_argument = ({{parameterNames}});
 			  			_invocation = invocation;
 			  			Index = index;
 
@@ -664,6 +669,8 @@ public abstract class TestsBase
 			  		public long Index { get; }
 
 			  		public bool IsVerified { get; set; }
+			  
+			  		public {{tupleType}} Arguments => _argument;
 
 			  		{{verifyItemGetParameterFunctions}}
 
