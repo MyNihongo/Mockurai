@@ -69,7 +69,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			""";
 
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -142,7 +142,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			""";
 
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -219,7 +219,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			""";
 
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -296,7 +296,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			""";
 
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -373,7 +373,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			""";
 
 		var testCode = CreateInterfaceTestCode(method);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -451,7 +451,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 		const string invocations = "yield return _invoke0Invocation;";
 
 		var testCode = CreateClassTestCode(method);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer: "");
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -531,7 +531,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 		const string invocations = "yield return _invoke0Invocation;";
 
 		var testCode = CreateClassTestCode(method, isAbstract: true);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer: "");
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -609,7 +609,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 		const string invocations = "yield return _invoke0Invocation;";
 
 		var testCode = CreateClassTestCode(method);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer: "");
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -691,7 +691,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 		const string invocations = "yield return _invoke0Invocation;";
 
 		var testCode = CreateClassTestCode(method);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer: "");
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -773,7 +773,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 		const string invocations = "yield return _invoke0Invocation;";
 
 		var testCode = CreateClassTestCode(method);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer: "");
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -855,7 +855,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 		const string invocations = "yield return _invoke0Invocation;";
 
 		var testCode = CreateClassTestCode(method);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer: "");
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -939,7 +939,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 		const string invocations = "yield return _invoke0Invocation;";
 
 		var testCode = CreateClassTestCode(method, isAbstract: true);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer: "");
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1023,7 +1023,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 		const string invocations = "yield return _invoke0Invocation;";
 
 		var testCode = CreateClassTestCode(method, isAbstract: true);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer: "");
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1107,7 +1107,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 		const string invocations = "yield return _invoke0Invocation;";
 
 		var testCode = CreateClassTestCode(method, isAbstract: true);
-		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer: "");
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();

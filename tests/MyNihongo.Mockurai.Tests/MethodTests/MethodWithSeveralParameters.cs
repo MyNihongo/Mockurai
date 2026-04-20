@@ -73,7 +73,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupCode(types);
 		var invocationCode = CreateInvocationCode(types);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -150,7 +150,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupReturnsCode(types);
 		var invocationCode = CreateInvocationCode(types);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -227,7 +227,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupCode(types);
 		var invocationCode = CreateInvocationCode(types);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -312,7 +312,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupCode(types);
 		var invocationCode = CreateInvocationCode(types);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -397,7 +397,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupCode(types);
 		var invocationCode = CreateInvocationCode(types);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -482,7 +482,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupCode(types);
 		var invocationCode = CreateInvocationCode(types);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -572,7 +572,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupCode(setupTypes);
 		var invocationCode = CreateInvocationCode(invocationTypes);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -657,7 +657,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupCode(types);
 		var invocationCode = CreateInvocationCode(types);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -742,7 +742,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupCode(types);
 		var invocationCode = CreateInvocationCode(types);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -827,7 +827,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupReturnsCode(types);
 		var invocationCode = CreateInvocationCode(types);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -912,7 +912,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupReturnsCode(types);
 		var invocationCode = CreateInvocationCode(types);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -998,7 +998,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupCode(setupTypes);
 		var invocationCode = CreateInvocationCode(invocationTypes);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1087,7 +1087,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupCode(setupTypes);
 		var invocationCode = CreateInvocationCode(invocationTypes);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1177,7 +1177,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupReturnsCode(setupTypes);
 		var invocationCode = CreateInvocationCode(invocationTypes);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1270,7 +1270,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupCode(setupTypes);
 		var invocationCode = CreateInvocationCode(invocationTypes);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1364,7 +1364,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 		var testCode = CreateInterfaceTestCode(method);
 		var setupCode = CreateSetupReturnsCode(setupTypes);
 		var invocationCode = CreateInvocationCode(invocationTypes);
-		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
+		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer: "", verifyNoOtherCalls, invocations, extensions, sequenceExtensions, setupCode, invocationCode);
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
