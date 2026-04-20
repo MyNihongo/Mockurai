@@ -9,10 +9,10 @@ public class PropertyGenericTestsBase : TestsGenericBase
 		return CreateInterfaceTestCode(property, CustomCode);
 	}
 
-	protected static GeneratedSources CreateInterfaceGeneratedSources(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions, string extensionsSequence)
+	protected static GeneratedSources CreateInterfaceGeneratedSources(string methods, string proxy, string invocationContainer, string verifyNoOtherCalls, string invocations, string extensions, string extensionsSequence)
 	{
 		var testsBase = GetInterfaceTestsBase();
-		var mock = GetInterfaceMock(methods, proxy, "", verifyNoOtherCalls, invocations, extensions, extensionsSequence);
+		var mock = GetInterfaceMock(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
 
 		return
 		[
@@ -26,10 +26,10 @@ public class PropertyGenericTestsBase : TestsGenericBase
 		return CreateClassTestCode(property, CustomCode, isAbstract);
 	}
 
-	protected static GeneratedSources CreateClassGeneratedSources(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions, string extensionsSequence)
+	protected static GeneratedSources CreateClassGeneratedSources(string methods, string proxy, string verifyNoOtherCalls, string invocations, string extensions, string extensionsSequence, string invocationContainer)
 	{
 		var testsBase = GetClassTestsBase();
-		var mock = GetClassMock(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
+		var mock = GetClassMock(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence, invocationContainer);
 
 		return
 		[
