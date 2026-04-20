@@ -50,6 +50,8 @@ public sealed class GenericSetup : IssuesTestsBase
 
 					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
 
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
 					// Invoke
 					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invoke0;
 					private InvocationDictionary? _invoke0Invocation;
@@ -103,12 +105,31 @@ public sealed class GenericSetup : IssuesTestsBase
 							return ((SetupInt32T1<TReturns, TReturns>?)_mock._invoke0?.ValueOrDefault(typeof(TReturns)))?.Execute(param1, returnValue, out var _returnValue) == true ? _returnValue! : default!;
 						}
 					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(int param1, TReturns returnValue)>> Invoke<TReturns>()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (InvocationInt32T1<TReturns>)_mock._invoke0Invocation.GetOrAdd(typeof(TReturns), static key => new InvocationInt32T1<TReturns>($"IInterface.Invoke<{key.Name}>({{0}}, {{1}})"));
+							return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+						}
+					}
 				}
 
 				public static partial class MockExtensions
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
