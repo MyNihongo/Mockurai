@@ -788,4 +788,24 @@ public sealed class InvokeWithSeveralParametersTShould : PrimitiveTypeServiceTes
 		});
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void ThrowWithJapaneseCharacters()
+	{
+		const int intParam = 456;
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParameters<string>("岡山壱成", intParam);
+
+		var actual = () => DependencyServiceMock.VerifyInvokeWithSeveralParameters<string>("岡山一成", intParam, Times.Once);
+
+		const string expectedMessage =
+			"""
+			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters<String>("岡山一成", 456) to be called 1 time, but instead it was called 0 times.
+			Performed invocations:
+			- 1: IPrimitiveDependencyService.InvokeWithSeveralParameters<String>("岡山壱成", 456)
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
 }
