@@ -123,7 +123,7 @@ public sealed class Invocation<TParameter> : IInvocationVerify, IInvocationProvi
 
 			try
 			{
-				_jsonSnapshot = JsonSerializer.Serialize(parameter);
+				_jsonSnapshot = parameter.ToJsonString();
 			}
 			catch
 			{

@@ -271,4 +271,77 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public void ThrowWithJapaneseCharacters()
+	{
+		const int number = 1;
+		const string name = "岡山壱成";
+
+		var index = new InvocationIndex.Counter();
+
+		var fixture = CreateFixture<ClassParameter1>();
+		fixture.Register(index, new ClassParameter1
+		{
+			Number = number + 12345,
+			Text = name,
+		});
+
+		var actual = () =>
+		{
+			var verify = It<ClassParameter1>.Value(new ClassParameter1
+			{
+				Number = number,
+				Text = "岡山一成",
+			});
+			fixture.Verify(verify.ValueSetup, Times.Once());
+		};
+
+		const string expectedMessage =
+			"""
+			Expected MyClass.MyMethod({"Text":"岡山一成","Number":1}) to be called 1 time, but instead it was called 0 times.
+			Performed invocations:
+			- 1: MyClass.MyMethod({"Text":"岡山壱成","Number":12346})
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
+
+	[Fact]
+	public void ThrowWithJapaneseCharactersEquivalent()
+	{
+		const int number = 1;
+		const string name = "岡山壱成";
+
+		var index = new InvocationIndex.Counter();
+
+		var fixture = CreateFixture<ClassParameter1>();
+		fixture.Register(index, new ClassParameter1
+		{
+			Number = number,
+			Text = name,
+		});
+
+		var actual = () =>
+		{
+			var verify = It<ClassParameter1>.Equivalent(new ClassParameter1
+			{
+				Number = number,
+				Text = "岡山一成",
+			});
+			fixture.Verify(verify.ValueSetup, Times.Once());
+		};
+
+		const string expectedMessage =
+			"""
+			Expected MyClass.MyMethod({"Text":"岡山一成","Number":1}) to be called 1 time, but instead it was called 0 times.
+			Performed invocations:
+			- 1: MyClass.MyMethod({"Text":"岡山壱成","Number":1})
+			  - Text:
+			    expected: 岡山一成
+			    actual: 岡山壱成
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
 }
