@@ -1720,7 +1720,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter1 = System.Text.Json.JsonSerializer.Serialize(parameter1);
+								_jsonSnapshotParameter1 = parameter1.ToJsonString();
 							}
 							catch
 							{
@@ -1729,7 +1729,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter2 = System.Text.Json.JsonSerializer.Serialize(parameter2);
+								_jsonSnapshotParameter2 = parameter2.ToJsonString();
 							}
 							catch
 							{
@@ -2356,7 +2356,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter1 = System.Text.Json.JsonSerializer.Serialize(parameter1);
+								_jsonSnapshotParameter1 = parameter1.ToJsonString();
 							}
 							catch
 							{
@@ -2365,7 +2365,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter2 = System.Text.Json.JsonSerializer.Serialize(parameter2);
+								_jsonSnapshotParameter2 = parameter2.ToJsonString();
 							}
 							catch
 							{
@@ -2992,7 +2992,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter1 = System.Text.Json.JsonSerializer.Serialize(parameter1);
+								_jsonSnapshotParameter1 = parameter1.ToJsonString();
 							}
 							catch
 							{
@@ -3001,7 +3001,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter2 = System.Text.Json.JsonSerializer.Serialize(parameter2);
+								_jsonSnapshotParameter2 = parameter2.ToJsonString();
 							}
 							catch
 							{
@@ -3628,7 +3628,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter1 = System.Text.Json.JsonSerializer.Serialize(parameter1);
+								_jsonSnapshotParameter1 = parameter1.ToJsonString();
 							}
 							catch
 							{
@@ -3637,7 +3637,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter2 = System.Text.Json.JsonSerializer.Serialize(parameter2);
+								_jsonSnapshotParameter2 = parameter2.ToJsonString();
 							}
 							catch
 							{
