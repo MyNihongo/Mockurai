@@ -418,9 +418,9 @@ internal static class MockInvocationGenerator
 				.Indent(indent)
 				.AppendFieldName(JsonSnapshotName)
 				.AppendParameterPropertyName(i)
-				.Append(" = System.Text.Json.JsonSerializer.Serialize(")
+				.Append(" = ")
 				.AppendParameterVariableName(i)
-				.AppendLine(");");
+				.AppendLine(".ToJsonString();");
 
 			stringBuilder
 				.Indent(--indent)
