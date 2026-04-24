@@ -19,9 +19,9 @@ public readonly ref struct It<T>
 		return new It<T>(x => EqualityComparer<T>.Default.Equals(value, x), SetupType.Value, () => value.ToJsonString());
 	}
 
-	public static It<T> Equivalent(T value)
+	public static It<T> Equivalent(T value, IEquivalencyComparer<T>? comparer = null)
 	{
-		return new It<T>(x => EquivalencyComparer<T>.Default.Equivalent(value, x), SetupType.Equivalent, () => value.ToJsonString());
+		return new It<T>(x => (comparer ?? EquivalencyComparer<T>.Default).Equivalent(value, x), SetupType.Equivalent, () => value.ToJsonString());
 	}
 
 	public static It<T> Where(in Func<T, bool> predicate)
