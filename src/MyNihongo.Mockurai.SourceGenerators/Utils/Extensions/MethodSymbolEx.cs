@@ -25,7 +25,7 @@ internal static class MethodSymbolEx
 			return count > 0;
 		}
 
-		private bool TryGetGenericTypeNames(MockedTypeSymbol mockedTypeSymbol, out ImmutableArray<ITypeSymbol> result)
+		public bool TryGetGenericTypes(MockedTypeSymbol mockedTypeSymbol, out ImmutableArray<ITypeSymbol> result)
 		{
 			if (mockedTypeSymbol.GenericTypeParameterNames is null)
 			{
@@ -183,7 +183,7 @@ internal static class MethodSymbolEx
 				.AppendSetupType(methodSymbol, mockedTypeSymbol)
 				.AppendLine("();");
 
-			if (methodSymbol.TryGetGenericTypeNames(mockedTypeSymbol, out var genericTypeNames))
+			if (methodSymbol.TryGetGenericTypes(mockedTypeSymbol, out var genericTypeNames))
 			{
 				@this
 					.Indent(indent)
@@ -284,7 +284,7 @@ internal static class MethodSymbolEx
 				.Append('}');
 		}
 
-		public void AppendSetupVerifyExtensionMethods(IMethodSymbol methodSymbol, string castName, int indent, bool prependNewLines = false)
+		public void AppendSetupVerifyExtensionMethods(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, string castName, int indent, bool prependNewLines = false)
 		{
 			if (prependNewLines)
 			{
@@ -293,16 +293,17 @@ internal static class MethodSymbolEx
 					.AppendLine();
 			}
 
-			@this.AppendSetupExtensionMethods(methodSymbol, castName, useDefaults: true, indent);
+			methodSymbol.TryGetGenericTypes(mockedTypeSymbol, out var genericTypes);
+			@this.AppendSetupExtensionMethods(methodSymbol, genericTypes, castName, useDefaults: true, indent);
 			@this.AppendLine().AppendLine();
-			@this.AppendVerifyExtensionMethods(methodSymbol, castName, indent);
+			@this.AppendVerifyExtensionMethods(methodSymbol, genericTypes, castName, indent);
 		}
 
-		private void AppendSetupExtensionMethods(IMethodSymbol methodSymbol, string castName, bool useDefaults, int indent)
+		private void AppendSetupExtensionMethods(IMethodSymbol methodSymbol, ImmutableArray<ITypeSymbol> genericTypes, string castName, bool useDefaults, int indent)
 		{
 			@this
 				.Indent(indent)
-				.AppendSetupMethodDeclaration(methodSymbol, useDefaults, returnType: SetupMethodReturnType.Interface)
+				.AppendSetupMethodDeclaration(methodSymbol, useDefaults, returnType: SetupMethodReturnType.Interface, genericTypes)
 				.AppendLine(" =>");
 
 			@this
@@ -314,7 +315,7 @@ internal static class MethodSymbolEx
 				.Append(");");
 		}
 
-		public void AppendVerifyExtensionMethods(IMethodSymbol methodSymbol, string castName, int indent, bool prependNewLines = false)
+		public void AppendVerifyExtensionMethods(IMethodSymbol methodSymbol, ImmutableArray<ITypeSymbol> genericTypes, string castName, int indent, bool prependNewLines = false)
 		{
 			if (prependNewLines)
 			{
@@ -326,7 +327,7 @@ internal static class MethodSymbolEx
 			// Verify times (object)
 			@this
 				.Indent(indent)
-				.AppendVerifyTimesMethodDeclaration(methodSymbol)
+				.AppendVerifyTimesMethodDeclaration(methodSymbol, genericTypes)
 				.AppendLine(" =>");
 
 			@this
@@ -341,7 +342,7 @@ internal static class MethodSymbolEx
 			// Verify times (func)
 			@this
 				.Indent(indent)
-				.AppendVerifyTimesMethodDeclaration(methodSymbol, timesType: "System.Func<Times>")
+				.AppendVerifyTimesMethodDeclaration(methodSymbol, genericTypes, timesType: "System.Func<Times>")
 				.AppendLine(" =>");
 
 			@this
@@ -388,13 +389,13 @@ internal static class MethodSymbolEx
 				.Indent(--indent).Append('}');
 		}
 
-		private StringBuilder AppendSetupMethodDeclaration(IMethodSymbol methodSymbol, bool useDefaults, SetupMethodReturnType returnType)
+		private StringBuilder AppendSetupMethodDeclaration(IMethodSymbol methodSymbol, bool useDefaults, SetupMethodReturnType returnType, ImmutableArray<ITypeSymbol>? typeArguments = null)
 		{
 			return @this
 				.Append("public ")
 				.AppendSetupMethodReturnType(methodSymbol, returnType)
 				.Append(' ')
-				.AppendSetupMethodName(methodSymbol)
+				.AppendSetupMethodName(methodSymbol, typeArguments)
 				.Append('(')
 				.AppendItParameters(methodSymbol.Parameters, useDefaults: useDefaults)
 				.Append(')');
@@ -423,33 +424,33 @@ internal static class MethodSymbolEx
 			};
 		}
 
-		private StringBuilder AppendSetupMethodName(IMethodSymbol methodSymbol)
+		private StringBuilder AppendSetupMethodName(IMethodSymbol methodSymbol, ImmutableArray<ITypeSymbol>? typeArguments = null)
 		{
 			return @this
 				.Append("Setup")
 				.AppendMethodName(methodSymbol)
-				.AppendGenericTypes(methodSymbol.TypeArguments);
+				.AppendGenericTypes(typeArguments ?? methodSymbol.TypeArguments);
 		}
 
-		private StringBuilder AppendVerifyTimesMethodDeclaration(IMethodSymbol methodSymbol, string timesType = "in Times")
+		private StringBuilder AppendVerifyTimesMethodDeclaration(IMethodSymbol methodSymbol, ImmutableArray<ITypeSymbol>? typeArguments = null, string timesType = "in Times")
 		{
 			return @this
 				.Append("public void ")
-				.AppendVerifyMethodName(methodSymbol)
+				.AppendVerifyMethodName(methodSymbol, typeArguments: typeArguments)
 				.Append('(')
 				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
 				.Append(timesType)
 				.Append(" times)");
 		}
 
-		private StringBuilder AppendVerifyMethodName(IMethodSymbol methodSymbol, bool appendVerifyPrefix = DefaultAppendVerifyPrefix)
+		private StringBuilder AppendVerifyMethodName(IMethodSymbol methodSymbol, bool appendVerifyPrefix = DefaultAppendVerifyPrefix, ImmutableArray<ITypeSymbol>? typeArguments = null)
 		{
 			if (appendVerifyPrefix)
 				@this.Append("Verify");
 
 			return @this
 				.AppendMethodName(methodSymbol)
-				.AppendGenericTypes(methodSymbol.TypeArguments);
+				.AppendGenericTypes(typeArguments ?? methodSymbol.TypeArguments);
 		}
 
 		private StringBuilder AppendVariableName(string? name, MethodKind? methodKind, bool isField)
@@ -682,7 +683,7 @@ internal static class MethodSymbolEx
 				.Append(" ??= new ")
 				.AppendInvocationType(methodSymbol, mockedTypeSymbol);
 
-			if (methodSymbol.TryGetGenericTypeNames(mockedTypeSymbol, out genericTypes))
+			if (methodSymbol.TryGetGenericTypes(mockedTypeSymbol, out genericTypes))
 			{
 				@this.AppendLine("();");
 

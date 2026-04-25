@@ -89,7 +89,7 @@ internal static class MockImplementationEventGenerator
 			.Append(';');
 	}
 
-	public static void AppendEventMockExtensions(StringBuilder stringBuilder, MockedMemberSymbol memberSymbol, string mockClassName, int indent)
+	public static void AppendEventMockExtensions(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, string mockClassName, int indent)
 	{
 		if (memberSymbol.Symbol is not IEventSymbol eventSymbol)
 			return;
@@ -110,10 +110,16 @@ internal static class MockImplementationEventGenerator
 			.Append(");");
 
 		if (eventSymbol.AddMethod is not null)
-			stringBuilder.AppendVerifyExtensionMethods(eventSymbol.AddMethod, mockClassName, indent, prependNewLines: true);
+		{
+			eventSymbol.AddMethod.TryGetGenericTypes(mockedTypeSymbol, out var genericTypes);
+			stringBuilder.AppendVerifyExtensionMethods(eventSymbol.AddMethod, genericTypes, mockClassName, indent, prependNewLines: true);
+		}
 
 		if (eventSymbol.RemoveMethod is not null)
-			stringBuilder.AppendVerifyExtensionMethods(eventSymbol.RemoveMethod, mockClassName, indent, prependNewLines: true);
+		{
+			eventSymbol.RemoveMethod.TryGetGenericTypes(mockedTypeSymbol, out var genericTypes);
+			stringBuilder.AppendVerifyExtensionMethods(eventSymbol.RemoveMethod, genericTypes, mockClassName, indent, prependNewLines: true);
+		}
 	}
 
 	public static void AppendEventMockSequenceExtensions(StringBuilder stringBuilder, MockedMemberSymbol memberSymbol, string mockClassName, int indent)

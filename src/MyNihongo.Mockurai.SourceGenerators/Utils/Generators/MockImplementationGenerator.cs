@@ -79,7 +79,7 @@ internal static class MockImplementationGenerator
 			  		public void VerifyNoOtherCalls() =>
 			  			(({{mockClassName}})@this).VerifyNoOtherCalls();
 
-			  {{CreateMockExtensions(stringBuilder, mockableMembers, mockClassName, indent: 2)}}
+			  {{CreateMockExtensions(stringBuilder, mockedTypeSymbol, mockableMembers, mockClassName, indent: 2)}}
 			  	}
 			  }
 
@@ -395,14 +395,14 @@ internal static class MockImplementationGenerator
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateMockExtensions(StringBuilder stringBuilder, IReadOnlyList<MockedMemberSymbol> members, string mockClassName, int indent)
+	private static string CreateMockExtensions(StringBuilder stringBuilder, MockedTypeSymbol typeSymbol, IReadOnlyList<MockedMemberSymbol> members, string mockClassName, int indent)
 	{
 		stringBuilder.Clear();
 
 		var generatedCount = 0;
 		foreach (var member in members)
 		{
-			Action<StringBuilder, MockedMemberSymbol, string, int>? handler = member.Symbol.Kind switch
+			Action<StringBuilder, MockedTypeSymbol, MockedMemberSymbol, string, int>? handler = member.Symbol.Kind switch
 			{
 				SymbolKind.Event => MockImplementationEventGenerator.AppendEventMockExtensions,
 				SymbolKind.Property => MockImplementationPropertyGenerator.AppendPropertyMockExtensions,
@@ -421,7 +421,7 @@ internal static class MockImplementationGenerator
 			}
 
 			stringBuilder.AppendNameComment(member, indent);
-			handler(stringBuilder, member, mockClassName, indent);
+			handler(stringBuilder, typeSymbol, member, mockClassName, indent);
 			generatedCount++;
 		}
 

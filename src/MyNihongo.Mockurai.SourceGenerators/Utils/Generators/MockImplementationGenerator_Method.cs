@@ -79,10 +79,10 @@ internal static class MockImplementationMethodGenerator
 			.Append('}');
 	}
 
-	public static void AppendMethodMockExtensions(StringBuilder stringBuilder, MockedMemberSymbol memberSymbol, string mockClassName, int indent)
+	public static void AppendMethodMockExtensions(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, string mockClassName, int indent)
 	{
 		if (memberSymbol.Symbol is IMethodSymbol methodSymbol)
-			stringBuilder.AppendSetupVerifyExtensionMethods(methodSymbol, mockClassName, indent);
+			stringBuilder.AppendSetupVerifyExtensionMethods(methodSymbol, mockedTypeSymbol, mockClassName, indent);
 	}
 
 	public static void AppendMethodMockSequenceExtensions(StringBuilder stringBuilder, MockedMemberSymbol memberSymbol, string mockClassName, int indent)
