@@ -12,25 +12,13 @@ internal static class TypeSymbolEx
 
 		public IEnumerable<ISymbol> GetInterfaceMembers()
 		{
-			if (@this.AllInterfaces.IsDefaultOrEmpty)
+			foreach (var member in @this.GetMembers())
+				yield return member;
+
+			foreach (var interfaceSymbol in @this.AllInterfaces)
 			{
-				foreach (var member in @this.GetMembers())
+				foreach (var member in interfaceSymbol.GetMembers())
 					yield return member;
-
-				yield break;
-			}
-
-			var queue = new Queue<ITypeSymbol>();
-			queue.Enqueue(@this);
-
-			while (queue.Count > 0)
-			{
-				var typeSymbol = queue.Dequeue();
-				foreach (var member in typeSymbol.GetMembers())
-					yield return member;
-
-				foreach (var interfaceSymbol in typeSymbol.AllInterfaces)
-					queue.Enqueue(interfaceSymbol);
 			}
 		}
 
