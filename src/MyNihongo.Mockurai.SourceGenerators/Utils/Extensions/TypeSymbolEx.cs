@@ -10,6 +10,30 @@ internal static class TypeSymbolEx
 				.Where(static x => x.IsPublic && x is { IsStatic: false, IsSealed: false } && (x.IsOverride || x.IsVirtual || x.IsAbstract));
 		}
 
+		public IEnumerable<ISymbol> GetInterfaceMembers()
+		{
+			if (@this.AllInterfaces.IsDefaultOrEmpty)
+			{
+				foreach (var member in @this.GetMembers())
+					yield return member;
+
+				yield break;
+			}
+
+			var queue = new Queue<ITypeSymbol>();
+			queue.Enqueue(@this);
+
+			while (queue.Count > 0)
+			{
+				var typeSymbol = queue.Dequeue();
+				foreach (var member in typeSymbol.GetMembers())
+					yield return member;
+
+				foreach (var interfaceSymbol in typeSymbol.AllInterfaces)
+					queue.Enqueue(interfaceSymbol);
+			}
+		}
+
 		/// <summary>
 		/// Returns members that prevent compilation, but are not relevant to mocking (e.g. abstract members of parent classes).
 		/// </summary>

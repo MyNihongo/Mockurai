@@ -120,7 +120,8 @@ internal static class MockImplementationGenerator
 		var symbols = typeSymbol.TypeKind switch
 		{
 			TypeKind.Class => typeSymbol.GetOverridableMembers(),
-			_ => typeSymbol.GetMembers(),
+			TypeKind.Interface => typeSymbol.GetInterfaceMembers(),
+			_ => [],
 		};
 
 		return symbols
