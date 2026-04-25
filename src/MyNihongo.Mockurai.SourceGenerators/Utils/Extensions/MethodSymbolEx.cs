@@ -354,7 +354,7 @@ internal static class MethodSymbolEx
 				.Append("times());");
 		}
 
-		public void AppendVerifySequenceExtensionMethods(IMethodSymbol methodSymbol, string castName, int indent, bool prependNewLines = false)
+		public void AppendVerifySequenceExtensionMethods(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, string castName, int indent, bool prependNewLines = false)
 		{
 			if (prependNewLines)
 			{
@@ -363,10 +363,12 @@ internal static class MethodSymbolEx
 					.AppendLine();
 			}
 
+			methodSymbol.TryGetGenericTypes(mockedTypeSymbol, out var genericTypes);
+
 			@this
 				.Indent(indent)
 				.Append("public void ")
-				.AppendVerifyMethodName(methodSymbol, appendVerifyPrefix: false)
+				.AppendVerifyMethodName(methodSymbol, appendVerifyPrefix: false, typeArguments: genericTypes)
 				.Append('(')
 				.AppendItParameters(methodSymbol.Parameters)
 				.AppendLine(")");
