@@ -1349,4 +1349,94 @@ public sealed class Inheritance : IssuesTestsBase
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
 	}
+
+	[Fact]
+	public async Task NotDuplicateOverridenMethod()
+	{
+		const string testCode =
+			"""
+			namespace Issues.Tests;
+
+			public abstract Class1
+			{
+				public virtual void Invoke() {}
+			}
+
+			public abstract Class : Class1
+			{
+				public override void Invoke() {}
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<Class> ClassMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources = [];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task NotDuplicateOverridenMethodGeneric()
+	{
+		const string testCode =
+			"""
+			namespace Issues.Tests;
+
+			public abstract Class1<T>
+			{
+				public virtual void Invoke(T value) {}
+			}
+
+			public abstract Class<T> : Class1<T>
+			{
+				public override void Invoke(T value) {}
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<Class<float>> ClassMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources = [];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task NotDuplicateOverridenMethodGenericType()
+	{
+		const string testCode =
+			"""
+			namespace Issues.Tests;
+
+			public abstract Class1<T>
+			{
+				public virtual void Invoke(T value) {}
+			}
+
+			public abstract Class : Class1<float>
+			{
+				public override void Invoke(float value) {}
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<Class> ClassMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources = [];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
 }
