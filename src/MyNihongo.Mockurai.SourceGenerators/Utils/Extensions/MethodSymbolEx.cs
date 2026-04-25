@@ -795,7 +795,7 @@ internal static class MethodSymbolEx
 				if (methodOnlyGenericTypeNames.Contains(typeArgument.Name))
 					@this.Append("{key.Item").Append(itemCounter++).Append(".Name}");
 				else
-					@this.AppendType(typeArgument);
+					@this.AppendTypeofName(typeArgument, appendStringInterpolation: true);
 			}
 
 			@this.Append('>');

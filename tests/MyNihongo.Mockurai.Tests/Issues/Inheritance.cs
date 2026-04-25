@@ -738,11 +738,240 @@ public sealed class Inheritance : IssuesTestsBase
 			[MockuraiGenerate]
 			public abstract partial class TestsBase
 			{
-				protected partial IMock<IInterface> InterfaceMock { get; }
+				protected partial IMock<IInterface<decimal>> InterfaceMock { get; }
 			}
 			""";
 
-		GeneratedSources generatedSources = [];
+		GeneratedSources generatedSources =
+		[
+			(
+				"TestsBase.g.cs",
+				"""
+				#nullable enable
+				namespace Issues.Tests;
+
+				public partial class TestsBase
+				{
+					// InterfaceMock
+					private readonly InterfaceMock<decimal> _interfaceMock = new(InvocationIndex.CounterValue);
+					protected partial IMock<Issues.Tests.IInterface<decimal>> InterfaceMock => _interfaceMock;
+
+					protected virtual void VerifyNoOtherCalls()
+					{
+						InterfaceMock.VerifyNoOtherCalls();
+					}
+
+					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
+					{
+						var ctx = new VerifySequenceContext(
+							interfaceMock: InterfaceMock
+						);
+
+						verify(ctx);
+					}
+
+					protected class VerifySequenceContext
+					{
+						protected readonly VerifyIndex VerifyIndex;
+						public readonly IMockSequence<Issues.Tests.IInterface<decimal>> InterfaceMock;
+
+						public VerifySequenceContext(IMock<Issues.Tests.IInterface<decimal>> interfaceMock)
+						{
+							VerifyIndex = new VerifyIndex();
+							InterfaceMock = new MockSequence<Issues.Tests.IInterface<decimal>>
+							{
+								VerifyIndex = VerifyIndex,
+								Mock = interfaceMock,
+							};
+						}
+
+						protected VerifySequenceContext(VerifySequenceContext ctx)
+						{
+							VerifyIndex = ctx.VerifyIndex;
+							InterfaceMock = ctx.InterfaceMock;
+						}
+					}
+				}
+				"""
+			),
+			(
+				"InterfaceMock_T_.g.cs",
+				"""
+				#nullable enable
+				namespace MyNihongo.Mockurai;
+
+				public sealed class InterfaceMock<T> : IMock<Issues.Tests.IInterface<T>>
+				{
+					private readonly InvocationIndex.Counter _invocationIndex;
+					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
+					private Proxy? _proxy;
+
+					public InterfaceMock(InvocationIndex.Counter invocationIndex)
+					{
+						_invocationIndex = invocationIndex;
+						_invocationProviders = GetInvocations;
+					}
+
+					public Issues.Tests.IInterface<T> Object => _proxy ??= new Proxy(this);
+
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
+					// Invoke
+					private Setup? _invoke0;
+					private Invocation? _invoke0Invocation;
+
+					public Setup SetupInvoke<T>()
+					{
+						_invoke0 ??= new Setup();
+						return _invoke0;
+					}
+
+					public void VerifyInvoke<T>(in Times times)
+					{
+						_invoke0Invocation ??= new Invocation($"IInterface<{typeof(T).Name}>.Invoke<{typeof(T).Name}>()");
+						_invoke0Invocation.Verify(times, _invocationProviders);
+					}
+
+					public long VerifyInvoke<T>(long index)
+					{
+						_invoke0Invocation ??= new Invocation($"IInterface<{typeof(T).Name}>.Invoke<{typeof(T).Name}>()");
+						return _invoke0Invocation.Verify(index, _invocationProviders);
+					}
+
+					// Invoke1
+					private Setup? _invoke10;
+					private Invocation? _invoke10Invocation;
+
+					public Setup SetupInvoke1<T>()
+					{
+						_invoke10 ??= new Setup();
+						return _invoke10;
+					}
+
+					public void VerifyInvoke1<T>(in Times times)
+					{
+						_invoke10Invocation ??= new Invocation($"IInterface<{typeof(T).Name}>.Invoke1<{typeof(T).Name}>()");
+						_invoke10Invocation.Verify(times, _invocationProviders);
+					}
+
+					public long VerifyInvoke1<T>(long index)
+					{
+						_invoke10Invocation ??= new Invocation($"IInterface<{typeof(T).Name}>.Invoke1<{typeof(T).Name}>()");
+						return _invoke10Invocation.Verify(index, _invocationProviders);
+					}
+
+					public void VerifyNoOtherCalls()
+					{
+						_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);
+						_invoke10Invocation?.VerifyNoOtherCalls(_invocationProviders);
+					}
+
+					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
+					{
+						yield return _invoke0Invocation;
+						yield return _invoke10Invocation;
+					}
+
+					private sealed class Proxy : Issues.Tests.IInterface<T>
+					{
+						private readonly InterfaceMock<T> _mock;
+
+						public Proxy(InterfaceMock<T> mock)
+						{
+							_mock = mock;
+						}
+
+						public void Invoke<T>()
+						{
+							_mock._invoke0Invocation ??= new Invocation($"IInterface<{typeof(T).Name}>.Invoke<{typeof(T).Name}>()");
+							_mock._invoke0Invocation.Register(_mock._invocationIndex);
+							_mock._invoke0?.Invoke();
+						}
+
+						public void Invoke1<T>()
+						{
+							_mock._invoke10Invocation ??= new Invocation($"IInterface<{typeof(T).Name}>.Invoke1<{typeof(T).Name}>()");
+							_mock._invoke10Invocation.Register(_mock._invocationIndex);
+							_mock._invoke10?.Invoke();
+						}
+					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock<T> _mock;
+
+						public InvocationContainer(InterfaceMock<T> mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation> Invoke<T>()
+						{
+							_mock._invoke0Invocation ??= new Invocation($"IInterface<{typeof(T).Name}>.Invoke<{typeof(T).Name}>()");
+							return _mock._invoke0Invocation.GetInvocations() ?? [];
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation> Invoke1<T>()
+						{
+							_mock._invoke10Invocation ??= new Invocation($"IInterface<{typeof(T).Name}>.Invoke1<{typeof(T).Name}>()");
+							return _mock._invoke10Invocation.GetInvocations() ?? [];
+						}
+					}
+				}
+
+				public static partial class MockExtensions
+				{
+					extension<T>(IMock<Issues.Tests.IInterface<T>> @this)
+					{
+						public InterfaceMock<T>.InvocationContainer Invocations => ((InterfaceMock<T>)@this).Invocations;
+
+						public void VerifyNoOtherCalls() =>
+							((InterfaceMock<T>)@this).VerifyNoOtherCalls();
+
+						// Invoke
+						public ISetup<System.Action> SetupInvoke<T>() =>
+							((InterfaceMock<T>)@this).SetupInvoke<T>();
+
+						public void VerifyInvoke<T>(in Times times) =>
+							((InterfaceMock<T>)@this).VerifyInvoke<T>(times);
+
+						public void VerifyInvoke<T>(System.Func<Times> times) =>
+							((InterfaceMock<T>)@this).VerifyInvoke<T>(times());
+
+						// Invoke1
+						public ISetup<System.Action> SetupInvoke1<T>() =>
+							((InterfaceMock<T>)@this).SetupInvoke1<T>();
+
+						public void VerifyInvoke1<T>(in Times times) =>
+							((InterfaceMock<T>)@this).VerifyInvoke1<T>(times);
+
+						public void VerifyInvoke1<T>(System.Func<Times> times) =>
+							((InterfaceMock<T>)@this).VerifyInvoke1<T>(times());
+					}
+				}
+
+				public static partial class MockSequenceExtensions
+				{
+					extension<T>(IMockSequence<Issues.Tests.IInterface<T>> @this)
+					{
+						// Invoke
+						public void Invoke<T>()
+						{
+							var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvoke<T>(@this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+
+						// Invoke1
+						public void Invoke1<T>()
+						{
+							var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvoke1<T>(@this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+					}
+				}
+				"""
+			),
+		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();

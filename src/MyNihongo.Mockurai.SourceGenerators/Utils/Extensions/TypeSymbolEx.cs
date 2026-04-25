@@ -94,7 +94,7 @@ internal static class TypeSymbolEx
 			return @this.Append('>');
 		}
 
-		public StringBuilder AppendTypeofName(ITypeSymbol typeParameterSymbol, string? typeOverride, bool appendStringInterpolation = false)
+		public StringBuilder AppendTypeofName(ITypeSymbol typeParameterSymbol, string? typeOverride = null, bool appendStringInterpolation = false)
 		{
 			if (appendStringInterpolation)
 				@this.Append('{');
