@@ -717,4 +717,64 @@ public sealed class Inheritance : IssuesTestsBase
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
 	}
+
+	[Fact]
+	public async Task InheritFromInterfaceGeneric()
+	{
+		const string testCode =
+			"""
+			namespace Issues.Tests;
+
+			public interface IInterface1<T>
+			{
+				void Invoke1<T>();
+			}
+
+			public interface IInterface<T> : IInterface1<T>
+			{
+				void Invoke<T>();
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<IInterface> InterfaceMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources = [];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task InheritFromInterfaceGenericType()
+	{
+		const string testCode =
+			"""
+			namespace Issues.Tests;
+
+			public interface IInterface1<T>
+			{
+				void Invoke1<T>();
+			}
+
+			public interface IInterface : IInterface1<decimal>
+			{
+				void Invoke();
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<IInterface> InterfaceMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources = [];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
 }
