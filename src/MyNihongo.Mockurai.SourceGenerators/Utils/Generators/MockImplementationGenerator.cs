@@ -361,12 +361,24 @@ internal static class MockImplementationGenerator
 					stringBuilder
 						.AppendGenericTypes(method.TypeArguments).AppendLine("()")
 						.Indent(indent++).AppendLine("{")
-						.Indent(indent).AppendInvocationDeclaration(method, typeSymbol, memberSymbol, fieldPrefix, indent, out _).AppendLine();
+						.Indent(indent).AppendInvocationDeclaration(method, typeSymbol, memberSymbol, fieldPrefix, indent, out var genericTypeNames).AppendLine();
 
 					stringBuilder
 						.Indent(indent)
-						.Append("return ")
-						.AppendParameterName(memberSymbol.MemberName, method.MethodKind, suffix: MockGeneratorConst.Suffixes.Invocation)
+						.Append("return ");
+
+					if (genericTypeNames.IsDefaultOrEmpty)
+					{
+						stringBuilder
+							.Append(fieldPrefix)
+							.AppendFieldName(memberSymbol.MemberName, method.MethodKind, suffix: MockGeneratorConst.Suffixes.Invocation);
+					}
+					else
+					{
+						stringBuilder.AppendParameterName(memberSymbol.MemberName, method.MethodKind, suffix: MockGeneratorConst.Suffixes.Invocation);
+					}
+
+					stringBuilder
 						.Append('.')
 						.AppendInvocationGetMethodName(method)
 						.AppendLine("() ?? [];");

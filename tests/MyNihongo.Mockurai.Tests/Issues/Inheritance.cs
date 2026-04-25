@@ -929,23 +929,23 @@ public sealed class Inheritance : IssuesTestsBase
 							((InterfaceMock<T>)@this).VerifyNoOtherCalls();
 
 						// Invoke
-						public ISetup<System.Action> SetupInvoke<T>() =>
+						public ISetup<System.Action> SetupInvoke() =>
 							((InterfaceMock<T>)@this).SetupInvoke<T>();
 
-						public void VerifyInvoke<T>(in Times times) =>
+						public void VerifyInvoke(in Times times) =>
 							((InterfaceMock<T>)@this).VerifyInvoke<T>(times);
 
-						public void VerifyInvoke<T>(System.Func<Times> times) =>
+						public void VerifyInvoke(System.Func<Times> times) =>
 							((InterfaceMock<T>)@this).VerifyInvoke<T>(times());
 
 						// Invoke1
-						public ISetup<System.Action> SetupInvoke1<T>() =>
+						public ISetup<System.Action> SetupInvoke1() =>
 							((InterfaceMock<T>)@this).SetupInvoke1<T>();
 
-						public void VerifyInvoke1<T>(in Times times) =>
+						public void VerifyInvoke1(in Times times) =>
 							((InterfaceMock<T>)@this).VerifyInvoke1<T>(times);
 
-						public void VerifyInvoke1<T>(System.Func<Times> times) =>
+						public void VerifyInvoke1(System.Func<Times> times) =>
 							((InterfaceMock<T>)@this).VerifyInvoke1<T>(times());
 					}
 				}
@@ -955,14 +955,14 @@ public sealed class Inheritance : IssuesTestsBase
 					extension<T>(IMockSequence<Issues.Tests.IInterface<T>> @this)
 					{
 						// Invoke
-						public void Invoke<T>()
+						public void Invoke()
 						{
 							var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvoke<T>(@this.VerifyIndex);
 							@this.VerifyIndex.Set(nextIndex);
 						}
 
 						// Invoke1
-						public void Invoke1<T>()
+						public void Invoke1()
 						{
 							var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvoke1<T>(@this.VerifyIndex);
 							@this.VerifyIndex.Set(nextIndex);
