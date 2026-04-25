@@ -727,12 +727,12 @@ public sealed class Inheritance : IssuesTestsBase
 
 			public interface IInterface1<T>
 			{
-				void Invoke1<T>();
+				void Invoke1(T value);
 			}
 
 			public interface IInterface<T> : IInterface1<T>
 			{
-				void Invoke<T>();
+				T Invoke();
 			}
 
 			[MockuraiGenerate]
@@ -817,47 +817,48 @@ public sealed class Inheritance : IssuesTestsBase
 					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
 
 					// Invoke
-					private Setup? _invoke0;
+					private Setup<T>? _invoke0;
 					private Invocation? _invoke0Invocation;
 
-					public Setup SetupInvoke<T>()
+					public Setup<T> SetupInvoke()
 					{
-						_invoke0 ??= new Setup();
+						_invoke0 ??= new Setup<T>();
 						return _invoke0;
 					}
 
-					public void VerifyInvoke<T>(in Times times)
+					public void VerifyInvoke(in Times times)
 					{
-						_invoke0Invocation ??= new Invocation($"IInterface<{typeof(T).Name}>.Invoke<{typeof(T).Name}>()");
+						_invoke0Invocation ??= new Invocation($"IInterface<{typeof(T).Name}>.Invoke()");
 						_invoke0Invocation.Verify(times, _invocationProviders);
 					}
 
-					public long VerifyInvoke<T>(long index)
+					public long VerifyInvoke(long index)
 					{
-						_invoke0Invocation ??= new Invocation($"IInterface<{typeof(T).Name}>.Invoke<{typeof(T).Name}>()");
+						_invoke0Invocation ??= new Invocation($"IInterface<{typeof(T).Name}>.Invoke()");
 						return _invoke0Invocation.Verify(index, _invocationProviders);
 					}
 
 					// Invoke1
-					private Setup? _invoke10;
-					private Invocation? _invoke10Invocation;
+					private SetupWithParameter<T>? _invoke10;
+					private Invocation<T>? _invoke10Invocation;
 
-					public Setup SetupInvoke1<T>()
+					public SetupWithParameter<T> SetupInvoke1(in It<T> value)
 					{
-						_invoke10 ??= new Setup();
+						_invoke10 ??= new SetupWithParameter<T>();
+						_invoke10.SetupParameter(value.ValueSetup);
 						return _invoke10;
 					}
 
-					public void VerifyInvoke1<T>(in Times times)
+					public void VerifyInvoke1(in It<T> value, in Times times)
 					{
-						_invoke10Invocation ??= new Invocation($"IInterface<{typeof(T).Name}>.Invoke1<{typeof(T).Name}>()");
-						_invoke10Invocation.Verify(times, _invocationProviders);
+						_invoke10Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke1({{0}})");
+						_invoke10Invocation.Verify(value.ValueSetup, times, _invocationProviders);
 					}
 
-					public long VerifyInvoke1<T>(long index)
+					public long VerifyInvoke1(in It<T> value, long index)
 					{
-						_invoke10Invocation ??= new Invocation($"IInterface<{typeof(T).Name}>.Invoke1<{typeof(T).Name}>()");
-						return _invoke10Invocation.Verify(index, _invocationProviders);
+						_invoke10Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke1({{0}})");
+						return _invoke10Invocation.Verify(value.ValueSetup, index, _invocationProviders);
 					}
 
 					public void VerifyNoOtherCalls()
@@ -881,18 +882,18 @@ public sealed class Inheritance : IssuesTestsBase
 							_mock = mock;
 						}
 
-						public void Invoke<T>()
+						public T Invoke()
 						{
-							_mock._invoke0Invocation ??= new Invocation($"IInterface<{typeof(T).Name}>.Invoke<{typeof(T).Name}>()");
+							_mock._invoke0Invocation ??= new Invocation($"IInterface<{typeof(T).Name}>.Invoke()");
 							_mock._invoke0Invocation.Register(_mock._invocationIndex);
-							_mock._invoke0?.Invoke();
+							return _mock._invoke0?.Execute(out var returnValue) == true ? returnValue! : default!;
 						}
 
-						public void Invoke1<T>()
+						public void Invoke1(T value)
 						{
-							_mock._invoke10Invocation ??= new Invocation($"IInterface<{typeof(T).Name}>.Invoke1<{typeof(T).Name}>()");
-							_mock._invoke10Invocation.Register(_mock._invocationIndex);
-							_mock._invoke10?.Invoke();
+							_mock._invoke10Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke1({{0}})");
+							_mock._invoke10Invocation.Register(_mock._invocationIndex, value);
+							_mock._invoke10?.Invoke(value);
 						}
 					}
 
@@ -905,17 +906,9 @@ public sealed class Inheritance : IssuesTestsBase
 							_mock = mock;
 						}
 
-						public System.Collections.Generic.IEnumerable<IInvocation> Invoke<T>()
-						{
-							_mock._invoke0Invocation ??= new Invocation($"IInterface<{typeof(T).Name}>.Invoke<{typeof(T).Name}>()");
-							return _mock._invoke0Invocation.GetInvocations() ?? [];
-						}
+						public System.Collections.Generic.IEnumerable<IInvocation> Invoke => _mock._invoke0Invocation?.GetInvocations() ?? [];
 
-						public System.Collections.Generic.IEnumerable<IInvocation> Invoke1<T>()
-						{
-							_mock._invoke10Invocation ??= new Invocation($"IInterface<{typeof(T).Name}>.Invoke1<{typeof(T).Name}>()");
-							return _mock._invoke10Invocation.GetInvocations() ?? [];
-						}
+						public System.Collections.Generic.IEnumerable<IInvocation<T>> Invoke1 => _mock._invoke10Invocation?.GetInvocationsWithArguments() ?? [];
 					}
 				}
 
@@ -929,24 +922,24 @@ public sealed class Inheritance : IssuesTestsBase
 							((InterfaceMock<T>)@this).VerifyNoOtherCalls();
 
 						// Invoke
-						public ISetup<System.Action> SetupInvoke() =>
-							((InterfaceMock<T>)@this).SetupInvoke<T>();
+						public ISetup<System.Action, T, System.Func<T>> SetupInvoke() =>
+							((InterfaceMock<T>)@this).SetupInvoke();
 
 						public void VerifyInvoke(in Times times) =>
-							((InterfaceMock<T>)@this).VerifyInvoke<T>(times);
+							((InterfaceMock<T>)@this).VerifyInvoke(times);
 
 						public void VerifyInvoke(System.Func<Times> times) =>
-							((InterfaceMock<T>)@this).VerifyInvoke<T>(times());
+							((InterfaceMock<T>)@this).VerifyInvoke(times());
 
 						// Invoke1
-						public ISetup<System.Action> SetupInvoke1() =>
-							((InterfaceMock<T>)@this).SetupInvoke1<T>();
+						public ISetup<System.Action<T>> SetupInvoke1(in It<T> value = default) =>
+							((InterfaceMock<T>)@this).SetupInvoke1(value);
 
-						public void VerifyInvoke1(in Times times) =>
-							((InterfaceMock<T>)@this).VerifyInvoke1<T>(times);
+						public void VerifyInvoke1(in It<T> value, in Times times) =>
+							((InterfaceMock<T>)@this).VerifyInvoke1(value, times);
 
-						public void VerifyInvoke1(System.Func<Times> times) =>
-							((InterfaceMock<T>)@this).VerifyInvoke1<T>(times());
+						public void VerifyInvoke1(in It<T> value, System.Func<Times> times) =>
+							((InterfaceMock<T>)@this).VerifyInvoke1(value, times());
 					}
 				}
 
@@ -957,14 +950,14 @@ public sealed class Inheritance : IssuesTestsBase
 						// Invoke
 						public void Invoke()
 						{
-							var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvoke<T>(@this.VerifyIndex);
+							var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvoke(@this.VerifyIndex);
 							@this.VerifyIndex.Set(nextIndex);
 						}
 
 						// Invoke1
-						public void Invoke1()
+						public void Invoke1(in It<T> value)
 						{
-							var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvoke1<T>(@this.VerifyIndex);
+							var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvoke1(value, @this.VerifyIndex);
 							@this.VerifyIndex.Set(nextIndex);
 						}
 					}
@@ -1227,6 +1220,131 @@ public sealed class Inheritance : IssuesTestsBase
 				"""
 			),
 		];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task InheritFromClass()
+	{
+		const string testCode =
+			"""
+			namespace Issues.Tests;
+
+			public abstract Class1
+			{
+				public abstract void Invoke1();
+			}
+
+			public abstract Class : Class1
+			{
+				public abstract void Invoke();
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<Class> ClassMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources = [];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task InheritFromClassRecursively()
+	{
+		const string testCode =
+			"""
+			namespace Issues.Tests;
+
+			public abstract Class1
+			{
+				public abstract void Invoke1();
+			}
+
+			public abstract Class2 : Class1
+			{
+				public abstract void Invoke1();
+			}
+
+			public abstract Class : Class2
+			{
+				public abstract void Invoke();
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<Class> ClassMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources = [];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task InheritFromClassGeneric()
+	{
+		const string testCode =
+			"""
+			namespace Issues.Tests;
+
+			public abstract Class1<T>
+			{
+				public abstract void Invoke1(T value);
+			}
+
+			public abstract Class<T> : Class1<T>
+			{
+				public abstract T Invoke();
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<Class<float>> ClassMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources = [];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task InheritFromClassGenericType()
+	{
+		const string testCode =
+			"""
+			namespace Issues.Tests;
+
+			public abstract Class1<T>
+			{
+				void Invoke1(T value);
+			}
+
+			public abstract Class : Class1<float>
+			{
+				T Invoke();
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<Class> ClassMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources = [];
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
