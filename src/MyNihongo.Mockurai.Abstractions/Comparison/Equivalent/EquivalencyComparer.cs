@@ -201,7 +201,7 @@ public class EquivalencyComparer
 	}
 }
 
-public sealed class EquivalencyComparer<T> : EquivalencyComparer
+public sealed class EquivalencyComparer<T> : EquivalencyComparer, IEquivalencyComparer<T>
 {
 	public static readonly EquivalencyComparer<T> Default = new();
 
