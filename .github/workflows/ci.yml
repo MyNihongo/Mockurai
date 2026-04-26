@@ -24,11 +24,11 @@ jobs:
     - name: Setup .NET 10
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+        dotnet-version: "${{ env.DOTNET_VERSION }}"
 
     - name: Clean output
       shell: bash
-      working-directory: ${{ env.SCRIPT_DIRECTORY }}
+      working-directory: "${{ env.SCRIPT_DIRECTORY }}"
       run: |
         chmod +x clean.sh
         ./clean.sh
@@ -44,7 +44,7 @@ jobs:
 
     - name: Prepare artifacts
       shell: bash
-      working-directory: ${{ env.SCRIPT_DIRECTORY }}
+      working-directory: "${{ env.SCRIPT_DIRECTORY }}"
       run: |
         chmod +x prepare_artifacts.sh
         ./prepare_artifacts.sh
@@ -53,13 +53,13 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: mockurai
-        path: ${{ env.ARTIFACT_DIRECTORY }}/
+        path: "${{ env.ARTIFACT_DIRECTORY }}/*.nupkg"
 
     - name: Upload test results
       uses: actions/upload-artifact@v4
       with:
         name: test-results
-        path: ${{ env.TEST_RESULT_DIRECTORY }}/
+        path: "${{ env.TEST_RESULT_DIRECTORY }}/**/*.nupkg"
 
   deploy:
     name: Deploy
