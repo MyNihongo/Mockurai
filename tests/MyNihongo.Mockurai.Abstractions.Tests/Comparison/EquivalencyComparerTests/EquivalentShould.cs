@@ -173,7 +173,7 @@ public sealed class EquivalentShould
 		{
 			new("Age", "17", "18"),
 			new("Name", "Okayama Issei", "Okayama Issei2"),
-			new("DateOfBirth", "29.06.2024.", "30.06.2024."),
+			new("DateOfBirth", "2024/06/29", "2024/06/30"),
 		};
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
@@ -208,8 +208,8 @@ public sealed class EquivalentShould
 		{
 			new("Age", "17", "18"),
 			new("Name", "Okayama Issei", "Okayama Issei2"),
-			new("DateOfBirth", "29.06.2024.", "30.06.2024."),
-			new("DateTimeUpdated", "30.07.2025. 18:23:32", "30.07.2025. 18:23:33"),
+			new("DateOfBirth", "2024/06/29", "2024/06/30"),
+			new("DateTimeUpdated", "2025/07/30 18:23:32", "2025/07/30 18:23:33"),
 		};
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
