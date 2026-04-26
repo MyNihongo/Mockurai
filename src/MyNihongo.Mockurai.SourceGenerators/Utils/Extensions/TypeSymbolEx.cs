@@ -6,13 +6,16 @@ internal static class TypeSymbolEx
 	{
 		public IEnumerable<ISymbol> GetOverridableMembers()
 		{
-			foreach (var member in GetMembers(@this))
+			HashSet<ISymbol>? overrides = null;
+			var getOverrides = () => overrides ??= new HashSet<ISymbol>(SymbolEqualityComparer.Default);
+
+			foreach (var member in GetMembers(@this, getOverrides))
 				yield return member;
 
 			var baseType = @this.BaseType;
 			while (baseType is not null && baseType.SpecialType != SpecialType.System_Object)
 			{
-				foreach (var member in GetMembers(baseType))
+				foreach (var member in GetMembers(baseType, getOverrides))
 					yield return member;
 
 				baseType = baseType.BaseType;
@@ -20,10 +23,32 @@ internal static class TypeSymbolEx
 
 			yield break;
 
-			static IEnumerable<ISymbol> GetMembers(ITypeSymbol symbol)
+			static IEnumerable<ISymbol> GetMembers(ITypeSymbol symbol, Func<HashSet<ISymbol>> overrides)
 			{
-				return symbol.GetMembers()
-					.Where(static x => x.IsPublic && x is { IsStatic: false, IsSealed: false } && (x.IsOverride || x.IsVirtual || x.IsAbstract));
+				foreach (var member in symbol.GetMembers())
+				{
+					if (member.IsPublic && member is { IsStatic: false, IsSealed: false } && (member.IsOverride || member.IsVirtual || member.IsAbstract))
+					{
+						if (!overrides().Contains(member))
+							yield return member;
+					}
+
+					if (member.IsOverride)
+					{
+						overrides().Add(member);
+
+						ISymbol? overriddenSymbol = member switch
+						{
+							IMethodSymbol x => x.OverriddenMethod,
+							IPropertySymbol x => x.OverriddenProperty,
+							IEventSymbol x => x.OverriddenEvent,
+							_ => null,
+						};
+
+						if (overriddenSymbol is not null)
+							overrides().Add(overriddenSymbol);
+					}
+				}
 			}
 		}
 
