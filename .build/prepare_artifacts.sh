@@ -16,6 +16,5 @@ mkdir -p "$artifacts_path"
 
 # Find and copy .nupkg files
 find "$nuget_find_dir" -type f -name "*.nupkg" -print0 | while IFS= read -r -d '' file; do
-    cp "$file" "$artifacts_path"
-    echo "Copied $file"
+    cp -afv "$file" "$artifacts_path"
 done

@@ -1,0 +1,65 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  DOTNET_VERSION: 10.0.x
+  BUILD_CONFIG: Release
+  ARTIFACT_DIRECTORY: .artifacts
+  SCRIPT_DIRECTORY: .build
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v6
+
+    - name: Setup .NET 10
+      uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: "${{ env.DOTNET_VERSION }}"
+
+    - name: Clean output
+      shell: bash
+      working-directory: "${{ env.SCRIPT_DIRECTORY }}"
+      run: |
+        chmod +x clean.sh
+        ./clean.sh
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build solution
+      run: dotnet build --configuration ${{ env.BUILD_CONFIG }} --no-restore
+
+    - name: Run tests
+      run: dotnet test --configuration ${{ env.BUILD_CONFIG }} --no-build
+
+    - name: Prepare artifacts
+      shell: bash
+      working-directory: "${{ env.SCRIPT_DIRECTORY }}"
+      run: |
+        chmod +x prepare_artifacts.sh
+        ./prepare_artifacts.sh
+
+    - name: Upload published artifacts
+      uses: actions/upload-artifact@v7
+      with:
+        name: mockurai
+        path: "${{ env.ARTIFACT_DIRECTORY }}/*.nupkg"
+        include-hidden-files: true
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Placeholder deploy stage
+        run: echo "Deploy stage ready"
