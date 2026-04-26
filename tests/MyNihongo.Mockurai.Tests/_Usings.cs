@@ -2,3 +2,5 @@
 global using Microsoft.CodeAnalysis.Testing;
 global using GeneratedSource = (string FileName, string SourceCode);
 global using GeneratedSources = (string FileName, string SourceCode)[];
+
+[assembly: AssemblyFixture(typeof(MyNihongo.Mockurai.Tests.GlobalTestSetup))]
