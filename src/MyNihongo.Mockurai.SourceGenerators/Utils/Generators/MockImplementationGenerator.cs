@@ -79,7 +79,7 @@ internal static class MockImplementationGenerator
 			  		public void VerifyNoOtherCalls() =>
 			  			(({{mockClassName}})@this).VerifyNoOtherCalls();
 
-			  {{CreateMockExtensions(stringBuilder, mockableMembers, mockClassName, indent: 2)}}
+			  {{CreateMockExtensions(stringBuilder, mockedTypeSymbol, mockableMembers, mockClassName, indent: 2)}}
 			  	}
 			  }
 
@@ -87,7 +87,7 @@ internal static class MockImplementationGenerator
 			  {
 			  	extension{{genericTypes}}(IMockSequence<{{typeString}}> @this)
 			  	{
-			  {{CreateMockSequenceExtensions(stringBuilder, mockableMembers, mockClassName, indent: 2)}}
+			  {{CreateMockSequenceExtensions(stringBuilder, mockedTypeSymbol, mockableMembers, mockClassName, indent: 2)}}
 			  	}
 			  }
 			  """;
@@ -120,7 +120,8 @@ internal static class MockImplementationGenerator
 		var symbols = typeSymbol.TypeKind switch
 		{
 			TypeKind.Class => typeSymbol.GetOverridableMembers(),
-			_ => typeSymbol.GetMembers(),
+			TypeKind.Interface => typeSymbol.GetInterfaceMembers(),
+			_ => [],
 		};
 
 		return symbols
@@ -360,12 +361,24 @@ internal static class MockImplementationGenerator
 					stringBuilder
 						.AppendGenericTypes(method.TypeArguments).AppendLine("()")
 						.Indent(indent++).AppendLine("{")
-						.Indent(indent).AppendInvocationDeclaration(method, typeSymbol, memberSymbol, fieldPrefix, indent, out _).AppendLine();
+						.Indent(indent).AppendInvocationDeclaration(method, typeSymbol, memberSymbol, fieldPrefix, indent, out var genericTypeNames).AppendLine();
 
 					stringBuilder
 						.Indent(indent)
-						.Append("return ")
-						.AppendParameterName(memberSymbol.MemberName, method.MethodKind, suffix: MockGeneratorConst.Suffixes.Invocation)
+						.Append("return ");
+
+					if (genericTypeNames.IsDefaultOrEmpty)
+					{
+						stringBuilder
+							.Append(fieldPrefix)
+							.AppendFieldName(memberSymbol.MemberName, method.MethodKind, suffix: MockGeneratorConst.Suffixes.Invocation);
+					}
+					else
+					{
+						stringBuilder.AppendParameterName(memberSymbol.MemberName, method.MethodKind, suffix: MockGeneratorConst.Suffixes.Invocation);
+					}
+
+					stringBuilder
 						.Append('.')
 						.AppendInvocationGetMethodName(method)
 						.AppendLine("() ?? [];");
@@ -382,14 +395,14 @@ internal static class MockImplementationGenerator
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateMockExtensions(StringBuilder stringBuilder, IReadOnlyList<MockedMemberSymbol> members, string mockClassName, int indent)
+	private static string CreateMockExtensions(StringBuilder stringBuilder, MockedTypeSymbol typeSymbol, IReadOnlyList<MockedMemberSymbol> members, string mockClassName, int indent)
 	{
 		stringBuilder.Clear();
 
 		var generatedCount = 0;
 		foreach (var member in members)
 		{
-			Action<StringBuilder, MockedMemberSymbol, string, int>? handler = member.Symbol.Kind switch
+			Action<StringBuilder, MockedTypeSymbol, MockedMemberSymbol, string, int>? handler = member.Symbol.Kind switch
 			{
 				SymbolKind.Event => MockImplementationEventGenerator.AppendEventMockExtensions,
 				SymbolKind.Property => MockImplementationPropertyGenerator.AppendPropertyMockExtensions,
@@ -408,21 +421,21 @@ internal static class MockImplementationGenerator
 			}
 
 			stringBuilder.AppendNameComment(member, indent);
-			handler(stringBuilder, member, mockClassName, indent);
+			handler(stringBuilder, typeSymbol, member, mockClassName, indent);
 			generatedCount++;
 		}
 
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateMockSequenceExtensions(StringBuilder stringBuilder, IReadOnlyList<MockedMemberSymbol> members, string mockClassName, int indent)
+	private static string CreateMockSequenceExtensions(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, IReadOnlyList<MockedMemberSymbol> members, string mockClassName, int indent)
 	{
 		stringBuilder.Clear();
 
 		var generatedCount = 0;
 		foreach (var member in members)
 		{
-			Action<StringBuilder, MockedMemberSymbol, string, int>? handler = member.Symbol.Kind switch
+			Action<StringBuilder, MockedTypeSymbol, MockedMemberSymbol, string, int>? handler = member.Symbol.Kind switch
 			{
 				SymbolKind.Event => MockImplementationEventGenerator.AppendEventMockSequenceExtensions,
 				SymbolKind.Property => MockImplementationPropertyGenerator.AppendPropertyMockSequenceExtensions,
@@ -441,7 +454,7 @@ internal static class MockImplementationGenerator
 			}
 
 			stringBuilder.AppendNameComment(member, indent);
-			handler(stringBuilder, member, mockClassName, indent);
+			handler(stringBuilder, mockedTypeSymbol, member, mockClassName, indent);
 			generatedCount++;
 		}
 
