@@ -11,7 +11,7 @@ env:
   BUILD_CONFIG: Release
   TEST_RESULT_DIRECTORY: TestResults
   ARTIFACT_DIRECTORY: .artifacts
-  SCRIPT_DIRECTORY: ./build
+  SCRIPT_DIRECTORY: .build
 
 jobs:
   build:
