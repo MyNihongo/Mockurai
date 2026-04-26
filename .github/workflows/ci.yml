@@ -49,6 +49,12 @@ jobs:
         chmod +x prepare_artifacts.sh
         ./prepare_artifacts.sh
 
+    - name: Debug artifacts
+      run: |
+        pwd
+        ls -la
+        ls -la ${{ env.ARTIFACT_DIRECTORY }}
+
     - name: Upload published artifacts
       uses: actions/upload-artifact@v4
       with:
