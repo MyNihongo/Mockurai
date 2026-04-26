@@ -24,11 +24,11 @@ jobs:
     - name: Setup .NET 10
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: $DOTNET_VERSION
+        dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Clean output
       shell: bash
-      working-directory: $SCRIPT_DIRECTORY
+      working-directory: ${{ env.SCRIPT_DIRECTORY }}
       run: |
         chmod +x clean.sh
         ./clean.sh
@@ -37,14 +37,14 @@ jobs:
       run: dotnet restore
 
     - name: Build solution
-      run: dotnet build --configuration $BUILD_CONFIG --no-restore
+      run: dotnet build --configuration ${{ env.BUILD_CONFIG }} --no-restore
 
     - name: Run tests
-      run: dotnet test --configuration $BUILD_CONFIG --no-build --results-directory $TEST_RESULT_DIRECTORY
+      run: dotnet test --configuration ${{ env.BUILD_CONFIG }} --no-build --results-directory ${{ env.TEST_RESULT_DIRECTORY }}
 
     - name: Prepare artifacts
       shell: bash
-      working-directory: $SCRIPT_DIRECTORY
+      working-directory: ${{ env.SCRIPT_DIRECTORY }}
       run: |
         chmod +x prepare_artifacts.sh
         ./prepare_artifacts.sh
