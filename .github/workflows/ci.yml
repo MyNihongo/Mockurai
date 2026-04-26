@@ -9,7 +9,6 @@ on:
 env:
   DOTNET_VERSION: 10.0.x
   BUILD_CONFIG: Release
-  TEST_RESULT_DIRECTORY: TestResults
   ARTIFACT_DIRECTORY: .artifacts
   SCRIPT_DIRECTORY: .build
 
@@ -40,7 +39,7 @@ jobs:
       run: dotnet build --configuration ${{ env.BUILD_CONFIG }} --no-restore
 
     - name: Run tests
-      run: dotnet test --configuration ${{ env.BUILD_CONFIG }} --no-build --results-directory ${{ env.TEST_RESULT_DIRECTORY }}
+      run: dotnet test --configuration ${{ env.BUILD_CONFIG }} --no-build
 
     - name: Prepare artifacts
       shell: bash
@@ -49,23 +48,12 @@ jobs:
         chmod +x prepare_artifacts.sh
         ./prepare_artifacts.sh
 
-    - name: Debug artifacts
-      run: |
-        pwd
-        ls -la
-        ls -la ${{ env.ARTIFACT_DIRECTORY }}
-
     - name: Upload published artifacts
       uses: actions/upload-artifact@v4
       with:
         name: mockurai
         path: "${{ env.ARTIFACT_DIRECTORY }}/*.nupkg"
-
-    - name: Upload test results
-      uses: actions/upload-artifact@v4
-      with:
-        name: test-results
-        path: "${{ env.TEST_RESULT_DIRECTORY }}/**/*.nupkg"
+        include-hidden-files: true
 
   deploy:
     name: Deploy
