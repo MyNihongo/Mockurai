@@ -1232,12 +1232,12 @@ public sealed class Inheritance : IssuesTestsBase
 			"""
 			namespace Issues.Tests;
 
-			public abstract Class1
+			public abstract class Class1
 			{
 				public abstract void Invoke1();
 			}
 
-			public abstract Class : Class1
+			public abstract class Class : Class1
 			{
 				public abstract void Invoke();
 			}
@@ -1249,7 +1249,228 @@ public sealed class Inheritance : IssuesTestsBase
 			}
 			""";
 
-		GeneratedSources generatedSources = [];
+		GeneratedSources generatedSources =
+		[
+			(
+				"TestsBase.g.cs",
+				"""
+				#nullable enable
+				namespace Issues.Tests;
+
+				public partial class TestsBase
+				{
+					// ClassMock
+					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
+					protected partial IMock<Issues.Tests.Class> ClassMock => _classMock;
+
+					protected virtual void VerifyNoOtherCalls()
+					{
+						ClassMock.VerifyNoOtherCalls();
+					}
+
+					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
+					{
+						var ctx = new VerifySequenceContext(
+							classMock: ClassMock
+						);
+
+						verify(ctx);
+					}
+
+					protected class VerifySequenceContext
+					{
+						protected readonly VerifyIndex VerifyIndex;
+						public readonly IMockSequence<Issues.Tests.Class> ClassMock;
+
+						public VerifySequenceContext(IMock<Issues.Tests.Class> classMock)
+						{
+							VerifyIndex = new VerifyIndex();
+							ClassMock = new MockSequence<Issues.Tests.Class>
+							{
+								VerifyIndex = VerifyIndex,
+								Mock = classMock,
+							};
+						}
+
+						protected VerifySequenceContext(VerifySequenceContext ctx)
+						{
+							VerifyIndex = ctx.VerifyIndex;
+							ClassMock = ctx.ClassMock;
+						}
+					}
+				}
+				"""
+			),
+			(
+				"ClassMock.g.cs",
+				"""
+				#nullable enable
+				namespace MyNihongo.Mockurai;
+
+				public sealed class ClassMock : IMock<Issues.Tests.Class>
+				{
+					private readonly InvocationIndex.Counter _invocationIndex;
+					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
+					private Proxy? _proxy;
+
+					public ClassMock(InvocationIndex.Counter invocationIndex)
+					{
+						_invocationIndex = invocationIndex;
+						_invocationProviders = GetInvocations;
+					}
+
+					public Issues.Tests.Class Object => _proxy ??= new Proxy(this);
+
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
+					// Invoke
+					private Setup? _invoke0;
+					private Invocation? _invoke0Invocation;
+
+					public Setup SetupInvoke()
+					{
+						_invoke0 ??= new Setup();
+						return _invoke0;
+					}
+
+					public void VerifyInvoke(in Times times)
+					{
+						_invoke0Invocation ??= new Invocation("Class.Invoke()");
+						_invoke0Invocation.Verify(times, _invocationProviders);
+					}
+
+					public long VerifyInvoke(long index)
+					{
+						_invoke0Invocation ??= new Invocation("Class.Invoke()");
+						return _invoke0Invocation.Verify(index, _invocationProviders);
+					}
+
+					// Invoke1
+					private Setup? _invoke10;
+					private Invocation? _invoke10Invocation;
+
+					public Setup SetupInvoke1()
+					{
+						_invoke10 ??= new Setup();
+						return _invoke10;
+					}
+
+					public void VerifyInvoke1(in Times times)
+					{
+						_invoke10Invocation ??= new Invocation("Class.Invoke1()");
+						_invoke10Invocation.Verify(times, _invocationProviders);
+					}
+
+					public long VerifyInvoke1(long index)
+					{
+						_invoke10Invocation ??= new Invocation("Class.Invoke1()");
+						return _invoke10Invocation.Verify(index, _invocationProviders);
+					}
+
+					public void VerifyNoOtherCalls()
+					{
+						_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);
+						_invoke10Invocation?.VerifyNoOtherCalls(_invocationProviders);
+					}
+
+					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
+					{
+						yield return _invoke0Invocation;
+						yield return _invoke10Invocation;
+					}
+
+					private sealed class Proxy : Issues.Tests.Class
+					{
+						private readonly ClassMock _mock;
+
+						public Proxy(ClassMock mock)
+						{
+							_mock = mock;
+						}
+
+						public override void Invoke()
+						{
+							_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
+							_mock._invoke0Invocation.Register(_mock._invocationIndex);
+							_mock._invoke0?.Invoke();
+						}
+
+						public override void Invoke1()
+						{
+							_mock._invoke10Invocation ??= new Invocation("Class.Invoke1()");
+							_mock._invoke10Invocation.Register(_mock._invocationIndex);
+							_mock._invoke10?.Invoke();
+						}
+					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly ClassMock _mock;
+
+						public InvocationContainer(ClassMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation> Invoke => _mock._invoke0Invocation?.GetInvocations() ?? [];
+
+						public System.Collections.Generic.IEnumerable<IInvocation> Invoke1 => _mock._invoke10Invocation?.GetInvocations() ?? [];
+					}
+				}
+
+				public static partial class MockExtensions
+				{
+					extension(IMock<Issues.Tests.Class> @this)
+					{
+						public ClassMock.InvocationContainer Invocations => ((ClassMock)@this).Invocations;
+
+						public void VerifyNoOtherCalls() =>
+							((ClassMock)@this).VerifyNoOtherCalls();
+
+						// Invoke
+						public ISetup<System.Action> SetupInvoke() =>
+							((ClassMock)@this).SetupInvoke();
+
+						public void VerifyInvoke(in Times times) =>
+							((ClassMock)@this).VerifyInvoke(times);
+
+						public void VerifyInvoke(System.Func<Times> times) =>
+							((ClassMock)@this).VerifyInvoke(times());
+
+						// Invoke1
+						public ISetup<System.Action> SetupInvoke1() =>
+							((ClassMock)@this).SetupInvoke1();
+
+						public void VerifyInvoke1(in Times times) =>
+							((ClassMock)@this).VerifyInvoke1(times);
+
+						public void VerifyInvoke1(System.Func<Times> times) =>
+							((ClassMock)@this).VerifyInvoke1(times());
+					}
+				}
+
+				public static partial class MockSequenceExtensions
+				{
+					extension(IMockSequence<Issues.Tests.Class> @this)
+					{
+						// Invoke
+						public void Invoke()
+						{
+							var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke(@this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+
+						// Invoke1
+						public void Invoke1()
+						{
+							var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke1(@this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+					}
+				}
+				"""
+			),
+		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
@@ -1262,17 +1483,17 @@ public sealed class Inheritance : IssuesTestsBase
 			"""
 			namespace Issues.Tests;
 
-			public abstract Class1
+			public abstract class Class1
 			{
 				public abstract void Invoke1();
 			}
 
-			public abstract Class2 : Class1
+			public abstract class Class2 : Class1
 			{
-				public abstract void Invoke1();
+				public abstract void Invoke2();
 			}
 
-			public abstract Class : Class2
+			public abstract class Class : Class2
 			{
 				public abstract void Invoke();
 			}
@@ -1284,7 +1505,278 @@ public sealed class Inheritance : IssuesTestsBase
 			}
 			""";
 
-		GeneratedSources generatedSources = [];
+		GeneratedSources generatedSources =
+		[
+			(
+				"TestsBase.g.cs",
+				"""
+				#nullable enable
+				namespace Issues.Tests;
+
+				public partial class TestsBase
+				{
+					// ClassMock
+					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
+					protected partial IMock<Issues.Tests.Class> ClassMock => _classMock;
+
+					protected virtual void VerifyNoOtherCalls()
+					{
+						ClassMock.VerifyNoOtherCalls();
+					}
+
+					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
+					{
+						var ctx = new VerifySequenceContext(
+							classMock: ClassMock
+						);
+
+						verify(ctx);
+					}
+
+					protected class VerifySequenceContext
+					{
+						protected readonly VerifyIndex VerifyIndex;
+						public readonly IMockSequence<Issues.Tests.Class> ClassMock;
+
+						public VerifySequenceContext(IMock<Issues.Tests.Class> classMock)
+						{
+							VerifyIndex = new VerifyIndex();
+							ClassMock = new MockSequence<Issues.Tests.Class>
+							{
+								VerifyIndex = VerifyIndex,
+								Mock = classMock,
+							};
+						}
+
+						protected VerifySequenceContext(VerifySequenceContext ctx)
+						{
+							VerifyIndex = ctx.VerifyIndex;
+							ClassMock = ctx.ClassMock;
+						}
+					}
+				}
+				"""
+			),
+			(
+				"ClassMock.g.cs",
+				"""
+				#nullable enable
+				namespace MyNihongo.Mockurai;
+
+				public sealed class ClassMock : IMock<Issues.Tests.Class>
+				{
+					private readonly InvocationIndex.Counter _invocationIndex;
+					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
+					private Proxy? _proxy;
+
+					public ClassMock(InvocationIndex.Counter invocationIndex)
+					{
+						_invocationIndex = invocationIndex;
+						_invocationProviders = GetInvocations;
+					}
+
+					public Issues.Tests.Class Object => _proxy ??= new Proxy(this);
+
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
+					// Invoke
+					private Setup? _invoke0;
+					private Invocation? _invoke0Invocation;
+
+					public Setup SetupInvoke()
+					{
+						_invoke0 ??= new Setup();
+						return _invoke0;
+					}
+
+					public void VerifyInvoke(in Times times)
+					{
+						_invoke0Invocation ??= new Invocation("Class.Invoke()");
+						_invoke0Invocation.Verify(times, _invocationProviders);
+					}
+
+					public long VerifyInvoke(long index)
+					{
+						_invoke0Invocation ??= new Invocation("Class.Invoke()");
+						return _invoke0Invocation.Verify(index, _invocationProviders);
+					}
+
+					// Invoke2
+					private Setup? _invoke20;
+					private Invocation? _invoke20Invocation;
+
+					public Setup SetupInvoke2()
+					{
+						_invoke20 ??= new Setup();
+						return _invoke20;
+					}
+
+					public void VerifyInvoke2(in Times times)
+					{
+						_invoke20Invocation ??= new Invocation("Class.Invoke2()");
+						_invoke20Invocation.Verify(times, _invocationProviders);
+					}
+
+					public long VerifyInvoke2(long index)
+					{
+						_invoke20Invocation ??= new Invocation("Class.Invoke2()");
+						return _invoke20Invocation.Verify(index, _invocationProviders);
+					}
+
+					// Invoke1
+					private Setup? _invoke10;
+					private Invocation? _invoke10Invocation;
+
+					public Setup SetupInvoke1()
+					{
+						_invoke10 ??= new Setup();
+						return _invoke10;
+					}
+
+					public void VerifyInvoke1(in Times times)
+					{
+						_invoke10Invocation ??= new Invocation("Class.Invoke1()");
+						_invoke10Invocation.Verify(times, _invocationProviders);
+					}
+
+					public long VerifyInvoke1(long index)
+					{
+						_invoke10Invocation ??= new Invocation("Class.Invoke1()");
+						return _invoke10Invocation.Verify(index, _invocationProviders);
+					}
+
+					public void VerifyNoOtherCalls()
+					{
+						_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);
+						_invoke20Invocation?.VerifyNoOtherCalls(_invocationProviders);
+						_invoke10Invocation?.VerifyNoOtherCalls(_invocationProviders);
+					}
+
+					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
+					{
+						yield return _invoke0Invocation;
+						yield return _invoke20Invocation;
+						yield return _invoke10Invocation;
+					}
+
+					private sealed class Proxy : Issues.Tests.Class
+					{
+						private readonly ClassMock _mock;
+
+						public Proxy(ClassMock mock)
+						{
+							_mock = mock;
+						}
+
+						public override void Invoke()
+						{
+							_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
+							_mock._invoke0Invocation.Register(_mock._invocationIndex);
+							_mock._invoke0?.Invoke();
+						}
+
+						public override void Invoke2()
+						{
+							_mock._invoke20Invocation ??= new Invocation("Class.Invoke2()");
+							_mock._invoke20Invocation.Register(_mock._invocationIndex);
+							_mock._invoke20?.Invoke();
+						}
+
+						public override void Invoke1()
+						{
+							_mock._invoke10Invocation ??= new Invocation("Class.Invoke1()");
+							_mock._invoke10Invocation.Register(_mock._invocationIndex);
+							_mock._invoke10?.Invoke();
+						}
+					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly ClassMock _mock;
+
+						public InvocationContainer(ClassMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation> Invoke => _mock._invoke0Invocation?.GetInvocations() ?? [];
+
+						public System.Collections.Generic.IEnumerable<IInvocation> Invoke2 => _mock._invoke20Invocation?.GetInvocations() ?? [];
+
+						public System.Collections.Generic.IEnumerable<IInvocation> Invoke1 => _mock._invoke10Invocation?.GetInvocations() ?? [];
+					}
+				}
+
+				public static partial class MockExtensions
+				{
+					extension(IMock<Issues.Tests.Class> @this)
+					{
+						public ClassMock.InvocationContainer Invocations => ((ClassMock)@this).Invocations;
+
+						public void VerifyNoOtherCalls() =>
+							((ClassMock)@this).VerifyNoOtherCalls();
+
+						// Invoke
+						public ISetup<System.Action> SetupInvoke() =>
+							((ClassMock)@this).SetupInvoke();
+
+						public void VerifyInvoke(in Times times) =>
+							((ClassMock)@this).VerifyInvoke(times);
+
+						public void VerifyInvoke(System.Func<Times> times) =>
+							((ClassMock)@this).VerifyInvoke(times());
+
+						// Invoke2
+						public ISetup<System.Action> SetupInvoke2() =>
+							((ClassMock)@this).SetupInvoke2();
+
+						public void VerifyInvoke2(in Times times) =>
+							((ClassMock)@this).VerifyInvoke2(times);
+
+						public void VerifyInvoke2(System.Func<Times> times) =>
+							((ClassMock)@this).VerifyInvoke2(times());
+
+						// Invoke1
+						public ISetup<System.Action> SetupInvoke1() =>
+							((ClassMock)@this).SetupInvoke1();
+
+						public void VerifyInvoke1(in Times times) =>
+							((ClassMock)@this).VerifyInvoke1(times);
+
+						public void VerifyInvoke1(System.Func<Times> times) =>
+							((ClassMock)@this).VerifyInvoke1(times());
+					}
+				}
+
+				public static partial class MockSequenceExtensions
+				{
+					extension(IMockSequence<Issues.Tests.Class> @this)
+					{
+						// Invoke
+						public void Invoke()
+						{
+							var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke(@this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+
+						// Invoke2
+						public void Invoke2()
+						{
+							var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke2(@this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+
+						// Invoke1
+						public void Invoke1()
+						{
+							var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke1(@this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+					}
+				}
+				"""
+			),
+		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();

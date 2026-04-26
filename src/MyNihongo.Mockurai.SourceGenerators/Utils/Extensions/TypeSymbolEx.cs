@@ -6,8 +6,25 @@ internal static class TypeSymbolEx
 	{
 		public IEnumerable<ISymbol> GetOverridableMembers()
 		{
-			return @this.GetMembers()
-				.Where(static x => x.IsPublic && x is { IsStatic: false, IsSealed: false } && (x.IsOverride || x.IsVirtual || x.IsAbstract));
+			foreach (var member in GetMembers(@this))
+				yield return member;
+
+			var baseType = @this.BaseType;
+			while (baseType is not null && baseType.SpecialType != SpecialType.System_Object)
+			{
+				foreach (var member in GetMembers(baseType))
+					yield return member;
+
+				baseType = baseType.BaseType;
+			}
+
+			yield break;
+
+			static IEnumerable<ISymbol> GetMembers(ITypeSymbol symbol)
+			{
+				return symbol.GetMembers()
+					.Where(static x => x.IsPublic && x is { IsStatic: false, IsSealed: false } && (x.IsOverride || x.IsVirtual || x.IsAbstract));
+			}
 		}
 
 		public IEnumerable<ISymbol> GetInterfaceMembers()
