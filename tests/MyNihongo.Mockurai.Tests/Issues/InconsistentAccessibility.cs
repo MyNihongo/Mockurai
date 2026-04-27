@@ -161,19 +161,19 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 				{
 					extension(IMock<Issues.Tests.IInterface> @this)
 					{
-						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+						internal InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
 
-						public void VerifyNoOtherCalls() =>
+						internal void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
 
 						// Invoke
-						public ISetup<System.Action> SetupInvoke() =>
+						internal ISetup<System.Action> SetupInvoke() =>
 							((InterfaceMock)@this).SetupInvoke();
 
-						public void VerifyInvoke(in Times times) =>
+						internal void VerifyInvoke(in Times times) =>
 							((InterfaceMock)@this).VerifyInvoke(times);
 
-						public void VerifyInvoke(System.Func<Times> times) =>
+						internal void VerifyInvoke(System.Func<Times> times) =>
 							((InterfaceMock)@this).VerifyInvoke(times());
 					}
 				}
@@ -183,7 +183,7 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 					extension(IMockSequence<Issues.Tests.IInterface> @this)
 					{
 						// Invoke
-						public void Invoke()
+						internal void Invoke()
 						{
 							var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvoke(@this.VerifyIndex);
 							@this.VerifyIndex.Set(nextIndex);

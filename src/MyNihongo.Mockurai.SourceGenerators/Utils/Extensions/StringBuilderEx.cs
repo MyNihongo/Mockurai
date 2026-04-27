@@ -132,7 +132,12 @@ internal static class StringBuilderEx
 
 		public StringBuilder AppendDeclaredAccessibility(ISymbol symbol)
 		{
-			var declaredAccessibility = symbol.DeclaredAccessibility.GetString();
+			return @this.AppendDeclaredAccessibility(symbol.DeclaredAccessibility);
+		}
+
+		public StringBuilder AppendDeclaredAccessibility(Accessibility accessibility)
+		{
+			var declaredAccessibility = accessibility.GetString();
 			return @this.Append(declaredAccessibility);
 		}
 

@@ -89,7 +89,7 @@ internal static class MockImplementationEventGenerator
 			.Append(';');
 	}
 
-	public static void AppendEventMockExtensions(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, string mockClassName, int indent)
+	public static void AppendEventMockExtensions(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, string mockClassName, Accessibility accessibility, int indent)
 	{
 		if (memberSymbol.Symbol is not IEventSymbol eventSymbol)
 			return;
@@ -98,7 +98,7 @@ internal static class MockImplementationEventGenerator
 
 		stringBuilder
 			.Indent(indent)
-			.AppendRaiseMethodDeclaration(memberSymbol, parameterSymbol)
+			.AppendRaiseMethodDeclaration(memberSymbol, parameterSymbol, accessibility)
 			.AppendLine(" =>");
 
 		stringBuilder
@@ -112,34 +112,35 @@ internal static class MockImplementationEventGenerator
 		if (eventSymbol.AddMethod is not null)
 		{
 			eventSymbol.AddMethod.TryGetGenericTypes(mockedTypeSymbol, out var genericTypes);
-			stringBuilder.AppendVerifyExtensionMethods(eventSymbol.AddMethod, genericTypes, mockClassName, indent, prependNewLines: true);
+			stringBuilder.AppendVerifyExtensionMethods(eventSymbol.AddMethod, genericTypes, mockClassName, accessibility, indent, prependNewLines: true);
 		}
 
 		if (eventSymbol.RemoveMethod is not null)
 		{
 			eventSymbol.RemoveMethod.TryGetGenericTypes(mockedTypeSymbol, out var genericTypes);
-			stringBuilder.AppendVerifyExtensionMethods(eventSymbol.RemoveMethod, genericTypes, mockClassName, indent, prependNewLines: true);
+			stringBuilder.AppendVerifyExtensionMethods(eventSymbol.RemoveMethod, genericTypes, mockClassName, accessibility, indent, prependNewLines: true);
 		}
 	}
 
-	public static void AppendEventMockSequenceExtensions(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, string mockClassName, int indent)
+	public static void AppendEventMockSequenceExtensions(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, string mockClassName, Accessibility accessibility, int indent)
 	{
 		if (memberSymbol.Symbol is not IEventSymbol eventSymbol)
 			return;
 
 		if (eventSymbol.AddMethod is not null)
-			stringBuilder.AppendVerifySequenceExtensionMethods(eventSymbol.AddMethod, mockedTypeSymbol, mockClassName, indent);
+			stringBuilder.AppendVerifySequenceExtensionMethods(eventSymbol.AddMethod, mockedTypeSymbol, mockClassName, accessibility, indent);
 
 		if (eventSymbol.RemoveMethod is not null)
-			stringBuilder.AppendVerifySequenceExtensionMethods(eventSymbol.RemoveMethod, mockedTypeSymbol, mockClassName, indent, prependNewLines: true);
+			stringBuilder.AppendVerifySequenceExtensionMethods(eventSymbol.RemoveMethod, mockedTypeSymbol, mockClassName, accessibility, indent, prependNewLines: true);
 	}
 
 	extension(StringBuilder stringBuilder)
 	{
-		private StringBuilder AppendRaiseMethodDeclaration(MockedMemberSymbol memberSymbol, IParameterSymbol? parameterSymbol)
+		private StringBuilder AppendRaiseMethodDeclaration(MockedMemberSymbol memberSymbol, IParameterSymbol? parameterSymbol, Accessibility? accessibility = null)
 		{
 			return stringBuilder
-				.Append("public void ")
+				.AppendDeclaredAccessibility(accessibility ?? Accessibility.Public)
+				.Append(" void ")
 				.AppendRaiseMethodName(memberSymbol)
 				.Append('(')
 				.TryAppendParameter(parameterSymbol)

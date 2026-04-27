@@ -8,6 +8,10 @@ internal static class MockImplementationGenerator
 	{
 		var stringBuilder = new StringBuilder();
 		var typeString = typeSymbol.ToString();
+
+		var accessibility = GetAccessibility(typeSymbol);
+		var accessibilityString = accessibility.GetString();
+		
 		var (constructor, mockClassName, genericTypes) = CreateMockClassName(stringBuilder, typeSymbol);
 		var mockedTypeSymbol = new MockedTypeSymbol(typeSymbol);
 		var mockableMembers = GetMockableMembers(typeSymbol);
@@ -17,7 +21,7 @@ internal static class MockImplementationGenerator
 			  #nullable enable
 			  namespace {{result.Options.RootNamespace}};
 
-			  public sealed class {{mockClassName}} : IMock<{{typeString}}>
+			  {{accessibilityString}} sealed class {{mockClassName}} : IMock<{{typeString}}>
 			  {
 			  	private readonly InvocationIndex.Counter _invocationIndex;
 			  	private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
@@ -74,12 +78,12 @@ internal static class MockImplementationGenerator
 			  {
 			  	extension{{genericTypes}}(IMock<{{typeString}}> @this)
 			  	{
-			  		public {{mockClassName}}.InvocationContainer Invocations => (({{mockClassName}})@this).Invocations;
+			  		{{accessibilityString}} {{mockClassName}}.InvocationContainer Invocations => (({{mockClassName}})@this).Invocations;
 
-			  		public void VerifyNoOtherCalls() =>
+			  		{{accessibilityString}} void VerifyNoOtherCalls() =>
 			  			(({{mockClassName}})@this).VerifyNoOtherCalls();
 
-			  {{CreateMockExtensions(stringBuilder, mockedTypeSymbol, mockableMembers, mockClassName, indent: 2)}}
+			  {{CreateMockExtensions(stringBuilder, mockedTypeSymbol, mockableMembers, mockClassName, accessibility, indent: 2)}}
 			  	}
 			  }
 
@@ -87,7 +91,7 @@ internal static class MockImplementationGenerator
 			  {
 			  	extension{{genericTypes}}(IMockSequence<{{typeString}}> @this)
 			  	{
-			  {{CreateMockSequenceExtensions(stringBuilder, mockedTypeSymbol, mockableMembers, mockClassName, indent: 2)}}
+			  {{CreateMockSequenceExtensions(stringBuilder, mockedTypeSymbol, mockableMembers, mockClassName, accessibility, indent: 2)}}
 			  	}
 			  }
 			  """;
@@ -97,6 +101,13 @@ internal static class MockImplementationGenerator
 			source: source,
 			methodSymbols: methodSymbols
 		);
+	}
+
+	private static Accessibility GetAccessibility(ITypeSymbol typeSymbol)
+	{
+		return typeSymbol.DeclaredAccessibility == Accessibility.Internal
+			? Accessibility.Internal
+			: Accessibility.Public;
 	}
 
 	private static MockClassName CreateMockClassName(StringBuilder stringBuilder, ITypeSymbol typeSymbol)
@@ -395,14 +406,14 @@ internal static class MockImplementationGenerator
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateMockExtensions(StringBuilder stringBuilder, MockedTypeSymbol typeSymbol, IReadOnlyList<MockedMemberSymbol> members, string mockClassName, int indent)
+	private static string CreateMockExtensions(StringBuilder stringBuilder, MockedTypeSymbol typeSymbol, IReadOnlyList<MockedMemberSymbol> members, string mockClassName, Accessibility accessibility, int indent)
 	{
 		stringBuilder.Clear();
 
 		var generatedCount = 0;
 		foreach (var member in members)
 		{
-			Action<StringBuilder, MockedTypeSymbol, MockedMemberSymbol, string, int>? handler = member.Symbol.Kind switch
+			Action<StringBuilder, MockedTypeSymbol, MockedMemberSymbol, string, Accessibility, int>? handler = member.Symbol.Kind switch
 			{
 				SymbolKind.Event => MockImplementationEventGenerator.AppendEventMockExtensions,
 				SymbolKind.Property => MockImplementationPropertyGenerator.AppendPropertyMockExtensions,
@@ -421,21 +432,21 @@ internal static class MockImplementationGenerator
 			}
 
 			stringBuilder.AppendNameComment(member, indent);
-			handler(stringBuilder, typeSymbol, member, mockClassName, indent);
+			handler(stringBuilder, typeSymbol, member, mockClassName, accessibility, indent);
 			generatedCount++;
 		}
 
 		return stringBuilder.ToString();
 	}
 
-	private static string CreateMockSequenceExtensions(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, IReadOnlyList<MockedMemberSymbol> members, string mockClassName, int indent)
+	private static string CreateMockSequenceExtensions(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, IReadOnlyList<MockedMemberSymbol> members, string mockClassName, Accessibility accessibility, int indent)
 	{
 		stringBuilder.Clear();
 
 		var generatedCount = 0;
 		foreach (var member in members)
 		{
-			Action<StringBuilder, MockedTypeSymbol, MockedMemberSymbol, string, int>? handler = member.Symbol.Kind switch
+			Action<StringBuilder, MockedTypeSymbol, MockedMemberSymbol, string, Accessibility, int>? handler = member.Symbol.Kind switch
 			{
 				SymbolKind.Event => MockImplementationEventGenerator.AppendEventMockSequenceExtensions,
 				SymbolKind.Property => MockImplementationPropertyGenerator.AppendPropertyMockSequenceExtensions,
@@ -454,7 +465,7 @@ internal static class MockImplementationGenerator
 			}
 
 			stringBuilder.AppendNameComment(member, indent);
-			handler(stringBuilder, mockedTypeSymbol, member, mockClassName, indent);
+			handler(stringBuilder, mockedTypeSymbol, member, mockClassName, accessibility, indent);
 			generatedCount++;
 		}
 
