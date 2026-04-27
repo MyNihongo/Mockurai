@@ -199,6 +199,71 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 	}
 
 	[Fact]
+	public async Task GenerateInternalVisibilityNested()
+	{
+		const string testCode =
+			"""
+			namespace Issues.Tests;
+
+			internal interface INestedInterface
+			{
+				void Invoke();
+			}
+
+			public interface IInterface<T>
+			{
+				void Invoke(T value);
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				internal partial IMock<IInterface<INestedInterface>> InterfaceMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources = [];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task GenerateInternalVisibilityNestedMultiple()
+	{
+		const string testCode =
+			"""
+			namespace Issues.Tests;
+
+			public interface INestedInterface1
+			{
+				void Invoke();
+			}
+
+			internal interface INestedInterface2
+			{
+				void Invoke();
+			}
+
+			public interface IInterface<T1, T2>
+			{
+				void Invoke(T1 value, T2 param);
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				internal partial IMock<IInterface<INestedInterface1, INestedInterface2>> InterfaceMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources = [];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
 	public async Task NotGeneratePrivateGetters()
 	{
 		const string testCode =
