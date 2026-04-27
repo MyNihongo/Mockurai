@@ -52,9 +52,9 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 					protected class VerifySequenceContext
 					{
 						protected readonly VerifyIndex VerifyIndex;
-						public readonly IMockSequence<Issues.Tests.IInterface> InterfaceMock;
+						internal readonly IMockSequence<Issues.Tests.IInterface> InterfaceMock;
 
-						public VerifySequenceContext(IMock<Issues.Tests.IInterface> interfaceMock)
+						internal VerifySequenceContext(IMock<Issues.Tests.IInterface> interfaceMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							InterfaceMock = new MockSequence<Issues.Tests.IInterface>
