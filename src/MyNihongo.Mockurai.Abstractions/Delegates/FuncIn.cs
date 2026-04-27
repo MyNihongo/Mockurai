@@ -1,10 +1,10 @@
 ﻿// ReSharper disable once CheckNamespace
+
 namespace System;
 
-#if NET8_0
-public delegate TResult FuncIn<T, out TResult>(in T arg);
-#else
 public delegate TResult FuncIn<T, out TResult>(in T arg)
+#if NET10_0_OR_GREATER
 	where T : allows ref struct
-	where TResult : allows ref struct;
+	where TResult : allows ref struct
 #endif
+;
