@@ -2,18 +2,23 @@
 
 internal static class EnumValuesEx
 {
-	public static string GetString(this Accessibility @this)
+	extension(Accessibility @this)
 	{
-		return @this switch
+		public bool IsInternal => @this is Accessibility.Internal or Accessibility.ProtectedAndInternal or Accessibility.ProtectedOrInternal;
+
+		public string GetString()
 		{
-			Accessibility.Private => "private",
-			Accessibility.ProtectedAndInternal => "private internal",
-			Accessibility.Protected => "protected",
-			Accessibility.Internal => "internal",
-			Accessibility.ProtectedOrInternal => "protected internal",
-			Accessibility.Public => "public",
-			_ => string.Empty,
-		};
+			return @this switch
+			{
+				Accessibility.Private => "private",
+				Accessibility.ProtectedAndInternal => "private internal",
+				Accessibility.Protected => "protected",
+				Accessibility.Internal => "internal",
+				Accessibility.ProtectedOrInternal => "protected internal",
+				Accessibility.Public => "public",
+				_ => string.Empty,
+			};
+		}
 	}
 
 	extension(RefKind @this)

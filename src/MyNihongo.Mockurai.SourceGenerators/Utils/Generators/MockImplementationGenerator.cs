@@ -105,7 +105,7 @@ internal static class MockImplementationGenerator
 
 	private static Accessibility GetAccessibility(ITypeSymbol typeSymbol)
 	{
-		return typeSymbol.DeclaredAccessibility == Accessibility.Internal
+		return typeSymbol.DeclaredAccessibility.IsInternal
 			? Accessibility.Internal
 			: Accessibility.Public;
 	}

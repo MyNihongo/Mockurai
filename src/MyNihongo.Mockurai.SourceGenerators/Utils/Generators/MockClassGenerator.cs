@@ -229,9 +229,9 @@ internal static class MockClassGenerator
 		{
 			var symbol = mock.PropertyOrField;
 			var symbolName = symbol?.Name;
-			var accessibility = symbol?.DeclaredAccessibility ?? Accessibility.Public;
+			var accessibility = symbol.GetVerifySequenceContextFieldAccessibility();
 
-			if (accessibility == Accessibility.Internal)
+			if (accessibility.IsInternal)
 				ctorAccessibility = accessibility;
 
 			stringBuilder
@@ -404,6 +404,16 @@ internal static class MockClassGenerator
 			.Indent(--indent).AppendLine("}")
 			.Indent(--indent).Append('}')
 			.ToString();
+	}
+
+	private static Accessibility GetVerifySequenceContextFieldAccessibility(this ISymbol? symbol)
+	{
+		if (symbol is null)
+			return Accessibility.Public;
+
+		return symbol.DeclaredAccessibility.IsInternal
+			? Accessibility.Internal
+			: Accessibility.Public;
 	}
 
 	private static StringBuilder TryAppendFunctionOverrideModifier(this StringBuilder @this, INamedTypeSymbol classSymbol, INamedTypeSymbol? baseClassSymbol)
