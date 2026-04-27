@@ -222,7 +222,179 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 			}
 			""";
 
-		GeneratedSources generatedSources = [];
+		GeneratedSources generatedSources =
+		[
+			(
+				"TestsBase.g.cs",
+				"""
+				#nullable enable
+				namespace Issues.Tests;
+
+				public partial class TestsBase
+				{
+					// InterfaceMock
+					private readonly InterfaceMock<Issues.Tests.INestedInterface> _interfaceMock = new(InvocationIndex.CounterValue);
+					internal partial IMock<Issues.Tests.IInterface<Issues.Tests.INestedInterface>> InterfaceMock => _interfaceMock;
+
+					protected virtual void VerifyNoOtherCalls()
+					{
+						InterfaceMock.VerifyNoOtherCalls();
+					}
+
+					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
+					{
+						var ctx = new VerifySequenceContext(
+							interfaceMock: InterfaceMock
+						);
+
+						verify(ctx);
+					}
+
+					protected class VerifySequenceContext
+					{
+						protected readonly VerifyIndex VerifyIndex;
+						internal readonly IMockSequence<Issues.Tests.IInterface<Issues.Tests.INestedInterface>> InterfaceMock;
+
+						internal VerifySequenceContext(IMock<Issues.Tests.IInterface<Issues.Tests.INestedInterface>> interfaceMock)
+						{
+							VerifyIndex = new VerifyIndex();
+							InterfaceMock = new MockSequence<Issues.Tests.IInterface<Issues.Tests.INestedInterface>>
+							{
+								VerifyIndex = VerifyIndex,
+								Mock = interfaceMock,
+							};
+						}
+
+						protected VerifySequenceContext(VerifySequenceContext ctx)
+						{
+							VerifyIndex = ctx.VerifyIndex;
+							InterfaceMock = ctx.InterfaceMock;
+						}
+					}
+				}
+				"""
+			),
+			(
+				"InterfaceMock_T_.g.cs",
+				"""
+				#nullable enable
+				namespace MyNihongo.Mockurai;
+
+				public sealed class InterfaceMock<T> : IMock<Issues.Tests.IInterface<T>>
+				{
+					private readonly InvocationIndex.Counter _invocationIndex;
+					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
+					private Proxy? _proxy;
+
+					public InterfaceMock(InvocationIndex.Counter invocationIndex)
+					{
+						_invocationIndex = invocationIndex;
+						_invocationProviders = GetInvocations;
+					}
+
+					public Issues.Tests.IInterface<T> Object => _proxy ??= new Proxy(this);
+
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
+					// Invoke
+					private SetupWithParameter<T>? _invoke0;
+					private Invocation<T>? _invoke0Invocation;
+
+					public SetupWithParameter<T> SetupInvoke(in It<T> value)
+					{
+						_invoke0 ??= new SetupWithParameter<T>();
+						_invoke0.SetupParameter(value.ValueSetup);
+						return _invoke0;
+					}
+
+					public void VerifyInvoke(in It<T> value, in Times times)
+					{
+						_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})");
+						_invoke0Invocation.Verify(value.ValueSetup, times, _invocationProviders);
+					}
+
+					public long VerifyInvoke(in It<T> value, long index)
+					{
+						_invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})");
+						return _invoke0Invocation.Verify(value.ValueSetup, index, _invocationProviders);
+					}
+
+					public void VerifyNoOtherCalls()
+					{
+						_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);
+					}
+
+					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
+					{
+						yield return _invoke0Invocation;
+					}
+
+					private sealed class Proxy : Issues.Tests.IInterface<T>
+					{
+						private readonly InterfaceMock<T> _mock;
+
+						public Proxy(InterfaceMock<T> mock)
+						{
+							_mock = mock;
+						}
+
+						public void Invoke(T value)
+						{
+							_mock._invoke0Invocation ??= new Invocation<T>($"IInterface<{typeof(T).Name}>.Invoke({{0}})");
+							_mock._invoke0Invocation.Register(_mock._invocationIndex, value);
+							_mock._invoke0?.Invoke(value);
+						}
+					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock<T> _mock;
+
+						public InvocationContainer(InterfaceMock<T> mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<T>> Invoke => _mock._invoke0Invocation?.GetInvocationsWithArguments() ?? [];
+					}
+				}
+
+				public static partial class MockExtensions
+				{
+					extension<T>(IMock<Issues.Tests.IInterface<T>> @this)
+					{
+						public InterfaceMock<T>.InvocationContainer Invocations => ((InterfaceMock<T>)@this).Invocations;
+
+						public void VerifyNoOtherCalls() =>
+							((InterfaceMock<T>)@this).VerifyNoOtherCalls();
+
+						// Invoke
+						public ISetup<System.Action<T>> SetupInvoke(in It<T> value = default) =>
+							((InterfaceMock<T>)@this).SetupInvoke(value);
+
+						public void VerifyInvoke(in It<T> value, in Times times) =>
+							((InterfaceMock<T>)@this).VerifyInvoke(value, times);
+
+						public void VerifyInvoke(in It<T> value, System.Func<Times> times) =>
+							((InterfaceMock<T>)@this).VerifyInvoke(value, times());
+					}
+				}
+
+				public static partial class MockSequenceExtensions
+				{
+					extension<T>(IMockSequence<Issues.Tests.IInterface<T>> @this)
+					{
+						// Invoke
+						public void Invoke(in It<T> value)
+						{
+							var nextIndex = ((InterfaceMock<T>)@this.Mock).VerifyInvoke(value, @this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+					}
+				}
+				"""
+			),
+		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
