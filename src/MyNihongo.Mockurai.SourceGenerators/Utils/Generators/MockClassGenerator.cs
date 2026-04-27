@@ -224,14 +224,20 @@ internal static class MockClassGenerator
 		}
 
 		// Generate properties
+		var ctorAccessibility = Accessibility.Public;
 		foreach (var mock in mocks)
 		{
 			var symbol = mock.PropertyOrField;
 			var symbolName = symbol?.Name;
+			var accessibility = symbol?.DeclaredAccessibility ?? Accessibility.Public;
+
+			if (accessibility == Accessibility.Internal)
+				ctorAccessibility = accessibility;
 
 			stringBuilder
 				.Indent(indent)
-				.Append("public readonly IMockSequence<")
+				.AppendDeclaredAccessibility(accessibility)
+				.Append(" readonly IMockSequence<")
 				.Append(mock.Type)
 				.Append('>')
 				.TryAppendNullableAnnotation(symbol)
@@ -243,7 +249,9 @@ internal static class MockClassGenerator
 		// Generate constructor
 		stringBuilder
 			.AppendLine()
-			.Indent(indent).Append("public VerifySequenceContext(");
+			.Indent(indent)
+			.AppendDeclaredAccessibility(ctorAccessibility)
+			.Append(" VerifySequenceContext(");
 
 		// Constructor - parameters
 		if (baseClass is not null)
