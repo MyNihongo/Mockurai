@@ -1,9 +1,13 @@
 // ReSharper disable once CheckNamespace
 namespace System;
 
-#if NET8_0
-public delegate void ActionRef<T>(ref T obj);
-#else
+/// <summary>
+/// Encapsulates a method that takes a single <see langword="ref"/> parameter and does not return a value.
+/// </summary>
+/// <typeparam name="T">The type of the parameter.</typeparam>
+/// <param name="obj">The argument passed by reference, which the method may read from and write to.</param>
 public delegate void ActionRef<T>(ref T obj)
-	where T : allows ref struct;
+#if NET10_0_OR_GREATER
+	where T : allows ref struct
 #endif
+;

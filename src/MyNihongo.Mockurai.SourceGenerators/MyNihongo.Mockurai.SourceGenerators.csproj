@@ -8,7 +8,7 @@
 		<IsRoslynComponent>true</IsRoslynComponent>
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 		<PackageId>Mockurai.SourceGenerators</PackageId>
-		<Version>0.0.0.8</Version>
+		<Version>0.0.0.9</Version>
 		<Authors>Mynihongo</Authors>
 		<Copyright>© Mynihongo 2026</Copyright>
 		<Product>Mockurai</Product>
@@ -28,10 +28,6 @@
 	<ItemGroup>
 		<None Remove="*.csproj.DotSettings" />
 		<None Include="..\..\README.md" Pack="True" PackagePath="\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Models\Interfaces\" />
 	</ItemGroup>
 
 </Project>

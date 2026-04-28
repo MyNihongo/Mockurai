@@ -1,7 +1,19 @@
 namespace MyNihongo.Mockurai;
 
+/// <summary>
+/// A returning mock setup that matches a single <see langword="ref"/> argument, invokes <see cref="ActionRef{TParameter}"/> callbacks,
+/// and computes return values via <see cref="FuncRef{TParameter, TReturns}"/>.
+/// </summary>
+/// <typeparam name="TParameter">The argument type captured by the setup.</typeparam>
+/// <typeparam name="TReturns">The return value type of the mocked member.</typeparam>
 public sealed class SetupWithRefParameter<TParameter, TReturns> : SetupWithParameterBase<TParameter, ActionRef<TParameter>, TReturns, FuncRef<TParameter, TReturns>>
 {
+	/// <summary>
+	/// Executes the first matching setup for <paramref name="parameter"/> and produces a return value when one was configured.
+	/// </summary>
+	/// <param name="parameter">The argument captured for this invocation, passed by reference.</param>
+	/// <param name="returnValue">When the method returns <see langword="true"/>, the configured return value; otherwise the default for <typeparamref name="TReturns"/>.</param>
+	/// <returns><see langword="true"/> when a matching setup produced a return value; <see langword="false"/> otherwise.</returns>
 	public bool Execute(ref TParameter parameter, out TReturns? returnValue)
 	{
 		if (Setups is null)
@@ -33,6 +45,7 @@ public sealed class SetupWithRefParameter<TParameter, TReturns> : SetupWithParam
 		return false;
 	}
 
+	/// <inheritdoc/>
 	public override void Returns(TReturns returns)
 	{
 		Returns((ref _) => returns);

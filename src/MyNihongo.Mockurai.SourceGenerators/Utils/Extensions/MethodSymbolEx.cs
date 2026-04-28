@@ -284,7 +284,7 @@ internal static class MethodSymbolEx
 				.Append('}');
 		}
 
-		public void AppendSetupVerifyExtensionMethods(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, string castName, int indent, bool prependNewLines = false)
+		public void AppendSetupVerifyExtensionMethods(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, string castName, Accessibility accessibility, int indent, bool prependNewLines = false)
 		{
 			if (prependNewLines)
 			{
@@ -294,16 +294,16 @@ internal static class MethodSymbolEx
 			}
 
 			methodSymbol.TryGetGenericTypes(mockedTypeSymbol, out var genericTypes);
-			@this.AppendSetupExtensionMethods(methodSymbol, genericTypes, castName, useDefaults: true, indent);
+			@this.AppendSetupExtensionMethods(methodSymbol, genericTypes, castName, accessibility, useDefaults: true, indent);
 			@this.AppendLine().AppendLine();
-			@this.AppendVerifyExtensionMethods(methodSymbol, genericTypes, castName, indent);
+			@this.AppendVerifyExtensionMethods(methodSymbol, genericTypes, castName, accessibility, indent);
 		}
 
-		private void AppendSetupExtensionMethods(IMethodSymbol methodSymbol, ImmutableArray<ITypeSymbol> genericTypes, string castName, bool useDefaults, int indent)
+		private void AppendSetupExtensionMethods(IMethodSymbol methodSymbol, ImmutableArray<ITypeSymbol> genericTypes, string castName, Accessibility accessibility, bool useDefaults, int indent)
 		{
 			@this
 				.Indent(indent)
-				.AppendSetupMethodDeclaration(methodSymbol, useDefaults, returnType: SetupMethodReturnType.Interface, genericTypes)
+				.AppendSetupMethodDeclaration(methodSymbol, useDefaults, returnType: SetupMethodReturnType.Interface, genericTypes, accessibility)
 				.AppendLine(" =>");
 
 			@this
@@ -315,7 +315,7 @@ internal static class MethodSymbolEx
 				.Append(");");
 		}
 
-		public void AppendVerifyExtensionMethods(IMethodSymbol methodSymbol, ImmutableArray<ITypeSymbol> genericTypes, string castName, int indent, bool prependNewLines = false)
+		public void AppendVerifyExtensionMethods(IMethodSymbol methodSymbol, ImmutableArray<ITypeSymbol> genericTypes, string castName, Accessibility accessibility, int indent, bool prependNewLines = false)
 		{
 			if (prependNewLines)
 			{
@@ -327,7 +327,7 @@ internal static class MethodSymbolEx
 			// Verify times (object)
 			@this
 				.Indent(indent)
-				.AppendVerifyTimesMethodDeclaration(methodSymbol, genericTypes)
+				.AppendVerifyTimesMethodDeclaration(methodSymbol, genericTypes, accessibility: accessibility)
 				.AppendLine(" =>");
 
 			@this
@@ -342,7 +342,7 @@ internal static class MethodSymbolEx
 			// Verify times (func)
 			@this
 				.Indent(indent)
-				.AppendVerifyTimesMethodDeclaration(methodSymbol, genericTypes, timesType: "System.Func<Times>")
+				.AppendVerifyTimesMethodDeclaration(methodSymbol, genericTypes, timesType: "System.Func<Times>", accessibility)
 				.AppendLine(" =>");
 
 			@this
@@ -354,7 +354,7 @@ internal static class MethodSymbolEx
 				.Append("times());");
 		}
 
-		public void AppendVerifySequenceExtensionMethods(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, string castName, int indent, bool prependNewLines = false)
+		public void AppendVerifySequenceExtensionMethods(IMethodSymbol methodSymbol, MockedTypeSymbol mockedTypeSymbol, string castName, Accessibility accessibility, int indent, bool prependNewLines = false)
 		{
 			if (prependNewLines)
 			{
@@ -367,7 +367,8 @@ internal static class MethodSymbolEx
 
 			@this
 				.Indent(indent)
-				.Append("public void ")
+				.AppendDeclaredAccessibility(accessibility)
+				.Append(" void ")
 				.AppendVerifyMethodName(methodSymbol, appendVerifyPrefix: false, typeArguments: genericTypes)
 				.Append('(')
 				.AppendItParameters(methodSymbol.Parameters)
@@ -391,10 +392,11 @@ internal static class MethodSymbolEx
 				.Indent(--indent).Append('}');
 		}
 
-		private StringBuilder AppendSetupMethodDeclaration(IMethodSymbol methodSymbol, bool useDefaults, SetupMethodReturnType returnType, ImmutableArray<ITypeSymbol>? typeArguments = null)
+		private StringBuilder AppendSetupMethodDeclaration(IMethodSymbol methodSymbol, bool useDefaults, SetupMethodReturnType returnType, ImmutableArray<ITypeSymbol>? typeArguments = null, Accessibility accessibility = Accessibility.Public)
 		{
 			return @this
-				.Append("public ")
+				.AppendDeclaredAccessibility(accessibility)
+				.Append(' ')
 				.AppendSetupMethodReturnType(methodSymbol, returnType)
 				.Append(' ')
 				.AppendSetupMethodName(methodSymbol, typeArguments)
@@ -434,10 +436,11 @@ internal static class MethodSymbolEx
 				.AppendGenericTypes(typeArguments ?? methodSymbol.TypeArguments);
 		}
 
-		private StringBuilder AppendVerifyTimesMethodDeclaration(IMethodSymbol methodSymbol, ImmutableArray<ITypeSymbol>? typeArguments = null, string timesType = "in Times")
+		private StringBuilder AppendVerifyTimesMethodDeclaration(IMethodSymbol methodSymbol, ImmutableArray<ITypeSymbol>? typeArguments = null, string timesType = "in Times", Accessibility accessibility = Accessibility.Public)
 		{
 			return @this
-				.Append("public void ")
+				.AppendDeclaredAccessibility(accessibility)
+				.Append(" void ")
 				.AppendVerifyMethodName(methodSymbol, typeArguments: typeArguments)
 				.Append('(')
 				.AppendItParameters(methodSymbol.Parameters, appendComma: true)

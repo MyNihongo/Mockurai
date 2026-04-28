@@ -217,6 +217,6 @@ public sealed class NestedClasses : TestsBase
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 }

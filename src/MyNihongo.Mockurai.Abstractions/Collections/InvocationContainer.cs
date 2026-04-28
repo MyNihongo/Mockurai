@@ -4,13 +4,25 @@ using System.Runtime.InteropServices;
 
 namespace MyNihongo.Mockurai;
 
+/// <summary>
+/// A sorted collection of <see cref="IInvocation"/> items that maintains order by <see cref="IInvocation.Index"/>
+/// and provides efficient range-based lookups.
+/// </summary>
+/// <typeparam name="T">The invocation type stored in the container.</typeparam>
 public sealed class InvocationContainer<T> : IEnumerable<T>
 	where T : class, IInvocation
 {
 	private readonly List<T> _invocations = [];
 
+	/// <summary>
+	/// Gets the number of invocations currently stored in the container.
+	/// </summary>
 	public int Count => _invocations.Count;
 
+	/// <summary>
+	/// Inserts an invocation while preserving ascending order by <see cref="IInvocation.Index"/>.
+	/// </summary>
+	/// <param name="item">The invocation to add.</param>
 	public void Add(in T item)
 	{
 		var insertIndex = _invocations.BinarySearch(item.Index);
@@ -21,6 +33,11 @@ public sealed class InvocationContainer<T> : IEnumerable<T>
 		_invocations.Insert(insertIndex, item);
 	}
 
+	/// <summary>
+	/// Returns the first invocation whose <see cref="IInvocation.Index"/> is greater than or equal to <paramref name="index"/>,
+	/// or <see langword="null"/> if no such invocation exists.
+	/// </summary>
+	/// <param name="index">The lower-bound index to search for.</param>
 	public T? TryGetItemAt(in long index)
 	{
 		var itemIndex = TryGetIndexAt(index);
@@ -30,11 +47,18 @@ public sealed class InvocationContainer<T> : IEnumerable<T>
 			: null;
 	}
 
+	/// <summary>
+	/// Returns a span over all invocations in the container.
+	/// </summary>
 	public Span<T> GetItemsSpan()
 	{
 		return CollectionsMarshal.AsSpan(_invocations);
 	}
 
+	/// <summary>
+	/// Returns a span over all invocations whose <see cref="IInvocation.Index"/> is greater than or equal to <paramref name="index"/>.
+	/// </summary>
+	/// <param name="index">The inclusive lower-bound index.</param>
 	public Span<T> GetItemsSpanFrom(in long index)
 	{
 		var itemIndex = TryGetIndexAt(index);
@@ -44,6 +68,10 @@ public sealed class InvocationContainer<T> : IEnumerable<T>
 			: Span<T>.Empty;
 	}
 
+	/// <summary>
+	/// Returns a span over all invocations whose <see cref="IInvocation.Index"/> is strictly less than <paramref name="index"/>.
+	/// </summary>
+	/// <param name="index">The exclusive upper-bound index.</param>
 	public Span<T> GetItemsSpanBefore(in long index)
 	{
 		var itemIndex = TryGetIndexAt(index, inclusive: true);
@@ -69,9 +97,11 @@ public sealed class InvocationContainer<T> : IEnumerable<T>
 			: null;
 	}
 
+	/// <inheritdoc/>
 	public IEnumerator<T> GetEnumerator() =>
 		_invocations.GetEnumerator();
 
+	/// <inheritdoc/>
 	IEnumerator IEnumerable.GetEnumerator() =>
 		GetEnumerator();
 }

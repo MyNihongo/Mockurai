@@ -10,27 +10,27 @@ internal static class MockImplementationPropertyGenerator
 		stringBuilder.AppendNameComment(memberSymbol, indent);
 
 		// Fields
-		if (propertySymbol.GetMethod is not null)
-			stringBuilder.AppendSetupInvocationFields(propertySymbol.GetMethod, mockedTypeSymbol, memberSymbol, indent);
+		if (propertySymbol.GetMethod.TryGetNonPrivate(out var get))
+			stringBuilder.AppendSetupInvocationFields(get!, mockedTypeSymbol, memberSymbol, indent);
 
-		if (propertySymbol.SetMethod is not null)
-			stringBuilder.AppendSetupInvocationFields(propertySymbol.SetMethod, mockedTypeSymbol, memberSymbol, indent);
+		if (propertySymbol.SetMethod.TryGetNonPrivate(out var set))
+			stringBuilder.AppendSetupInvocationFields(set!, mockedTypeSymbol, memberSymbol, indent);
 
 		// Methods
 		var methodBuilder = ImmutableArray.CreateBuilder<IMethodSymbol>();
-		if (propertySymbol.GetMethod is not null)
+		if (get is not null)
 		{
-			stringBuilder.AppendMethods(propertySymbol.GetMethod, mockedTypeSymbol, memberSymbol, indent);
-			methodBuilder.Add(propertySymbol.GetMethod);
+			stringBuilder.AppendMethods(get, mockedTypeSymbol, memberSymbol, indent);
+			methodBuilder.Add(get);
 		}
 
-		if (propertySymbol.SetMethod is not null)
+		if (set is not null)
 		{
-			if (propertySymbol.GetMethod is not null)
+			if (get is not null)
 				stringBuilder.AppendLine();
 
-			stringBuilder.AppendMethods(propertySymbol.SetMethod, mockedTypeSymbol, memberSymbol, indent);
-			methodBuilder.Add(propertySymbol.SetMethod);
+			stringBuilder.AppendMethods(set, mockedTypeSymbol, memberSymbol, indent);
+			methodBuilder.Add(set);
 		}
 
 		return methodBuilder.ToImmutable();
@@ -41,10 +41,10 @@ internal static class MockImplementationPropertyGenerator
 		if (memberSymbol.Symbol is not IPropertySymbol propertySymbol)
 			yield break;
 
-		if (propertySymbol.GetMethod is not null)
-			yield return propertySymbol.GetMethod;
-		if (propertySymbol.SetMethod is not null)
-			yield return propertySymbol.SetMethod;
+		if (propertySymbol.GetMethod.TryGetNonPrivate(out var get))
+			yield return get!;
+		if (propertySymbol.SetMethod.TryGetNonPrivate(out var set))
+			yield return set!;
 	}
 
 	public static void AppendProxyPropertyImplementation(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, int indent)
@@ -56,10 +56,10 @@ internal static class MockImplementationPropertyGenerator
 			.Indent(indent).AppendPropertyDeclaration(propertySymbol).AppendLine()
 			.Indent(indent++).AppendLine("{");
 
-		if (propertySymbol.GetMethod is not null)
-			stringBuilder.AppendProxyImplementation(propertySymbol.GetMethod, mockedTypeSymbol, memberSymbol, indent);
-		if (propertySymbol.SetMethod is not null)
-			stringBuilder.AppendProxyImplementation(propertySymbol.SetMethod, mockedTypeSymbol, memberSymbol, indent);
+		if (propertySymbol.GetMethod.TryGetNonPrivate(out var get))
+			stringBuilder.AppendProxyImplementation(get!, mockedTypeSymbol, memberSymbol, indent);
+		if (propertySymbol.SetMethod.TryGetNonPrivate(out var set))
+			stringBuilder.AppendProxyImplementation(set!, mockedTypeSymbol, memberSymbol, indent);
 
 		stringBuilder
 			.Indent(--indent).Append('}');
@@ -73,11 +73,14 @@ internal static class MockImplementationPropertyGenerator
 		stringBuilder
 			.Indent(indent)
 			.AppendPropertyDeclaration(propertySymbol)
-			.Append(" { get; ");
+			.Append(" { ");
 
-		if (propertySymbol.SetMethod is not null)
+		if (propertySymbol.GetMethod.TryGetNonPrivate(out _))
+			stringBuilder.Append("get; ");
+
+		if (propertySymbol.SetMethod.TryGetNonPrivate(out var set))
 		{
-			var name = propertySymbol.SetMethod.IsInitOnly ? "init" : "set";
+			var name = set!.IsInitOnly ? "init" : "set";
 
 			stringBuilder
 				.Append(name)
@@ -88,28 +91,34 @@ internal static class MockImplementationPropertyGenerator
 			.Append('}');
 	}
 
-	public static void AppendPropertyMockExtensions(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, string mockClassName, int indent)
+	public static void AppendPropertyMockExtensions(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, string mockClassName, Accessibility accessibility, int indent)
 	{
 		if (memberSymbol.Symbol is not IPropertySymbol propertySymbol)
 			return;
 
-		if (propertySymbol.GetMethod is not null)
-			stringBuilder.AppendSetupVerifyExtensionMethods(propertySymbol.GetMethod, mockedTypeSymbol, mockClassName, indent);
+		if (propertySymbol.GetMethod.TryGetNonPrivate(out var get))
+			stringBuilder.AppendSetupVerifyExtensionMethods(get!, mockedTypeSymbol, mockClassName, accessibility, indent);
 
-		if (propertySymbol.SetMethod is not null)
-			stringBuilder.AppendSetupVerifyExtensionMethods(propertySymbol.SetMethod, mockedTypeSymbol, mockClassName, indent, prependNewLines: propertySymbol.GetMethod is not null);
+		if (propertySymbol.SetMethod.TryGetNonPrivate(out var set))
+		{
+			var prependNewLines = get is not null;
+			stringBuilder.AppendSetupVerifyExtensionMethods(set!, mockedTypeSymbol, mockClassName, accessibility, indent, prependNewLines);
+		}
 	}
 
-	public static void AppendPropertyMockSequenceExtensions(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, string mockClassName, int indent)
+	public static void AppendPropertyMockSequenceExtensions(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, string mockClassName, Accessibility accessibility, int indent)
 	{
 		if (memberSymbol.Symbol is not IPropertySymbol propertySymbol)
 			return;
 
-		if (propertySymbol.GetMethod is not null)
-			stringBuilder.AppendVerifySequenceExtensionMethods(propertySymbol.GetMethod, mockedTypeSymbol, mockClassName, indent);
+		if (propertySymbol.GetMethod.TryGetNonPrivate(out var get))
+			stringBuilder.AppendVerifySequenceExtensionMethods(get!, mockedTypeSymbol, mockClassName, accessibility, indent);
 
-		if (propertySymbol.SetMethod is not null)
-			stringBuilder.AppendVerifySequenceExtensionMethods(propertySymbol.SetMethod, mockedTypeSymbol, mockClassName, indent, prependNewLines: propertySymbol.GetMethod is not null);
+		if (propertySymbol.SetMethod.TryGetNonPrivate(out var set))
+		{
+			var prependNewLines = get is not null;
+			stringBuilder.AppendVerifySequenceExtensionMethods(set!, mockedTypeSymbol, mockClassName, accessibility, indent, prependNewLines);
+		}
 	}
 
 	extension(StringBuilder stringBuilder)
@@ -211,5 +220,17 @@ internal static class MockImplementationPropertyGenerator
 				.AppendParameterNames(methodSymbol.Parameters)
 				.Append(')');
 		}
+	}
+
+	private static bool TryGetNonPrivate(this IMethodSymbol? @this, out IMethodSymbol? methodSymbol)
+	{
+		if (@this is { DeclaredAccessibility: not Accessibility.Private })
+		{
+			methodSymbol = @this;
+			return true;
+		}
+
+		methodSymbol = null;
+		return false;
 	}
 }

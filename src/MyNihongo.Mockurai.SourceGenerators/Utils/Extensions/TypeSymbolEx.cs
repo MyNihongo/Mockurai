@@ -92,7 +92,7 @@ internal static class TypeSymbolEx
 			@this.Append("Mock");
 
 			return appendGenericTypes
-				? @this.AppendGenericTypes(typeSymbol, useSeparator: false)
+				? @this.AppendGenericTypes(typeSymbol, useSeparator: true)
 				: @this;
 		}
 
