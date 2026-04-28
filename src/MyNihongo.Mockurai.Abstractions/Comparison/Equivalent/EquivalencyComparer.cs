@@ -4,6 +4,10 @@ using System.Reflection;
 
 namespace MyNihongo.Mockurai;
 
+/// <summary>
+/// Compares two object graphs by structural equivalence, recursively walking public properties, public fields,
+/// and enumerable elements, and reporting any differences as a <see cref="ComparisonResult"/>.
+/// </summary>
 public class EquivalencyComparer
 {
 	private readonly PropertyInfo[]? _properties;
@@ -12,6 +16,11 @@ public class EquivalencyComparer
 	private readonly Type _type;
 	private readonly bool _isEnumerable, _isComparedByEquivalency;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="EquivalencyComparer"/> class for the specified type,
+	/// caching its public properties and fields used for equivalency comparison.
+	/// </summary>
+	/// <param name="type">The runtime type whose values will be compared by this instance.</param>
 	protected EquivalencyComparer(in Type type)
 	{
 		_type = type;
@@ -30,6 +39,14 @@ public class EquivalencyComparer
 		_fields = type.GetFields(flags);
 	}
 
+	/// <summary>
+	/// Compares two values for structural equivalence, accumulating any differences into <paramref name="result"/>.
+	/// </summary>
+	/// <param name="x">The expected value.</param>
+	/// <param name="y">The actual value.</param>
+	/// <param name="result">The result instance that collects detected differences.</param>
+	/// <param name="path">The dotted member path of the current node in the object graph, or <see langword="null"/> for the root.</param>
+	/// <returns>The same <paramref name="result"/> instance, populated with any differences found.</returns>
 	protected ComparisonResult Equivalent(in object? x, in object? y, in ComparisonResult result, in string? path)
 	{
 		if (_properties is not null)
@@ -201,8 +218,15 @@ public class EquivalencyComparer
 	}
 }
 
+/// <summary>
+/// Strongly-typed <see cref="EquivalencyComparer"/> that compares two instances of <typeparamref name="T"/> for structural equivalence.
+/// </summary>
+/// <typeparam name="T">The type of the values being compared.</typeparam>
 public sealed class EquivalencyComparer<T> : EquivalencyComparer, IEquivalencyComparer<T>
 {
+	/// <summary>
+	/// Gets the shared default instance of the comparer for type <typeparamref name="T"/>.
+	/// </summary>
 	public static readonly EquivalencyComparer<T> Default = new();
 
 	private EquivalencyComparer()
@@ -210,6 +234,12 @@ public sealed class EquivalencyComparer<T> : EquivalencyComparer, IEquivalencyCo
 	{
 	}
 
+	/// <summary>
+	/// Compares two values of type <typeparamref name="T"/> for structural equivalence.
+	/// </summary>
+	/// <param name="x">The expected value.</param>
+	/// <param name="y">The actual value.</param>
+	/// <returns>A <see cref="ComparisonResult"/> describing any detected differences.</returns>
 	public ComparisonResult Equivalent(T? x, T? y)
 	{
 		var result = new ComparisonResult();

@@ -1,7 +1,15 @@
 ﻿namespace MyNihongo.Mockurai;
 
+/// <summary>
+/// A void mock setup that matches a single <see langword="ref readonly"/> argument and invokes <see cref="ActionRefReadOnly{TParameter}"/> callbacks.
+/// </summary>
+/// <typeparam name="TParameter">The argument type captured by the setup.</typeparam>
 public class SetupWithRefReadOnlyParameter<TParameter> : SetupWithParameterBase<TParameter, ActionRefReadOnly<TParameter>>
 {
+	/// <summary>
+	/// Invokes every configured setup whose argument matcher accepts <paramref name="parameter"/>, in matcher-precedence order.
+	/// </summary>
+	/// <param name="parameter">The argument captured for this invocation, passed by readonly reference.</param>
 	public void Invoke(ref readonly TParameter parameter)
 	{
 		if (Setups is null)
