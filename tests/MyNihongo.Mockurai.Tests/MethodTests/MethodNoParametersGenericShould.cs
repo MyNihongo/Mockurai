@@ -73,7 +73,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -147,7 +147,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -233,7 +233,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -307,7 +307,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -393,7 +393,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, sequenceExtensions);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -472,7 +472,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -551,7 +551,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -632,7 +632,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -713,7 +713,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -804,7 +804,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -895,7 +895,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -988,7 +988,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -1081,7 +1081,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -1160,7 +1160,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -1241,7 +1241,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -1332,7 +1332,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -1425,6 +1425,6 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, sequenceExtensions, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 }

@@ -156,7 +156,7 @@ public sealed class Nullability : IssuesTestsBase
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact(Skip = "implement later")]
@@ -509,6 +509,6 @@ public sealed class Nullability : IssuesTestsBase
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 }

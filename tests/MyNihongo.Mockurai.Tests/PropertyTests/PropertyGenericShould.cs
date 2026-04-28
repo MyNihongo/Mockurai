@@ -77,7 +77,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -156,7 +156,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -235,7 +235,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -369,7 +369,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -503,7 +503,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -637,7 +637,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -771,7 +771,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		var generatedSources = CreateInterfaceGeneratedSources(methods, proxy, invocationContainer, verifyNoOtherCalls, invocations, extensions, extensionsSequence);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -905,6 +905,6 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence, invocationContainer);
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 }

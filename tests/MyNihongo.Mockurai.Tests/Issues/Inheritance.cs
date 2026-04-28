@@ -201,7 +201,7 @@ public sealed class Inheritance : IssuesTestsBase
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -458,7 +458,7 @@ public sealed class Inheritance : IssuesTestsBase
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -715,7 +715,7 @@ public sealed class Inheritance : IssuesTestsBase
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -967,7 +967,7 @@ public sealed class Inheritance : IssuesTestsBase
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -1222,7 +1222,7 @@ public sealed class Inheritance : IssuesTestsBase
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -1473,7 +1473,7 @@ public sealed class Inheritance : IssuesTestsBase
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -1779,7 +1779,7 @@ public sealed class Inheritance : IssuesTestsBase
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -2031,7 +2031,7 @@ public sealed class Inheritance : IssuesTestsBase
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -2283,7 +2283,7 @@ public sealed class Inheritance : IssuesTestsBase
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -2484,7 +2484,7 @@ public sealed class Inheritance : IssuesTestsBase
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -2690,7 +2690,7 @@ public sealed class Inheritance : IssuesTestsBase
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -2892,7 +2892,7 @@ public sealed class Inheritance : IssuesTestsBase
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]
@@ -3094,6 +3094,6 @@ public sealed class Inheritance : IssuesTestsBase
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
-		await ctx.RunAsync();
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 }
