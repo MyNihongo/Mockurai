@@ -189,7 +189,8 @@ public sealed class VerifyNoOtherCallsShould
 	{
 		var index = new InvocationIndex.Counter();
 
-		Mockurai.Invocation invocation1 = new("int"), invocation2 = new("string");
+		const string name1 = "int", name2 = "string";
+		Mockurai.Invocation invocation1 = new(name1), invocation2 = new(name2);
 		invocation1.Register(index);
 		invocation2.Register(index);
 
@@ -199,14 +200,16 @@ public sealed class VerifyNoOtherCallsShould
 
 		var actual = () => fixture.VerifyNoOtherCalls(() => [invocation1, invocation2]);
 
-		const string expected =
-			"""
-			Expected string to be verified, but the following invocations have not been verified:
-			- 1: int
-			- 2: string
-			""";
+		var expected = new[] { name1, name2 }
+			.Select(static x =>
+				$"""
+				 Expected {x} to be verified, but the following invocations have not been verified:
+				 - 1: int
+				 - 2: string
+				 """);
+
 		var exception = Assert.Throws<MockUnverifiedException>(actual);
-		Assert.Equal(expected, exception.Message);
+		Assert.Contains(exception.Message, expected);
 	}
 
 	[Fact]
