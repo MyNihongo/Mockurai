@@ -2425,7 +2425,7 @@ public sealed class Inheritance : IssuesTestsBase
 							_mock = mock;
 						}
 
-						public void Invoke()
+						public override void Invoke()
 						{
 							_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
 							_mock._invoke0Invocation.Register(_mock._invocationIndex);
@@ -2631,7 +2631,7 @@ public sealed class Inheritance : IssuesTestsBase
 							_mock = mock;
 						}
 
-						public void Invoke()
+						public override void Invoke()
 						{
 							_mock._invoke0Invocation ??= new Invocation("Class.Invoke()");
 							_mock._invoke0Invocation.Register(_mock._invocationIndex);
@@ -2833,7 +2833,7 @@ public sealed class Inheritance : IssuesTestsBase
 							_mock = mock;
 						}
 
-						public void Invoke(T value)
+						public override void Invoke(T value)
 						{
 							_mock._invoke0Invocation ??= new Invocation<T>($"Class<{typeof(T).Name}>.Invoke({{0}})");
 							_mock._invoke0Invocation.Register(_mock._invocationIndex, value);
@@ -3035,7 +3035,7 @@ public sealed class Inheritance : IssuesTestsBase
 							_mock = mock;
 						}
 
-						public void Invoke(float value)
+						public override void Invoke(float value)
 						{
 							_mock._invoke0Invocation ??= new Invocation<float>("Class.Invoke({0})");
 							_mock._invoke0Invocation.Register(_mock._invocationIndex, value);
