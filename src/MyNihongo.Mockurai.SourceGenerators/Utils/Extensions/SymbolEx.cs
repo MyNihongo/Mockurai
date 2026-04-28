@@ -6,6 +6,8 @@ internal static class SymbolEx
 	{
 		public bool IsPublic => @this.DeclaredAccessibility == Accessibility.Public;
 
+		public bool CanOverride => @this is { IsStatic: false, IsSealed: false } && (@this.IsOverride || @this.IsVirtual || @this.IsAbstract);
+
 		public bool TryGetIndexerProperty(out IPropertySymbol indexerProperty)
 		{
 			if (@this is IPropertySymbol { IsIndexer: true } x)
