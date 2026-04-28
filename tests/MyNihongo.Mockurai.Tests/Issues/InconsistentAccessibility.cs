@@ -1006,4 +1006,229 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync();
 	}
+
+	[Fact]
+	public async Task NotGenerateClassPrivateGetters()
+	{
+		const string testCode =
+			"""
+			namespace Issues.Tests;
+
+			public abstract class Class
+			{
+				public virtual int Property { private get; set; }
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<Class> ClassMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources =
+		[
+			(
+				"TestsBase.g.cs",
+				"""
+				#nullable enable
+				namespace Issues.Tests;
+
+				public partial class TestsBase
+				{
+					// ClassMock
+					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
+					protected partial IMock<Issues.Tests.Class> ClassMock => _classMock;
+
+					protected virtual void VerifyNoOtherCalls()
+					{
+						ClassMock.VerifyNoOtherCalls();
+					}
+
+					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
+					{
+						var ctx = new VerifySequenceContext(
+							classMock: ClassMock
+						);
+
+						verify(ctx);
+					}
+
+					protected class VerifySequenceContext
+					{
+						protected readonly VerifyIndex VerifyIndex;
+						public readonly IMockSequence<Issues.Tests.Class> ClassMock;
+
+						public VerifySequenceContext(IMock<Issues.Tests.Class> classMock)
+						{
+							VerifyIndex = new VerifyIndex();
+							ClassMock = new MockSequence<Issues.Tests.Class>
+							{
+								VerifyIndex = VerifyIndex,
+								Mock = classMock,
+							};
+						}
+
+						protected VerifySequenceContext(VerifySequenceContext ctx)
+						{
+							VerifyIndex = ctx.VerifyIndex;
+							ClassMock = ctx.ClassMock;
+						}
+					}
+				}
+				"""
+			),
+			(
+				"ClassMock.g.cs",
+				"""
+				#nullable enable
+				namespace MyNihongo.Mockurai;
+
+				public sealed class ClassMock : IMock<Issues.Tests.Class>
+				{
+					private readonly InvocationIndex.Counter _invocationIndex;
+					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
+					private Proxy? _proxy;
+
+					public ClassMock(InvocationIndex.Counter invocationIndex)
+					{
+						_invocationIndex = invocationIndex;
+						_invocationProviders = GetInvocations;
+					}
+
+					public Issues.Tests.Class Object => _proxy ??= new Proxy(this);
+
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
+					// Property
+					private SetupWithParameter<int>? _property0Set;
+					private Invocation<int>? _property0SetInvocation;
+
+					public SetupWithParameter<int> SetupSetProperty(in It<int> value)
+					{
+						_property0Set ??= new SetupWithParameter<int>();
+						_property0Set.SetupParameter(value.ValueSetup);
+						return _property0Set;
+					}
+
+					public void VerifySetProperty(in It<int> value, in Times times)
+					{
+						_property0SetInvocation ??= new Invocation<int>("Class.Property.set = {0}");
+						_property0SetInvocation.Verify(value.ValueSetup, times, _invocationProviders);
+					}
+
+					public long VerifySetProperty(in It<int> value, long index)
+					{
+						_property0SetInvocation ??= new Invocation<int>("Class.Property.set = {0}");
+						return _property0SetInvocation.Verify(value.ValueSetup, index, _invocationProviders);
+					}
+
+					public void VerifyNoOtherCalls()
+					{
+						_property0SetInvocation?.VerifyNoOtherCalls(_invocationProviders);
+					}
+
+					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
+					{
+						yield return _property0SetInvocation;
+					}
+
+					private sealed class Proxy : Issues.Tests.Class
+					{
+						private readonly ClassMock _mock;
+
+						public Proxy(ClassMock mock)
+						{
+							_mock = mock;
+						}
+
+						public override int Property
+						{
+							set
+							{
+								_mock._property0SetInvocation ??= new Invocation<int>("Class.Property.set = {0}");
+								_mock._property0SetInvocation.Register(_mock._invocationIndex, value);
+								_mock._property0Set?.Invoke(value);
+							}
+						}
+					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly ClassMock _mock;
+
+						public InvocationContainer(ClassMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<int>> PropertySet => _mock._property0SetInvocation?.GetInvocationsWithArguments() ?? [];
+					}
+				}
+
+				public static partial class MockExtensions
+				{
+					extension(IMock<Issues.Tests.Class> @this)
+					{
+						public ClassMock.InvocationContainer Invocations => ((ClassMock)@this).Invocations;
+
+						public void VerifyNoOtherCalls() =>
+							((ClassMock)@this).VerifyNoOtherCalls();
+
+						// Property
+						public ISetup<System.Action<int>> SetupSetProperty(in It<int> value = default) =>
+							((ClassMock)@this).SetupSetProperty(value);
+
+						public void VerifySetProperty(in It<int> value, in Times times) =>
+							((ClassMock)@this).VerifySetProperty(value, times);
+
+						public void VerifySetProperty(in It<int> value, System.Func<Times> times) =>
+							((ClassMock)@this).VerifySetProperty(value, times());
+					}
+				}
+
+				public static partial class MockSequenceExtensions
+				{
+					extension(IMockSequence<Issues.Tests.Class> @this)
+					{
+						// Property
+						public void SetProperty(in It<int> value)
+						{
+							var nextIndex = ((ClassMock)@this.Mock).VerifySetProperty(value, @this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+					}
+				}
+				"""
+			),
+		];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
+
+	[Fact]
+	public async Task NotGenerateClassPrivateSetters()
+	{
+		const string testCode =
+			"""
+			namespace Issues.Tests;
+
+			public abstract class Class
+			{
+				public abstract int Property { get; private set; }
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<Class> ClassMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources = [];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync();
+	}
 }
