@@ -3107,11 +3107,13 @@ public sealed class Inheritance : IssuesTestsBase
 			public abstract class Class1
 			{
 				public abstract double RequestCharge { get; }
+				public abstract string ActivityId { get; }
 			}
 
 			public abstract class Class : Class1
 			{
 				public override double RequestCharge => 123;
+				public sealed override string ActivityId => "some ID";
 			}
 
 			[MockuraiGenerate]
