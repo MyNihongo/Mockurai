@@ -616,7 +616,7 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 	}
 
 	[Fact]
-	public async Task NotGeneratePrivateGetters()
+	public async Task GenerateInterfaceProtectedGetters()
 	{
 		const string testCode =
 			"""
@@ -624,19 +624,187 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 
 			public interface IInterface
 			{
-				int Property { private get; set; }
+				int Property { protected get; set; }
 			}
 
 			[MockuraiGenerate]
 			public abstract partial class TestsBase
 			{
-				public partial IMock<IInterface> InterfaceMock { get; }
+				protected partial IMock<IInterface> InterfaceMock { get; }
 			}
 			""";
 
 		GeneratedSources generatedSources =
 		[
 			GetTestsBaseSource(),
+			(
+				"InterfaceMock.g.cs",
+				"""
+				#nullable enable
+				namespace MyNihongo.Mockurai;
+
+				public sealed class InterfaceMock : IMock<Issues.Tests.IInterface>
+				{
+					private readonly InvocationIndex.Counter _invocationIndex;
+					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
+					private Proxy? _proxy;
+
+					public InterfaceMock(InvocationIndex.Counter invocationIndex)
+					{
+						_invocationIndex = invocationIndex;
+						_invocationProviders = GetInvocations;
+					}
+
+					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
+
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
+					// Property
+					private Setup<int>? _property0Get;
+					private Invocation? _property0GetInvocation;
+					private SetupWithParameter<int>? _property0Set;
+					private Invocation<int>? _property0SetInvocation;
+
+					public Setup<int> SetupGetProperty()
+					{
+						_property0Get ??= new Setup<int>();
+						return _property0Get;
+					}
+
+					public void VerifyGetProperty(in Times times)
+					{
+						_property0GetInvocation ??= new Invocation("IInterface.Property.get");
+						_property0GetInvocation.Verify(times, _invocationProviders);
+					}
+
+					public long VerifyGetProperty(long index)
+					{
+						_property0GetInvocation ??= new Invocation("IInterface.Property.get");
+						return _property0GetInvocation.Verify(index, _invocationProviders);
+					}
+
+					public SetupWithParameter<int> SetupSetProperty(in It<int> value)
+					{
+						_property0Set ??= new SetupWithParameter<int>();
+						_property0Set.SetupParameter(value.ValueSetup);
+						return _property0Set;
+					}
+
+					public void VerifySetProperty(in It<int> value, in Times times)
+					{
+						_property0SetInvocation ??= new Invocation<int>("IInterface.Property.set = {0}");
+						_property0SetInvocation.Verify(value.ValueSetup, times, _invocationProviders);
+					}
+
+					public long VerifySetProperty(in It<int> value, long index)
+					{
+						_property0SetInvocation ??= new Invocation<int>("IInterface.Property.set = {0}");
+						return _property0SetInvocation.Verify(value.ValueSetup, index, _invocationProviders);
+					}
+
+					public void VerifyNoOtherCalls()
+					{
+						_property0GetInvocation?.VerifyNoOtherCalls(_invocationProviders);
+						_property0SetInvocation?.VerifyNoOtherCalls(_invocationProviders);
+					}
+
+					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
+					{
+						yield return _property0GetInvocation;
+						yield return _property0SetInvocation;
+					}
+
+					private sealed class Proxy : Issues.Tests.IInterface
+					{
+						private readonly InterfaceMock _mock;
+
+						public Proxy(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public int Property
+						{
+							get
+							{
+								_mock._property0GetInvocation ??= new Invocation("IInterface.Property.get");
+								_mock._property0GetInvocation.Register(_mock._invocationIndex);
+								return _mock._property0Get?.Execute(out var returnValue) == true ? returnValue! : default!;
+							}
+							set
+							{
+								_mock._property0SetInvocation ??= new Invocation<int>("IInterface.Property.set = {0}");
+								_mock._property0SetInvocation.Register(_mock._invocationIndex, value);
+								_mock._property0Set?.Invoke(value);
+							}
+						}
+					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation> PropertyGet => _mock._property0GetInvocation?.GetInvocations() ?? [];
+
+						public System.Collections.Generic.IEnumerable<IInvocation<int>> PropertySet => _mock._property0SetInvocation?.GetInvocationsWithArguments() ?? [];
+					}
+				}
+
+				public static partial class MockExtensions
+				{
+					extension(IMock<Issues.Tests.IInterface> @this)
+					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
+						public void VerifyNoOtherCalls() =>
+							((InterfaceMock)@this).VerifyNoOtherCalls();
+
+						// Property
+						public ISetup<System.Action, int, System.Func<int>> SetupGetProperty() =>
+							((InterfaceMock)@this).SetupGetProperty();
+
+						public void VerifyGetProperty(in Times times) =>
+							((InterfaceMock)@this).VerifyGetProperty(times);
+
+						public void VerifyGetProperty(System.Func<Times> times) =>
+							((InterfaceMock)@this).VerifyGetProperty(times());
+
+						public ISetup<System.Action<int>> SetupSetProperty(in It<int> value = default) =>
+							((InterfaceMock)@this).SetupSetProperty(value);
+
+						public void VerifySetProperty(in It<int> value, in Times times) =>
+							((InterfaceMock)@this).VerifySetProperty(value, times);
+
+						public void VerifySetProperty(in It<int> value, System.Func<Times> times) =>
+							((InterfaceMock)@this).VerifySetProperty(value, times());
+					}
+				}
+
+				public static partial class MockSequenceExtensions
+				{
+					extension(IMockSequence<Issues.Tests.IInterface> @this)
+					{
+						// Property
+						public void GetProperty()
+						{
+							var nextIndex = ((InterfaceMock)@this.Mock).VerifyGetProperty(@this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+
+						public void SetProperty(in It<int> value)
+						{
+							var nextIndex = ((InterfaceMock)@this.Mock).VerifySetProperty(value, @this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+					}
+				}
+				"""
+			),
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
@@ -644,7 +812,7 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 	}
 
 	[Fact]
-	public async Task NotGeneratePrivateSetters()
+	public async Task GenerateInterfaceProtectedSetters()
 	{
 		const string testCode =
 			"""
@@ -652,19 +820,187 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 
 			public interface IInterface
 			{
-				int Property { get; private set; }
+				int Property { get; protected set; }
 			}
 
 			[MockuraiGenerate]
 			public abstract partial class TestsBase
 			{
-				public partial IMock<IInterface> InterfaceMock { get; }
+				protected partial IMock<IInterface> InterfaceMock { get; }
 			}
 			""";
 
 		GeneratedSources generatedSources =
 		[
 			GetTestsBaseSource(),
+			(
+				"InterfaceMock.g.cs",
+				"""
+				#nullable enable
+				namespace MyNihongo.Mockurai;
+
+				public sealed class InterfaceMock : IMock<Issues.Tests.IInterface>
+				{
+					private readonly InvocationIndex.Counter _invocationIndex;
+					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
+					private Proxy? _proxy;
+
+					public InterfaceMock(InvocationIndex.Counter invocationIndex)
+					{
+						_invocationIndex = invocationIndex;
+						_invocationProviders = GetInvocations;
+					}
+
+					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
+
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
+					// Property
+					private Setup<int>? _property0Get;
+					private Invocation? _property0GetInvocation;
+					private SetupWithParameter<int>? _property0Set;
+					private Invocation<int>? _property0SetInvocation;
+
+					public Setup<int> SetupGetProperty()
+					{
+						_property0Get ??= new Setup<int>();
+						return _property0Get;
+					}
+
+					public void VerifyGetProperty(in Times times)
+					{
+						_property0GetInvocation ??= new Invocation("IInterface.Property.get");
+						_property0GetInvocation.Verify(times, _invocationProviders);
+					}
+
+					public long VerifyGetProperty(long index)
+					{
+						_property0GetInvocation ??= new Invocation("IInterface.Property.get");
+						return _property0GetInvocation.Verify(index, _invocationProviders);
+					}
+
+					public SetupWithParameter<int> SetupSetProperty(in It<int> value)
+					{
+						_property0Set ??= new SetupWithParameter<int>();
+						_property0Set.SetupParameter(value.ValueSetup);
+						return _property0Set;
+					}
+
+					public void VerifySetProperty(in It<int> value, in Times times)
+					{
+						_property0SetInvocation ??= new Invocation<int>("IInterface.Property.set = {0}");
+						_property0SetInvocation.Verify(value.ValueSetup, times, _invocationProviders);
+					}
+
+					public long VerifySetProperty(in It<int> value, long index)
+					{
+						_property0SetInvocation ??= new Invocation<int>("IInterface.Property.set = {0}");
+						return _property0SetInvocation.Verify(value.ValueSetup, index, _invocationProviders);
+					}
+
+					public void VerifyNoOtherCalls()
+					{
+						_property0GetInvocation?.VerifyNoOtherCalls(_invocationProviders);
+						_property0SetInvocation?.VerifyNoOtherCalls(_invocationProviders);
+					}
+
+					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
+					{
+						yield return _property0GetInvocation;
+						yield return _property0SetInvocation;
+					}
+
+					private sealed class Proxy : Issues.Tests.IInterface
+					{
+						private readonly InterfaceMock _mock;
+
+						public Proxy(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public int Property
+						{
+							get
+							{
+								_mock._property0GetInvocation ??= new Invocation("IInterface.Property.get");
+								_mock._property0GetInvocation.Register(_mock._invocationIndex);
+								return _mock._property0Get?.Execute(out var returnValue) == true ? returnValue! : default!;
+							}
+							set
+							{
+								_mock._property0SetInvocation ??= new Invocation<int>("IInterface.Property.set = {0}");
+								_mock._property0SetInvocation.Register(_mock._invocationIndex, value);
+								_mock._property0Set?.Invoke(value);
+							}
+						}
+					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation> PropertyGet => _mock._property0GetInvocation?.GetInvocations() ?? [];
+
+						public System.Collections.Generic.IEnumerable<IInvocation<int>> PropertySet => _mock._property0SetInvocation?.GetInvocationsWithArguments() ?? [];
+					}
+				}
+
+				public static partial class MockExtensions
+				{
+					extension(IMock<Issues.Tests.IInterface> @this)
+					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
+						public void VerifyNoOtherCalls() =>
+							((InterfaceMock)@this).VerifyNoOtherCalls();
+
+						// Property
+						public ISetup<System.Action, int, System.Func<int>> SetupGetProperty() =>
+							((InterfaceMock)@this).SetupGetProperty();
+
+						public void VerifyGetProperty(in Times times) =>
+							((InterfaceMock)@this).VerifyGetProperty(times);
+
+						public void VerifyGetProperty(System.Func<Times> times) =>
+							((InterfaceMock)@this).VerifyGetProperty(times());
+
+						public ISetup<System.Action<int>> SetupSetProperty(in It<int> value = default) =>
+							((InterfaceMock)@this).SetupSetProperty(value);
+
+						public void VerifySetProperty(in It<int> value, in Times times) =>
+							((InterfaceMock)@this).VerifySetProperty(value, times);
+
+						public void VerifySetProperty(in It<int> value, System.Func<Times> times) =>
+							((InterfaceMock)@this).VerifySetProperty(value, times());
+					}
+				}
+
+				public static partial class MockSequenceExtensions
+				{
+					extension(IMockSequence<Issues.Tests.IInterface> @this)
+					{
+						// Property
+						public void GetProperty()
+						{
+							var nextIndex = ((InterfaceMock)@this.Mock).VerifyGetProperty(@this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+
+						public void SetProperty(in It<int> value)
+						{
+							var nextIndex = ((InterfaceMock)@this.Mock).VerifySetProperty(value, @this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+					}
+				}
+				"""
+			),
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
