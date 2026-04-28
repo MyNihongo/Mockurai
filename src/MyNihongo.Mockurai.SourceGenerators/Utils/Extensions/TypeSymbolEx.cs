@@ -27,7 +27,7 @@ internal static class TypeSymbolEx
 			{
 				foreach (var member in symbol.GetMembers())
 				{
-					if (member.IsPublic && member is { IsStatic: false, IsSealed: false } && (member.IsOverride || member.IsVirtual || member.IsAbstract))
+					if (member.IsPublic && member.CanOverride)
 					{
 						if (!overrides().Contains(member))
 							yield return member;
@@ -154,7 +154,7 @@ internal static class TypeSymbolEx
 
 		public StringBuilder TryAppendOverride(ISymbol symbol)
 		{
-			return symbol.ContainingType.TypeKind == TypeKind.Class && (symbol.IsAbstract || symbol.IsVirtual)
+			return symbol.ContainingType.TypeKind == TypeKind.Class && symbol.CanOverride
 				? @this.Append("override ")
 				: @this;
 		}

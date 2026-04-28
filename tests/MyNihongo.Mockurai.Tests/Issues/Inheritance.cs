@@ -3096,4 +3096,208 @@ public sealed class Inheritance : IssuesTestsBase
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
+
+	[Fact]
+	public async Task AddOverrideForBaseOverride()
+	{
+		const string testCode =
+			"""
+			namespace Issues.Tests;
+
+			public abstract class Class1
+			{
+				public abstract double RequestCharge { get; }
+			}
+
+			public abstract class Class : Class1
+			{
+				public override double RequestCharge => 123;
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<Class> ClassMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources =
+		[
+			(
+				"TestsBase.g.cs",
+				"""
+				#nullable enable
+				namespace Issues.Tests;
+
+				public partial class TestsBase
+				{
+					// ClassMock
+					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
+					protected partial IMock<Issues.Tests.Class> ClassMock => _classMock;
+
+					protected virtual void VerifyNoOtherCalls()
+					{
+						ClassMock.VerifyNoOtherCalls();
+					}
+
+					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
+					{
+						var ctx = new VerifySequenceContext(
+							classMock: ClassMock
+						);
+
+						verify(ctx);
+					}
+
+					protected class VerifySequenceContext
+					{
+						protected readonly VerifyIndex VerifyIndex;
+						public readonly IMockSequence<Issues.Tests.Class> ClassMock;
+
+						public VerifySequenceContext(IMock<Issues.Tests.Class> classMock)
+						{
+							VerifyIndex = new VerifyIndex();
+							ClassMock = new MockSequence<Issues.Tests.Class>
+							{
+								VerifyIndex = VerifyIndex,
+								Mock = classMock,
+							};
+						}
+
+						protected VerifySequenceContext(VerifySequenceContext ctx)
+						{
+							VerifyIndex = ctx.VerifyIndex;
+							ClassMock = ctx.ClassMock;
+						}
+					}
+				}
+				"""
+			),
+			(
+				"ClassMock.g.cs",
+				"""
+				#nullable enable
+				namespace MyNihongo.Mockurai;
+
+				public sealed class ClassMock : IMock<Issues.Tests.Class>
+				{
+					private readonly InvocationIndex.Counter _invocationIndex;
+					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
+					private Proxy? _proxy;
+
+					public ClassMock(InvocationIndex.Counter invocationIndex)
+					{
+						_invocationIndex = invocationIndex;
+						_invocationProviders = GetInvocations;
+					}
+
+					public Issues.Tests.Class Object => _proxy ??= new Proxy(this);
+
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
+					// RequestCharge
+					private Setup<double>? _requestCharge0Get;
+					private Invocation? _requestCharge0GetInvocation;
+
+					public Setup<double> SetupGetRequestCharge()
+					{
+						_requestCharge0Get ??= new Setup<double>();
+						return _requestCharge0Get;
+					}
+
+					public void VerifyGetRequestCharge(in Times times)
+					{
+						_requestCharge0GetInvocation ??= new Invocation("Class.RequestCharge.get");
+						_requestCharge0GetInvocation.Verify(times, _invocationProviders);
+					}
+
+					public long VerifyGetRequestCharge(long index)
+					{
+						_requestCharge0GetInvocation ??= new Invocation("Class.RequestCharge.get");
+						return _requestCharge0GetInvocation.Verify(index, _invocationProviders);
+					}
+
+					public void VerifyNoOtherCalls()
+					{
+						_requestCharge0GetInvocation?.VerifyNoOtherCalls(_invocationProviders);
+					}
+
+					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
+					{
+						yield return _requestCharge0GetInvocation;
+					}
+
+					private sealed class Proxy : Issues.Tests.Class
+					{
+						private readonly ClassMock _mock;
+
+						public Proxy(ClassMock mock)
+						{
+							_mock = mock;
+						}
+
+						public override double RequestCharge
+						{
+							get
+							{
+								_mock._requestCharge0GetInvocation ??= new Invocation("Class.RequestCharge.get");
+								_mock._requestCharge0GetInvocation.Register(_mock._invocationIndex);
+								return _mock._requestCharge0Get?.Execute(out var returnValue) == true ? returnValue! : default!;
+							}
+						}
+					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly ClassMock _mock;
+
+						public InvocationContainer(ClassMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation> RequestChargeGet => _mock._requestCharge0GetInvocation?.GetInvocations() ?? [];
+					}
+				}
+
+				public static partial class MockExtensions
+				{
+					extension(IMock<Issues.Tests.Class> @this)
+					{
+						public ClassMock.InvocationContainer Invocations => ((ClassMock)@this).Invocations;
+
+						public void VerifyNoOtherCalls() =>
+							((ClassMock)@this).VerifyNoOtherCalls();
+
+						// RequestCharge
+						public ISetup<System.Action, double, System.Func<double>> SetupGetRequestCharge() =>
+							((ClassMock)@this).SetupGetRequestCharge();
+
+						public void VerifyGetRequestCharge(in Times times) =>
+							((ClassMock)@this).VerifyGetRequestCharge(times);
+
+						public void VerifyGetRequestCharge(System.Func<Times> times) =>
+							((ClassMock)@this).VerifyGetRequestCharge(times());
+					}
+				}
+
+				public static partial class MockSequenceExtensions
+				{
+					extension(IMockSequence<Issues.Tests.Class> @this)
+					{
+						// RequestCharge
+						public void GetRequestCharge()
+						{
+							var nextIndex = ((ClassMock)@this.Mock).VerifyGetRequestCharge(@this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+					}
+				}
+				"""
+			),
+		];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
+	}
 }
