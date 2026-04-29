@@ -34,14 +34,14 @@ internal static class SymbolEx
 
 	extension(ISymbol? @this)
 	{
-		public T? GetAttributeValue<T>(string attributeName, string propertyName, T defaultValue)
+		public T? GetAttributeValue<T>(Func<string?, bool> attributePredicate, string propertyName, T defaultValue)
 		{
 			if (@this is null)
 				return defaultValue;
 
 			foreach (var attribute in @this.GetAttributes())
 			{
-				if (attribute.AttributeClass?.Name != attributeName)
+				if (!attributePredicate(attribute.AttributeClass?.Name))
 					continue;
 
 				foreach (var namedArgument in attribute.NamedArguments)

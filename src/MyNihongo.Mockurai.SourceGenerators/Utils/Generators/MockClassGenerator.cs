@@ -96,7 +96,7 @@ internal static class MockClassGenerator
 			var symbol = mock.PropertyOrField;
 
 			var skipVerifyNoOtherCalls = symbol.GetAttributeValue(
-				MockGeneratorConst.BehavriorAttribute,
+				static x => x is MockGeneratorConst.BehaviourAttributeName or MockGeneratorConst.BehaviourAttribute,
 				MockGeneratorConst.SkipVerifyNoOtherCallsPropertyName,
 				defaultValue: false
 			);
