@@ -1720,7 +1720,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter1 = parameter1.ToJsonString();
+								_jsonSnapshotParameter1 = parameter1.SerializeToJson();
 							}
 							catch
 							{
@@ -1729,7 +1729,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter2 = parameter2.ToJsonString();
+								_jsonSnapshotParameter2 = parameter2.SerializeToJson();
 							}
 							catch
 							{
@@ -2356,7 +2356,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter1 = parameter1.ToJsonString();
+								_jsonSnapshotParameter1 = parameter1.SerializeToJson();
 							}
 							catch
 							{
@@ -2365,7 +2365,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter2 = parameter2.ToJsonString();
+								_jsonSnapshotParameter2 = parameter2.SerializeToJson();
 							}
 							catch
 							{
@@ -2992,7 +2992,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter1 = parameter1.ToJsonString();
+								_jsonSnapshotParameter1 = parameter1.SerializeToJson();
 							}
 							catch
 							{
@@ -3001,7 +3001,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter2 = parameter2.ToJsonString();
+								_jsonSnapshotParameter2 = parameter2.SerializeToJson();
 							}
 							catch
 							{
@@ -3628,7 +3628,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter1 = parameter1.ToJsonString();
+								_jsonSnapshotParameter1 = parameter1.SerializeToJson();
 							}
 							catch
 							{
@@ -3637,7 +3637,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter2 = parameter2.ToJsonString();
+								_jsonSnapshotParameter2 = parameter2.SerializeToJson();
 							}
 							catch
 							{

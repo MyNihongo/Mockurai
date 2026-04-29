@@ -495,7 +495,7 @@ public abstract class TestsBase
 				$$"""
 				  try
 				  			{
-				  				_jsonSnapshot{{camelCase}} = {{name}}.ToJsonString();
+				  				_jsonSnapshot{{camelCase}} = {{name}}.SerializeToJson();
 				  			}
 				  			catch
 				  			{

@@ -158,7 +158,7 @@ public sealed class Invocation<TParameter> : IInvocationVerify, IInvocationProvi
 
 			try
 			{
-				_jsonSnapshot = parameter.ToJsonString();
+				_jsonSnapshot = parameter.SerializeToJson();
 			}
 			catch
 			{

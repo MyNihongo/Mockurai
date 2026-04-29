@@ -19,7 +19,7 @@ public static class ObjectEx
 	/// <typeparam name="T">The value type.</typeparam>
 	/// <param name="this">The value to render.</param>
 	/// <returns>The JSON representation, or the string fallback when serialization throws.</returns>
-	public static string ToJsonString<T>(this T @this)
+	public static string SerializeToJson<T>(this T @this)
 	{
 		try
 		{

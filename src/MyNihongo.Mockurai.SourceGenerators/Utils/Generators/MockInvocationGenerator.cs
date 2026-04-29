@@ -420,7 +420,7 @@ internal static class MockInvocationGenerator
 				.AppendParameterPropertyName(i)
 				.Append(" = ")
 				.AppendParameterVariableName(i)
-				.AppendLine(".ToJsonString();");
+				.AppendLine(".SerializeToJson();");
 
 			stringBuilder
 				.Indent(--indent)
