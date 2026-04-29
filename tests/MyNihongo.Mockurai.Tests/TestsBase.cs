@@ -495,7 +495,7 @@ public abstract class TestsBase
 				$$"""
 				  try
 				  			{
-				  				_jsonSnapshot{{camelCase}} = {{name}}.ToJsonString();
+				  				_jsonSnapshot{{camelCase}} = {{name}}.SerializeToJson();
 				  			}
 				  			catch
 				  			{
@@ -512,7 +512,7 @@ public abstract class TestsBase
 				  public {{typeString}} Get{{x.GetCamelCaseNameString()}}(SetupType setupType)
 				  		{
 				  			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshot{{x.GetCamelCaseNameString()}})
-				  				? System.Text.Json.JsonSerializer.Deserialize<{{typeString}}>(_jsonSnapshot{{x.GetCamelCaseNameString()}})!
+				  				? _jsonSnapshot{{x.GetCamelCaseNameString()}}.DeserializeFromJson(_argument.{{x.GetParameterNameString()}})
 				  				: _argument.{{x.GetParameterNameString()}};
 				  		}
 				  """;

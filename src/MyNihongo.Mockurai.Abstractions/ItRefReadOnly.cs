@@ -22,7 +22,7 @@ public readonly ref struct ItRefReadOnly<T>
 	/// <param name="value">The expected value.</param>
 	public static ItRefReadOnly<T> Value(T value)
 	{
-		return new ItRefReadOnly<T>(x => EqualityComparer<T>.Default.Equals(value, x), SetupType.Value, () => value.ToJsonString());
+		return new ItRefReadOnly<T>(x => EqualityComparer<T>.Default.Equals(value, x), SetupType.Value, () => value.SerializeToJson());
 	}
 
 	/// <summary>

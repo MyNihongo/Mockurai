@@ -1720,7 +1720,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter1 = parameter1.ToJsonString();
+								_jsonSnapshotParameter1 = parameter1.SerializeToJson();
 							}
 							catch
 							{
@@ -1729,7 +1729,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter2 = parameter2.ToJsonString();
+								_jsonSnapshotParameter2 = parameter2.SerializeToJson();
 							}
 							catch
 							{
@@ -1746,14 +1746,14 @@ public sealed class GenericSetup : IssuesTestsBase
 						public T1[] GetParameter1(SetupType setupType)
 						{
 							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParameter1)
-								? System.Text.Json.JsonSerializer.Deserialize<T1[]>(_jsonSnapshotParameter1)!
+								? _jsonSnapshotParameter1.DeserializeFromJson(_argument.parameter1)
 								: _argument.parameter1;
 						}
 
 						public int GetParameter2(SetupType setupType)
 						{
 							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParameter2)
-								? System.Text.Json.JsonSerializer.Deserialize<int>(_jsonSnapshotParameter2)!
+								? _jsonSnapshotParameter2.DeserializeFromJson(_argument.parameter2)
 								: _argument.parameter2;
 						}
 
@@ -2356,7 +2356,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter1 = parameter1.ToJsonString();
+								_jsonSnapshotParameter1 = parameter1.SerializeToJson();
 							}
 							catch
 							{
@@ -2365,7 +2365,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter2 = parameter2.ToJsonString();
+								_jsonSnapshotParameter2 = parameter2.SerializeToJson();
 							}
 							catch
 							{
@@ -2382,14 +2382,14 @@ public sealed class GenericSetup : IssuesTestsBase
 						public System.Collections.Generic.ICollection<T1>[] GetParameter1(SetupType setupType)
 						{
 							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParameter1)
-								? System.Text.Json.JsonSerializer.Deserialize<System.Collections.Generic.ICollection<T1>[]>(_jsonSnapshotParameter1)!
+								? _jsonSnapshotParameter1.DeserializeFromJson(_argument.parameter1)
 								: _argument.parameter1;
 						}
 
 						public int GetParameter2(SetupType setupType)
 						{
 							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParameter2)
-								? System.Text.Json.JsonSerializer.Deserialize<int>(_jsonSnapshotParameter2)!
+								? _jsonSnapshotParameter2.DeserializeFromJson(_argument.parameter2)
 								: _argument.parameter2;
 						}
 
@@ -2992,7 +2992,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter1 = parameter1.ToJsonString();
+								_jsonSnapshotParameter1 = parameter1.SerializeToJson();
 							}
 							catch
 							{
@@ -3001,7 +3001,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter2 = parameter2.ToJsonString();
+								_jsonSnapshotParameter2 = parameter2.SerializeToJson();
 							}
 							catch
 							{
@@ -3018,14 +3018,14 @@ public sealed class GenericSetup : IssuesTestsBase
 						public T1[,] GetParameter1(SetupType setupType)
 						{
 							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParameter1)
-								? System.Text.Json.JsonSerializer.Deserialize<T1[,]>(_jsonSnapshotParameter1)!
+								? _jsonSnapshotParameter1.DeserializeFromJson(_argument.parameter1)
 								: _argument.parameter1;
 						}
 
 						public int GetParameter2(SetupType setupType)
 						{
 							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParameter2)
-								? System.Text.Json.JsonSerializer.Deserialize<int>(_jsonSnapshotParameter2)!
+								? _jsonSnapshotParameter2.DeserializeFromJson(_argument.parameter2)
 								: _argument.parameter2;
 						}
 
@@ -3628,7 +3628,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter1 = parameter1.ToJsonString();
+								_jsonSnapshotParameter1 = parameter1.SerializeToJson();
 							}
 							catch
 							{
@@ -3637,7 +3637,7 @@ public sealed class GenericSetup : IssuesTestsBase
 
 							try
 							{
-								_jsonSnapshotParameter2 = parameter2.ToJsonString();
+								_jsonSnapshotParameter2 = parameter2.SerializeToJson();
 							}
 							catch
 							{
@@ -3654,14 +3654,14 @@ public sealed class GenericSetup : IssuesTestsBase
 						public T1[][] GetParameter1(SetupType setupType)
 						{
 							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParameter1)
-								? System.Text.Json.JsonSerializer.Deserialize<T1[][]>(_jsonSnapshotParameter1)!
+								? _jsonSnapshotParameter1.DeserializeFromJson(_argument.parameter1)
 								: _argument.parameter1;
 						}
 
 						public int GetParameter2(SetupType setupType)
 						{
 							return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshotParameter2)
-								? System.Text.Json.JsonSerializer.Deserialize<int>(_jsonSnapshotParameter2)!
+								? _jsonSnapshotParameter2.DeserializeFromJson(_argument.parameter2)
 								: _argument.parameter2;
 						}
 

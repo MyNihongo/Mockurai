@@ -27,7 +27,7 @@ public readonly ref struct ItIn<T>
 	/// <param name="value">The expected value.</param>
 	public static ItIn<T> Value(T value)
 	{
-		return new ItIn<T>(x => EqualityComparer<T>.Default.Equals(value, x), SetupType.Value, () => value.ToJsonString());
+		return new ItIn<T>(x => EqualityComparer<T>.Default.Equals(value, x), SetupType.Value, () => value.SerializeToJson());
 	}
 
 	/// <summary>
@@ -37,7 +37,7 @@ public readonly ref struct ItIn<T>
 	/// <param name="comparer">An optional comparer; <see cref="EquivalencyComparer{T}.Default"/> is used when <see langword="null"/>.</param>
 	public static ItIn<T> Equivalent(T value, IEquivalencyComparer<T>? comparer = null)
 	{
-		return new ItIn<T>(x => (comparer ?? EquivalencyComparer<T>.Default).Equivalent(value, x), SetupType.Equivalent, () => value.ToJsonString());
+		return new ItIn<T>(x => (comparer ?? EquivalencyComparer<T>.Default).Equivalent(value, x), SetupType.Equivalent, () => value.SerializeToJson());
 	}
 
 	/// <summary>
