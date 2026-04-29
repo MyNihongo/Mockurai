@@ -13,8 +13,8 @@ public abstract class TestsBase
 				AdditionalReferences = { typeof(MockuraiGenerateAttribute).Assembly },
 				GeneratedSources =
 				{
-					expected,
 					(typeof(SourceGenerator), "_Usings.g.cs", "global using MyNihongo.Mockurai;"),
+					expected,
 				},
 			},
 		};

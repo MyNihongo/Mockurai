@@ -2,32 +2,34 @@ namespace MyNihongo.Mockurai.Tests.Issues;
 
 public sealed class MockuraiBehavior : IssuesTestsBase
 {
-	[Fact]
-	public async Task ExcludeFromVerifyNoOtherCalls()
+	[Theory]
+	[InlineData("MockuraiBehavior")]
+	[InlineData("MyNihongo.Mockurai.MockuraiBehavior")]
+	public async Task ExcludeFromVerifyNoOtherCalls(string attribute)
 	{
-		const string testCode =
-			"""
-			namespace Issues.Tests;
+		var testCode =
+			$$"""
+			  namespace Issues.Tests;
 
-			public interface IInterface1
-			{
-				void Invoke();
-			}
+			  public interface IInterface1
+			  {
+			  	void Invoke();
+			  }
 
-			public interface IInterface2
-			{
-				void Invoke();
-			}
+			  public interface IInterface2
+			  {
+			  	void Invoke();
+			  }
 
-			[MockuraiGenerate]
-			public abstract partial class TestsBase
-			{
-				protected partial IMock<IInterface1> Interface1Mock { get; }
+			  [MockuraiGenerate]
+			  public abstract partial class TestsBase
+			  {
+			  	protected partial IMock<IInterface1> Interface1Mock { get; }
 
-				[MyNihongo.Mockurai.MockuraiBehavior(SkipVerifyNoOtherCalls = true)]
-				protected partial IMock<IInterface2> Interface2Mock { get; }
-			}
-			""";
+			  	[{{attribute}}(SkipVerifyNoOtherCalls = true)]
+			  	protected partial IMock<IInterface2> Interface2Mock { get; }
+			  }
+			  """;
 
 		GeneratedSources generatedSources =
 		[
@@ -41,11 +43,11 @@ public sealed class MockuraiBehavior : IssuesTestsBase
 				{
 					// Interface1Mock
 					private readonly Interface1Mock _interface1Mock = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.IInterface1> Interface1Mock => _interface1Mock;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.IInterface1> Interface1Mock => _interface1Mock;
 
 					// Interface2Mock
 					private readonly Interface2Mock _interface2Mock = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.IInterface2> Interface2Mock => _interface2Mock;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.IInterface2> Interface2Mock => _interface2Mock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -68,7 +70,7 @@ public sealed class MockuraiBehavior : IssuesTestsBase
 						public readonly IMockSequence<Issues.Tests.IInterface1> Interface1Mock;
 						public readonly IMockSequence<Issues.Tests.IInterface2> Interface2Mock;
 
-						public VerifySequenceContext(IMock<Issues.Tests.IInterface1> interface1Mock, IMock<Issues.Tests.IInterface2> interface2Mock)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.IInterface1> interface1Mock, MyNihongo.Mockurai.IMock<Issues.Tests.IInterface2> interface2Mock)
 						{
 							VerifyIndex = new VerifyIndex();
 							Interface1Mock = new MockSequence<Issues.Tests.IInterface1>
