@@ -67,15 +67,15 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 			Performed invocations:
 			- 1: MyClass.MyMethod({"Text":"Okayama Issei another name","Number":12346})
 			  - Text:
-			    expected: Okayama Issei
-			    actual: Okayama Issei another name
+			    expected: "Okayama Issei"
+			    actual: "Okayama Issei another name"
 			  - Number:
 			    expected: 1
 			    actual: 12346
 			- 2: MyClass.MyMethod({"Text":"Okayama Issei2","Number":2})
 			  - Text:
-			    expected: Okayama Issei
-			    actual: Okayama Issei2
+			    expected: "Okayama Issei"
+			    actual: "Okayama Issei2"
 			  - Number:
 			    expected: 1
 			    actual: 2
@@ -131,8 +131,8 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 			- 2: MyClass.MyMethod({"Text":"Okayama Issei","Number":1})
 			- 3: MyClass.MyMethod({"Text":"Okayama Issei2","Number":1})
 			  - Text:
-			    expected: Okayama Issei
-			    actual: Okayama Issei2
+			    expected: "Okayama Issei"
+			    actual: "Okayama Issei2"
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -204,15 +204,15 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 			Performed invocations:
 			- 1: MyClass.MyMethod({"Text":"Okayama Issei another name","Number":12346})
 			  - Text:
-			    expected: Okayama Issei
-			    actual: Okayama Issei another name
+			    expected: "Okayama Issei"
+			    actual: "Okayama Issei another name"
 			  - Number:
 			    expected: 1
 			    actual: 12346
 			- 2: MyClass.MyMethod({"Text":"Okayama Issei2","Number":2})
 			  - Text:
-			    expected: Okayama Issei
-			    actual: Okayama Issei2
+			    expected: "Okayama Issei"
+			    actual: "Okayama Issei2"
 			  - Number:
 			    expected: 1
 			    actual: 2
@@ -265,8 +265,8 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 			- 2: MyClass.MyMethod({"Text":"Okayama Issei","Number":1})
 			- 3: MyClass.MyMethod({"Text":"Okayama Issei2","Number":1})
 			  - Text:
-			    expected: Okayama Issei
-			    actual: Okayama Issei2
+			    expected: "Okayama Issei"
+			    actual: "Okayama Issei2"
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
@@ -338,8 +338,8 @@ public sealed class VerifyClassShould : InvocationWithOneParameterTestsBase
 			Performed invocations:
 			- 1: MyClass.MyMethod({"Text":"岡山壱成","Number":1})
 			  - Text:
-			    expected: 岡山一成
-			    actual: 岡山壱成
+			    expected: "岡山一成"
+			    actual: "岡山壱成"
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);

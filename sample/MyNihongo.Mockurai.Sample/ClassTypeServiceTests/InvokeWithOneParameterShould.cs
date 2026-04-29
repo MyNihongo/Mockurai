@@ -64,8 +64,8 @@ public sealed class InvokeWithOneParameterShould : ClassTypeServiceTestsBase
 			Performed invocations:
 			- 1: IClassDependencyService.InvokeWithOneParameter(in {"Text":"岡山壱成","Number":1})
 			  - Text:
-			    expected: 岡山一成
-			    actual: 岡山壱成
+			    expected: "岡山一成"
+			    actual: "岡山壱成"
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);

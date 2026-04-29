@@ -832,8 +832,8 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 			- 1: IPrimitiveDependencyService.InvokeWithParameter(in "parameter1")
 			- 2: IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 321)
 			- 3: IPrimitiveDependencyService.InvokeWithParameter(in "parameter2")
-			  expected: another param
-			  actual: parameter2
+			  expected: "another param"
+			  actual: "parameter2"
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
