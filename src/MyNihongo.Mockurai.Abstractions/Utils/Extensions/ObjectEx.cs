@@ -32,6 +32,14 @@ public static class ObjectEx
 		}
 	}
 
+	/// <summary>
+	/// Deserializes the JSON string to <typeparamref name="T"/>, falling back to <paramref name="defaultValue"/> when deserialization fails.
+	/// </summary>
+	/// <typeparam name="T">The target deserialization type.</typeparam>
+	/// <param name="this">The JSON string to deserialize.</param>
+	/// <param name="defaultValue">The fallback value returned when deserialization throws or produces <see langword="null"/>.</param>
+	/// <returns>The deserialized value, or <paramref name="defaultValue"/> when deserialization fails.</returns>
+
 	public static T DeserializeFromJson<T>(this string @this, T defaultValue)
 	{
 		try

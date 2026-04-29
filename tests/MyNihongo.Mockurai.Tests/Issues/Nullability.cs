@@ -50,7 +50,7 @@ public sealed class Nullability : IssuesTestsBase
 						protected readonly VerifyIndex VerifyIndex;
 						public readonly IMockSequence<Issues.Tests.IInterface>? InterfaceMock;
 
-						public VerifySequenceContext(IMock<Issues.Tests.IInterface>? interfaceMock)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.IInterface>? interfaceMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							if (interfaceMock is not null)
@@ -209,11 +209,11 @@ public sealed class Nullability : IssuesTestsBase
 				{
 					// InterfaceMock
 					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.IInterface> InterfaceMock => _interfaceMock;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.IInterface> InterfaceMock => _interfaceMock;
 
 					// ClassMock
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.Class> ClassMock => _classMock;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -237,7 +237,7 @@ public sealed class Nullability : IssuesTestsBase
 						public readonly IMockSequence<Issues.Tests.IInterface> InterfaceMock;
 						public readonly IMockSequence<Issues.Tests.Class> ClassMock;
 
-						public VerifySequenceContext(IMock<Issues.Tests.IInterface> interfaceMock, IMock<Issues.Tests.Class> classMock)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.IInterface> interfaceMock, MyNihongo.Mockurai.IMock<Issues.Tests.Class> classMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							InterfaceMock = new MockSequence<Issues.Tests.IInterface>

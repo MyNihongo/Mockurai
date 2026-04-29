@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace MyNihongo.Mockurai;
 
@@ -25,7 +26,7 @@ public class EquivalencyComparer
 	{
 		_type = type;
 
-		_isComparedByEquivalency = ComparedByEquivalency(type);
+		_isComparedByEquivalency = !ImplementsComparable(type) && !ImplementsEquatable(type);
 		if (!_isComparedByEquivalency)
 			return;
 
@@ -60,21 +61,7 @@ public class EquivalencyComparer
 				var xValue = property.GetValue(x);
 				var yValue = property.GetValue(y);
 
-				if (xValue is null)
-				{
-					if (yValue is not null)
-						result.Add(propertyPath, "null", yValue.ToString());
-				}
-				else if (ComparedByEquivalency(property.PropertyType))
-				{
-					var equalityComparer = _nestedComparers.GetOrAdd(property.PropertyType, static x => new EquivalencyComparer(x));
-					equalityComparer.Equivalent(xValue, yValue, result, propertyPath);
-				}
-				else
-				{
-					if (!xValue.Equals(yValue))
-						result.Add(propertyPath, xValue.ToString(), yValue?.ToString());
-				}
+				CompareRecursively(xValue, yValue, propertyPath, property.PropertyType, result);
 			}
 		}
 
@@ -82,32 +69,14 @@ public class EquivalencyComparer
 		{
 			foreach (var field in _fields)
 			{
-				var propertyPath = !string.IsNullOrEmpty(path)
+				var fieldPath = !string.IsNullOrEmpty(path)
 					? $"{path}.{field.Name}"
 					: field.Name;
 
 				var xValue = field.GetValue(x);
 				var yValue = field.GetValue(y);
 
-				if (xValue is null)
-				{
-					if (yValue is not null)
-						result.Add(propertyPath, "null", yValue.ToString());
-				}
-				else if (yValue is null)
-				{
-					result.Add(propertyPath, xValue.ToString(), "null");
-				}
-				else if (ComparedByEquivalency(field.FieldType))
-				{
-					var equalityComparer = _nestedComparers.GetOrAdd(field.FieldType, static x => new EquivalencyComparer(x));
-					equalityComparer.Equivalent(xValue, yValue, result, propertyPath);
-				}
-				else
-				{
-					if (!xValue.Equals(yValue))
-						result.Add(propertyPath, xValue.ToString(), yValue.ToString());
-				}
+				CompareRecursively(xValue, yValue, fieldPath, field.FieldType, result);
 			}
 		}
 
@@ -118,11 +87,11 @@ public class EquivalencyComparer
 			if (x is null)
 			{
 				if (y is not null)
-					result.Add(propertyPath, "null", y.ToString());
+					result.Add(propertyPath, "null", y.SerializeToJson());
 			}
 			else if (y is null)
 			{
-				result.Add(propertyPath, x.ToString(), "null");
+				result.Add(propertyPath, x.SerializeToJson(), "null");
 			}
 			else
 			{
@@ -189,25 +158,30 @@ public class EquivalencyComparer
 			if (x is null)
 			{
 				if (y is not null)
-					result.Add(propertyPath, "null", y.ToString());
+					result.Add(propertyPath, "null", y.SerializeToJson());
 			}
 			else if (y is null)
 			{
-				result.Add(propertyPath, x.ToString(), "null");
+				result.Add(propertyPath, x.SerializeToJson(), "null");
 			}
 			else
 			{
 				if (!x.Equals(y))
-					result.Add(propertyPath, x.ToString(), y.ToString());
+					result.Add(propertyPath, x.SerializeToJson(), y.SerializeToJson());
 			}
 		}
 
 		return result;
 	}
 
-	private static bool ComparedByEquivalency(in Type type)
+	private static bool ImplementsComparable(Type type)
 	{
-		return (type.IsClass || type.IsInterface) && type != typeof(string);
+		return type.IsAssignableTo(typeof(IComparable));
+	}
+
+	private static bool ImplementsEquatable(Type type)
+	{
+		return type.IsAssignableTo(typeof(IEquatable<>));
 	}
 
 	private static string GetPropertyPathOrRoot(string? path)
@@ -215,6 +189,35 @@ public class EquivalencyComparer
 		return string.IsNullOrEmpty(path)
 			? ComparisonResult.RootPath
 			: path;
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private void CompareRecursively(object? xValue, object? yValue, string path, Type type, in ComparisonResult result)
+	{
+		if (xValue is null)
+		{
+			if (yValue is not null)
+				result.Add(path, "null", yValue.SerializeToJson());
+		}
+		else if (yValue is null)
+		{
+			result.Add(path, xValue.SerializeToJson(), "null");
+		}
+		else if (ImplementsComparable(type) && xValue is IComparable xComparable)
+		{
+			if (xComparable.CompareTo(yValue) != 0)
+				result.Add(path, xValue.SerializeToJson(), yValue.SerializeToJson());
+		}
+		else if (ImplementsEquatable(type))
+		{
+			if (!xValue.Equals(yValue))
+				result.Add(path, xValue.SerializeToJson(), yValue.SerializeToJson());
+		}
+		else
+		{
+			var equalityComparer = _nestedComparers.GetOrAdd(type, static x => new EquivalencyComparer(x));
+			equalityComparer.Equivalent(xValue, yValue, result, path);
+		}
 	}
 }
 

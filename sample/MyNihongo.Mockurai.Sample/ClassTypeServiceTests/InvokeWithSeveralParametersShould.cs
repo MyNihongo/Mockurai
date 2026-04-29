@@ -79,12 +79,12 @@ public sealed class InvokeWithSeveralParametersShould : ClassTypeServiceTestsBas
 			- 1: IClassDependencyService.InvokeWithSeveralParameters(in {"Text":"岡山壱成","Number":1}, in {"Text":"岡山壱成","Number":1})
 			  - parameter1:
 			    - Text:
-			      expected: 岡山一成
-			      actual: 岡山壱成
+			      expected: "岡山一成"
+			      actual: "岡山壱成"
 			  - parameter2:
 			    - Text:
-			      expected: 岡山一成
-			      actual: 岡山壱成
+			      expected: "岡山一成"
+			      actual: "岡山壱成"
 			""";
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);

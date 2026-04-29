@@ -499,11 +499,11 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 			- 2: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue2", "parameterValue2")
 			- 3: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue2", "parameterValue1")
 			  - parameter1:
-			    expected: parameterValue1
-			    actual: parameterValue2
+			    expected: "parameterValue1"
+			    actual: "parameterValue2"
 			  - parameter2:
-			    expected: parameterValue2
-			    actual: parameterValue1
+			    expected: "parameterValue2"
+			    actual: "parameterValue1"
 			""";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);

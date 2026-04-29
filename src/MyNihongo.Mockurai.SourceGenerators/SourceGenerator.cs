@@ -22,12 +22,13 @@ public sealed class SourceGenerator : IIncrementalGenerator
 		context
 			.RegisterSourceOutput(valueProvider, static (context, source) =>
 			{
+				const string globalUsings = $"global using {MockGeneratorConst.Namespace};";
+				var compilation = context.AddSourceToSyntaxTree("_Usings.g.cs", globalUsings, source);
+
 				var mockTypes = new HashSet<ITypeSymbol>(SymbolEqualityComparer.Default);
 				foreach (var result in source.TransformResults)
 				{
-					var namedTypeSymbol = source.Compilation
-						.TryGetNamedTypeSymbol(result?.MockContainerClass);
-
+					var namedTypeSymbol = compilation.TryGetNamedTypeSymbol(result?.MockContainerClass);
 					if (namedTypeSymbol is null)
 						continue;
 
@@ -61,9 +62,6 @@ public sealed class SourceGenerator : IIncrementalGenerator
 					var invocationSourceCode = methodSetup.GenerateMockInvocation(source);
 					context.AddSanitisedSource($"{invocationSourceCode.Name}.g.cs", invocationSourceCode.Source);
 				}
-
-				const string globalUsings = $"global using {MockGeneratorConst.Namespace};";
-				context.AddSanitisedSource("_Usings.g.cs", globalUsings);
 			});
 	}
 

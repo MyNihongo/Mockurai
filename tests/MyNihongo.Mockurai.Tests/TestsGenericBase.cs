@@ -36,7 +36,7 @@ public abstract class TestsGenericBase : TestsBase
 			{
 				// InterfaceMock
 				private readonly InterfaceMock<string> _interfaceMock = new(InvocationIndex.CounterValue);
-				protected partial IMock<MyNihongo.Example.Tests.IInterface<string>> InterfaceMock => _interfaceMock;
+				protected partial MyNihongo.Mockurai.IMock<MyNihongo.Example.Tests.IInterface<string>> InterfaceMock => _interfaceMock;
 
 				protected virtual void VerifyNoOtherCalls()
 				{
@@ -57,7 +57,7 @@ public abstract class TestsGenericBase : TestsBase
 					protected readonly VerifyIndex VerifyIndex;
 					public readonly IMockSequence<MyNihongo.Example.Tests.IInterface<string>> InterfaceMock;
 
-					public VerifySequenceContext(IMock<MyNihongo.Example.Tests.IInterface<string>> interfaceMock)
+					public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Example.Tests.IInterface<string>> interfaceMock)
 					{
 						VerifyIndex = new VerifyIndex();
 						InterfaceMock = new MockSequence<MyNihongo.Example.Tests.IInterface<string>>
@@ -180,7 +180,7 @@ public abstract class TestsGenericBase : TestsBase
 			  [MockuraiGenerate]
 			  public abstract partial class TestsBase
 			  {
-			  	protected partial IMock<Class<string>> ClassMock { get; }
+			  	protected partial MyNihongo.Mockurai.IMock<Class<string>> ClassMock { get; }
 			  }
 			  """;
 	}
@@ -196,7 +196,7 @@ public abstract class TestsGenericBase : TestsBase
 			{
 				// ClassMock
 				private readonly ClassMock<string> _classMock = new(InvocationIndex.CounterValue);
-				protected partial IMock<MyNihongo.Example.Tests.Class<string>> ClassMock => _classMock;
+				protected partial MyNihongo.Mockurai.IMock<MyNihongo.Example.Tests.Class<string>> ClassMock => _classMock;
 
 				protected virtual void VerifyNoOtherCalls()
 				{
@@ -217,7 +217,7 @@ public abstract class TestsGenericBase : TestsBase
 					protected readonly VerifyIndex VerifyIndex;
 					public readonly IMockSequence<MyNihongo.Example.Tests.Class<string>> ClassMock;
 
-					public VerifySequenceContext(IMock<MyNihongo.Example.Tests.Class<string>> classMock)
+					public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Example.Tests.Class<string>> classMock)
 					{
 						VerifyIndex = new VerifyIndex();
 						ClassMock = new MockSequence<MyNihongo.Example.Tests.Class<string>>

@@ -43,7 +43,7 @@ public sealed class EquivalentShould
 
 		var expected = new ComparisonResult.Entry[]
 		{
-			new("this", "input1", "input2"),
+			new("this", "\"input1\"", "\"input2\""),
 		};
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
@@ -138,7 +138,7 @@ public sealed class EquivalentShould
 		var expected = new ComparisonResult.Entry[]
 		{
 			new("Age", "17", "18"),
-			new("Name", "Okayama Issei", "Okayama Issei2"),
+			new("Name", "\"Okayama Issei\"", "\"Okayama Issei2\""),
 		};
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
@@ -172,8 +172,8 @@ public sealed class EquivalentShould
 		var expected = new ComparisonResult.Entry[]
 		{
 			new("Age", "17", "18"),
-			new("Name", "Okayama Issei", "Okayama Issei2"),
-			new("DateOfBirth", "06/29/2024", "06/30/2024"),
+			new("Name", "\"Okayama Issei\"", "\"Okayama Issei2\""),
+			new("DateOfBirth", "\"2024-06-29\"", "\"2024-06-30\""),
 		};
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
@@ -207,9 +207,9 @@ public sealed class EquivalentShould
 		var expected = new ComparisonResult.Entry[]
 		{
 			new("Age", "17", "18"),
-			new("Name", "Okayama Issei", "Okayama Issei2"),
-			new("DateOfBirth", "06/29/2024", "06/30/2024"),
-			new("DateTimeUpdated", "07/30/2025 18:23:32", "07/30/2025 18:23:33"),
+			new("Name", "\"Okayama Issei\"", "\"Okayama Issei2\""),
+			new("DateOfBirth", "\"2024-06-29\"", "\"2024-06-30\""),
+			new("DateTimeUpdated", "\"2025-07-30T18:23:32\"", "\"2025-07-30T18:23:33\""),
 		};
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
@@ -234,7 +234,7 @@ public sealed class EquivalentShould
 
 		var expected = new ComparisonResult.Entry[]
 		{
-			new("Parent", "null", "Item"),
+			new("Parent", "null", """{"IsValid":false,"Object":null}"""),
 		};
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
@@ -259,7 +259,7 @@ public sealed class EquivalentShould
 
 		var expected = new ComparisonResult.Entry[]
 		{
-			new("Parent", "Item", "null"),
+			new("Parent", """{"IsValid":false,"Object":null}""", "null"),
 		};
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
@@ -354,7 +354,7 @@ public sealed class EquivalentShould
 		var expected = new ComparisonResult.Entry[]
 		{
 			new("Parent.Ticks", "1234567890", "2345678901"),
-			new("Parent.IsValid", "True", "False"),
+			new("Parent.IsValid", "true", "false"),
 		};
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
@@ -376,7 +376,7 @@ public sealed class EquivalentShould
 
 		var expected = new ComparisonResult.Entry[]
 		{
-			new("Children", "[ClassObject]", "null"),
+			new("Children", "[]", "null"),
 		};
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
@@ -398,7 +398,7 @@ public sealed class EquivalentShould
 
 		var expected = new ComparisonResult.Entry[]
 		{
-			new("Children", "null", "[ClassObject]"),
+			new("Children", "null", "[]"),
 		};
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
@@ -526,7 +526,7 @@ public sealed class EquivalentShould
 		var expected = new ComparisonResult.Entry[]
 		{
 			new("Children[0].Ticks", "1234567890", "2345678901"),
-			new("Children[0].IsValid", "True", "False"),
+			new("Children[0].IsValid", "true", "false"),
 		};
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
@@ -570,7 +570,7 @@ public sealed class EquivalentShould
 		var expected = new ComparisonResult.Entry[]
 		{
 			new("Children[0].Ticks", "1234567890", "2345678901"),
-			new("Children[0].IsValid", "True", "False"),
+			new("Children[0].IsValid", "true", "false"),
 			new("Children", "collection with at least 2 elements", "collection with 1 elements"),
 		};
 		Assert.Equivalent(expected, actual.Entries, true);
@@ -620,7 +620,7 @@ public sealed class EquivalentShould
 		var expected = new ComparisonResult.Entry[]
 		{
 			new("Children[1].Ticks", "1234567890", "2345678901"),
-			new("Children[0].IsValid", "True", "False"),
+			new("Children[0].IsValid", "true", "false"),
 		};
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
@@ -728,7 +728,7 @@ public sealed class EquivalentShould
 		var actual = EquivalencyComparer<ClassObject>.Default.Equivalent(input1, input2);
 		var expected = new ComparisonResult.Entry[]
 		{
-			new("Children[0].Objects[1].Name", "Okayama Issei", "Okayama Issei2"),
+			new("Children[0].Objects[1].Name", "\"Okayama Issei\"", "\"Okayama Issei2\""),
 		};
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
@@ -775,7 +775,7 @@ public sealed class EquivalentShould
 
 		var expected = new ComparisonResult.Entry[]
 		{
-			new("this[1]", "value1", "value2"),
+			new("this[1]", "\"value1\"", "\"value2\""),
 		};
 		Assert.Equivalent(expected, actual.Entries, true);
 	}
@@ -857,7 +857,7 @@ public sealed class EquivalentShould
 		var expected = new ComparisonResult.Entry[]
 		{
 			new("this[0].Age", "17", "18"),
-			new("this[1].Name", "Okayama Issei2", "Okayama Issei"),
+			new("this[1].Name", "\"Okayama Issei2\"", "\"Okayama Issei\""),
 		};
 		Assert.Equivalent(expected, actual.Entries, true);
 	}

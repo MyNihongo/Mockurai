@@ -34,11 +34,11 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 				{
 					// InterfaceMock1
 					private readonly InterfaceMock _interfaceMock1 = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.IInterface> InterfaceMock1 => _interfaceMock1;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.IInterface> InterfaceMock1 => _interfaceMock1;
 
 					// InterfaceMock2
 					private readonly InterfaceMock _interfaceMock2 = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.IInterface> InterfaceMock2 => _interfaceMock2;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.IInterface> InterfaceMock2 => _interfaceMock2;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -62,7 +62,7 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 						public readonly IMockSequence<Issues.Tests.IInterface> InterfaceMock1;
 						public readonly IMockSequence<Issues.Tests.IInterface> InterfaceMock2;
 
-						public VerifySequenceContext(IMock<Issues.Tests.IInterface> interfaceMock1, IMock<Issues.Tests.IInterface> interfaceMock2)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.IInterface> interfaceMock1, MyNihongo.Mockurai.IMock<Issues.Tests.IInterface> interfaceMock2)
 						{
 							VerifyIndex = new VerifyIndex();
 							InterfaceMock1 = new MockSequence<Issues.Tests.IInterface>
@@ -1045,11 +1045,11 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 				{
 					// InterfaceMock
 					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.IInterface> InterfaceMock => _interfaceMock;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.IInterface> InterfaceMock => _interfaceMock;
 
 					// AbstractClassMock
 					private readonly AbstractClassMock _abstractClassMock = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.AbstractClass> AbstractClassMock => _abstractClassMock;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.AbstractClass> AbstractClassMock => _abstractClassMock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -1073,7 +1073,7 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 						public readonly IMockSequence<Issues.Tests.IInterface> InterfaceMock;
 						public readonly IMockSequence<Issues.Tests.AbstractClass> AbstractClassMock;
 
-						public VerifySequenceContext(IMock<Issues.Tests.IInterface> interfaceMock, IMock<Issues.Tests.AbstractClass> abstractClassMock)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.IInterface> interfaceMock, MyNihongo.Mockurai.IMock<Issues.Tests.AbstractClass> abstractClassMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							InterfaceMock = new MockSequence<Issues.Tests.IInterface>
