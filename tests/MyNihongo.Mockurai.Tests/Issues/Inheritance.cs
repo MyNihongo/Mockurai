@@ -754,7 +754,7 @@ public sealed class Inheritance : IssuesTestsBase
 				{
 					// InterfaceMock
 					private readonly InterfaceMock<decimal> _interfaceMock = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.IInterface<decimal>> InterfaceMock => _interfaceMock;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.IInterface<decimal>> InterfaceMock => _interfaceMock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -775,7 +775,7 @@ public sealed class Inheritance : IssuesTestsBase
 						protected readonly VerifyIndex VerifyIndex;
 						public readonly IMockSequence<Issues.Tests.IInterface<decimal>> InterfaceMock;
 
-						public VerifySequenceContext(IMock<Issues.Tests.IInterface<decimal>> interfaceMock)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.IInterface<decimal>> interfaceMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							InterfaceMock = new MockSequence<Issues.Tests.IInterface<decimal>>
@@ -1261,7 +1261,7 @@ public sealed class Inheritance : IssuesTestsBase
 				{
 					// ClassMock
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.Class> ClassMock => _classMock;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -1282,7 +1282,7 @@ public sealed class Inheritance : IssuesTestsBase
 						protected readonly VerifyIndex VerifyIndex;
 						public readonly IMockSequence<Issues.Tests.Class> ClassMock;
 
-						public VerifySequenceContext(IMock<Issues.Tests.Class> classMock)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.Class> classMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							ClassMock = new MockSequence<Issues.Tests.Class>
@@ -1517,7 +1517,7 @@ public sealed class Inheritance : IssuesTestsBase
 				{
 					// ClassMock
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.Class> ClassMock => _classMock;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -1538,7 +1538,7 @@ public sealed class Inheritance : IssuesTestsBase
 						protected readonly VerifyIndex VerifyIndex;
 						public readonly IMockSequence<Issues.Tests.Class> ClassMock;
 
-						public VerifySequenceContext(IMock<Issues.Tests.Class> classMock)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.Class> classMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							ClassMock = new MockSequence<Issues.Tests.Class>
@@ -1818,7 +1818,7 @@ public sealed class Inheritance : IssuesTestsBase
 				{
 					// ClassMock
 					private readonly ClassMock<float> _classMock = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.Class<float>> ClassMock => _classMock;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class<float>> ClassMock => _classMock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -1839,7 +1839,7 @@ public sealed class Inheritance : IssuesTestsBase
 						protected readonly VerifyIndex VerifyIndex;
 						public readonly IMockSequence<Issues.Tests.Class<float>> ClassMock;
 
-						public VerifySequenceContext(IMock<Issues.Tests.Class<float>> classMock)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.Class<float>> classMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							ClassMock = new MockSequence<Issues.Tests.Class<float>>
@@ -2070,7 +2070,7 @@ public sealed class Inheritance : IssuesTestsBase
 				{
 					// ClassMock
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.Class> ClassMock => _classMock;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -2091,7 +2091,7 @@ public sealed class Inheritance : IssuesTestsBase
 						protected readonly VerifyIndex VerifyIndex;
 						public readonly IMockSequence<Issues.Tests.Class> ClassMock;
 
-						public VerifySequenceContext(IMock<Issues.Tests.Class> classMock)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.Class> classMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							ClassMock = new MockSequence<Issues.Tests.Class>
@@ -2322,7 +2322,7 @@ public sealed class Inheritance : IssuesTestsBase
 				{
 					// ClassMock
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.Class> ClassMock => _classMock;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -2343,7 +2343,7 @@ public sealed class Inheritance : IssuesTestsBase
 						protected readonly VerifyIndex VerifyIndex;
 						public readonly IMockSequence<Issues.Tests.Class> ClassMock;
 
-						public VerifySequenceContext(IMock<Issues.Tests.Class> classMock)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.Class> classMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							ClassMock = new MockSequence<Issues.Tests.Class>
@@ -2528,7 +2528,7 @@ public sealed class Inheritance : IssuesTestsBase
 				{
 					// ClassMock
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.Class> ClassMock => _classMock;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -2549,7 +2549,7 @@ public sealed class Inheritance : IssuesTestsBase
 						protected readonly VerifyIndex VerifyIndex;
 						public readonly IMockSequence<Issues.Tests.Class> ClassMock;
 
-						public VerifySequenceContext(IMock<Issues.Tests.Class> classMock)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.Class> classMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							ClassMock = new MockSequence<Issues.Tests.Class>
@@ -2729,7 +2729,7 @@ public sealed class Inheritance : IssuesTestsBase
 				{
 					// ClassMock
 					private readonly ClassMock<float> _classMock = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.Class<float>> ClassMock => _classMock;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class<float>> ClassMock => _classMock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -2750,7 +2750,7 @@ public sealed class Inheritance : IssuesTestsBase
 						protected readonly VerifyIndex VerifyIndex;
 						public readonly IMockSequence<Issues.Tests.Class<float>> ClassMock;
 
-						public VerifySequenceContext(IMock<Issues.Tests.Class<float>> classMock)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.Class<float>> classMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							ClassMock = new MockSequence<Issues.Tests.Class<float>>
@@ -2931,7 +2931,7 @@ public sealed class Inheritance : IssuesTestsBase
 				{
 					// ClassMock
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.Class> ClassMock => _classMock;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -2952,7 +2952,7 @@ public sealed class Inheritance : IssuesTestsBase
 						protected readonly VerifyIndex VerifyIndex;
 						public readonly IMockSequence<Issues.Tests.Class> ClassMock;
 
-						public VerifySequenceContext(IMock<Issues.Tests.Class> classMock)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.Class> classMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							ClassMock = new MockSequence<Issues.Tests.Class>
@@ -3135,7 +3135,7 @@ public sealed class Inheritance : IssuesTestsBase
 				{
 					// ClassMock
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.Class> ClassMock => _classMock;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -3156,7 +3156,7 @@ public sealed class Inheritance : IssuesTestsBase
 						protected readonly VerifyIndex VerifyIndex;
 						public readonly IMockSequence<Issues.Tests.Class> ClassMock;
 
-						public VerifySequenceContext(IMock<Issues.Tests.Class> classMock)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.Class> classMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							ClassMock = new MockSequence<Issues.Tests.Class>

@@ -43,7 +43,7 @@ public sealed class NestedClasses : TestsBase
 				{
 					// ContainerMock
 					private readonly ContainerMock _containerMock = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.Container> ContainerMock => _containerMock;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Container> ContainerMock => _containerMock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -64,7 +64,7 @@ public sealed class NestedClasses : TestsBase
 						protected readonly VerifyIndex VerifyIndex;
 						public readonly IMockSequence<Issues.Tests.Container> ContainerMock;
 
-						public VerifySequenceContext(IMock<Issues.Tests.Container> containerMock)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.Container> containerMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							ContainerMock = new MockSequence<Issues.Tests.Container>

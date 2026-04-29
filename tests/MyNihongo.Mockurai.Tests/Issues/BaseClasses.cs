@@ -41,7 +41,7 @@ public sealed class BaseClasses : TestsBase
 				{
 					// Interface1Mock
 					private readonly InterfaceMock _interface1Mock = new(InvocationIndex.CounterValue);
-					protected partial IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface1Mock => _interface1Mock;
+					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface1Mock => _interface1Mock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -62,7 +62,7 @@ public sealed class BaseClasses : TestsBase
 						protected readonly VerifyIndex VerifyIndex;
 						public readonly IMockSequence<MyNihongo.BaseClasses.Tests.IInterface> Interface1Mock;
 
-						public VerifySequenceContext(IMock<MyNihongo.BaseClasses.Tests.IInterface> interface1Mock)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> interface1Mock)
 						{
 							VerifyIndex = new VerifyIndex();
 							Interface1Mock = new MockSequence<MyNihongo.BaseClasses.Tests.IInterface>
@@ -91,7 +91,7 @@ public sealed class BaseClasses : TestsBase
 				{
 					// Interface2Mock
 					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
-					protected partial IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
+					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
 
 					protected override void VerifyNoOtherCalls()
 					{
@@ -116,7 +116,7 @@ public sealed class BaseClasses : TestsBase
 					{
 						public readonly IMockSequence<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock;
 
-						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
+						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
 							: base(ctx)
 						{
 							Interface2Mock = new MockSequence<MyNihongo.BaseClasses.Tests.IInterface>

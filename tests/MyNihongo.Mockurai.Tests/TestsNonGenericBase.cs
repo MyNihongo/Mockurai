@@ -36,7 +36,7 @@ public abstract class TestsNonGenericBase : TestsBase
 			{
 				// InterfaceMock
 				private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-				protected partial IMock<MyNihongo.Example.Tests.IInterface> InterfaceMock => _interfaceMock;
+				protected partial MyNihongo.Mockurai.IMock<MyNihongo.Example.Tests.IInterface> InterfaceMock => _interfaceMock;
 
 				protected virtual void VerifyNoOtherCalls()
 				{
@@ -57,7 +57,7 @@ public abstract class TestsNonGenericBase : TestsBase
 					protected readonly VerifyIndex VerifyIndex;
 					public readonly IMockSequence<MyNihongo.Example.Tests.IInterface> InterfaceMock;
 
-					public VerifySequenceContext(IMock<MyNihongo.Example.Tests.IInterface> interfaceMock)
+					public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Example.Tests.IInterface> interfaceMock)
 					{
 						VerifyIndex = new VerifyIndex();
 						InterfaceMock = new MockSequence<MyNihongo.Example.Tests.IInterface>
@@ -196,7 +196,7 @@ public abstract class TestsNonGenericBase : TestsBase
 			{
 				// ClassMock
 				private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
-				protected partial IMock<MyNihongo.Example.Tests.Class> ClassMock => _classMock;
+				protected partial MyNihongo.Mockurai.IMock<MyNihongo.Example.Tests.Class> ClassMock => _classMock;
 
 				protected virtual void VerifyNoOtherCalls()
 				{
@@ -217,7 +217,7 @@ public abstract class TestsNonGenericBase : TestsBase
 					protected readonly VerifyIndex VerifyIndex;
 					public readonly IMockSequence<MyNihongo.Example.Tests.Class> ClassMock;
 
-					public VerifySequenceContext(IMock<MyNihongo.Example.Tests.Class> classMock)
+					public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.Example.Tests.Class> classMock)
 					{
 						VerifyIndex = new VerifyIndex();
 						ClassMock = new MockSequence<MyNihongo.Example.Tests.Class>

@@ -33,7 +33,7 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 				{
 					// InterfaceMock
 					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-					internal partial IMock<Issues.Tests.IInterface> InterfaceMock => _interfaceMock;
+					internal partial MyNihongo.Mockurai.IMock<Issues.Tests.IInterface> InterfaceMock => _interfaceMock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -54,7 +54,7 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 						protected readonly VerifyIndex VerifyIndex;
 						internal readonly IMockSequence<Issues.Tests.IInterface> InterfaceMock;
 
-						internal VerifySequenceContext(IMock<Issues.Tests.IInterface> interfaceMock)
+						internal VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.IInterface> interfaceMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							InterfaceMock = new MockSequence<Issues.Tests.IInterface>
@@ -234,7 +234,7 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 				{
 					// InterfaceMock
 					private readonly InterfaceMock<Issues.Tests.INestedInterface> _interfaceMock = new(InvocationIndex.CounterValue);
-					internal partial IMock<Issues.Tests.IInterface<Issues.Tests.INestedInterface>> InterfaceMock => _interfaceMock;
+					internal partial MyNihongo.Mockurai.IMock<Issues.Tests.IInterface<Issues.Tests.INestedInterface>> InterfaceMock => _interfaceMock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -255,7 +255,7 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 						protected readonly VerifyIndex VerifyIndex;
 						internal readonly IMockSequence<Issues.Tests.IInterface<Issues.Tests.INestedInterface>> InterfaceMock;
 
-						internal VerifySequenceContext(IMock<Issues.Tests.IInterface<Issues.Tests.INestedInterface>> interfaceMock)
+						internal VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.IInterface<Issues.Tests.INestedInterface>> interfaceMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							InterfaceMock = new MockSequence<Issues.Tests.IInterface<Issues.Tests.INestedInterface>>
@@ -447,7 +447,7 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 				{
 					// InterfaceMock
 					private readonly InterfaceMock<Issues.Tests.INestedInterface1, Issues.Tests.INestedInterface2> _interfaceMock = new(InvocationIndex.CounterValue);
-					internal partial IMock<Issues.Tests.IInterface<Issues.Tests.INestedInterface1, Issues.Tests.INestedInterface2>> InterfaceMock => _interfaceMock;
+					internal partial MyNihongo.Mockurai.IMock<Issues.Tests.IInterface<Issues.Tests.INestedInterface1, Issues.Tests.INestedInterface2>> InterfaceMock => _interfaceMock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -468,7 +468,7 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 						protected readonly VerifyIndex VerifyIndex;
 						internal readonly IMockSequence<Issues.Tests.IInterface<Issues.Tests.INestedInterface1, Issues.Tests.INestedInterface2>> InterfaceMock;
 
-						internal VerifySequenceContext(IMock<Issues.Tests.IInterface<Issues.Tests.INestedInterface1, Issues.Tests.INestedInterface2>> interfaceMock)
+						internal VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.IInterface<Issues.Tests.INestedInterface1, Issues.Tests.INestedInterface2>> interfaceMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							InterfaceMock = new MockSequence<Issues.Tests.IInterface<Issues.Tests.INestedInterface1, Issues.Tests.INestedInterface2>>
@@ -1038,7 +1038,7 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 				{
 					// ClassMock
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.Class> ClassMock => _classMock;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -1059,7 +1059,7 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 						protected readonly VerifyIndex VerifyIndex;
 						public readonly IMockSequence<Issues.Tests.Class> ClassMock;
 
-						public VerifySequenceContext(IMock<Issues.Tests.Class> classMock)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.Class> classMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							ClassMock = new MockSequence<Issues.Tests.Class>
@@ -1238,7 +1238,7 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 				{
 					// ClassMock
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
-					protected partial IMock<Issues.Tests.Class> ClassMock => _classMock;
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -1259,7 +1259,7 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 						protected readonly VerifyIndex VerifyIndex;
 						public readonly IMockSequence<Issues.Tests.Class> ClassMock;
 
-						public VerifySequenceContext(IMock<Issues.Tests.Class> classMock)
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.Class> classMock)
 						{
 							VerifyIndex = new VerifyIndex();
 							ClassMock = new MockSequence<Issues.Tests.Class>
