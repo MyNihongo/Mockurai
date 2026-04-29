@@ -25,9 +25,23 @@ public static class ObjectEx
 		{
 			return JsonSerializer.Serialize(@this, Options);
 		}
-		catch
+		catch (Exception ex)
 		{
+			Console.WriteLine("Unable to serialize to json, exception=`{0}`", ex);
 			return @this?.ToString() ?? string.Empty;
+		}
+	}
+
+	public static T DeserializeFromJson<T>(this string @this, T defaultValue)
+	{
+		try
+		{
+			return JsonSerializer.Deserialize<T>(@this) ?? defaultValue;
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine("Unable to deserialize from json, exception=`{0}`", ex);
+			return defaultValue;
 		}
 	}
 }

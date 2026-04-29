@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using System.Text.Json;
 
 namespace MyNihongo.Mockurai;
 
@@ -175,7 +174,7 @@ public sealed class Invocation<TParameter> : IInvocationVerify, IInvocationProvi
 		public TParameter GetParameter(SetupType? setupType)
 		{
 			return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(_jsonSnapshot)
-				? JsonSerializer.Deserialize<TParameter>(_jsonSnapshot)!
+				? _jsonSnapshot.DeserializeFromJson(_parameter)
 				: _parameter;
 		}
 

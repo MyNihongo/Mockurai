@@ -442,6 +442,7 @@ internal static class MockInvocationGenerator
 
 		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
+			const string argumentPrefix = "_argument.";
 			var parameter = methodSymbol.Parameters[i];
 
 			var typeOverride = genericTypeOverride
@@ -469,16 +470,16 @@ internal static class MockInvocationGenerator
 
 			stringBuilder
 				.Indent(indent + 1)
-				.Append("? System.Text.Json.JsonSerializer.Deserialize<")
-				.AppendType(parameter.Type, typeOverride)
-				.Append(">(")
+				.Append("? ")
 				.AppendFieldName(JsonSnapshotName)
 				.AppendParameterPropertyName(i)
-				.AppendLine(")!");
+				.Append($".DeserializeFromJson({argumentPrefix}")
+				.AppendParameterVariableName(i)
+				.AppendLine(")");
 
 			stringBuilder
 				.Indent(indent + 1)
-				.Append(": _argument.")
+				.Append($": {argumentPrefix}")
 				.AppendParameterVariableName(i)
 				.AppendLine(";");
 
