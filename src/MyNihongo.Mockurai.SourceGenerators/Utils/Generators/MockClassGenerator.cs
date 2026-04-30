@@ -73,18 +73,18 @@ internal static class MockClassGenerator
 
 	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks, int indent)
 	{
-		var baseClass = classSymbol.TryGetBaseClassWithFunctionName(functionName: "VerifyNoOtherCalls");
+		var baseMethod = classSymbol.TryGetBaseClassMethod(methodName: "VerifyNoOtherCalls", canOverride: true);
 
 		stringBuilder.Clear();
 
 		stringBuilder
 			.Indent(indent)
 			.Append("protected ")
-			.TryAppendFunctionOverrideModifier(classSymbol, baseClass)
+			.TryAppendFunctionOverrideModifier(classSymbol, baseMethod)
 			.AppendLine("void VerifyNoOtherCalls()")
 			.Indent(indent++).AppendLine("{");
 
-		if (baseClass is not null)
+		if (baseMethod is not null)
 		{
 			stringBuilder
 				.Indent(indent)
@@ -118,7 +118,7 @@ internal static class MockClassGenerator
 
 	private static string CreateVerifyInSequence(StringBuilder stringBuilder, INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks, int indent)
 	{
-		var baseClass = classSymbol.TryGetBaseClassWithFunctionName("VerifyInSequence");
+		var baseMethod = classSymbol.TryGetBaseClassMethod(methodName: "VerifyInSequence", canOverride: false);
 
 		stringBuilder.Clear();
 
@@ -127,7 +127,7 @@ internal static class MockClassGenerator
 			.Indent(indent++).AppendLine("{");
 
 		string ctxVariableName;
-		if (baseClass is not null)
+		if (baseMethod is not null)
 		{
 			ctxVariableName = "thisCtx";
 
@@ -146,7 +146,7 @@ internal static class MockClassGenerator
 			.Append(ctxVariableName)
 			.AppendLine(" = new VerifySequenceContext(");
 
-		if (baseClass is not null)
+		if (baseMethod is not null)
 		{
 			stringBuilder
 				.Indent(indent)
@@ -179,7 +179,7 @@ internal static class MockClassGenerator
 			.Indent(--indent).AppendLine(");").AppendLine()
 			.Indent(indent).Append("verify(").Append(ctxVariableName).AppendLine(");");
 
-		if (baseClass is not null)
+		if (baseMethod is not null)
 		{
 			stringBuilder
 				.Indent(--indent)
@@ -416,7 +416,7 @@ internal static class MockClassGenerator
 			: Accessibility.Public;
 	}
 
-	private static StringBuilder TryAppendFunctionOverrideModifier(this StringBuilder @this, INamedTypeSymbol classSymbol, INamedTypeSymbol? baseClassSymbol)
+	private static StringBuilder TryAppendFunctionOverrideModifier(this StringBuilder @this, INamedTypeSymbol classSymbol, IMethodSymbol? baseClassSymbol)
 	{
 		if (baseClassSymbol is not null)
 			@this.Append("override ");

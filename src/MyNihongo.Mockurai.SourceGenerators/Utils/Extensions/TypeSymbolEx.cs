@@ -12,13 +12,11 @@ internal static class TypeSymbolEx
 			foreach (var member in GetMembers(@this, getOverrides))
 				yield return member;
 
-			var baseType = @this.BaseType;
-			while (baseType is not null && baseType.SpecialType != SpecialType.System_Object)
+			var baseType = @this;
+			while (baseType.TryGetBaseType(out baseType))
 			{
 				foreach (var member in GetMembers(baseType, getOverrides))
 					yield return member;
-
-				baseType = baseType.BaseType;
 			}
 
 			yield break;
@@ -50,6 +48,18 @@ internal static class TypeSymbolEx
 					}
 				}
 			}
+		}
+
+		public bool TryGetBaseType(out ITypeSymbol baseType)
+		{
+			if (@this.BaseType is not null && @this.BaseType.SpecialType != SpecialType.System_Object)
+			{
+				baseType = @this.BaseType;
+				return true;
+			}
+
+			baseType = null!;
+			return false;
 		}
 
 		public IEnumerable<ISymbol> GetInterfaceMembers()
