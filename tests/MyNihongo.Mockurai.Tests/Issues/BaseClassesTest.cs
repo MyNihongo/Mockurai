@@ -281,11 +281,12 @@ public sealed class BaseClassesTest : TestsBase
 				protected partial IMock<IInterface> Interface1Mock { get; }
 			}
 
-			[MockuraiGenerate(BeforeVerifyNoOtherCalls = nameof(TestsDerivedBase.BeforeVerifyNoOtherCalls))]
+			[MockuraiGenerate]
 			public abstract partial class TestsDerivedBase : TestsBase
 			{
 				protected partial IMock<IInterface> Interface2Mock { get; }
-				
+
+				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls()
 				{
 				}
@@ -418,21 +419,23 @@ public sealed class BaseClassesTest : TestsBase
 				void Invoke();
 			}
 
-			[MockuraiGenerate(BeforeVerifyNoOtherCalls = nameof(TestsDerivedBase.BeforeVerifyNoOtherCalls))]
+			[MockuraiGenerate]
 			public abstract partial class TestsBase
 			{
 				protected partial IMock<IInterface> Interface1Mock { get; }
 
+			[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls()
 				{
 				}
 			}
 
-			[MockuraiGenerate(BeforeVerifyNoOtherCalls = nameof(TestsDerivedBase.BeforeVerifyNoOtherCalls))]
+			[MockuraiGenerate]
 			public abstract partial class TestsDerivedBase : TestsBase
 			{
 				protected partial IMock<IInterface> Interface2Mock { get; }
-				
+
+				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls()
 				{
 				}
@@ -572,11 +575,12 @@ public sealed class BaseClassesTest : TestsBase
 				protected partial IMock<IInterface> Interface1Mock { get; }
 			}
 
-			[MockuraiGenerate(BeforeVerifyNoOtherCalls = nameof(TestsDerivedBase.BeforeVerifyNoOtherCalls))]
+			[MockuraiGenerate]
 			public abstract partial class TestsDerivedBase : TestsBase
 			{
 				protected partial IMock<IInterface> Interface2Mock { get; }
-				
+
+				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls(int arg)
 				{
 				}
@@ -709,21 +713,23 @@ public sealed class BaseClassesTest : TestsBase
 				void Invoke();
 			}
 
-			[MockuraiGenerate(BeforeVerifyNoOtherCalls = nameof(TestsDerivedBase.BeforeVerifyNoOtherCalls))]
+			[MockuraiGenerate]
 			public abstract partial class TestsBase
 			{
 				protected partial IMock<IInterface> Interface1Mock { get; }
 
+				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls(int arg)
 				{
 				}
 			}
 
-			[MockuraiGenerate(BeforeVerifyNoOtherCalls = nameof(TestsDerivedBase.BeforeVerifyNoOtherCalls))]
+			[MockuraiGenerate]
 			public abstract partial class TestsDerivedBase : TestsBase
 			{
 				protected partial IMock<IInterface> Interface2Mock { get; }
-				
+
+				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls(int arg)
 				{
 				}
@@ -857,21 +863,23 @@ public sealed class BaseClassesTest : TestsBase
 				void Invoke();
 			}
 
-			[MockuraiGenerate(BeforeVerifyNoOtherCalls = nameof(TestsDerivedBase.BeforeVerifyNoOtherCalls))]
+			[MockuraiGenerate]
 			public abstract partial class TestsBase
 			{
 				protected partial IMock<IInterface> Interface1Mock { get; }
 
+				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls(int arg1)
 				{
 				}
 			}
 
-			[MockuraiGenerate(BeforeVerifyNoOtherCalls = nameof(TestsDerivedBase.BeforeVerifyNoOtherCalls))]
+			[MockuraiGenerate]
 			public abstract partial class TestsDerivedBase : TestsBase
 			{
 				protected partial IMock<IInterface> Interface2Mock { get; }
-				
+
+				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls(int arg2)
 				{
 				}
@@ -1005,21 +1013,23 @@ public sealed class BaseClassesTest : TestsBase
 				void Invoke();
 			}
 
-			[MockuraiGenerate(BeforeVerifyNoOtherCalls = nameof(TestsDerivedBase.BeforeVerifyNoOtherCalls))]
+			[MockuraiGenerate]
 			public abstract partial class TestsBase
 			{
 				protected partial IMock<IInterface> Interface1Mock { get; }
 
+				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls(int arg1)
 				{
 				}
 			}
 
-			[MockuraiGenerate(BeforeVerifyNoOtherCalls = nameof(TestsDerivedBase.BeforeVerifyNoOtherCalls))]
+			[MockuraiGenerate]
 			public abstract partial class TestsDerivedBase : TestsBase
 			{
 				protected partial IMock<IInterface> Interface2Mock { get; }
-				
+			
+				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls(int arg2 = 0)
 				{
 				}

@@ -3,9 +3,10 @@
 internal static class MockGeneratorConst
 {
 	public const string GenerateAttributeName = "MockuraiGenerate";
-	public const string GenerateAttribute = $"{GenerateAttributeName}Attribute";
 	public const string BehaviourAttributeName = "MockuraiBehavior";
 	public const string BehaviourAttribute = $"{BehaviourAttributeName}Attribute";
+	public const string BeforeVerifyNoOtherCallsAttributeName = "MockuraiBeforeVerifyNoOtherCalls";
+	public const string BeforeVerifyNoOtherCallsAttribute = $"{BeforeVerifyNoOtherCallsAttributeName}Attribute";
 	public const string SkipVerifyNoOtherCallsPropertyName = "SkipVerifyNoOtherCalls";
 	public const string Namespace = "MyNihongo.Mockurai";
 

@@ -4,6 +4,15 @@ internal static class NamedTypeSymbolEx
 {
 	extension(INamedTypeSymbol @this)
 	{
+		public T? TryGetMemberByAttribute<T>(Func<string?, bool> attributePredicate)
+			where T : ISymbol
+		{
+			return @this
+				.GetMembers()
+				.OfType<T>()
+				.FirstOrDefault(x => Enumerable.Any(x.GetAttributes(), attribute => attributePredicate(attribute.AttributeClass?.Name)));
+		}
+
 		public IMethodSymbol? TryGetBaseClassMethod(string methodName, bool canOverride)
 		{
 			ITypeSymbol baseType = @this;
