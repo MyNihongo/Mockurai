@@ -2,8 +2,10 @@
 
 public abstract class IssuesTestsBase : TestsBase
 {
-	protected static GeneratedSource GetTestsBaseSource(string fileName = "TestsBase")
+	protected static GeneratedSource GetTestsBaseSource(string fileName = "TestsBase", bool addNamespace = true)
 	{
+		var namespacePrefix = addNamespace ? "MyNihongo.Mockurai." : string.Empty;
+
 		return (
 			$"{fileName}.g.cs",
 			$$"""
@@ -14,7 +16,7 @@ public abstract class IssuesTestsBase : TestsBase
 			  {
 			  	// InterfaceMock
 			  	private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
-			  	protected partial MyNihongo.Mockurai.IMock<Issues.Tests.IInterface> InterfaceMock => _interfaceMock;
+			  	protected partial {{namespacePrefix}}IMock<Issues.Tests.IInterface> InterfaceMock => _interfaceMock;
 
 			  	protected virtual void VerifyNoOtherCalls()
 			  	{
@@ -35,7 +37,7 @@ public abstract class IssuesTestsBase : TestsBase
 			  		protected readonly VerifyIndex VerifyIndex;
 			  		public readonly IMockSequence<Issues.Tests.IInterface> InterfaceMock;
 
-			  		public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.IInterface> interfaceMock)
+			  		public VerifySequenceContext({{namespacePrefix}}IMock<Issues.Tests.IInterface> interfaceMock)
 			  		{
 			  			VerifyIndex = new VerifyIndex();
 			  			InterfaceMock = new MockSequence<Issues.Tests.IInterface>

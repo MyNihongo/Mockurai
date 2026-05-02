@@ -73,22 +73,59 @@ internal static class MockClassGenerator
 
 	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks, int indent)
 	{
-		var baseClass = classSymbol.TryGetBaseClassWithFunctionName(functionName: "VerifyNoOtherCalls");
+		var baseMethod = classSymbol.TryGetBaseClassMethod(methodName: "VerifyNoOtherCalls", canOverride: true);
+		var beforeMethod = classSymbol.TryGetMemberByAttribute<IMethodSymbol>(
+			attributePredicate: static x => x is MockGeneratorConst.BeforeVerifyNoOtherCallsAttribute or MockGeneratorConst.BeforeVerifyNoOtherCallsAttributeName
+		);
+		var combinedParameters = MethodSymbolUtils.CombineParameters(beforeMethod, baseMethod, out var hasDefaultParameters);
 
 		stringBuilder.Clear();
+
+		if (hasDefaultParameters)
+		{
+			const string overloadResolutionPriorityName = "OverloadResolutionPriority",
+				overloadResolutionPriority = $"{overloadResolutionPriorityName}Attribute";
+
+			var value = baseMethod.GetAttributeValue(
+				static x => x == overloadResolutionPriority,
+				index: 0,
+				defaultValue: 0
+			);
+
+			stringBuilder
+				.Indent(indent)
+				.Append($"[System.Runtime.CompilerServices.{overloadResolutionPriorityName}(")
+				.Append(value + 1)
+				.AppendLine(")]");
+		}
 
 		stringBuilder
 			.Indent(indent)
 			.Append("protected ")
-			.TryAppendFunctionOverrideModifier(classSymbol, baseClass)
-			.AppendLine("void VerifyNoOtherCalls()")
+			.TryAppendFunctionOverrideModifier(classSymbol, baseMethod, combinedParameters.Length)
+			.Append("void VerifyNoOtherCalls(")
+			.AppendParameters(combinedParameters, appendDefaultValues: true)
+			.AppendLine(")")
 			.Indent(indent++).AppendLine("{");
 
-		if (baseClass is not null)
+		if (beforeMethod is not null)
 		{
 			stringBuilder
 				.Indent(indent)
-				.AppendLine("base.VerifyNoOtherCalls();");
+				.Append("this.")
+				.Append(beforeMethod.Name)
+				.Append('(')
+				.AppendParameterNames(beforeMethod.Parameters)
+				.AppendLine(");");
+		}
+
+		if (baseMethod is not null)
+		{
+			stringBuilder
+				.Indent(indent)
+				.Append("base.VerifyNoOtherCalls(")
+				.AppendParameterNames(baseMethod.Parameters)
+				.AppendLine(");");
 		}
 
 		foreach (var mock in mocks)
@@ -96,7 +133,7 @@ internal static class MockClassGenerator
 			var symbol = mock.PropertyOrField;
 
 			var skipVerifyNoOtherCalls = symbol.GetAttributeValue(
-				static x => x is MockGeneratorConst.BehaviourAttributeName or MockGeneratorConst.BehaviourAttribute,
+				static x => x is MockGeneratorConst.BehaviourAttribute or MockGeneratorConst.BehaviourAttributeName,
 				MockGeneratorConst.SkipVerifyNoOtherCallsPropertyName,
 				defaultValue: false
 			);
@@ -118,7 +155,7 @@ internal static class MockClassGenerator
 
 	private static string CreateVerifyInSequence(StringBuilder stringBuilder, INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks, int indent)
 	{
-		var baseClass = classSymbol.TryGetBaseClassWithFunctionName("VerifyInSequence");
+		var baseMethod = classSymbol.TryGetBaseClassMethod(methodName: "VerifyInSequence", canOverride: false);
 
 		stringBuilder.Clear();
 
@@ -127,7 +164,7 @@ internal static class MockClassGenerator
 			.Indent(indent++).AppendLine("{");
 
 		string ctxVariableName;
-		if (baseClass is not null)
+		if (baseMethod is not null)
 		{
 			ctxVariableName = "thisCtx";
 
@@ -146,7 +183,7 @@ internal static class MockClassGenerator
 			.Append(ctxVariableName)
 			.AppendLine(" = new VerifySequenceContext(");
 
-		if (baseClass is not null)
+		if (baseMethod is not null)
 		{
 			stringBuilder
 				.Indent(indent)
@@ -179,7 +216,7 @@ internal static class MockClassGenerator
 			.Indent(--indent).AppendLine(");").AppendLine()
 			.Indent(indent).Append("verify(").Append(ctxVariableName).AppendLine(");");
 
-		if (baseClass is not null)
+		if (baseMethod is not null)
 		{
 			stringBuilder
 				.Indent(--indent)
@@ -416,9 +453,9 @@ internal static class MockClassGenerator
 			: Accessibility.Public;
 	}
 
-	private static StringBuilder TryAppendFunctionOverrideModifier(this StringBuilder @this, INamedTypeSymbol classSymbol, INamedTypeSymbol? baseClassSymbol)
+	private static StringBuilder TryAppendFunctionOverrideModifier(this StringBuilder @this, INamedTypeSymbol classSymbol, IMethodSymbol? baseMethodSymbol, int parameterCount)
 	{
-		if (baseClassSymbol is not null)
+		if (baseMethodSymbol is not null && baseMethodSymbol.Parameters.Length == parameterCount)
 			@this.Append("override ");
 		else if (!classSymbol.IsSealed)
 			@this.Append("virtual ");

@@ -1,6 +1,6 @@
 namespace MyNihongo.Mockurai.Tests.Issues;
 
-public sealed class Inheritance : IssuesTestsBase
+public sealed class InheritanceMock : IssuesTestsBase
 {
 	[Fact]
 	public async Task InheritFromOneInterface()

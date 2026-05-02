@@ -62,7 +62,13 @@ internal static class ParameterSymbolEx
 	// TODO: when there is more time try to optimize appending instead of appending strings of ITypeSymbol, IPropertySymbol, etc
 	extension(StringBuilder @this)
 	{
-		public StringBuilder AppendParameters(ImmutableArray<IParameterSymbol> parameters, bool appendComma = false, ImmutableDictionary<IParameterSymbol, StringTemplate>? parameterTypeOverride = null, bool appendRefKind = true, Func<StringBuilder, int, StringBuilder>? appendParameterName = null)
+		public StringBuilder AppendParameters(
+			ImmutableArray<IParameterSymbol> parameters,
+			bool appendComma = false,
+			bool appendRefKind = true,
+			bool appendDefaultValues = false,
+			ImmutableDictionary<IParameterSymbol, StringTemplate>? parameterTypeOverride = null,
+			Func<StringBuilder, int, StringBuilder>? appendParameterName = null)
 		{
 			for (var i = 0; i < parameters.Length; i++)
 			{
@@ -79,6 +85,13 @@ internal static class ParameterSymbolEx
 					appendParameterName(@this, i);
 				else
 					@this.Append(parameters[i].Name);
+
+				if (appendDefaultValues && parameters[i].HasExplicitDefaultValue)
+				{
+					@this
+						.Append(" = ")
+						.AppendExplicitDefaultValue(parameters[i].ExplicitDefaultValue, parameters[i].Type);
+				}
 
 				if (appendComma)
 					@this.Append(", ");

@@ -1,26 +1,9 @@
 ﻿namespace MyNihongo.Mockurai.Utils;
 
-internal abstract class MethodSymbolComparerBase : IEqualityComparer<IMethodSymbol>
+internal abstract class MethodSymbolComparerBase : ComparerBase<IMethodSymbol>
 {
-	public bool Equals(IMethodSymbol? x, IMethodSymbol? y)
+	protected override int GetHashCodeProtected(IMethodSymbol obj)
 	{
-		if (x is null)
-			return y is null;
-		if (y is null)
-			return false;
-		if (x.Parameters.Length != y.Parameters.Length)
-			return false;
-
-		var xHashCode = GetHashCode(x);
-		var yHashCode = GetHashCode(y);
-		return xHashCode == yHashCode;
-	}
-
-	public int GetHashCode(IMethodSymbol? obj)
-	{
-		if (obj is null)
-			return 0;
-
 		var hash = new HashCode();
 		hash.Append(obj.Parameters.Length);
 
@@ -44,19 +27,5 @@ internal abstract class MethodSymbolComparerBase : IEqualityComparer<IMethodSymb
 	{
 		var isNullable = parameter.Type.NullableAnnotation == NullableAnnotation.Annotated;
 		return isNullable.GetHashCode();
-	}
-
-	protected ref struct HashCode()
-	{
-		private int _hash = 17;
-
-		public void Append(HashCode hash) =>
-			Append(hash._hash);
-
-		public void Append(int value) =>
-			_hash = unchecked(_hash * 23 + value);
-
-		public override int GetHashCode() =>
-			_hash;
 	}
 }
