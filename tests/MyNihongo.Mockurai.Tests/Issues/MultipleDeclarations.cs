@@ -240,7 +240,7 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 		GeneratedSources generatedSources =
 		[
 			GetTestsBaseSource("TestsBase1"),
-			GetTestsBaseSource("TestsBase2", addNamespace: false),
+			GetTestsBaseSource("TestsBase2"),
 			(
 				"InterfaceMock.g.cs",
 				"""

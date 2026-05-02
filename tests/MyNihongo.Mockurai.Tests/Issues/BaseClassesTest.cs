@@ -140,13 +140,13 @@ public sealed class BaseClassesTest : TestsBase
 			  [{{attribute}}]
 			  public abstract partial class TestsBase
 			  {
-			  	protected partial IMock<IInterface> Interface1Mock { get; }
+			  	protected partial MyNihongo.Mockurai.IMock<IInterface> Interface1Mock { get; }
 			  }
 
 			  [{{attribute}}]
 			  public abstract partial class TestsDerivedBase : TestsBase
 			  {
-			  	protected partial IMock<IInterface> Interface2Mock { get; }
+			  	protected partial MyNihongo.Mockurai.IMock<IInterface> Interface2Mock { get; }
 			  }
 			  """;
 
@@ -212,7 +212,7 @@ public sealed class BaseClassesTest : TestsBase
 				{
 					// Interface2Mock
 					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
-					protected partial IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
+					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
 
 					protected override void VerifyNoOtherCalls()
 					{
@@ -237,7 +237,7 @@ public sealed class BaseClassesTest : TestsBase
 					{
 						public readonly IMockSequence<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock;
 
-						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
+						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
 							: base(ctx)
 						{
 							Interface2Mock = new MockSequence<MyNihongo.BaseClasses.Tests.IInterface>
@@ -278,13 +278,13 @@ public sealed class BaseClassesTest : TestsBase
 			[MockuraiGenerate]
 			public abstract partial class TestsBase
 			{
-				protected partial IMock<IInterface> Interface1Mock { get; }
+				protected partial MyNihongo.Mockurai.IMock<IInterface> Interface1Mock { get; }
 			}
 
 			[MockuraiGenerate]
 			public abstract partial class TestsDerivedBase : TestsBase
 			{
-				protected partial IMock<IInterface> Interface2Mock { get; }
+				protected partial MyNihongo.Mockurai.IMock<IInterface> Interface2Mock { get; }
 
 				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls()
@@ -355,7 +355,7 @@ public sealed class BaseClassesTest : TestsBase
 				{
 					// Interface2Mock
 					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
-					protected partial IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
+					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
 
 					protected override void VerifyNoOtherCalls()
 					{
@@ -381,7 +381,7 @@ public sealed class BaseClassesTest : TestsBase
 					{
 						public readonly IMockSequence<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock;
 
-						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
+						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
 							: base(ctx)
 						{
 							Interface2Mock = new MockSequence<MyNihongo.BaseClasses.Tests.IInterface>
@@ -422,7 +422,7 @@ public sealed class BaseClassesTest : TestsBase
 			[MockuraiGenerate]
 			public abstract partial class TestsBase
 			{
-				protected partial IMock<IInterface> Interface1Mock { get; }
+				protected partial MyNihongo.Mockurai.IMock<IInterface> Interface1Mock { get; }
 
 				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls()
@@ -433,7 +433,7 @@ public sealed class BaseClassesTest : TestsBase
 			[MockuraiGenerate]
 			public abstract partial class TestsDerivedBase : TestsBase
 			{
-				protected partial IMock<IInterface> Interface2Mock { get; }
+				protected partial MyNihongo.Mockurai.IMock<IInterface> Interface2Mock { get; }
 
 				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls()
@@ -505,7 +505,7 @@ public sealed class BaseClassesTest : TestsBase
 				{
 					// Interface2Mock
 					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
-					protected partial IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
+					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
 
 					protected override void VerifyNoOtherCalls()
 					{
@@ -531,7 +531,7 @@ public sealed class BaseClassesTest : TestsBase
 					{
 						public readonly IMockSequence<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock;
 
-						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
+						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
 							: base(ctx)
 						{
 							Interface2Mock = new MockSequence<MyNihongo.BaseClasses.Tests.IInterface>
@@ -572,13 +572,13 @@ public sealed class BaseClassesTest : TestsBase
 			[MockuraiGenerate]
 			public abstract partial class TestsBase
 			{
-				protected partial IMock<IInterface> Interface1Mock { get; }
+				protected partial MyNihongo.Mockurai.IMock<IInterface> Interface1Mock { get; }
 			}
 
 			[MockuraiGenerate]
 			public abstract partial class TestsDerivedBase : TestsBase
 			{
-				protected partial IMock<IInterface> Interface2Mock { get; }
+				protected partial MyNihongo.Mockurai.IMock<IInterface> Interface2Mock { get; }
 
 				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls(int arg)
@@ -649,7 +649,7 @@ public sealed class BaseClassesTest : TestsBase
 				{
 					// Interface2Mock
 					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
-					protected partial IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
+					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
 
 					protected virtual void VerifyNoOtherCalls(int arg)
 					{
@@ -675,7 +675,7 @@ public sealed class BaseClassesTest : TestsBase
 					{
 						public readonly IMockSequence<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock;
 
-						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
+						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
 							: base(ctx)
 						{
 							Interface2Mock = new MockSequence<MyNihongo.BaseClasses.Tests.IInterface>
@@ -716,13 +716,13 @@ public sealed class BaseClassesTest : TestsBase
 			[MockuraiGenerate]
 			public abstract partial class TestsBase
 			{
-				protected partial IMock<IInterface> Interface1Mock { get; }
+				protected partial MyNihongo.Mockurai.IMock<IInterface> Interface1Mock { get; }
 			}
 
 			[MockuraiGenerate]
 			public abstract partial class TestsDerivedBase : TestsBase
 			{
-				protected partial IMock<IInterface> Interface2Mock { get; }
+				protected partial MyNihongo.Mockurai.IMock<IInterface> Interface2Mock { get; }
 
 				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls(int arg = 0)
@@ -793,7 +793,7 @@ public sealed class BaseClassesTest : TestsBase
 				{
 					// Interface2Mock
 					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
-					protected partial IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
+					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
 
 					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls(int arg = 0)
@@ -820,7 +820,7 @@ public sealed class BaseClassesTest : TestsBase
 					{
 						public readonly IMockSequence<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock;
 
-						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
+						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
 							: base(ctx)
 						{
 							Interface2Mock = new MockSequence<MyNihongo.BaseClasses.Tests.IInterface>
@@ -861,7 +861,7 @@ public sealed class BaseClassesTest : TestsBase
 			[MockuraiGenerate]
 			public abstract partial class TestsBase
 			{
-				protected partial IMock<IInterface> Interface1Mock { get; }
+				protected partial MyNihongo.Mockurai.IMock<IInterface> Interface1Mock { get; }
 
 				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls(int arg2 = 0)
@@ -872,7 +872,7 @@ public sealed class BaseClassesTest : TestsBase
 			[MockuraiGenerate]
 			public abstract partial class TestsDerivedBase : TestsBase
 			{
-				protected partial IMock<IInterface> Interface2Mock { get; }
+				protected partial MyNihongo.Mockurai.IMock<IInterface> Interface2Mock { get; }
 
 				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls(int arg1 = 0)
@@ -945,7 +945,7 @@ public sealed class BaseClassesTest : TestsBase
 				{
 					// Interface2Mock
 					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
-					protected partial IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
+					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
 
 					[System.Runtime.CompilerServices.OverloadResolutionPriority(2)]
 					protected virtual void VerifyNoOtherCalls(int arg1 = 0, int arg2 = 0)
@@ -972,7 +972,7 @@ public sealed class BaseClassesTest : TestsBase
 					{
 						public readonly IMockSequence<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock;
 
-						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
+						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
 							: base(ctx)
 						{
 							Interface2Mock = new MockSequence<MyNihongo.BaseClasses.Tests.IInterface>
@@ -1013,7 +1013,7 @@ public sealed class BaseClassesTest : TestsBase
 			[MockuraiGenerate]
 			public abstract partial class TestsBase
 			{
-				protected partial IMock<IInterface> Interface1Mock { get; }
+				protected partial MyNihongo.Mockurai.IMock<IInterface> Interface1Mock { get; }
 
 				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls(int arg)
@@ -1024,7 +1024,7 @@ public sealed class BaseClassesTest : TestsBase
 			[MockuraiGenerate]
 			public abstract partial class TestsDerivedBase : TestsBase
 			{
-				protected partial IMock<IInterface> Interface2Mock { get; }
+				protected partial MyNihongo.Mockurai.IMock<IInterface> Interface2Mock { get; }
 
 				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls(int arg)
@@ -1096,7 +1096,7 @@ public sealed class BaseClassesTest : TestsBase
 				{
 					// Interface2Mock
 					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
-					protected partial IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
+					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
 
 					protected override void VerifyNoOtherCalls(int arg)
 					{
@@ -1122,7 +1122,7 @@ public sealed class BaseClassesTest : TestsBase
 					{
 						public readonly IMockSequence<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock;
 
-						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
+						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
 							: base(ctx)
 						{
 							Interface2Mock = new MockSequence<MyNihongo.BaseClasses.Tests.IInterface>
@@ -1163,7 +1163,7 @@ public sealed class BaseClassesTest : TestsBase
 			[MockuraiGenerate]
 			public abstract partial class TestsBase
 			{
-				protected partial IMock<IInterface> Interface1Mock { get; }
+				protected partial MyNihongo.Mockurai.IMock<IInterface> Interface1Mock { get; }
 
 				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls(int arg1)
@@ -1174,7 +1174,7 @@ public sealed class BaseClassesTest : TestsBase
 			[MockuraiGenerate]
 			public abstract partial class TestsDerivedBase : TestsBase
 			{
-				protected partial IMock<IInterface> Interface2Mock { get; }
+				protected partial MyNihongo.Mockurai.IMock<IInterface> Interface2Mock { get; }
 
 				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls(int arg2)
@@ -1246,7 +1246,7 @@ public sealed class BaseClassesTest : TestsBase
 				{
 					// Interface2Mock
 					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
-					protected partial IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
+					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
 
 					protected virtual void VerifyNoOtherCalls(int arg2, int arg1)
 					{
@@ -1272,7 +1272,7 @@ public sealed class BaseClassesTest : TestsBase
 					{
 						public readonly IMockSequence<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock;
 
-						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
+						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
 							: base(ctx)
 						{
 							Interface2Mock = new MockSequence<MyNihongo.BaseClasses.Tests.IInterface>
@@ -1313,7 +1313,7 @@ public sealed class BaseClassesTest : TestsBase
 			[MockuraiGenerate]
 			public abstract partial class TestsBase
 			{
-				protected partial IMock<IInterface> Interface1Mock { get; }
+				protected partial MyNihongo.Mockurai.IMock<IInterface> Interface1Mock { get; }
 
 				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls(int arg1)
@@ -1324,7 +1324,7 @@ public sealed class BaseClassesTest : TestsBase
 			[MockuraiGenerate]
 			public abstract partial class TestsDerivedBase : TestsBase
 			{
-				protected partial IMock<IInterface> Interface2Mock { get; }
+				protected partial MyNihongo.Mockurai.IMock<IInterface> Interface2Mock { get; }
 
 				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls(int arg2 = 0)
@@ -1396,7 +1396,7 @@ public sealed class BaseClassesTest : TestsBase
 				{
 					// Interface2Mock
 					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
-					protected partial IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
+					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
 
 					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls(int arg1, int arg2 = 0)
@@ -1423,7 +1423,7 @@ public sealed class BaseClassesTest : TestsBase
 					{
 						public readonly IMockSequence<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock;
 
-						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
+						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
 							: base(ctx)
 						{
 							Interface2Mock = new MockSequence<MyNihongo.BaseClasses.Tests.IInterface>
@@ -1464,19 +1464,19 @@ public sealed class BaseClassesTest : TestsBase
 			[MockuraiGenerate]
 			public abstract partial class TestsDerived1Base : TestsBase
 			{
-				protected partial IMock<IInterface> Interface2Mock { get; }
+				protected partial MyNihongo.Mockurai.IMock<IInterface> Interface2Mock { get; }
 			}
 
 			[MockuraiGenerate]
 			public abstract partial class TestsDerived2Base : TestsBase
 			{
-				protected partial IMock<IInterface> Interface2Mock { get; }
+				protected partial MyNihongo.Mockurai.IMock<IInterface> Interface2Mock { get; }
 			}
 
 			[MockuraiGenerate]
 			public abstract partial class TestsBase
 			{
-				protected partial IMock<IInterface> Interface1Mock { get; }
+				protected partial MyNihongo.Mockurai.IMock<IInterface> Interface1Mock { get; }
 			}
 			""";
 
