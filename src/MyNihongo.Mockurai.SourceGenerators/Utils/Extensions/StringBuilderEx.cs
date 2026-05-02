@@ -125,6 +125,18 @@ internal static class StringBuilderEx
 			return @this;
 		}
 
+		public StringBuilder AppendExplicitDefaultValue(object? explicitDefaultValue, ITypeSymbol typeSymbol)
+		{
+			if (explicitDefaultValue is not null)
+				return @this.Append(explicitDefaultValue);
+
+			var value = typeSymbol.TypeKind == TypeKind.Struct
+				? "default"
+				: "null";
+
+			return @this.Append(value);
+		}
+
 		public StringBuilder AppendVerifyNoOtherCallsInvocation()
 		{
 			return @this.Append("?.VerifyNoOtherCalls(_invocationProviders)");

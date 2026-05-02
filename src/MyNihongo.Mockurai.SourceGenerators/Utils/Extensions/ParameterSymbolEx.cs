@@ -90,7 +90,7 @@ internal static class ParameterSymbolEx
 				{
 					@this
 						.Append(" = ")
-						.Append(parameters[i].ExplicitDefaultValue);
+						.AppendExplicitDefaultValue(parameters[i].ExplicitDefaultValue, parameters[i].Type);
 				}
 
 				if (appendComma)
