@@ -424,7 +424,7 @@ public sealed class BaseClassesTest : TestsBase
 			{
 				protected partial IMock<IInterface> Interface1Mock { get; }
 
-			[MockuraiBeforeVerifyNoOtherCalls]
+				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls()
 				{
 				}
@@ -651,7 +651,7 @@ public sealed class BaseClassesTest : TestsBase
 					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
 					protected partial IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
 
-					protected override void VerifyNoOtherCalls(int arg)
+					protected virtual void VerifyNoOtherCalls(int arg)
 					{
 						this.BeforeVerifyNoOtherCalls(arg);
 						base.VerifyNoOtherCalls();
@@ -1028,7 +1028,7 @@ public sealed class BaseClassesTest : TestsBase
 			public abstract partial class TestsDerivedBase : TestsBase
 			{
 				protected partial IMock<IInterface> Interface2Mock { get; }
-			
+
 				[MockuraiBeforeVerifyNoOtherCalls]
 				private void BeforeVerifyNoOtherCalls(int arg2 = 0)
 				{

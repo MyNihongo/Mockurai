@@ -77,14 +77,17 @@ internal static class MockClassGenerator
 		var beforeMethod = classSymbol.TryGetMemberByAttribute<IMethodSymbol>(
 			attributePredicate: static x => x is MockGeneratorConst.BeforeVerifyNoOtherCallsAttribute or MockGeneratorConst.BeforeVerifyNoOtherCallsAttributeName
 		);
+		var combinedParameters = MethodSymbolUtils.CombineParameters(beforeMethod, baseMethod);
 
 		stringBuilder.Clear();
 
 		stringBuilder
 			.Indent(indent)
 			.Append("protected ")
-			.TryAppendFunctionOverrideModifier(classSymbol, baseMethod)
-			.AppendLine("void VerifyNoOtherCalls()")
+			.TryAppendFunctionOverrideModifier(classSymbol, baseMethod, combinedParameters.Length)
+			.Append("void VerifyNoOtherCalls(")
+			.AppendParameters(combinedParameters)
+			.AppendLine(")")
 			.Indent(indent++).AppendLine("{");
 
 		if (beforeMethod is not null)
@@ -93,7 +96,9 @@ internal static class MockClassGenerator
 				.Indent(indent)
 				.Append("this.")
 				.Append(beforeMethod.Name)
-				.AppendLine("();");
+				.Append('(')
+				.AppendParameterNames(beforeMethod.Parameters)
+				.AppendLine(");");
 		}
 
 		if (baseMethod is not null)
@@ -428,9 +433,9 @@ internal static class MockClassGenerator
 			: Accessibility.Public;
 	}
 
-	private static StringBuilder TryAppendFunctionOverrideModifier(this StringBuilder @this, INamedTypeSymbol classSymbol, IMethodSymbol? baseClassSymbol)
+	private static StringBuilder TryAppendFunctionOverrideModifier(this StringBuilder @this, INamedTypeSymbol classSymbol, IMethodSymbol? baseMethodSymbol, int parameterCount)
 	{
-		if (baseClassSymbol is not null)
+		if (baseMethodSymbol is not null && baseMethodSymbol.Parameters.Length == parameterCount)
 			@this.Append("override ");
 		else if (!classSymbol.IsSealed)
 			@this.Append("virtual ");
