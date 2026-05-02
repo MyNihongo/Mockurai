@@ -72,5 +72,10 @@ internal sealed class ClassInheritanceTree<T> : IEnumerable<INamedTypeSymbol>
 	{
 		public readonly INamedTypeSymbol MockClass = mockClass;
 		public readonly List<Node> Children = [];
+
+		public override string ToString()
+		{
+			return MockClass.ToString();
+		}
 	}
 }
