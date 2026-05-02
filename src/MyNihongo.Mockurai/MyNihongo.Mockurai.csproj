@@ -7,7 +7,7 @@
 		<Nullable>enable</Nullable>
 		<RootNamespace>MyNihongo.Mockurai</RootNamespace>
 		<PackageId>Mockurai</PackageId>
-		<Version>0.0.0.15</Version>
+		<Version>0.0.0.18</Version>
 		<Authors>Mynihongo</Authors>
 		<Copyright>© Mynihongo 2026</Copyright>
 		<Product>Mockurai</Product>
