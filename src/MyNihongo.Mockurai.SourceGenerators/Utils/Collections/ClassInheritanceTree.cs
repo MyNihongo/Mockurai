@@ -2,7 +2,7 @@ using System.Collections;
 
 namespace MyNihongo.Mockurai.Utils;
 
-internal sealed class ClassInheritanceTree<T> : IEnumerable<INamedTypeSymbol>
+internal sealed class ClassInheritanceTree<T> : IEnumerable<ITransformResult>
 	where T : ITransformResult
 {
 	private readonly Node[] _nodes;
@@ -12,7 +12,7 @@ internal sealed class ClassInheritanceTree<T> : IEnumerable<INamedTypeSymbol>
 		_nodes = CreateRootNodeArray(transformResults, compilation);
 	}
 
-	public IEnumerator<INamedTypeSymbol> GetEnumerator()
+	public IEnumerator<ITransformResult> GetEnumerator()
 	{
 		var queue = new Queue<Node>();
 
@@ -22,7 +22,7 @@ internal sealed class ClassInheritanceTree<T> : IEnumerable<INamedTypeSymbol>
 		while (queue.Count > 0)
 		{
 			var node = queue.Dequeue();
-			yield return node.MockClass;
+			yield return node;
 
 			foreach (var childNode in node.Children)
 				queue.Enqueue(childNode);
@@ -43,7 +43,7 @@ internal sealed class ClassInheritanceTree<T> : IEnumerable<INamedTypeSymbol>
 			if (namedTypeSymbol is null)
 				continue;
 
-			var node = new Node(namedTypeSymbol);
+			var node = new Node(transformResult!, namedTypeSymbol);
 			dictionary.Add(namedTypeSymbol, node);
 
 			if (namedTypeSymbol.BaseType is null || namedTypeSymbol.BaseType.SpecialType == SpecialType.System_Object)
@@ -68,14 +68,23 @@ internal sealed class ClassInheritanceTree<T> : IEnumerable<INamedTypeSymbol>
 		return rootNodes.ToArray();
 	}
 
-	private sealed class Node(INamedTypeSymbol mockClass)
+	private sealed class Node(T transformResult, INamedTypeSymbol mockClass) : ITransformResult
 	{
-		public readonly INamedTypeSymbol MockClass = mockClass;
+		private readonly T _transformResult = transformResult;
 		public readonly List<Node> Children = [];
 
-		public override string ToString()
+		public INamedTypeSymbol MockClass { get; private set; } = mockClass;
+
+		public INamedTypeSymbol? GetNamedTypeSymbol(Compilation compilation)
 		{
-			return MockClass.ToString();
+			var mockClass = _transformResult.GetNamedTypeSymbol(compilation);
+			if (mockClass is not null)
+				MockClass = mockClass;
+
+			return mockClass;
 		}
+
+		public override string ToString() =>
+			MockClass.ToString();
 	}
 }
