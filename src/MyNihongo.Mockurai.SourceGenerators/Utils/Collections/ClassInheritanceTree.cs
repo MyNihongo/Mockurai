@@ -11,8 +11,22 @@ internal sealed class ClassInheritanceTree : IEnumerable<INamedTypeSymbol>
 		_nodes = CreateRootNodeArray(transformResults, compilation);
 	}
 
-	public IEnumerator<INamedTypeSymbol> GetEnumerator() =>
-		throw new NotImplementedException();
+	public IEnumerator<INamedTypeSymbol> GetEnumerator()
+	{
+		var queue = new Queue<Node>();
+
+		foreach (var node in _nodes)
+			queue.Enqueue(node);
+
+		while (queue.Count > 0)
+		{
+			var node = queue.Dequeue();
+			yield return node.MockClass;
+
+			foreach (var childNode in node.Children)
+				queue.Enqueue(childNode);
+		}
+	}
 
 	IEnumerator IEnumerable.GetEnumerator() =>
 		GetEnumerator();
