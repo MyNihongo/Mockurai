@@ -1449,7 +1449,7 @@ public sealed class BaseClassesTest : TestsBase
 		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
-	[Fact(Skip = "fix in separate branch")]
+	[Fact]
 	public async Task GenerateOverridesCorrectlyWhenOrderIsWrong()
 	{
 		const string testCode =
