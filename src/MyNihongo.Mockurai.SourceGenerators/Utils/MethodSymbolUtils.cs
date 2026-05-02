@@ -4,51 +4,54 @@ internal static class MethodSymbolUtils
 {
 	public static ImmutableArray<IParameterSymbol> CombineParameters(IMethodSymbol? methodSymbol1, IMethodSymbol? methodSymbol2, out bool hasDefaultParameters)
 	{
-		ImmutableSortedDictionary<OrderedParameterName, IParameterSymbol>.Builder? builder = null;
+		ImmutableSortedDictionary<string, OrderedParameter>.Builder? builder = null;
 		hasDefaultParameters = false;
 		var order = int.MinValue;
 
 		if (methodSymbol1 is not null)
 		{
-			builder = ImmutableSortedDictionary.CreateBuilder<OrderedParameterName, IParameterSymbol>();
+			builder = ImmutableSortedDictionary.CreateBuilder<string, OrderedParameter>();
 
 			foreach (var parameter in methodSymbol1.Parameters)
 			{
-				var key = new OrderedParameterName(parameter.Name, order++);
-				builder.Add(key, parameter);
+				builder.Add(parameter.Name, new OrderedParameter(parameter, order++));
 				hasDefaultParameters = hasDefaultParameters || parameter.HasExplicitDefaultValue;
 			}
 		}
 
 		if (methodSymbol2 is not null)
 		{
-			builder ??= ImmutableSortedDictionary.CreateBuilder<OrderedParameterName, IParameterSymbol>();
+			builder ??= ImmutableSortedDictionary.CreateBuilder<string, OrderedParameter>();
 
 			foreach (var parameter in methodSymbol2.Parameters)
-			{
-				var key = new OrderedParameterName(parameter.Name, order++);
-				builder[key] = parameter;
-			}
+				builder[parameter.Name] = new OrderedParameter(parameter, order++);
 		}
 
-		return builder?.Values.ToImmutableArray() ?? ImmutableArray<IParameterSymbol>.Empty;
+		if (builder is null)
+			return ImmutableArray<IParameterSymbol>.Empty;
+
+		return
+		[
+			..builder.Values
+				.OrderBy(static x => x.Order)
+				.Select(static x => x.ParameterSymbol),
+		];
 	}
 }
 
-file readonly struct OrderedParameterName(string name, int order) : IEquatable<OrderedParameterName>, IComparable<OrderedParameterName>
+file readonly struct OrderedParameter(IParameterSymbol parameterSymbol, int order) : IEquatable<OrderedParameter>
 {
-	public readonly string Name = name;
+	public readonly IParameterSymbol ParameterSymbol = parameterSymbol;
 	public readonly int Order = order;
 
-	public bool Equals(OrderedParameterName other) =>
-		Name == other.Name;
+	public bool Equals(OrderedParameter other)
+	{
+		return SymbolEqualityComparer.Default.Equals(ParameterSymbol, other.ParameterSymbol);
+	}
 
 	public override bool Equals(object? obj) =>
-		obj is OrderedParameterName other && Equals(other);
+		obj is OrderedParameter other && Equals(other);
 
 	public override int GetHashCode() =>
-		Name.GetHashCode();
-
-	public int CompareTo(OrderedParameterName other) =>
-		Order.CompareTo(other.Order);
+		SymbolEqualityComparer.Default.GetHashCode(ParameterSymbol);
 }
