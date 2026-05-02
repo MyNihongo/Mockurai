@@ -104,7 +104,7 @@ internal static class MockClassGenerator
 			.Append("protected ")
 			.TryAppendFunctionOverrideModifier(classSymbol, baseMethod, combinedParameters.Length)
 			.Append("void VerifyNoOtherCalls(")
-			.AppendParameters(combinedParameters)
+			.AppendParameters(combinedParameters, appendDefaultValues: true)
 			.AppendLine(")")
 			.Indent(indent++).AppendLine("{");
 
