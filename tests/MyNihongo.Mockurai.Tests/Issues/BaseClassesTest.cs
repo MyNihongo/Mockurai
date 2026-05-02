@@ -1448,4 +1448,202 @@ public sealed class BaseClassesTest : TestsBase
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
+
+	[Fact]
+	public async Task GenerateOverridesCorrectlyWhenOrderIsWrong()
+	{
+		const string testCode =
+			"""
+			namespace MyNihongo.BaseClasses.Tests;
+
+			public interface IInterface
+			{
+				void Invoke();
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsDerived1Base : TestsBase
+			{
+				protected partial IMock<IInterface> Interface2Mock { get; }
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsDerived2Base : TestsBase
+			{
+				protected partial IMock<IInterface> Interface2Mock { get; }
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<IInterface> Interface1Mock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources =
+		[
+			(
+				"TestsBase.g.cs",
+				"""
+				#nullable enable
+				namespace MyNihongo.BaseClasses.Tests;
+
+				public partial class TestsBase
+				{
+					// Interface1Mock
+					private readonly InterfaceMock _interface1Mock = new(InvocationIndex.CounterValue);
+					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface1Mock => _interface1Mock;
+
+					protected virtual void VerifyNoOtherCalls()
+					{
+						Interface1Mock.VerifyNoOtherCalls();
+					}
+
+					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
+					{
+						var ctx = new VerifySequenceContext(
+							interface1Mock: Interface1Mock
+						);
+
+						verify(ctx);
+					}
+
+					protected class VerifySequenceContext
+					{
+						protected readonly VerifyIndex VerifyIndex;
+						public readonly IMockSequence<MyNihongo.BaseClasses.Tests.IInterface> Interface1Mock;
+
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> interface1Mock)
+						{
+							VerifyIndex = new VerifyIndex();
+							Interface1Mock = new MockSequence<MyNihongo.BaseClasses.Tests.IInterface>
+							{
+								VerifyIndex = VerifyIndex,
+								Mock = interface1Mock,
+							};
+						}
+
+						protected VerifySequenceContext(VerifySequenceContext ctx)
+						{
+							VerifyIndex = ctx.VerifyIndex;
+							Interface1Mock = ctx.Interface1Mock;
+						}
+					}
+				}
+				"""
+			),
+			(
+				"TestsDerived1Base.g.cs",
+				"""
+				#nullable enable
+				namespace MyNihongo.BaseClasses.Tests;
+
+				public partial class TestsDerived1Base
+				{
+					// Interface2Mock
+					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
+					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
+
+					protected override void VerifyNoOtherCalls()
+					{
+						base.VerifyNoOtherCalls();
+						Interface2Mock.VerifyNoOtherCalls();
+					}
+
+					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
+					{
+						base.VerifyInSequence(ctx =>
+						{
+							var thisCtx = new VerifySequenceContext(
+								ctx: ctx,
+								interface2Mock: Interface2Mock
+							);
+
+							verify(thisCtx);
+						});
+					}
+
+					protected new class VerifySequenceContext : MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext
+					{
+						public readonly IMockSequence<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock;
+
+						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
+							: base(ctx)
+						{
+							Interface2Mock = new MockSequence<MyNihongo.BaseClasses.Tests.IInterface>
+							{
+								VerifyIndex = VerifyIndex,
+								Mock = interface2Mock,
+							};
+						}
+
+						protected VerifySequenceContext(VerifySequenceContext ctx)
+							: base(ctx)
+						{
+							Interface2Mock = ctx.Interface2Mock;
+						}
+					}
+				}
+				"""
+			),
+			(
+				"TestsDerived2Base.g.cs",
+				"""
+				#nullable enable
+				namespace MyNihongo.BaseClasses.Tests;
+
+				public partial class TestsDerived2Base
+				{
+					// Interface2Mock
+					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
+					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
+
+					protected override void VerifyNoOtherCalls()
+					{
+						base.VerifyNoOtherCalls();
+						Interface2Mock.VerifyNoOtherCalls();
+					}
+
+					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
+					{
+						base.VerifyInSequence(ctx =>
+						{
+							var thisCtx = new VerifySequenceContext(
+								ctx: ctx,
+								interface2Mock: Interface2Mock
+							);
+
+							verify(thisCtx);
+						});
+					}
+
+					protected new class VerifySequenceContext : MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext
+					{
+						public readonly IMockSequence<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock;
+
+						public VerifySequenceContext(MyNihongo.BaseClasses.Tests.TestsBase.VerifySequenceContext ctx, MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> interface2Mock)
+							: base(ctx)
+						{
+							Interface2Mock = new MockSequence<MyNihongo.BaseClasses.Tests.IInterface>
+							{
+								VerifyIndex = VerifyIndex,
+								Mock = interface2Mock,
+							};
+						}
+
+						protected VerifySequenceContext(VerifySequenceContext ctx)
+							: base(ctx)
+						{
+							Interface2Mock = ctx.Interface2Mock;
+						}
+					}
+				}
+				"""
+			),
+			InterfaceMockSource,
+		];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
+	}
 }
