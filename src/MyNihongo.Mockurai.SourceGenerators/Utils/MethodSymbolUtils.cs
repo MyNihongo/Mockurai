@@ -1,30 +1,36 @@
+using System.Runtime.CompilerServices;
+
 namespace MyNihongo.Mockurai.Utils;
 
 internal static class MethodSymbolUtils
 {
 	public static ImmutableArray<IParameterSymbol> CombineParameters(IMethodSymbol? methodSymbol1, IMethodSymbol? methodSymbol2, out bool hasDefaultParameters)
 	{
-		ImmutableSortedDictionary<string, OrderedParameter>.Builder? builder = null;
+		ImmutableDictionary<string, OrderedParameter>.Builder? builder = null;
 		hasDefaultParameters = false;
-		var order = int.MinValue;
+		int parameterOrder = int.MinValue, defaultParameterOrder = 0;
 
 		if (methodSymbol1 is not null)
 		{
-			builder = ImmutableSortedDictionary.CreateBuilder<string, OrderedParameter>();
+			builder = ImmutableDictionary.CreateBuilder<string, OrderedParameter>();
 
 			foreach (var parameter in methodSymbol1.Parameters)
 			{
-				builder.Add(parameter.Name, new OrderedParameter(parameter, order++));
+				var order = parameter.GetParameterOrder(ref parameterOrder, ref defaultParameterOrder);
+				builder.Add(parameter.Name, new OrderedParameter(parameter, order));
 				hasDefaultParameters = hasDefaultParameters || parameter.HasExplicitDefaultValue;
 			}
 		}
 
 		if (methodSymbol2 is not null)
 		{
-			builder ??= ImmutableSortedDictionary.CreateBuilder<string, OrderedParameter>();
+			builder ??= ImmutableDictionary.CreateBuilder<string, OrderedParameter>();
 
 			foreach (var parameter in methodSymbol2.Parameters)
-				builder[parameter.Name] = new OrderedParameter(parameter, order++);
+			{
+				var order = parameter.GetParameterOrder(ref parameterOrder, ref defaultParameterOrder);
+				builder[parameter.Name] = new OrderedParameter(parameter, order);
+			}
 		}
 
 		if (builder is null)
@@ -36,6 +42,14 @@ internal static class MethodSymbolUtils
 				.OrderBy(static x => x.Order)
 				.Select(static x => x.ParameterSymbol),
 		];
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private static int GetParameterOrder(this IParameterSymbol parameter, ref int parameterOrder, ref int defaultParameterOrder)
+	{
+		return parameter.HasExplicitDefaultValue
+			? defaultParameterOrder++
+			: parameterOrder++;
 	}
 }
 

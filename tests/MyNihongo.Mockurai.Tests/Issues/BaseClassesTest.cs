@@ -1248,7 +1248,7 @@ public sealed class BaseClassesTest : TestsBase
 					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
 					protected partial IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
 
-					protected override void VerifyNoOtherCalls(int arg2, int arg1)
+					protected virtual void VerifyNoOtherCalls(int arg2, int arg1)
 					{
 						this.BeforeVerifyNoOtherCalls(arg2);
 						base.VerifyNoOtherCalls(arg1);
@@ -1398,7 +1398,8 @@ public sealed class BaseClassesTest : TestsBase
 					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
 					protected partial IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
 
-					protected override void VerifyNoOtherCalls(int arg1, int arg2 = 0)
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
+					protected virtual void VerifyNoOtherCalls(int arg1, int arg2 = 0)
 					{
 						this.BeforeVerifyNoOtherCalls(arg2);
 						base.VerifyNoOtherCalls(arg1);
