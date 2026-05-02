@@ -1,6 +1,7 @@
 namespace MyNihongo.Mockurai.Models;
 
-internal readonly struct SyntaxNodeTransformResult(ClassDeclarationSyntax? mockContainerClass)
+internal sealed class SyntaxNodeTransformResult(ClassDeclarationSyntax? mockContainerClass) : ITransformResult
 {
-	public readonly ClassDeclarationSyntax? MockContainerClass = mockContainerClass;
+	public INamedTypeSymbol? GetNamedTypeSymbol(Compilation compilation) =>
+		compilation.TryGetNamedTypeSymbol(mockContainerClass);
 }

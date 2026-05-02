@@ -2,11 +2,12 @@ using System.Collections;
 
 namespace MyNihongo.Mockurai.Utils;
 
-internal sealed class ClassInheritanceTree : IEnumerable<INamedTypeSymbol>
+internal sealed class ClassInheritanceTree<T> : IEnumerable<INamedTypeSymbol>
+	where T : ITransformResult
 {
 	private readonly Node[] _nodes;
 
-	public ClassInheritanceTree(ImmutableArray<SyntaxNodeTransformResult?> transformResults, Compilation compilation)
+	public ClassInheritanceTree(ImmutableArray<T?> transformResults, Compilation compilation)
 	{
 		_nodes = CreateRootNodeArray(transformResults, compilation);
 	}
@@ -31,14 +32,14 @@ internal sealed class ClassInheritanceTree : IEnumerable<INamedTypeSymbol>
 	IEnumerator IEnumerable.GetEnumerator() =>
 		GetEnumerator();
 
-	private static Node[] CreateRootNodeArray(ImmutableArray<SyntaxNodeTransformResult?> transformResults, Compilation compilation)
+	private static Node[] CreateRootNodeArray(ImmutableArray<T?> transformResults, Compilation compilation)
 	{
 		List<Node> rootNodes = [], nonRootNodes = [];
 		var dictionary = new Dictionary<INamedTypeSymbol, Node>(SymbolEqualityComparer.Default);
 
 		foreach (var transformResult in transformResults)
 		{
-			var namedTypeSymbol = compilation.TryGetNamedTypeSymbol(transformResult?.MockContainerClass);
+			var namedTypeSymbol = transformResult?.GetNamedTypeSymbol(compilation);
 			if (namedTypeSymbol is null)
 				continue;
 

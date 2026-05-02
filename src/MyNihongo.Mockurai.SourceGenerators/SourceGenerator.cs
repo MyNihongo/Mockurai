@@ -26,7 +26,7 @@ public sealed class SourceGenerator : IIncrementalGenerator
 				var compilation = context.AddSourceToSyntaxTree("_Usings.g.cs", globalUsings, source.Compilation);
 
 				var mockTypes = new HashSet<ITypeSymbol>(TypeSymbolNameComparer.Default);
-				foreach (var namedTypeSymbol in new ClassInheritanceTree(source.TransformResults, compilation))
+				foreach (var namedTypeSymbol in new ClassInheritanceTree<SyntaxNodeTransformResult>(source.TransformResults, compilation))
 				{
 					var mocks = namedTypeSymbol.CollectMocks();
 					if (mocks.Count == 0)
