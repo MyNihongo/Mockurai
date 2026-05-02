@@ -73,8 +73,10 @@ internal static class MockClassGenerator
 
 	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks, int indent)
 	{
-		var beforeMethod = TryGetBeforeVerifyNoOtherCallsMethod(classSymbol);
 		var baseMethod = classSymbol.TryGetBaseClassMethod(methodName: "VerifyNoOtherCalls", canOverride: true);
+		var beforeMethod = classSymbol.TryGetMemberByAttribute<IMethodSymbol>(
+			attributePredicate: static x => x is MockGeneratorConst.BeforeVerifyNoOtherCallsAttribute or MockGeneratorConst.BeforeVerifyNoOtherCallsAttributeName
+		);
 
 		stringBuilder.Clear();
 
@@ -84,6 +86,15 @@ internal static class MockClassGenerator
 			.TryAppendFunctionOverrideModifier(classSymbol, baseMethod)
 			.AppendLine("void VerifyNoOtherCalls()")
 			.Indent(indent++).AppendLine("{");
+
+		if (beforeMethod is not null)
+		{
+			stringBuilder
+				.Indent(indent)
+				.Append("this.")
+				.Append(beforeMethod.Name)
+				.AppendLine("();");
+		}
 
 		if (baseMethod is not null)
 		{
@@ -115,18 +126,6 @@ internal static class MockClassGenerator
 		return stringBuilder
 			.Indent(--indent).AppendLine("}")
 			.ToString();
-	}
-
-	private static IMethodSymbol? TryGetBeforeVerifyNoOtherCallsMethod(INamedTypeSymbol classSymbol)
-	{
-		var beforeMethodName = classSymbol.TryGetMemberByAttribute<IMethodSymbol>(
-			attributePredicate: static x => x is MockGeneratorConst.BeforeVerifyNoOtherCallsAttribute or MockGeneratorConst.BeforeVerifyNoOtherCallsAttributeName
-		);
-
-		if (beforeMethodName is null)
-			return null;
-
-		return null;
 	}
 
 	private static string CreateVerifyInSequence(StringBuilder stringBuilder, INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks, int indent)
