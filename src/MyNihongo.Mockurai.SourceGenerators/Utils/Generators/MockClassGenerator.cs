@@ -77,9 +77,27 @@ internal static class MockClassGenerator
 		var beforeMethod = classSymbol.TryGetMemberByAttribute<IMethodSymbol>(
 			attributePredicate: static x => x is MockGeneratorConst.BeforeVerifyNoOtherCallsAttribute or MockGeneratorConst.BeforeVerifyNoOtherCallsAttributeName
 		);
-		var combinedParameters = MethodSymbolUtils.CombineParameters(beforeMethod, baseMethod);
+		var combinedParameters = MethodSymbolUtils.CombineParameters(beforeMethod, baseMethod, out var hasDefaultParameters);
 
 		stringBuilder.Clear();
+
+		if (hasDefaultParameters)
+		{
+			const string overloadResolutionPriorityName = "OverloadResolutionPriority",
+				overloadResolutionPriority = $"{overloadResolutionPriorityName}Attribute";
+
+			var value = baseMethod.GetAttributeValue(
+				static x => x == overloadResolutionPriority,
+				index: 0,
+				defaultValue: 0
+			);
+
+			stringBuilder
+				.Indent(indent)
+				.Append($"[System.Runtime.CompilerServices.{overloadResolutionPriorityName}(")
+				.Append(value + 1)
+				.AppendLine(")]");
+		}
 
 		stringBuilder
 			.Indent(indent)
@@ -105,7 +123,9 @@ internal static class MockClassGenerator
 		{
 			stringBuilder
 				.Indent(indent)
-				.AppendLine("base.VerifyNoOtherCalls();");
+				.Append("base.VerifyNoOtherCalls(")
+				.AppendParameterNames(baseMethod.Parameters)
+				.AppendLine(");");
 		}
 
 		foreach (var mock in mocks)

@@ -80,6 +80,13 @@ internal static class ParameterSymbolEx
 				else
 					@this.Append(parameters[i].Name);
 
+				if (parameters[i].HasExplicitDefaultValue)
+				{
+					@this
+						.Append(" = ")
+						.Append(parameters[i].ExplicitDefaultValue);
+				}
+
 				if (appendComma)
 					@this.Append(", ");
 			}

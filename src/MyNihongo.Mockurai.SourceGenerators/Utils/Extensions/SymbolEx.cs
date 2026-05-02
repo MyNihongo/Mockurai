@@ -56,6 +56,24 @@ internal static class SymbolEx
 			return defaultValue;
 		}
 
+		public T? GetAttributeValue<T>(Func<string?, bool> attributePredicate, int index, T defaultValue)
+		{
+			if (@this is null)
+				return defaultValue;
+
+			foreach (var attribute in @this.GetAttributes())
+			{
+				if (!attributePredicate(attribute.AttributeClass?.Name))
+					continue;
+
+				return attribute.ConstructorArguments.Length > index
+					? (T?)attribute.ConstructorArguments[index].Value
+					: defaultValue;
+			}
+
+			return defaultValue;
+		}
+
 		public NullableAnnotation GetNullableAnnotation()
 		{
 			return @this switch
