@@ -164,11 +164,13 @@ public sealed class BaseClassesTest : TestsBase
 					private readonly InterfaceMock _interface1Mock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface1Mock => _interface1Mock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						Interface1Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -220,6 +222,7 @@ public sealed class BaseClassesTest : TestsBase
 						Interface2Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(2)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						base.VerifyInSequence(ctx =>
@@ -307,11 +310,13 @@ public sealed class BaseClassesTest : TestsBase
 					private readonly InterfaceMock _interface1Mock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface1Mock => _interface1Mock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						Interface1Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -364,6 +369,7 @@ public sealed class BaseClassesTest : TestsBase
 						Interface2Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(2)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						base.VerifyInSequence(ctx =>
@@ -456,12 +462,14 @@ public sealed class BaseClassesTest : TestsBase
 					private readonly InterfaceMock _interface1Mock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface1Mock => _interface1Mock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						this.BeforeVerifyNoOtherCalls();
 						Interface1Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -514,6 +522,7 @@ public sealed class BaseClassesTest : TestsBase
 						Interface2Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(2)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						base.VerifyInSequence(ctx =>
@@ -601,11 +610,13 @@ public sealed class BaseClassesTest : TestsBase
 					private readonly InterfaceMock _interface1Mock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface1Mock => _interface1Mock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						Interface1Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -651,6 +662,7 @@ public sealed class BaseClassesTest : TestsBase
 					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(2)]
 					protected virtual void VerifyNoOtherCalls(int arg)
 					{
 						this.BeforeVerifyNoOtherCalls(arg);
@@ -658,6 +670,7 @@ public sealed class BaseClassesTest : TestsBase
 						Interface2Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(2)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						base.VerifyInSequence(ctx =>
@@ -745,11 +758,13 @@ public sealed class BaseClassesTest : TestsBase
 					private readonly InterfaceMock _interface1Mock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface1Mock => _interface1Mock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						Interface1Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -795,7 +810,7 @@ public sealed class BaseClassesTest : TestsBase
 					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
 
-					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(2)]
 					protected virtual void VerifyNoOtherCalls(int arg = 0)
 					{
 						this.BeforeVerifyNoOtherCalls(arg);
@@ -803,6 +818,7 @@ public sealed class BaseClassesTest : TestsBase
 						Interface2Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(2)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						base.VerifyInSequence(ctx =>
@@ -902,6 +918,7 @@ public sealed class BaseClassesTest : TestsBase
 						Interface1Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -955,6 +972,7 @@ public sealed class BaseClassesTest : TestsBase
 						Interface2Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(2)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						base.VerifyInSequence(ctx =>
@@ -1054,6 +1072,7 @@ public sealed class BaseClassesTest : TestsBase
 						Interface1Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -1099,13 +1118,14 @@ public sealed class BaseClassesTest : TestsBase
 					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
 
-					protected virtual void VerifyNoOtherCalls(int arg = 0)
+					protected override void VerifyNoOtherCalls(int arg = 0)
 					{
 						this.BeforeVerifyNoOtherCalls(arg);
 						base.VerifyNoOtherCalls(arg);
 						Interface2Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(2)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						base.VerifyInSequence(ctx =>
@@ -1198,12 +1218,14 @@ public sealed class BaseClassesTest : TestsBase
 					private readonly InterfaceMock _interface1Mock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface1Mock => _interface1Mock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls(int arg)
 					{
 						this.BeforeVerifyNoOtherCalls(arg);
 						Interface1Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -1256,6 +1278,7 @@ public sealed class BaseClassesTest : TestsBase
 						Interface2Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(2)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						base.VerifyInSequence(ctx =>
@@ -1348,12 +1371,14 @@ public sealed class BaseClassesTest : TestsBase
 					private readonly InterfaceMock _interface1Mock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface1Mock => _interface1Mock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls(int arg1)
 					{
 						this.BeforeVerifyNoOtherCalls(arg1);
 						Interface1Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -1399,6 +1424,7 @@ public sealed class BaseClassesTest : TestsBase
 					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(2)]
 					protected virtual void VerifyNoOtherCalls(int arg2, int arg1)
 					{
 						this.BeforeVerifyNoOtherCalls(arg2);
@@ -1406,6 +1432,7 @@ public sealed class BaseClassesTest : TestsBase
 						Interface2Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(2)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						base.VerifyInSequence(ctx =>
@@ -1498,12 +1525,14 @@ public sealed class BaseClassesTest : TestsBase
 					private readonly InterfaceMock _interface1Mock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface1Mock => _interface1Mock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls(int arg1)
 					{
 						this.BeforeVerifyNoOtherCalls(arg1);
 						Interface1Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -1549,7 +1578,7 @@ public sealed class BaseClassesTest : TestsBase
 					private readonly InterfaceMock _interface2Mock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface2Mock => _interface2Mock;
 
-					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(2)]
 					protected virtual void VerifyNoOtherCalls(int arg1, int arg2 = 0)
 					{
 						this.BeforeVerifyNoOtherCalls(arg2);
@@ -1557,6 +1586,7 @@ public sealed class BaseClassesTest : TestsBase
 						Interface2Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(2)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						base.VerifyInSequence(ctx =>
@@ -1645,11 +1675,13 @@ public sealed class BaseClassesTest : TestsBase
 					private readonly InterfaceMock _interface1Mock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<MyNihongo.BaseClasses.Tests.IInterface> Interface1Mock => _interface1Mock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						Interface1Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -1701,6 +1733,7 @@ public sealed class BaseClassesTest : TestsBase
 						Interface2Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(2)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						base.VerifyInSequence(ctx =>
@@ -1755,6 +1788,7 @@ public sealed class BaseClassesTest : TestsBase
 						Interface2Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(2)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						base.VerifyInSequence(ctx =>

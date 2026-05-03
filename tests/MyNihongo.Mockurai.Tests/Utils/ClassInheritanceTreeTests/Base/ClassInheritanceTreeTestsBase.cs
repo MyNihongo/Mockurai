@@ -8,7 +8,8 @@ public abstract class ClassInheritanceTreeTestsBase
 {
 	protected IEnumerable<INamedTypeSymbol> CreateFixture(ImmutableArray<TransformResult?> items)
 	{
-		return new ClassInheritanceTree<TransformResult>(items, null!);
+		return new ClassInheritanceTree<TransformResult>(items, null!)
+			.Select(x => x.GetNamedTypeSymbol(null!)!);
 	}
 
 	protected sealed class TransformResult(INamedTypeSymbol namedTypeSymbol) : ITransformResult
