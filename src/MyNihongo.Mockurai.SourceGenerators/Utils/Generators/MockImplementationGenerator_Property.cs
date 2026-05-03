@@ -81,10 +81,12 @@ internal static class MockImplementationPropertyGenerator
 		if (propertySymbol.SetMethod.TryGetNonPrivate(out var set))
 		{
 			var name = set!.IsInitOnly ? "init" : "set";
+			var impl = get is null ? " {}" : ";";
 
 			stringBuilder
 				.Append(name)
-				.Append("; ");
+				.Append(impl)
+				.Append(" ");
 		}
 
 		stringBuilder
