@@ -49,11 +49,13 @@ public sealed class MockuraiBehavior : IssuesTestsBase
 					private readonly Interface2Mock _interface2Mock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.IInterface2> Interface2Mock => _interface2Mock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						Interface1Mock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(

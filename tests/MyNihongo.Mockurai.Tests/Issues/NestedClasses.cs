@@ -45,11 +45,13 @@ public sealed class NestedClasses : TestsBase
 					private readonly ContainerMock _containerMock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Container> ContainerMock => _containerMock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						ContainerMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(

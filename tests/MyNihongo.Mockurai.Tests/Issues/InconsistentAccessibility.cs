@@ -35,11 +35,13 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 					private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
 					internal partial MyNihongo.Mockurai.IMock<Issues.Tests.IInterface> InterfaceMock => _interfaceMock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						InterfaceMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -236,11 +238,13 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 					private readonly InterfaceMock<Issues.Tests.INestedInterface> _interfaceMock = new(InvocationIndex.CounterValue);
 					internal partial MyNihongo.Mockurai.IMock<Issues.Tests.IInterface<Issues.Tests.INestedInterface>> InterfaceMock => _interfaceMock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						InterfaceMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -449,11 +453,13 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 					private readonly InterfaceMock<Issues.Tests.INestedInterface1, Issues.Tests.INestedInterface2> _interfaceMock = new(InvocationIndex.CounterValue);
 					internal partial MyNihongo.Mockurai.IMock<Issues.Tests.IInterface<Issues.Tests.INestedInterface1, Issues.Tests.INestedInterface2>> InterfaceMock => _interfaceMock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						InterfaceMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -1040,11 +1046,13 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						ClassMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -1240,11 +1248,13 @@ public sealed class InconsistentAccessibility : IssuesTestsBase
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						ClassMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
