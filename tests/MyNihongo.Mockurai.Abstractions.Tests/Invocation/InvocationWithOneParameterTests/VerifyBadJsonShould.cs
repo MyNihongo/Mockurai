@@ -2,8 +2,10 @@ namespace MyNihongo.Mockurai.Abstractions.Tests.Invocation.InvocationWithOnePara
 
 public sealed class VerifyBadJsonShould : InvocationWithOneParameterTestsBase
 {
-	[Fact]
-	public void ThrowVerifySameSnapshot()
+	[Theory]
+	[InlineData(true)]
+	[InlineData(false)]
+	public void NotThrowVerifyWithoutSnapshot(bool useJsonSnapshot)
 	{
 		const string key = "key";
 		var index = new InvocationIndex.Counter();
@@ -11,35 +13,7 @@ public sealed class VerifyBadJsonShould : InvocationWithOneParameterTestsBase
 		var fixture = CreateFixture<PartitionKey>();
 		fixture.Register(index, new PartitionKey(key));
 
-		var actual = () =>
-		{
-			var it = It<PartitionKey>.Equivalent(new PartitionKey(key));
-			fixture.Verify(it.ValueSetup, Times.Once());
-		};
-
-		const string expected =
-			"""
-			Expected MyClass.MyMethod({}) to be called 1 time, but instead it was called 0 times.
-			Performed invocations:
-			- 1: MyClass.MyMethod({})
-			  expected: {}
-			  actual: {}
-			""";
-		var exception = Assert.Throws<MockVerifyCountException>(actual);
-		var exceptionMessage = exception.Message;
-		Assert.Equal(expected, exceptionMessage);
-	}
-
-	[Fact]
-	public void NotThrowVerifyWithoutSnapshot()
-	{
-		const string key = "key";
-		var index = new InvocationIndex.Counter();
-
-		var fixture = CreateFixture<PartitionKey>();
-		fixture.Register(index, new PartitionKey(key));
-
-		var it = It<PartitionKey>.Equivalent(new PartitionKey(key), useJsonSnapshot: false);
+		var it = It<PartitionKey>.Equivalent(new PartitionKey(key), useJsonSnapshot: useJsonSnapshot);
 		fixture.Verify(it.ValueSetup, Times.Once());
 	}
 }
