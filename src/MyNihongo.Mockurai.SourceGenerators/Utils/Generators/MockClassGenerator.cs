@@ -77,32 +77,17 @@ internal static class MockClassGenerator
 		var beforeMethod = classSymbol.TryGetMemberByAttribute<IMethodSymbol>(
 			attributePredicate: static x => x is MockGeneratorConst.BeforeVerifyNoOtherCallsAttribute or MockGeneratorConst.BeforeVerifyNoOtherCallsAttributeName
 		);
-		var combinedParameters = MethodSymbolUtils.CombineParameters(beforeMethod, baseMethod, out var hasDefaultParameters);
+		var combinedParameters = MethodSymbolUtils.CombineParameters(beforeMethod, baseMethod);
 
 		stringBuilder.Clear();
 
-		if (hasDefaultParameters)
-		{
-			const string overloadResolutionPriorityName = "OverloadResolutionPriority",
-				overloadResolutionPriority = $"{overloadResolutionPriorityName}Attribute";
-
-			var value = baseMethod.GetAttributeValue(
-				static x => x == overloadResolutionPriority,
-				index: 0,
-				defaultValue: 0
-			);
-
-			stringBuilder
-				.Indent(indent)
-				.Append($"[System.Runtime.CompilerServices.{overloadResolutionPriorityName}(")
-				.Append(value + 1)
-				.AppendLine(")]");
-		}
+		if (!baseMethod.IsOverride(combinedParameters))
+			stringBuilder.AppendOverloadResolutionPriority(baseMethod, indent);
 
 		stringBuilder
 			.Indent(indent)
 			.Append("protected ")
-			.TryAppendFunctionOverrideModifier(classSymbol, baseMethod, combinedParameters.Length)
+			.TryAppendFunctionOverrideModifier(classSymbol, baseMethod, combinedParameters)
 			.Append("void VerifyNoOtherCalls(")
 			.AppendParameters(combinedParameters, appendDefaultValues: true)
 			.AppendLine(")")
@@ -160,6 +145,7 @@ internal static class MockClassGenerator
 		stringBuilder.Clear();
 
 		stringBuilder
+			.AppendOverloadResolutionPriority(baseMethod, indent)
 			.Indent(indent).AppendLine("protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)")
 			.Indent(indent++).AppendLine("{");
 
@@ -226,6 +212,24 @@ internal static class MockClassGenerator
 		return stringBuilder
 			.Indent(--indent).AppendLine("}")
 			.ToString();
+	}
+
+	private static StringBuilder AppendOverloadResolutionPriority(this StringBuilder stringBuilder, ISymbol? baseMethod, int indent)
+	{
+		const string overloadResolutionPriorityName = "OverloadResolutionPriority",
+			overloadResolutionPriority = $"{overloadResolutionPriorityName}Attribute";
+
+		var value = baseMethod.GetAttributeValue(
+			static x => x == overloadResolutionPriority,
+			index: 0,
+			defaultValue: 0
+		);
+
+		return stringBuilder
+			.Indent(indent)
+			.Append($"[System.Runtime.CompilerServices.{overloadResolutionPriorityName}(")
+			.Append(value + 1)
+			.AppendLine(")]");
 	}
 
 	private static string CreateVerifySequenceContext(StringBuilder stringBuilder, INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks, int indent)
@@ -453,13 +457,16 @@ internal static class MockClassGenerator
 			: Accessibility.Public;
 	}
 
-	private static StringBuilder TryAppendFunctionOverrideModifier(this StringBuilder @this, INamedTypeSymbol classSymbol, IMethodSymbol? baseMethodSymbol, int parameterCount)
+	private static StringBuilder TryAppendFunctionOverrideModifier(this StringBuilder @this, INamedTypeSymbol classSymbol, IMethodSymbol? baseMethodSymbol, ImmutableArray<IParameterSymbol> combinedParameters)
 	{
-		if (baseMethodSymbol is not null && baseMethodSymbol.Parameters.Length == parameterCount)
+		if (baseMethodSymbol.IsOverride(combinedParameters))
 			@this.Append("override ");
 		else if (!classSymbol.IsSealed)
 			@this.Append("virtual ");
 
 		return @this;
 	}
+
+	private static bool IsOverride(this IMethodSymbol? @this, ImmutableArray<IParameterSymbol> combinedParameters) =>
+		@this is not null && @this.Parameters.Length == combinedParameters.Length;
 }

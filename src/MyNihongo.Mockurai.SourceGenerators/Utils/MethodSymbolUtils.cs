@@ -4,10 +4,9 @@ namespace MyNihongo.Mockurai.Utils;
 
 internal static class MethodSymbolUtils
 {
-	public static ImmutableArray<IParameterSymbol> CombineParameters(IMethodSymbol? methodSymbol1, IMethodSymbol? methodSymbol2, out bool hasDefaultParameters)
+	public static ImmutableArray<IParameterSymbol> CombineParameters(IMethodSymbol? methodSymbol1, IMethodSymbol? methodSymbol2)
 	{
 		ImmutableDictionary<string, OrderedParameter>.Builder? builder = null;
-		hasDefaultParameters = false;
 		int parameterOrder = int.MinValue, defaultParameterOrder = 0;
 
 		if (methodSymbol1 is not null)
@@ -18,7 +17,6 @@ internal static class MethodSymbolUtils
 			{
 				var order = parameter.GetParameterOrder(ref parameterOrder, ref defaultParameterOrder);
 				builder.Add(parameter.Name, new OrderedParameter(parameter, order));
-				hasDefaultParameters = hasDefaultParameters || parameter.HasExplicitDefaultValue;
 			}
 		}
 

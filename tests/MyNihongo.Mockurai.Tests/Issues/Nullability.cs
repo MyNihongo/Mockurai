@@ -31,11 +31,13 @@ public sealed class Nullability : IssuesTestsBase
 				public partial class TestsBase
 				{
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						InterfaceMock?.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -215,12 +217,14 @@ public sealed class Nullability : IssuesTestsBase
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						InterfaceMock.VerifyNoOtherCalls();
 						ClassMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(

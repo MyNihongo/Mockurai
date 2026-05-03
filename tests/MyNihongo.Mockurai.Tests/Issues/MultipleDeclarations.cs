@@ -40,12 +40,14 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 					private readonly InterfaceMock _interfaceMock2 = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.IInterface> InterfaceMock2 => _interfaceMock2;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						InterfaceMock1.VerifyNoOtherCalls();
 						InterfaceMock2.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -1051,12 +1053,14 @@ public sealed class MultipleDeclarations : IssuesTestsBase
 					private readonly AbstractClassMock _abstractClassMock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.AbstractClass> AbstractClassMock => _abstractClassMock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						InterfaceMock.VerifyNoOtherCalls();
 						AbstractClassMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(

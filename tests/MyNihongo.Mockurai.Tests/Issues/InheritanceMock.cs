@@ -756,11 +756,13 @@ public sealed class InheritanceMock : IssuesTestsBase
 					private readonly InterfaceMock<decimal> _interfaceMock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.IInterface<decimal>> InterfaceMock => _interfaceMock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						InterfaceMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -1263,11 +1265,13 @@ public sealed class InheritanceMock : IssuesTestsBase
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						ClassMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -1519,11 +1523,13 @@ public sealed class InheritanceMock : IssuesTestsBase
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						ClassMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -1820,11 +1826,13 @@ public sealed class InheritanceMock : IssuesTestsBase
 					private readonly ClassMock<float> _classMock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class<float>> ClassMock => _classMock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						ClassMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -2072,11 +2080,13 @@ public sealed class InheritanceMock : IssuesTestsBase
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						ClassMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -2324,11 +2334,13 @@ public sealed class InheritanceMock : IssuesTestsBase
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						ClassMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -2530,11 +2542,13 @@ public sealed class InheritanceMock : IssuesTestsBase
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						ClassMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -2731,11 +2745,13 @@ public sealed class InheritanceMock : IssuesTestsBase
 					private readonly ClassMock<float> _classMock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class<float>> ClassMock => _classMock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						ClassMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -2933,11 +2949,13 @@ public sealed class InheritanceMock : IssuesTestsBase
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						ClassMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -3137,11 +3155,13 @@ public sealed class InheritanceMock : IssuesTestsBase
 					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
 					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
 						ClassMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(

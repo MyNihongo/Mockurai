@@ -47,6 +47,7 @@ public sealed class DefaultValues : IssuesTestsBase
 						InterfaceMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(
@@ -250,6 +251,7 @@ public sealed class DefaultValues : IssuesTestsBase
 						InterfaceMock.VerifyNoOtherCalls();
 					}
 
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 					{
 						var ctx = new VerifySequenceContext(

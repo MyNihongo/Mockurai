@@ -6,8 +6,8 @@ public sealed class SourceGenerator : IIncrementalGenerator
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
 #if DEBUG
-		// if (!System.Diagnostics.Debugger.IsAttached)
-		// 	System.Diagnostics.Debugger.Launch();
+//		if (!System.Diagnostics.Debugger.IsAttached)
+//		 	System.Diagnostics.Debugger.Launch();
 #endif
 		var syntaxProvider = context.SyntaxProvider
 			.CreateSyntaxProvider(SyntaxNodePredicate, SyntaxNodeTransform)
@@ -26,9 +26,9 @@ public sealed class SourceGenerator : IIncrementalGenerator
 				var compilation = context.AddSourceToSyntaxTree("_Usings.g.cs", globalUsings, source.Compilation);
 
 				var mockTypes = new HashSet<ITypeSymbol>(TypeSymbolNameComparer.Default);
-				foreach (var result in source.TransformResults)
+				foreach (var classNode in new ClassInheritanceTree<SyntaxNodeTransformResult>(source.TransformResults, compilation))
 				{
-					var namedTypeSymbol = compilation.TryGetNamedTypeSymbol(result?.MockContainerClass);
+					var namedTypeSymbol = classNode?.GetNamedTypeSymbol(compilation);
 					if (namedTypeSymbol is null)
 						continue;
 

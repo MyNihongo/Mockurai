@@ -38,11 +38,13 @@ public abstract class TestsNonGenericBase : TestsBase
 				private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
 				protected partial MyNihongo.Mockurai.IMock<MyNihongo.Example.Tests.IInterface> InterfaceMock => _interfaceMock;
 
+				[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 				protected virtual void VerifyNoOtherCalls()
 				{
 					InterfaceMock.VerifyNoOtherCalls();
 				}
 
+				[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 				protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 				{
 					var ctx = new VerifySequenceContext(
@@ -198,11 +200,13 @@ public abstract class TestsNonGenericBase : TestsBase
 				private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
 				protected partial MyNihongo.Mockurai.IMock<MyNihongo.Example.Tests.Class> ClassMock => _classMock;
 
+				[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 				protected virtual void VerifyNoOtherCalls()
 				{
 					ClassMock.VerifyNoOtherCalls();
 				}
 
+				[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 				protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 				{
 					var ctx = new VerifySequenceContext(

@@ -18,11 +18,13 @@ public abstract class IssuesTestsBase : TestsBase
 			  	private readonly InterfaceMock _interfaceMock = new(InvocationIndex.CounterValue);
 			  	protected partial {{namespacePrefix}}IMock<Issues.Tests.IInterface> InterfaceMock => _interfaceMock;
 
+			  	[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 			  	protected virtual void VerifyNoOtherCalls()
 			  	{
 			  		InterfaceMock.VerifyNoOtherCalls();
 			  	}
 
+			  	[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 			  	protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
 			  	{
 			  		var ctx = new VerifySequenceContext(
