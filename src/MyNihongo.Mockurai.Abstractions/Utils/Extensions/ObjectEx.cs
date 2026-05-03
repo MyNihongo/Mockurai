@@ -23,7 +23,11 @@ public static class ObjectEx
 	{
 		try
 		{
-			return JsonSerializer.Serialize(@this, Options);
+			var value = JsonSerializer.Serialize(@this, Options);
+
+			return value == "{}"
+				? @this?.ToString() ?? value
+				: value;
 		}
 		catch (Exception ex)
 		{
@@ -39,7 +43,6 @@ public static class ObjectEx
 	/// <param name="this">The JSON string to deserialize.</param>
 	/// <param name="defaultValue">The fallback value returned when deserialization throws or produces <see langword="null"/>.</param>
 	/// <returns>The deserialized value, or <paramref name="defaultValue"/> when deserialization fails.</returns>
-
 	public static T DeserializeFromJson<T>(this string @this, T defaultValue)
 	{
 		try

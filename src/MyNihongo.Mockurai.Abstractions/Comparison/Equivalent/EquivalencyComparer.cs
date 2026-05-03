@@ -189,9 +189,9 @@ public class EquivalencyComparer
 		{
 			result.Add(path, xValue.SerializeToJson(), "null");
 		}
-		else if (ImplementsComparable(type) && xValue is IComparable xComparable)
+		else if (ImplementsComparable(type) && TryCompare(xValue, yValue, out var comparableResult))
 		{
-			if (xComparable.CompareTo(yValue) != 0)
+			if (comparableResult != 0)
 				result.Add(path, xValue.SerializeToJson(), yValue.SerializeToJson());
 		}
 		else if (ImplementsEquatable(type))
@@ -204,6 +204,26 @@ public class EquivalencyComparer
 			var equalityComparer = _nestedComparers.GetOrAdd(type, static x => new EquivalencyComparer(x));
 			equalityComparer.Equivalent(xValue, yValue, result, path);
 		}
+	}
+
+	private static bool TryCompare(object xValue, object yValue, out int result)
+	{
+		if (xValue is not IComparable xComparable)
+			goto False;
+
+		try
+		{
+			result = xComparable.CompareTo(yValue);
+			return true;
+		}
+		catch
+		{
+			// Swallow
+		}
+
+		False:
+		result = 0;
+		return false;
 	}
 }
 
