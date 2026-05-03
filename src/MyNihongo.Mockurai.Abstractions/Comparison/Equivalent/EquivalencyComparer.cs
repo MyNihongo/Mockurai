@@ -153,22 +153,8 @@ public class EquivalencyComparer
 
 		if (!_isComparedByEquivalency)
 		{
-			var propertyPath = GetPropertyPathOrRoot(path);
-
-			if (x is null)
-			{
-				if (y is not null)
-					result.Add(propertyPath, "null", y.SerializeToJson());
-			}
-			else if (y is null)
-			{
-				result.Add(propertyPath, x.SerializeToJson(), "null");
-			}
-			else
-			{
-				if (!x.Equals(y))
-					result.Add(propertyPath, x.SerializeToJson(), y.SerializeToJson());
-			}
+			var thisPath = GetPropertyPathOrRoot(path);
+			CompareRecursively(x, y, thisPath, _type, result, recursive: false);
 		}
 
 		return result;
@@ -181,7 +167,7 @@ public class EquivalencyComparer
 
 	private static bool ImplementsEquatable(Type type)
 	{
-		return type.IsAssignableTo(typeof(IEquatable<>));
+		return type.GetInterface(typeof(IEquatable<>).Name) is not null;
 	}
 
 	private static string GetPropertyPathOrRoot(string? path)
@@ -192,7 +178,7 @@ public class EquivalencyComparer
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private void CompareRecursively(object? xValue, object? yValue, string path, Type type, in ComparisonResult result)
+	private void CompareRecursively(object? xValue, object? yValue, string path, Type type, in ComparisonResult result, bool recursive = true)
 	{
 		if (xValue is null)
 		{
@@ -213,7 +199,7 @@ public class EquivalencyComparer
 			if (!xValue.Equals(yValue))
 				result.Add(path, xValue.SerializeToJson(), yValue.SerializeToJson());
 		}
-		else
+		else if (recursive)
 		{
 			var equalityComparer = _nestedComparers.GetOrAdd(type, static x => new EquivalencyComparer(x));
 			equalityComparer.Equivalent(xValue, yValue, result, path);

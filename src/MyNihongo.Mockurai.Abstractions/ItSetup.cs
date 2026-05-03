@@ -60,10 +60,10 @@ public readonly struct ItSetup<T> : IComparable<ItSetup<T>>
 	{
 		if (_predicateBool is not null)
 			return _predicateBool.Invoke(value);
-		
+
 		if (_predicateResult is not null)
 			return _predicateResult.Invoke(value);
-		
+
 		return Type == SetupType.Any;
 	}
 
