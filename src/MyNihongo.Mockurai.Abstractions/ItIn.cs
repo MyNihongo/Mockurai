@@ -35,9 +35,14 @@ public readonly ref struct ItIn<T>
 	/// </summary>
 	/// <param name="value">The reference value to compare against.</param>
 	/// <param name="comparer">An optional comparer; <see cref="EquivalencyComparer{T}.Default"/> is used when <see langword="null"/>.</param>
-	public static ItIn<T> Equivalent(T value, IEquivalencyComparer<T>? comparer = null)
+	/// <param name="useJsonSnapshot">
+	/// Set to <see langword="false"/> if <typeparamref name="T"/> cannot be correctly
+	/// serialized or deserialized to JSON (e.g. contains circular references, custom converters, or non-serializable members).
+	/// </param>
+	public static ItIn<T> Equivalent(T value, IEquivalencyComparer<T>? comparer = null, bool useJsonSnapshot = true)
 	{
-		return new ItIn<T>(x => (comparer ?? EquivalencyComparer<T>.Default).Equivalent(value, x), SetupType.Equivalent, () => value.SerializeToJson());
+		var setupType = useJsonSnapshot ? SetupType.Equivalent : SetupType.Value;
+		return new ItIn<T>(x => (comparer ?? EquivalencyComparer<T>.Default).Equivalent(value, x), setupType, () => value.SerializeToJson());
 	}
 
 	/// <summary>
