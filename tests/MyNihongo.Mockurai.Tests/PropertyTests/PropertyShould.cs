@@ -507,6 +507,111 @@ public sealed class PropertyShould : PropertyTestsBase
 	}
 
 	[Fact]
+	public async Task GenerateClassDummyGet()
+	{
+		const string property = "protected abstract string Property { get; }";
+
+		string methods = string.Empty,
+			verifyNoOtherCalls = string.Empty,
+			extensions = string.Empty,
+			extensionsSequence = string.Empty,
+			invocationContainer = string.Empty;
+
+		const string proxy = "protected override string Property { get; } = default!;";
+		const string invocations = "yield break;";
+
+		var testCode = CreateClassTestCode(property, isAbstract: true);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence, invocationContainer);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
+	}
+
+	[Fact]
+	public async Task GenerateClassDummyGetSet()
+	{
+		const string property = "protected abstract string Property { get; set; }";
+
+		string methods = string.Empty,
+			verifyNoOtherCalls = string.Empty,
+			extensions = string.Empty,
+			extensionsSequence = string.Empty,
+			invocationContainer = string.Empty;
+
+		const string proxy = "protected override string Property { get; set; } = default!;";
+		const string invocations = "yield break;";
+
+		var testCode = CreateClassTestCode(property, isAbstract: true);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence, invocationContainer);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
+	}
+
+	[Fact]
+	public async Task GenerateClassDummyGetInit()
+	{
+		const string property = "protected abstract string Property { get; init; }";
+
+		string methods = string.Empty,
+			verifyNoOtherCalls = string.Empty,
+			extensions = string.Empty,
+			extensionsSequence = string.Empty,
+			invocationContainer = string.Empty;
+
+		const string proxy = "protected override string Property { get; init; } = default!;";
+		const string invocations = "yield break;";
+
+		var testCode = CreateClassTestCode(property, isAbstract: true);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence, invocationContainer);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
+	}
+
+	[Fact]
+	public async Task GenerateClassDummySet()
+	{
+		const string property = "protected abstract string Property { set; }";
+
+		string methods = string.Empty,
+			verifyNoOtherCalls = string.Empty,
+			extensions = string.Empty,
+			extensionsSequence = string.Empty,
+			invocationContainer = string.Empty;
+
+		const string proxy = "protected override string Property { set {} }";
+		const string invocations = "yield break;";
+
+		var testCode = CreateClassTestCode(property, isAbstract: true);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence, invocationContainer);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
+	}
+
+	[Fact]
+	public async Task GenerateClassDummyInit()
+	{
+		const string property = "protected abstract string Property { init; }";
+
+		string methods = string.Empty,
+			verifyNoOtherCalls = string.Empty,
+			extensions = string.Empty,
+			extensionsSequence = string.Empty,
+			invocationContainer = string.Empty;
+
+		const string proxy = "protected override string Property { init {} }";
+		const string invocations = "yield break;";
+
+		var testCode = CreateClassTestCode(property, isAbstract: true);
+		var generatedSources = CreateClassGeneratedSources(methods, proxy, verifyNoOtherCalls, invocations, extensions, extensionsSequence, invocationContainer);
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
+	}
+
+	[Fact]
 	public async Task GenerateClassPropertyGetSetWithRecord()
 	{
 		const string property = "public abstract Record Property { get; set; }";

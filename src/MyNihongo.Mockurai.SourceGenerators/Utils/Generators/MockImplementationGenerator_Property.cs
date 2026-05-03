@@ -75,20 +75,25 @@ internal static class MockImplementationPropertyGenerator
 			.AppendPropertyDeclaration(propertySymbol)
 			.Append(" { ");
 
-		if (propertySymbol.GetMethod.TryGetNonPrivate(out _))
+		if (propertySymbol.GetMethod.TryGetNonPrivate(out var get))
 			stringBuilder.Append("get; ");
 
 		if (propertySymbol.SetMethod.TryGetNonPrivate(out var set))
 		{
 			var name = set!.IsInitOnly ? "init" : "set";
+			var impl = get is null ? " {}" : ";";
 
 			stringBuilder
 				.Append(name)
-				.Append("; ");
+				.Append(impl)
+				.Append(" ");
 		}
 
 		stringBuilder
 			.Append('}');
+
+		if (get is not null)
+			stringBuilder.Append(" = default!;");
 	}
 
 	public static void AppendPropertyMockExtensions(StringBuilder stringBuilder, MockedTypeSymbol mockedTypeSymbol, MockedMemberSymbol memberSymbol, string mockClassName, Accessibility accessibility, int indent)
