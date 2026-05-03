@@ -2,7 +2,7 @@
 
 namespace MyNihongo.Mockurai.Abstractions.Tests.Comparison.EquivalencyComparerTests;
 
-public sealed class CustomJsonElementEquivalentShould
+public sealed class EquivalentJsonElementShould
 {
 	[Fact]
 	public void BeEmptyForEqualObjects()
