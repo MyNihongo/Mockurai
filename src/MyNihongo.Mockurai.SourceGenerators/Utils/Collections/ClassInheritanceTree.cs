@@ -5,18 +5,18 @@ namespace MyNihongo.Mockurai.Utils;
 internal sealed class ClassInheritanceTree<T> : IEnumerable<ITransformResult>
 	where T : ITransformResult
 {
-	private readonly Node[] _nodes;
+	private readonly Node[] _rootNodes;
 
 	public ClassInheritanceTree(ImmutableArray<T?> transformResults, Compilation compilation)
 	{
-		_nodes = CreateRootNodeArray(transformResults, compilation);
+		_rootNodes = CreateRootNodeArray(transformResults, compilation);
 	}
 
 	public IEnumerator<ITransformResult> GetEnumerator()
 	{
 		var queue = new Queue<Node>();
 
-		foreach (var node in _nodes)
+		foreach (var node in _rootNodes)
 			queue.Enqueue(node);
 
 		while (queue.Count > 0)
@@ -44,7 +44,7 @@ internal sealed class ClassInheritanceTree<T> : IEnumerable<ITransformResult>
 				continue;
 
 			var node = new Node(transformResult!, namedTypeSymbol);
-			dictionary.Add(namedTypeSymbol, node);
+			dictionary[namedTypeSymbol] = node;
 
 			if (namedTypeSymbol.BaseType is null || namedTypeSymbol.BaseType.SpecialType == SpecialType.System_Object)
 				rootNodes.Add(node);
@@ -56,10 +56,7 @@ internal sealed class ClassInheritanceTree<T> : IEnumerable<ITransformResult>
 
 		foreach (var node in nonRootNodes)
 		{
-			if (node.MockClass.BaseType is null)
-				continue;
-
-			if (!dictionary.TryGetValue(node.MockClass.BaseType, out var parentNode))
+			if (!dictionary.TryGetValue(node.MockClass.BaseType!, out var parentNode))
 				rootNodes.Add(node);
 			else
 				parentNode.Children.Add(node);
