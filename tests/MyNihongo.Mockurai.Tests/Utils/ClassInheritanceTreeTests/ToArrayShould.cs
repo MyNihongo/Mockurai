@@ -69,6 +69,22 @@ public sealed class ToArrayShould : ClassInheritanceTreeTestsBase
 	}
 
 	[Fact]
+	public void ReturnRootWhenParentMissingFromInput()
+	{
+		const string input =
+			"""
+			public class Parent {}
+			public class Class1 : Parent {}
+			""";
+
+		var actual = CreateFixture(input, TestContext.Current.CancellationToken)
+			.ToArray();
+
+		string[] expected = ["Class1"];
+		Assert.Equivalent(expected, actual, true);
+	}
+
+	[Fact]
 	public void ReturnRootDerived()
 	{
 		const string input =
