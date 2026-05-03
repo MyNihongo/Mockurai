@@ -7,14 +7,20 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<IsRoslynComponent>true</IsRoslynComponent>
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+		<RootNamespace>MyNihongo.Mockurai</RootNamespace>
 		<PackageId>Mockurai.SourceGenerators</PackageId>
-		<Version>0.0.0.21</Version>
+		<Version>1.0.0</Version>
 		<Authors>Mynihongo</Authors>
 		<Copyright>© Mynihongo 2026</Copyright>
 		<Product>Mockurai</Product>
 		<Description>A source generator–based mocking library for .NET.</Description>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<RootNamespace>MyNihongo.Mockurai</RootNamespace>
+		<PackageIcon>favicon.png</PackageIcon>
+		<PackageProjectUrl>https://github.com/MyNihongo/Mockurai</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/MyNihongo/Mockurai</RepositoryUrl>
+		<PackageReleaseNotes>https://github.com/MyNihongo/Mockurai/releases</PackageReleaseNotes>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageTags>mock;setup;verify</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -27,6 +33,7 @@
 
 	<ItemGroup>
 		<None Remove="*.csproj.DotSettings" />
+		<None Include="..\..\favicon.png" Pack="True" PackagePath="\" />
 		<None Include="..\..\README.md" Pack="True" PackagePath="\" />
 	</ItemGroup>
 

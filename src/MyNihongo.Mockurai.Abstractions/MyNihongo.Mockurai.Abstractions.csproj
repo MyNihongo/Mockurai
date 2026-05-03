@@ -7,12 +7,18 @@
 		<Nullable>enable</Nullable>
 		<RootNamespace>MyNihongo.Mockurai</RootNamespace>
 		<PackageId>Mockurai.Abstractions</PackageId>
-		<Version>0.0.0.21</Version>
+		<Version>1.0.0</Version>
 		<Authors>Mynihongo</Authors>
 		<Copyright>© Mynihongo 2026</Copyright>
 		<Product>Mockurai</Product>
 		<Description>A source generator–based mocking library for .NET.</Description>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageIcon>favicon.png</PackageIcon>
+		<PackageProjectUrl>https://github.com/MyNihongo/Mockurai</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/MyNihongo/Mockurai</RepositoryUrl>
+		<PackageReleaseNotes>https://github.com/MyNihongo/Mockurai/releases</PackageReleaseNotes>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageTags>mock;setup;verify</PackageTags>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -22,6 +28,7 @@
 
 	<ItemGroup>
 		<None Remove="*.csproj.DotSettings" />
+		<None Include="..\..\favicon.png" Pack="True" PackagePath="\" />
 		<None Include="..\..\README.md" Pack="True" PackagePath="\" />
 	</ItemGroup>
 

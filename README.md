@@ -1,3 +1,5 @@
+[![Version](https://img.shields.io/nuget/v/Mockurai?style=plastic)](https://www.nuget.org/packages/Mockurai/)
+[![Nuget downloads](https://img.shields.io/nuget/dt/Mockurai?label=nuget%20downloads&logo=nuget&style=plastic)](https://www.nuget.org/packages/Mockurai/)  
 # Mockurai
 
 **A source-generator-based mocking library for .NET.**
