@@ -35,4 +35,26 @@ public sealed class GetEnumerableAsyncShould : PrimitiveTypeServiceTestsBase
 
 		Assert.Equivalent(setupValues, actual, true);
 	}
+
+	[Fact]
+	public async Task ReturnMultipleValuesEx()
+	{
+		string[] setupValues1 = ["Okayama", "Issei"], setupValues2 = ["Issei", "Okayama"];
+		using var cts = new CancellationTokenSource();
+
+		DependencyServiceMock
+			.SetupGetEnumerableAsync()
+			.Returns([..setupValues1])
+			.Returns([..setupValues2]);
+
+		var fixture = CreateFixture();
+		var actual1 = await fixture.GetEnumerableAsync(cts.Token)
+			.ToArrayAsync(cts.Token);
+
+		var actual2 = await fixture.GetEnumerableAsync(cts.Token)
+			.ToArrayAsync(cts.Token);
+
+		Assert.Equivalent(setupValues1, actual1, true);
+		Assert.Equivalent(setupValues2, actual2, true);
+	}
 }
