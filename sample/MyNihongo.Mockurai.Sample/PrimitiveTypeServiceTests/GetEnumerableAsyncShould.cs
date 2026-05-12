@@ -9,7 +9,7 @@ public sealed class GetEnumerableAsyncShould : PrimitiveTypeServiceTestsBase
 		using var cts = new CancellationTokenSource();
 
 		DependencyServiceMock
-			.SetupGetEnumerableAsync()
+			.SetupGetEnumerableAsync(cts.Token)
 			.Returns(setupValues.ToAsyncEnumerable());
 
 		var actual = await CreateFixture()
@@ -26,7 +26,7 @@ public sealed class GetEnumerableAsyncShould : PrimitiveTypeServiceTestsBase
 		using var cts = new CancellationTokenSource();
 
 		DependencyServiceMock
-			.SetupGetEnumerableAsync()
+			.SetupGetEnumerableAsync(cts.Token)
 			.Returns([..setupValues]);
 
 		var actual = await CreateFixture()
@@ -43,7 +43,7 @@ public sealed class GetEnumerableAsyncShould : PrimitiveTypeServiceTestsBase
 		using var cts = new CancellationTokenSource();
 
 		DependencyServiceMock
-			.SetupGetEnumerableAsync()
+			.SetupGetEnumerableAsync(cts.Token)
 			.Returns([..setupValues1])
 			.Returns([..setupValues2]);
 
@@ -56,5 +56,23 @@ public sealed class GetEnumerableAsyncShould : PrimitiveTypeServiceTestsBase
 
 		Assert.Equivalent(setupValues1, actual1, true);
 		Assert.Equivalent(setupValues2, actual2, true);
+	}
+
+	[Fact]
+	public async Task ReturnValueWithParamsEx()
+	{
+		const string category = nameof(category);
+		string[] setupValues = ["Okayama", "Issei"];
+		using var cts = new CancellationTokenSource();
+
+		DependencyServiceMock
+			.SetupGetEnumerableAsync(default, cts.Token)
+			.Returns([..setupValues]);
+
+		var actual = await CreateFixture()
+			.GetEnumerableAsync(category, cts.Token)
+			.ToArrayAsync(cts.Token);
+
+		Assert.Equivalent(setupValues, actual, true);
 	}
 }

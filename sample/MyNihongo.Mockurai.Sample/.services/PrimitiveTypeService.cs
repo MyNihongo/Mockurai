@@ -279,6 +279,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		return _primitiveDependencyService.GetEnumerableAsync(ct);
 	}
 
+	public IAsyncEnumerable<string> GetEnumerableAsync(string category, CancellationToken ct = default)
+	{
+		return _primitiveDependencyService.GetEnumerableAsync(category, ct);
+	}
+
 	public void Dispose()
 	{
 		_primitiveDependencyService.Handler -= PrimitiveDependencyServiceOnHandler;

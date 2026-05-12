@@ -97,4 +97,6 @@ public interface IPrimitiveTypeService : IDisposable
 	string ReturnWithSeveralParametersGeneric<TParameter1, TParameter2>(TParameter1 parameter1, TParameter2 parameter2);
 
 	IAsyncEnumerable<string> GetEnumerableAsync(CancellationToken ct = default);
+
+	IAsyncEnumerable<string> GetEnumerableAsync(string category, CancellationToken ct = default);
 }

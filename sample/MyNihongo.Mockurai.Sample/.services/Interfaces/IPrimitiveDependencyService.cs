@@ -72,4 +72,6 @@ public interface IPrimitiveDependencyService
 	ValueTask<decimal> ReturnWithSeveralParametersAsync(int parameter1, int parameter2);
 
 	IAsyncEnumerable<string> GetEnumerableAsync(CancellationToken ct = default);
+
+	IAsyncEnumerable<string> GetEnumerableAsync(string category, CancellationToken ct = default);
 }
