@@ -70,4 +70,8 @@ public interface IPrimitiveDependencyService
 	TReturn ReturnWithSeveralParameters<TParameter1, TParameter2, TReturn>(ref TParameter1 parameter1, TParameter2 parameter2);
 
 	ValueTask<decimal> ReturnWithSeveralParametersAsync(int parameter1, int parameter2);
+
+	IAsyncEnumerable<string> GetEnumerableAsync(CancellationToken ct = default);
+
+	IAsyncEnumerable<string> GetEnumerableAsync(string category, CancellationToken ct = default);
 }

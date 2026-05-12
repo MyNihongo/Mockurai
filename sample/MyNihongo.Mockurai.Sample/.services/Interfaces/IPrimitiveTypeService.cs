@@ -95,4 +95,8 @@ public interface IPrimitiveTypeService : IDisposable
 	ValueTask<decimal> ReturnWithSeveralParametersAsync(int parameter1, int parameter2);
 
 	string ReturnWithSeveralParametersGeneric<TParameter1, TParameter2>(TParameter1 parameter1, TParameter2 parameter2);
+
+	IAsyncEnumerable<string> GetEnumerableAsync(CancellationToken ct = default);
+
+	IAsyncEnumerable<string> GetEnumerableAsync(string category, CancellationToken ct = default);
 }
