@@ -274,6 +274,11 @@ internal sealed class PrimitiveTypeService : IPrimitiveTypeService
 		return _primitiveDependencyGenericService.ReturnWithSeveralParameters(parameter1, parameter2);
 	}
 
+	public IAsyncEnumerable<string> GetEnumerableAsync(CancellationToken ct = default)
+	{
+		return _primitiveDependencyService.GetEnumerableAsync(ct);
+	}
+
 	public void Dispose()
 	{
 		_primitiveDependencyService.Handler -= PrimitiveDependencyServiceOnHandler;
