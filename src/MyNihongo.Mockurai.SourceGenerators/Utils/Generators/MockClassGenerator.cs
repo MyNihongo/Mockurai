@@ -9,13 +9,18 @@ internal static class MockClassGenerator
 
 		return stringBuilder
 			.AppendLine("#nullable enable")
-			.Append("namespace ").Append(classSymbol.ContainingNamespace).AppendLine().AppendLine(";")
+			.Append("namespace ").Append(classSymbol.ContainingNamespace).AppendLine(";")
+			.AppendLine()
 			.Append(classSymbol.DeclaredAccessibility.GetString()).Append(" partial class ").AppendLine(classSymbol.Name)
 			.AppendLine("{")
 			.CreateProperties(mocks, indent)
+			.AppendLine()
 			.CreateVerifyNoOtherCalls(classSymbol, mocks, indent)
+			.AppendLine()
 			.CreateVerifyInSequence(classSymbol, mocks, indent)
+			.AppendLine()
 			.CreateVerifySequenceContext(classSymbol, mocks, indent)
+			.AppendLine()
 			.Append('}')
 			.ToString();
 	}

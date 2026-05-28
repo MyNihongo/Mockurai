@@ -8,69 +8,70 @@ internal static class MockInvocationGenerator
 	{
 		var stringBuilder = new StringBuilder();
 		var className = CreateSetupClassName(stringBuilder, methodSymbol, out var genericTypeOverride);
-		var argumentTuple = CreateArgumentTuple(stringBuilder, methodSymbol, genericTypeOverride);
 
-		var source =
-			$$"""
-			  #nullable enable
-			  namespace {{result.Options.RootNamespace}};
-
-			  public sealed class {{className}} : IInvocationVerify
-			  {
-			  	private readonly string _name;
-			  	private readonly string? {{CreatePrefixFields(stringBuilder, methodSymbol)}};
-			  	private readonly InvocationContainer<Item> _invocations = [];
-
-			  {{CreateConstructor(stringBuilder, methodSymbol, indent: 1)}}
-			  {{CreateRegisterMethod(stringBuilder, methodSymbol, genericTypeOverride, indent: 1)}}
-			  {{CreateVerifyMethod(stringBuilder, methodSymbol, VerifyMethodType.Times, genericTypeOverride, indent: 1)}}
-			  {{CreateVerifyMethod(stringBuilder, methodSymbol, VerifyMethodType.Index, genericTypeOverride, indent: 1, appendNewLine: false)}}
-
-			  	public void VerifyNoOtherCalls(System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>>? invocationProviders = null)
-			  	{
-			  		var unverifiedItems = _invocations.GetUnverifiedInvocations(invocationProviders);
-			  		if (unverifiedItems is null)
-			  			return;
-
-			  {{CreateVerifyNoOtherCalls(stringBuilder, methodSymbol, genericTypeOverride, indent: 2)}}
-			  		throw new MockUnverifiedException(verifyName, unverifiedItems);
-			  	}
-
-			  	public System.Collections.Generic.IEnumerable<IInvocation> GetInvocations()
-			  	{
-			  		return _invocations;
-			  	}
-
-			  	public System.Collections.Generic.IEnumerable<IInvocation<{{argumentTuple}}>> GetInvocationsWithArguments()
-			  	{
-			  		return _invocations;
-			  	}
-
-			  	private sealed class Item : IInvocation<{{argumentTuple}}>
-			  	{
-			  		private readonly {{argumentTuple}} _argument;
-			  {{CreateItemFields(stringBuilder, methodSymbol, indent: 2)}}
-			  		private readonly {{className}} _invocation;
-
-			  {{CreateItemConstructor(stringBuilder, methodSymbol, genericTypeOverride, indent: 2)}}
-
-			  		public long Index { get; }
-
-			  		public bool IsVerified { get; set; }
-
-			  		public {{argumentTuple}} Arguments => _argument;
-
-			  {{CreateItemGetMethods(stringBuilder, methodSymbol, genericTypeOverride, indent: 2)}}
-
-			  		public override string ToString()
-			  		{
-			  			var stringBuilder = new System.Text.StringBuilder();
-			  {{CreateToStringMethod(stringBuilder, methodSymbol, indent: 3)}}
-			  			return $"{Index}: {stringValue}";
-			  		}
-			  	}
-			  }
-			  """;
+		var source = stringBuilder
+			.AppendLine("#nullable enable")
+			.Append("namespace ").Append(result.Options.RootNamespace).AppendLine(";")
+			.AppendLine()
+			.Append("public sealed class ").Append(className).AppendLine(" : IInvocationVerify")
+			.AppendLine("{")
+			.Indent(1).AppendLine("private readonly string _name;")
+			.Indent(1).Append("private readonly string? ").CreatePrefixFields(methodSymbol).AppendLine(";")
+			.Indent(1).AppendLine("private readonly InvocationContainer<Item> _invocations = [];")
+			.AppendLine()
+			.CreateConstructor(methodSymbol, indent: 1)
+			.AppendLine()
+			.CreateRegisterMethod(methodSymbol, genericTypeOverride, indent: 1)
+			.AppendLine()
+			.CreateVerifyMethod(methodSymbol, VerifyMethodType.Times, genericTypeOverride, indent: 1)
+			.AppendLine()
+			.CreateVerifyMethod(methodSymbol, VerifyMethodType.Index, genericTypeOverride, indent: 1)
+			.AppendLine()
+			.Indent(1).AppendLine("public void VerifyNoOtherCalls(System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>>? invocationProviders = null)")
+			.Indent(1).AppendLine("{")
+			.Indent(2).AppendLine("var unverifiedItems = _invocations.GetUnverifiedInvocations(invocationProviders);")
+			.Indent(2).AppendLine("if (unverifiedItems is null)")
+			.Indent(3).AppendLine("return;")
+			.AppendLine()
+			.CreateVerifyNoOtherCalls(methodSymbol, genericTypeOverride, indent: 2).AppendLine()
+			.Indent(2).AppendLine("throw new MockUnverifiedException(verifyName, unverifiedItems);")
+			.Indent(1).AppendLine("}")
+			.AppendLine()
+			.Indent(1).AppendLine("public System.Collections.Generic.IEnumerable<IInvocation> GetInvocations()")
+			.Indent(1).AppendLine("{")
+			.Indent(2).AppendLine("return _invocations;")
+			.Indent(1).AppendLine("}")
+			.AppendLine()
+			.Indent(1).Append("public System.Collections.Generic.IEnumerable<IInvocation<").AppendArgumentTuple(methodSymbol, genericTypeOverride).AppendLine(">> GetInvocationsWithArguments()")
+			.Indent(1).AppendLine("{")
+			.Indent(2).AppendLine("return _invocations;")
+			.Indent(1).AppendLine("}")
+			.AppendLine()
+			.Indent(1).Append("private sealed class Item : IInvocation<").AppendArgumentTuple(methodSymbol, genericTypeOverride).AppendLine(">")
+			.Indent(1).AppendLine("{")
+			.Indent(2).Append("private readonly ").AppendArgumentTuple(methodSymbol, genericTypeOverride).AppendLine(" _argument;")
+			.CreateItemFields(methodSymbol, indent: 2).AppendLine()
+			.Indent(2).Append("private readonly ").Append(className).AppendLine(" _invocation;")
+			.AppendLine()
+			.CreateItemConstructor(methodSymbol, genericTypeOverride, indent: 2).AppendLine()
+			.AppendLine()
+			.Indent(2).AppendLine("public long Index { get; }")
+			.AppendLine()
+			.Indent(2).AppendLine("public bool IsVerified { get; set; }")
+			.AppendLine()
+			.Indent(2).Append("public ").AppendArgumentTuple(methodSymbol, genericTypeOverride).AppendLine(" Arguments => _argument;")
+			.AppendLine()
+			.CreateItemGetMethods(methodSymbol, genericTypeOverride, indent: 2).AppendLine()
+			.AppendLine()
+			.Indent(2).AppendLine("public override string ToString()")
+			.Indent(2).AppendLine("{")
+			.Indent(3).AppendLine("var stringBuilder = new System.Text.StringBuilder();")
+			.CreateToStringMethod(methodSymbol, indent: 3).AppendLine()
+			.Indent(3).AppendLine("""return $"{Index}: {stringValue}";""")
+			.Indent(2).AppendLine("}")
+			.Indent(1).AppendLine("}")
+			.Append('}')
+			.ToString();
 
 		return new MockSetupResult(
 			name: className,
@@ -78,10 +79,8 @@ internal static class MockInvocationGenerator
 		);
 	}
 
-	private static string CreatePrefixFields(StringBuilder stringBuilder, IMethodSymbol methodSymbol)
+	private static StringBuilder CreatePrefixFields(this StringBuilder stringBuilder, IMethodSymbol methodSymbol)
 	{
-		stringBuilder.Clear();
-
 		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
 			if (i != 0)
@@ -90,13 +89,11 @@ internal static class MockInvocationGenerator
 			stringBuilder.AppendParameterPrefixFieldName(i);
 		}
 
-		return stringBuilder.ToString();
+		return stringBuilder;
 	}
 
-	private static string CreateConstructor(StringBuilder stringBuilder, IMethodSymbol methodSymbol, int indent)
+	private static StringBuilder CreateConstructor(this StringBuilder stringBuilder, IMethodSymbol methodSymbol, int indent)
 	{
-		stringBuilder.Clear();
-
 		stringBuilder
 			.Indent(indent)
 			.Append("public ")
@@ -130,36 +127,28 @@ internal static class MockInvocationGenerator
 		}
 
 		return stringBuilder
-			.Indent(--indent).AppendLine("}")
-			.ToString();
+			.Indent(--indent).AppendLine("}");
 	}
 
-	private static string CreateRegisterMethod(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
+	private static StringBuilder CreateRegisterMethod(this StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
 	{
-		stringBuilder.Clear();
-
 		stringBuilder
 			.Indent(indent)
 			.Append("public void Register(in InvocationIndex.Counter index, ")
 			.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride, appendRefKind: false, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
 			.AppendLine(")");
 
-		stringBuilder
+		return stringBuilder
 			.Indent(indent++).AppendLine("{")
 			.Indent(indent).AppendLine("var invokedIndex = index.Increment();")
 			.Indent(indent).Append("_invocations.Add(new Item(invokedIndex, ")
 			.AppendParameterNames(methodSymbol.Parameters, appendComma: true, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
 			.AppendLine("invocation: this));")
 			.Indent(--indent).AppendLine("}");
-
-		return stringBuilder
-			.ToString();
 	}
 
-	private static string CreateVerifyMethod(StringBuilder stringBuilder, IMethodSymbol methodSymbol, VerifyMethodType type, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent, bool appendNewLine = true)
+	private static StringBuilder CreateVerifyMethod(this StringBuilder stringBuilder, IMethodSymbol methodSymbol, VerifyMethodType type, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
 	{
-		stringBuilder.Clear();
-
 		stringBuilder
 			.Indent(indent)
 			.Append("public ")
@@ -307,19 +296,13 @@ internal static class MockInvocationGenerator
 
 		stringBuilder.AppendLine(");");
 
-		stringBuilder
+		return stringBuilder
 			.Indent(indent).AppendVerifyThrow(type).AppendLine()
-			.Indent(--indent).Append('}');
-
-		return appendNewLine
-			? stringBuilder.AppendLine().ToString()
-			: stringBuilder.ToString();
+			.Indent(--indent).AppendLine("}");
 	}
 
-	private static string CreateVerifyNoOtherCalls(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
+	private static StringBuilder CreateVerifyNoOtherCalls(this StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
 	{
-		stringBuilder.Clear();
-
 		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
 			var parameter = methodSymbol.Parameters[i];
@@ -356,8 +339,7 @@ internal static class MockInvocationGenerator
 		}
 
 		return stringBuilder
-			.Append(");")
-			.ToString();
+			.Append(");");
 
 		static object Fuck(object x)
 		{
@@ -365,10 +347,8 @@ internal static class MockInvocationGenerator
 		}
 	}
 
-	private static string CreateItemFields(StringBuilder stringBuilder, IMethodSymbol methodSymbol, int indent)
+	private static StringBuilder CreateItemFields(this StringBuilder stringBuilder, IMethodSymbol methodSymbol, int indent)
 	{
-		stringBuilder.Clear();
-
 		stringBuilder
 			.Indent(indent)
 			.Append("private readonly string? ");
@@ -384,14 +364,11 @@ internal static class MockInvocationGenerator
 		}
 
 		return stringBuilder
-			.Append(';')
-			.ToString();
+			.Append(';');
 	}
 
-	private static string CreateItemConstructor(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
+	private static StringBuilder CreateItemConstructor(this StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
 	{
-		stringBuilder.Clear();
-
 		stringBuilder
 			.Indent(indent)
 			.Append("public Item(long index, ")
@@ -432,14 +409,11 @@ internal static class MockInvocationGenerator
 		}
 
 		return stringBuilder
-			.Indent(--indent).Append('}')
-			.ToString();
+			.Indent(--indent).Append('}');
 	}
 
-	private static string CreateItemGetMethods(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
+	private static StringBuilder CreateItemGetMethods(this StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
 	{
-		stringBuilder.Clear();
-
 		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
 			const string argumentPrefix = "_argument.";
@@ -488,14 +462,11 @@ internal static class MockInvocationGenerator
 				.Append('}');
 		}
 
-		return stringBuilder
-			.ToString();
+		return stringBuilder;
 	}
 
-	private static string CreateToStringMethod(StringBuilder stringBuilder, IMethodSymbol methodSymbol, int indent)
+	private static StringBuilder CreateToStringMethod(this StringBuilder stringBuilder, IMethodSymbol methodSymbol, int indent)
 	{
-		stringBuilder.Clear();
-
 		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 		{
 			stringBuilder
@@ -558,26 +529,23 @@ internal static class MockInvocationGenerator
 			.Indent(indent)
 			.Append("var stringValue = string.Format(_invocation._name, ")
 			.AppendParameterNames(methodSymbol.Parameters, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
-			.Append(");")
-			.ToString();
+			.Append(");");
 	}
 
 	private static string CreateSetupClassName(StringBuilder stringBuilder, IMethodSymbol methodSymbol, out ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride)
 	{
-		stringBuilder.Clear();
-
-		return stringBuilder
-			.AppendInvocationClassName(methodSymbol.Parameters, out genericTypeOverride)
+		var className = stringBuilder
+			.AppendInvocationClassName(methodSymbol.Parameters, useOverriddenGenericNames: true, out genericTypeOverride)
 			.ToString();
+
+		stringBuilder.Clear();
+		return className;
 	}
 
-	private static string CreateArgumentTuple(StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride)
+	private static StringBuilder AppendArgumentTuple(this StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride)
 	{
-		stringBuilder.Clear();
-
 		return stringBuilder
-			.AppendParameterTuple(methodSymbol.Parameters, genericTypeOverride, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
-			.ToString();
+			.AppendParameterTuple(methodSymbol.Parameters, genericTypeOverride, appendParameterName: MethodSymbolEx.AppendParameterVariableName);
 	}
 
 	private enum VerifyMethodType
@@ -591,11 +559,6 @@ internal static class MockInvocationGenerator
 		private StringBuilder AppendInvocationClassName(ImmutableArray<IParameterSymbol> parameters, bool appendGenericDeclaration)
 		{
 			return @this.AppendInvocationClassName(parameters, useOverriddenGenericNames: true, appendGenericDeclaration);
-		}
-
-		private StringBuilder AppendInvocationClassName(ImmutableArray<IParameterSymbol> parameters, out ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride)
-		{
-			return @this.AppendInvocationClassName(parameters, useOverriddenGenericNames: true, out genericTypeOverride);
 		}
 
 		private StringBuilder AppendVerifyReturnType(VerifyMethodType type)
