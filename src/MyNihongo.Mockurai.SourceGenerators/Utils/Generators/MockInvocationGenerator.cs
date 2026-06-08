@@ -542,12 +542,6 @@ internal static class MockInvocationGenerator
 		return className;
 	}
 
-	private static StringBuilder AppendArgumentTuple(this StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride)
-	{
-		return stringBuilder
-			.AppendParameterTuple(methodSymbol.Parameters, genericTypeOverride, appendParameterName: MethodSymbolEx.AppendParameterVariableName);
-	}
-
 	private enum VerifyMethodType
 	{
 		Times,
@@ -662,6 +656,12 @@ internal static class MockInvocationGenerator
 			}
 
 			return @this;
+		}
+
+		private StringBuilder AppendArgumentTuple(IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride)
+		{
+			return @this
+				.AppendParameterTuple(methodSymbol.Parameters, genericTypeOverride, appendParameterName: MethodSymbolEx.AppendParameterVariableName);
 		}
 	}
 }
