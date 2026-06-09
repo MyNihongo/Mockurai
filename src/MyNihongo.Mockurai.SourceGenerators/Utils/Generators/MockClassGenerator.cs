@@ -14,7 +14,6 @@ internal static class MockClassGenerator
 			.Append(classSymbol.DeclaredAccessibility.GetString()).Append(" partial class ").AppendLine(classSymbol.Name)
 			.AppendLine("{")
 			.CreateProperties(mocks, indent)
-			.AppendLine()
 			.CreateVerifyNoOtherCalls(classSymbol, mocks, indent)
 			.AppendLine()
 			.CreateVerifyInSequence(classSymbol, mocks, indent)
@@ -29,9 +28,8 @@ internal static class MockClassGenerator
 	{
 		private StringBuilder CreateProperties(List<MockClassDeclaration> mocks, int indent)
 		{
-			for (int i = 0, lastIndex = mocks.Count - 1; i < mocks.Count; i++)
+			foreach (var mock in mocks)
 			{
-				var mock = mocks[i];
 				if (mock.Property is null || !mock.Property.IsPartialDefinition)
 					continue;
 
@@ -62,12 +60,12 @@ internal static class MockClassGenerator
 					.AppendFieldName(propertyName)
 					.Append(';');
 
-				if (i < lastIndex)
-					stringBuilder.AppendLine().AppendLine();
+				stringBuilder
+					.AppendLine()
+					.AppendLine();
 			}
 
-			return stringBuilder
-				.AppendLine();
+			return stringBuilder;
 		}
 
 		private StringBuilder CreateVerifyNoOtherCalls(INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks, int indent)

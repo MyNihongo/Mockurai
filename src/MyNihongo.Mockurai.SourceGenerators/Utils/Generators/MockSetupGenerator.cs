@@ -11,7 +11,7 @@ internal static class MockSetupGenerator
 
 		var source = stringBuilder
 			.AppendLine("#nullable enable")
-			.Append("namespace ").Append(result.Options.RootNamespace).AppendLine()
+			.Append("namespace ").Append(result.Options.RootNamespace).AppendLine(";")
 			.AppendLine()
 			.Append("public sealed class ").Append(className).Append(" : ").CreateInterfaceDerivedFrom(methodSymbol, returnType).AppendLine()
 			.AppendLine("{")

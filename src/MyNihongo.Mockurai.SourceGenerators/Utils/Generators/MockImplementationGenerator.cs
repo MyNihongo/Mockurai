@@ -18,7 +18,7 @@ internal static class MockImplementationGenerator
 
 		var source = stringBuilder
 			.AppendLine("#nullable enable")
-			.Append("namespace ").Append(result.Options.RootNamespace).AppendLine()
+			.Append("namespace ").Append(result.Options.RootNamespace).AppendLine(";")
 			.AppendLine()
 			.Append(accessibilityString).Append(" sealed class ").Append(mockClassName).Append(" : IMock<").Append(typeString).AppendLine(">")
 			.AppendLine("{")
@@ -36,11 +36,10 @@ internal static class MockImplementationGenerator
 			.AppendLine()
 			.Indent(1).AppendLine("public InvocationContainer Invocations => field ??= new InvocationContainer(this);")
 			.AppendLine()
-			.CreateMockMethods(mockedTypeSymbol, mockableMembers, indent: 1, out var methodSymbols).AppendLine()
-			.AppendLine()
+			.CreateMockMethods(mockedTypeSymbol, mockableMembers, indent: 1, out var methodSymbols)
 			.Indent(1).AppendLine("public void VerifyNoOtherCalls()")
 			.Indent(1).AppendLine("{")
-			.CreateVerifyNoOtherCalls(mockableMembers, indent: 2).AppendLine()
+			.CreateVerifyNoOtherCalls(mockableMembers, indent: 2)
 			.Indent(1).AppendLine("}")
 			.AppendLine()
 			.Indent(1).AppendLine("private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()")
@@ -56,8 +55,7 @@ internal static class MockImplementationGenerator
 			.Indent(2).AppendLine("{")
 			.Indent(3).AppendLine("_mock = mock;")
 			.Indent(2).AppendLine("}")
-			.AppendLine()
-			.CreateProxyMethods(mockedTypeSymbol, mockableMembers, indent: 2).AppendLine()
+			.CreateProxyMethods(mockedTypeSymbol, mockableMembers, indent: 2)
 			.Indent(1).AppendLine("}")
 			.AppendLine()
 			.Indent(1).AppendLine("public sealed class InvocationContainer")
@@ -68,8 +66,7 @@ internal static class MockImplementationGenerator
 			.Indent(2).AppendLine("{")
 			.Indent(3).AppendLine("_mock = mock;")
 			.Indent(2).AppendLine("}")
-			.AppendLine()
-			.CreateInvocationContainerProperties(mockedTypeSymbol, mockableMembers, indent: 2).AppendLine()
+			.CreateInvocationContainerProperties(mockedTypeSymbol, mockableMembers, indent: 2)
 			.Indent(1).AppendLine("}")
 			.AppendLine("}")
 			.AppendLine()
@@ -81,8 +78,7 @@ internal static class MockImplementationGenerator
 			.AppendLine()
 			.Indent(2).Append(accessibilityString).AppendLine(" void VerifyNoOtherCalls() =>")
 			.Indent(3).Append("((").Append(mockClassName).AppendLine(")@this).VerifyNoOtherCalls();")
-			.AppendLine()
-			.CreateMockExtensions(mockedTypeSymbol, mockableMembers, mockClassName, accessibility, indent: 2).AppendLine()
+			.CreateMockExtensions(mockedTypeSymbol, mockableMembers, mockClassName, accessibility, indent: 2)
 			.Indent(1).AppendLine("}")
 			.AppendLine("}")
 			.AppendLine()
@@ -90,7 +86,7 @@ internal static class MockImplementationGenerator
 			.AppendLine("{")
 			.Indent(1).Append("extension").Append(genericTypes).Append("(IMockSequence<").Append(typeString).AppendLine("> @this)")
 			.Indent(1).AppendLine("{")
-			.CreateMockSequenceExtensions(mockedTypeSymbol, mockableMembers, mockClassName, accessibility, indent: 2).AppendLine()
+			.CreateMockSequenceExtensions(mockedTypeSymbol, mockableMembers, mockClassName, accessibility, indent: 2)
 			.Indent(1).AppendLine("}")
 			.Append('}')
 			.ToString();
@@ -152,9 +148,8 @@ internal static class MockImplementationGenerator
 		{
 			List<IMethodSymbol>? methodSymbolList = null;
 
-			for (int i = 0, generateCount = 0; i < members.Count; i++)
+			foreach (var member in members)
 			{
-				var member = members[i];
 				Func<StringBuilder, MockedTypeSymbol, MockedMemberSymbol, int, ImmutableArray<IMethodSymbol>>? handler = member.Symbol.Kind switch
 				{
 					SymbolKind.Event => MockImplementationEventGenerator.AppendEventMockMethod,
@@ -166,11 +161,6 @@ internal static class MockImplementationGenerator
 				if (handler is null)
 					continue;
 
-				if (generateCount > 0)
-					stringBuilder
-						.AppendLine()
-						.AppendLine();
-
 				var methodSymbolResults = handler(stringBuilder, typeSymbol, member, indent);
 				if (!methodSymbolResults.IsDefaultOrEmpty)
 				{
@@ -181,7 +171,9 @@ internal static class MockImplementationGenerator
 					methodSymbolList.AddRange(methodSymbolsToAdd);
 				}
 
-				generateCount++;
+				stringBuilder
+					.AppendLine()
+					.AppendLine();
 			}
 
 			methodSymbols = methodSymbolList;
@@ -190,7 +182,6 @@ internal static class MockImplementationGenerator
 
 		private StringBuilder CreateVerifyNoOtherCalls(IReadOnlyList<MockedMemberSymbol> members, int indent)
 		{
-			var methodIndex = 0;
 			foreach (var member in members)
 			{
 				Func<MockedMemberSymbol, IEnumerable<IMethodSymbol>>? methods = member.Symbol.Kind switch
@@ -206,16 +197,11 @@ internal static class MockImplementationGenerator
 
 				foreach (var method in methods(member))
 				{
-					if (methodIndex > 0)
-						stringBuilder.AppendLine();
-
 					stringBuilder
 						.Indent(indent)
 						.AppendInvocationFieldName(member.MemberName, method.MethodKind)
 						.AppendVerifyNoOtherCallsInvocation()
-						.Append(';');
-
-					methodIndex++;
+						.AppendLine(";");
 				}
 			}
 
@@ -267,6 +253,9 @@ internal static class MockImplementationGenerator
 
 		private StringBuilder CreateProxyMethods(MockedTypeSymbol typeSymbol, IReadOnlyList<MockedMemberSymbol> members, int indent)
 		{
+			if (members.Count > 0)
+				stringBuilder.AppendLine();
+
 			var generatedCount = 0;
 			foreach (var member in members)
 			{
@@ -316,13 +305,19 @@ internal static class MockImplementationGenerator
 				generatedCount++;
 			}
 
-			return stringBuilder;
+			return members.Count > 0
+				? stringBuilder.AppendLine()
+				: stringBuilder;
 		}
 
-		private StringBuilder CreateInvocationContainerProperties(MockedTypeSymbol typeSymbol,
+		private StringBuilder CreateInvocationContainerProperties(
+			MockedTypeSymbol typeSymbol,
 			IReadOnlyList<MockedMemberSymbol> members,
 			int indent)
 		{
+			if (members.Count > 0)
+				stringBuilder.AppendLine();
+
 			for (int i = 0, generatedCount = 0; i < members.Count; i++)
 			{
 				var memberSymbol = members[i];
@@ -402,15 +397,21 @@ internal static class MockImplementationGenerator
 				}
 			}
 
-			return stringBuilder;
+			return members.Count > 0
+				? stringBuilder.AppendLine()
+				: stringBuilder;
 		}
 
-		private StringBuilder CreateMockExtensions(MockedTypeSymbol typeSymbol,
+		private StringBuilder CreateMockExtensions(
+			MockedTypeSymbol typeSymbol,
 			IReadOnlyList<MockedMemberSymbol> members,
 			string mockClassName,
 			Accessibility accessibility,
 			int indent)
 		{
+			if (members.Count > 0)
+				stringBuilder.AppendLine();
+
 			var generatedCount = 0;
 			foreach (var member in members)
 			{
@@ -437,10 +438,13 @@ internal static class MockImplementationGenerator
 				generatedCount++;
 			}
 
-			return stringBuilder;
+			return members.Count > 0
+				? stringBuilder.AppendLine()
+				: stringBuilder;
 		}
 
-		private StringBuilder CreateMockSequenceExtensions(MockedTypeSymbol mockedTypeSymbol,
+		private StringBuilder CreateMockSequenceExtensions(
+			MockedTypeSymbol mockedTypeSymbol,
 			IReadOnlyList<MockedMemberSymbol> members,
 			string mockClassName,
 			Accessibility accessibility,
@@ -472,7 +476,9 @@ internal static class MockImplementationGenerator
 				generatedCount++;
 			}
 
-			return stringBuilder;
+			return members.Count > 0
+				? stringBuilder.AppendLine()
+				: stringBuilder;
 		}
 	}
 }
