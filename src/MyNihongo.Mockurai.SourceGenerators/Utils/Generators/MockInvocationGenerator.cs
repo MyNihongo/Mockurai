@@ -79,457 +79,460 @@ internal static class MockInvocationGenerator
 		);
 	}
 
-	private static StringBuilder CreatePrefixFields(this StringBuilder stringBuilder, IMethodSymbol methodSymbol)
+	extension(StringBuilder stringBuilder)
 	{
-		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+		private StringBuilder CreatePrefixFields(IMethodSymbol methodSymbol)
 		{
-			if (i != 0)
-				stringBuilder.Append(", ");
-
-			stringBuilder.AppendParameterPrefixFieldName(i);
-		}
-
-		return stringBuilder;
-	}
-
-	private static StringBuilder CreateConstructor(this StringBuilder stringBuilder, IMethodSymbol methodSymbol, int indent)
-	{
-		stringBuilder
-			.Indent(indent)
-			.Append("public ")
-			.AppendInvocationClassName(methodSymbol.Parameters, appendGenericDeclaration: false)
-			.Append("(string name, ");
-
-		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
-		{
-			if (i != 0)
-				stringBuilder.Append(", ");
-
-			stringBuilder
-				.Append("string? ")
-				.AppendParameterPrefixVariableName(i)
-				.Append(" = null");
-		}
-
-		stringBuilder
-			.AppendLine(")")
-			.Indent(indent++).AppendLine("{")
-			.Indent(indent).AppendLine("_name = name;");
-
-		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
-		{
-			stringBuilder
-				.Indent(indent)
-				.AppendParameterPrefixFieldName(i)
-				.Append(" = ")
-				.AppendParameterPrefixVariableName(i)
-				.AppendLine(";");
-		}
-
-		return stringBuilder
-			.Indent(--indent).AppendLine("}");
-	}
-
-	private static StringBuilder CreateRegisterMethod(this StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
-	{
-		stringBuilder
-			.Indent(indent)
-			.Append("public void Register(in InvocationIndex.Counter index, ")
-			.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride, appendRefKind: false, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
-			.AppendLine(")");
-
-		return stringBuilder
-			.Indent(indent++).AppendLine("{")
-			.Indent(indent).AppendLine("var invokedIndex = index.Increment();")
-			.Indent(indent).Append("_invocations.Add(new Item(invokedIndex, ")
-			.AppendParameterNames(methodSymbol.Parameters, appendComma: true, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
-			.AppendLine("invocation: this));")
-			.Indent(--indent).AppendLine("}");
-	}
-
-	private static StringBuilder CreateVerifyMethod(this StringBuilder stringBuilder, IMethodSymbol methodSymbol, VerifyMethodType type, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
-	{
-		stringBuilder
-			.Indent(indent)
-			.Append("public ")
-			.AppendVerifyReturnType(type)
-			.Append(" Verify(")
-			.AppendItSetupParameters(methodSymbol.Parameters, appendComma: true, parameterTypeOverride: genericTypeOverride, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
-			.AppendVerifyParameter(type)
-			.AppendLine(", System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>>? invocationProviders = null)");
-
-		stringBuilder
-			.Indent(indent++).AppendLine("{")
-			.Indent(indent).Append("var span = _invocations.")
-			.AppendVerifySpan(type)
-			.AppendLine(";").AppendLine();
-
-		stringBuilder
-			.Indent(indent).AppendLine("var verifyOutput = new System.Collections.Generic.List<(Item, (string, ComparisonResult?)[]?)>();")
-			.Indent(indent).AppendLine("System.Runtime.InteropServices.CollectionsMarshal.SetCount(verifyOutput, span.Length);")
-			.AppendLine();
-
-		if (type == VerifyMethodType.Times)
-		{
-			stringBuilder
-				.Indent(indent)
-				.AppendLine("var count = 0;");
-		}
-
-		stringBuilder
-			.Indent(indent).AppendLine("for (var i = 0; i < span.Length; i++)")
-			.Indent(indent++).AppendLine("{");
-
-		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
-		{
-			stringBuilder
-				.Indent(indent)
-				.Append("var verify")
-				.AppendParameterPropertyName(i)
-				.Append(" = span[i].Get")
-				.AppendParameterPropertyName(i)
-				.Append('(')
-				.AppendParameterVariableName(i)
-				.AppendLine(".Type);");
-		}
-
-		stringBuilder
-			.Indent(indent)
-			.AppendLine("(string, ComparisonResult?)[]? verifyResults = null;")
-			.AppendLine();
-
-		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
-		{
-			stringBuilder
-				.Indent(indent)
-				.Append("if (!")
-				.AppendParameterVariableName(i)
-				.Append(".Check(verify")
-				.AppendParameterPropertyName(i)
-				.Append(", out ");
-
-			if (i == 0)
-				stringBuilder.Append("var ");
-
-			stringBuilder.AppendLine("result))");
-
-			stringBuilder
-				.Indent(indent++).AppendLine("{")
-				.Indent(indent).Append("verifyResults = ");
-
-			if (i > 0)
+			for (var i = 0; i < methodSymbol.Parameters.Length; i++)
 			{
-				stringBuilder
-					.AppendLine("verifyResults is not null")
-					.Indent(indent + 1).Append("? [..verifyResults, ")
-					.AppendVerifyResult(i)
-					.AppendLine("]");
+				if (i != 0)
+					stringBuilder.Append(", ");
 
-				stringBuilder
-					.Indent(indent + 1).Append(": ");
+				stringBuilder.AppendParameterPrefixFieldName(i);
 			}
 
-			stringBuilder
-				.Append('[')
-				.AppendVerifyResult(i)
-				.AppendLine("];");
-
-			stringBuilder
-				.Indent(--indent)
-				.AppendLine("}");
+			return stringBuilder;
 		}
 
-		stringBuilder
-			.AppendLine()
-			.Indent(indent)
-			.AppendLine("if (verifyResults is not null)")
-			.Indent(indent++).AppendLine("{")
-			.Indent(indent).AppendLine("verifyOutput[i] = (span[i], verifyResults);")
-			.Indent(indent).AppendLine("continue;")
-			.Indent(--indent).AppendLine("}");
-
-		// for loop end
-		stringBuilder
-			.AppendLine()
-			.Indent(indent).AppendLine("verifyOutput[i] = (span[i], null);")
-			.Indent(indent).AppendLine("span[i].IsVerified = true;")
-			.Indent(indent).AppendVerifyLoopEnd(type).AppendLine()
-			.Indent(--indent).AppendLine("}");
-
-		switch (type)
+		private StringBuilder CreateConstructor(IMethodSymbol methodSymbol, int indent)
 		{
-			case VerifyMethodType.Times:
-				stringBuilder
-					.AppendLine()
-					.Indent(indent).AppendLine("if (times.Predicate(count))")
-					.Indent(indent + 1).AppendLine("return;");
-
-				break;
-			case VerifyMethodType.Index:
-				stringBuilder
-					.AppendLine()
-					.Indent(indent).AppendLine("if (invocationProviders is null)")
-					.Indent(indent++).AppendLine("{")
-					.Indent(indent).AppendLine("span = _invocations.GetItemsSpanBefore(index);")
-					.Indent(indent).AppendLine("for (var i = 0; i < span.Length; i++)")
-					.Indent(indent + 1).AppendLine("verifyOutput.Insert(i, (span[i], null));")
-					.Indent(--indent).AppendLine("}");
-				break;
-		}
-
-		stringBuilder
-			.AppendLine()
-			.Indent(indent).AppendLine("var invocations = verifyOutput.GetStrings(invocationProviders);")
-			.Indent(indent).Append("var verifyName = string.Format(_name, ");
-
-		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
-		{
-			if (i != 0)
-				stringBuilder.Append(", ");
-
-			stringBuilder
-				.AppendParameterVariableName(i)
-				.Append(".ToString(")
-				.AppendParameterPrefixFieldName(i)
-				.Append(')');
-		}
-
-		stringBuilder.AppendLine(");");
-
-		return stringBuilder
-			.Indent(indent).AppendVerifyThrow(type).AppendLine()
-			.Indent(--indent).AppendLine("}");
-	}
-
-	private static StringBuilder CreateVerifyNoOtherCalls(this StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
-	{
-		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
-		{
-			var parameter = methodSymbol.Parameters[i];
-
-			var template = genericTypeOverride.GetValueOrDefault(parameter);
-			var typeOverride = template.Build(Fuck);
-
-			stringBuilder
-				.Indent(indent)
-				.Append("var typeName")
-				.AppendParameterPropertyName(i)
-				.Append(" = !string.IsNullOrEmpty(")
-				.AppendParameterPrefixFieldName(i)
-				.Append(") ? $\"{")
-				.AppendParameterPrefixFieldName(i)
-				.Append("} ")
-				.AppendTypeInsideString(parameter.Type, typeOverride)
-				.Append("\" : ")
-				.AppendTypeSeparate(parameter.Type, template, typeOverride)
-				.AppendLine(";");
-		}
-
-		stringBuilder
-			.Indent(indent).Append("var verifyName = string.Format(_name, ");
-
-		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
-		{
-			if (i != 0)
-				stringBuilder.Append(", ");
-
-			stringBuilder
-				.Append("typeName")
-				.AppendParameterPropertyName(i);
-		}
-
-		return stringBuilder
-			.Append(");");
-
-		static object Fuck(object x)
-		{
-			return $"{{typeof({x}).Name}}";
-		}
-	}
-
-	private static StringBuilder CreateItemFields(this StringBuilder stringBuilder, IMethodSymbol methodSymbol, int indent)
-	{
-		stringBuilder
-			.Indent(indent)
-			.Append("private readonly string? ");
-
-		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
-		{
-			if (i != 0)
-				stringBuilder.Append(", ");
-
-			stringBuilder
-				.AppendFieldName(JsonSnapshotName)
-				.AppendParameterPropertyName(i);
-		}
-
-		return stringBuilder
-			.Append(';');
-	}
-
-	private static StringBuilder CreateItemConstructor(this StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
-	{
-		stringBuilder
-			.Indent(indent)
-			.Append("public Item(long index, ")
-			.AppendParameters(methodSymbol.Parameters, appendComma: true, parameterTypeOverride: genericTypeOverride, appendRefKind: false, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
-			.AppendInvocationClassName(methodSymbol.Parameters, appendGenericDeclaration: true)
-			.AppendLine(" invocation)");
-
-		stringBuilder
-			.Indent(indent++).AppendLine("{")
-			.Indent(indent).Append("_argument = ").AppendParameterVariableTupleNames(methodSymbol.Parameters).AppendLine(";")
-			.Indent(indent).AppendLine("_invocation = invocation;")
-			.Indent(indent).AppendLine("Index = index;");
-
-		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
-		{
-			stringBuilder.AppendLine();
-
-			stringBuilder
-				.Indent(indent)
-				.AppendLine("try")
-				.Indent(indent++).AppendLine("{");
-
-			stringBuilder
-				.Indent(indent)
-				.AppendFieldName(JsonSnapshotName)
-				.AppendParameterPropertyName(i)
-				.Append(" = ")
-				.AppendParameterVariableName(i)
-				.AppendLine(".SerializeToJson();");
-
-			stringBuilder
-				.Indent(--indent)
-				.AppendLine("}")
-				.Indent(indent).AppendLine("catch")
-				.Indent(indent).AppendLine("{")
-				.Indent(indent + 1).AppendLine("// Swallow")
-				.Indent(indent).AppendLine("}");
-		}
-
-		return stringBuilder
-			.Indent(--indent).Append('}');
-	}
-
-	private static StringBuilder CreateItemGetMethods(this StringBuilder stringBuilder, IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
-	{
-		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
-		{
-			const string argumentPrefix = "_argument.";
-			var parameter = methodSymbol.Parameters[i];
-
-			var typeOverride = genericTypeOverride
-				.GetValueOrDefault(parameter)
-				.Build();
-
-			if (i != 0)
-				stringBuilder.AppendLine().AppendLine();
-
 			stringBuilder
 				.Indent(indent)
 				.Append("public ")
-				.AppendType(parameter.Type, typeOverride)
-				.Append(" Get")
-				.AppendParameterPropertyName(i)
-				.AppendLine("(SetupType setupType)")
+				.AppendInvocationClassName(methodSymbol.Parameters, appendGenericDeclaration: false)
+				.Append("(string name, ");
+
+			for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+			{
+				if (i != 0)
+					stringBuilder.Append(", ");
+
+				stringBuilder
+					.Append("string? ")
+					.AppendParameterPrefixVariableName(i)
+					.Append(" = null");
+			}
+
+			stringBuilder
+				.AppendLine(")")
+				.Indent(indent++).AppendLine("{")
+				.Indent(indent).AppendLine("_name = name;");
+
+			for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+			{
+				stringBuilder
+					.Indent(indent)
+					.AppendParameterPrefixFieldName(i)
+					.Append(" = ")
+					.AppendParameterPrefixVariableName(i)
+					.AppendLine(";");
+			}
+
+			return stringBuilder
+				.Indent(--indent).AppendLine("}");
+		}
+
+		private StringBuilder CreateRegisterMethod(IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
+		{
+			stringBuilder
+				.Indent(indent)
+				.Append("public void Register(in InvocationIndex.Counter index, ")
+				.AppendParameters(methodSymbol.Parameters, parameterTypeOverride: genericTypeOverride, appendRefKind: false, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
+				.AppendLine(")");
+
+			return stringBuilder
+				.Indent(indent++).AppendLine("{")
+				.Indent(indent).AppendLine("var invokedIndex = index.Increment();")
+				.Indent(indent).Append("_invocations.Add(new Item(invokedIndex, ")
+				.AppendParameterNames(methodSymbol.Parameters, appendComma: true, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
+				.AppendLine("invocation: this));")
+				.Indent(--indent).AppendLine("}");
+		}
+
+		private StringBuilder CreateVerifyMethod(IMethodSymbol methodSymbol, VerifyMethodType type, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
+		{
+			stringBuilder
+				.Indent(indent)
+				.Append("public ")
+				.AppendVerifyReturnType(type)
+				.Append(" Verify(")
+				.AppendItSetupParameters(methodSymbol.Parameters, appendComma: true, parameterTypeOverride: genericTypeOverride, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
+				.AppendVerifyParameter(type)
+				.AppendLine(", System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>>? invocationProviders = null)");
+
+			stringBuilder
+				.Indent(indent++).AppendLine("{")
+				.Indent(indent).Append("var span = _invocations.")
+				.AppendVerifySpan(type)
+				.AppendLine(";").AppendLine();
+
+			stringBuilder
+				.Indent(indent).AppendLine("var verifyOutput = new System.Collections.Generic.List<(Item, (string, ComparisonResult?)[]?)>();")
+				.Indent(indent).AppendLine("System.Runtime.InteropServices.CollectionsMarshal.SetCount(verifyOutput, span.Length);")
+				.AppendLine();
+
+			if (type == VerifyMethodType.Times)
+			{
+				stringBuilder
+					.Indent(indent)
+					.AppendLine("var count = 0;");
+			}
+
+			stringBuilder
+				.Indent(indent).AppendLine("for (var i = 0; i < span.Length; i++)")
 				.Indent(indent++).AppendLine("{");
+
+			for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+			{
+				stringBuilder
+					.Indent(indent)
+					.Append("var verify")
+					.AppendParameterPropertyName(i)
+					.Append(" = span[i].Get")
+					.AppendParameterPropertyName(i)
+					.Append('(')
+					.AppendParameterVariableName(i)
+					.AppendLine(".Type);");
+			}
 
 			stringBuilder
 				.Indent(indent)
-				.Append("return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(")
-				.AppendFieldName(JsonSnapshotName)
-				.AppendParameterPropertyName(i)
-				.AppendLine(")");
+				.AppendLine("(string, ComparisonResult?)[]? verifyResults = null;")
+				.AppendLine();
 
-			stringBuilder
-				.Indent(indent + 1)
-				.Append("? ")
-				.AppendFieldName(JsonSnapshotName)
-				.AppendParameterPropertyName(i)
-				.Append($".DeserializeFromJson({argumentPrefix}")
-				.AppendParameterVariableName(i)
-				.AppendLine(")");
+			for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+			{
+				stringBuilder
+					.Indent(indent)
+					.Append("if (!")
+					.AppendParameterVariableName(i)
+					.Append(".Check(verify")
+					.AppendParameterPropertyName(i)
+					.Append(", out ");
 
-			stringBuilder
-				.Indent(indent + 1)
-				.Append($": {argumentPrefix}")
-				.AppendParameterVariableName(i)
-				.AppendLine(";");
+				if (i == 0)
+					stringBuilder.Append("var ");
 
-			stringBuilder
-				.Indent(--indent)
-				.Append('}');
-		}
+				stringBuilder.AppendLine("result))");
 
-		return stringBuilder;
-	}
+				stringBuilder
+					.Indent(indent++).AppendLine("{")
+					.Indent(indent).Append("verifyResults = ");
 
-	private static StringBuilder CreateToStringMethod(this StringBuilder stringBuilder, IMethodSymbol methodSymbol, int indent)
-	{
-		for (var i = 0; i < methodSymbol.Parameters.Length; i++)
-		{
+				if (i > 0)
+				{
+					stringBuilder
+						.AppendLine("verifyResults is not null")
+						.Indent(indent + 1).Append("? [..verifyResults, ")
+						.AppendVerifyResult(i)
+						.AppendLine("]");
+
+					stringBuilder
+						.Indent(indent + 1).Append(": ");
+				}
+
+				stringBuilder
+					.Append('[')
+					.AppendVerifyResult(i)
+					.AppendLine("];");
+
+				stringBuilder
+					.Indent(--indent)
+					.AppendLine("}");
+			}
+
 			stringBuilder
 				.AppendLine()
 				.Indent(indent)
-				.Append("// ")
-				.AppendParameterVariableName(i)
-				.AppendLine();
+				.AppendLine("if (verifyResults is not null)")
+				.Indent(indent++).AppendLine("{")
+				.Indent(indent).AppendLine("verifyOutput[i] = (span[i], verifyResults);")
+				.Indent(indent).AppendLine("continue;")
+				.Indent(--indent).AppendLine("}");
 
-			if (i != 0)
+			// for loop end
+			stringBuilder
+				.AppendLine()
+				.Indent(indent).AppendLine("verifyOutput[i] = (span[i], null);")
+				.Indent(indent).AppendLine("span[i].IsVerified = true;")
+				.Indent(indent).AppendVerifyLoopEnd(type).AppendLine()
+				.Indent(--indent).AppendLine("}");
+
+			switch (type)
+			{
+				case VerifyMethodType.Times:
+					stringBuilder
+						.AppendLine()
+						.Indent(indent).AppendLine("if (times.Predicate(count))")
+						.Indent(indent + 1).AppendLine("return;");
+
+					break;
+				case VerifyMethodType.Index:
+					stringBuilder
+						.AppendLine()
+						.Indent(indent).AppendLine("if (invocationProviders is null)")
+						.Indent(indent++).AppendLine("{")
+						.Indent(indent).AppendLine("span = _invocations.GetItemsSpanBefore(index);")
+						.Indent(indent).AppendLine("for (var i = 0; i < span.Length; i++)")
+						.Indent(indent + 1).AppendLine("verifyOutput.Insert(i, (span[i], null));")
+						.Indent(--indent).AppendLine("}");
+					break;
+			}
+
+			stringBuilder
+				.AppendLine()
+				.Indent(indent).AppendLine("var invocations = verifyOutput.GetStrings(invocationProviders);")
+				.Indent(indent).Append("var verifyName = string.Format(_name, ");
+
+			for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+			{
+				if (i != 0)
+					stringBuilder.Append(", ");
+
 				stringBuilder
-					.Indent(indent)
-					.AppendLine("stringBuilder.Clear();");
+					.AppendParameterVariableName(i)
+					.Append(".ToString(")
+					.AppendParameterPrefixFieldName(i)
+					.Append(')');
+			}
 
-			stringBuilder
-				.Indent(indent)
-				.Append("if (!string.IsNullOrEmpty(_invocation.")
-				.AppendParameterPrefixFieldName(i)
-				.AppendLine("))");
+			stringBuilder.AppendLine(");");
 
-			stringBuilder
-				.Indent(indent + 1)
-				.Append("stringBuilder.Append($\"{_invocation.")
-				.AppendParameterPrefixFieldName(i)
-				.AppendLine("} \");");
-
-			stringBuilder
-				.Indent(indent)
-				.Append("if (!string.IsNullOrEmpty(")
-				.AppendFieldName(JsonSnapshotName)
-				.AppendParameterPropertyName(i)
-				.AppendLine("))");
-
-			stringBuilder
-				.Indent(indent + 1)
-				.Append("stringBuilder.Append(")
-				.AppendFieldName(JsonSnapshotName)
-				.AppendParameterPropertyName(i)
-				.AppendLine(");");
-
-			stringBuilder
-				.Indent(indent)
-				.AppendLine("else");
-
-			stringBuilder
-				.Indent(indent + 1)
-				.Append("stringBuilder.Append(_argument.")
-				.AppendParameterVariableName(i)
-				.AppendLine(");");
-
-			stringBuilder
-				.Indent(indent)
-				.Append("var ")
-				.AppendParameterVariableName(i)
-				.AppendLine(" = stringBuilder.ToString();");
+			return stringBuilder
+				.Indent(indent).AppendVerifyThrow(type).AppendLine()
+				.Indent(--indent).AppendLine("}");
 		}
 
-		return stringBuilder
-			.AppendLine()
-			.Indent(indent)
-			.Append("var stringValue = string.Format(_invocation._name, ")
-			.AppendParameterNames(methodSymbol.Parameters, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
-			.Append(");");
+		private StringBuilder CreateVerifyNoOtherCalls(IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
+		{
+			for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+			{
+				var parameter = methodSymbol.Parameters[i];
+
+				var template = genericTypeOverride.GetValueOrDefault(parameter);
+				var typeOverride = template.Build(Fuck);
+
+				stringBuilder
+					.Indent(indent)
+					.Append("var typeName")
+					.AppendParameterPropertyName(i)
+					.Append(" = !string.IsNullOrEmpty(")
+					.AppendParameterPrefixFieldName(i)
+					.Append(") ? $\"{")
+					.AppendParameterPrefixFieldName(i)
+					.Append("} ")
+					.AppendTypeInsideString(parameter.Type, typeOverride)
+					.Append("\" : ")
+					.AppendTypeSeparate(parameter.Type, template, typeOverride)
+					.AppendLine(";");
+			}
+
+			stringBuilder
+				.Indent(indent).Append("var verifyName = string.Format(_name, ");
+
+			for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+			{
+				if (i != 0)
+					stringBuilder.Append(", ");
+
+				stringBuilder
+					.Append("typeName")
+					.AppendParameterPropertyName(i);
+			}
+
+			return stringBuilder
+				.Append(");");
+
+			static object Fuck(object x)
+			{
+				return $"{{typeof({x}).Name}}";
+			}
+		}
+
+		private StringBuilder CreateItemFields(IMethodSymbol methodSymbol, int indent)
+		{
+			stringBuilder
+				.Indent(indent)
+				.Append("private readonly string? ");
+
+			for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+			{
+				if (i != 0)
+					stringBuilder.Append(", ");
+
+				stringBuilder
+					.AppendFieldName(JsonSnapshotName)
+					.AppendParameterPropertyName(i);
+			}
+
+			return stringBuilder
+				.Append(';');
+		}
+
+		private StringBuilder CreateItemConstructor(IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
+		{
+			stringBuilder
+				.Indent(indent)
+				.Append("public Item(long index, ")
+				.AppendParameters(methodSymbol.Parameters, appendComma: true, parameterTypeOverride: genericTypeOverride, appendRefKind: false, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
+				.AppendInvocationClassName(methodSymbol.Parameters, appendGenericDeclaration: true)
+				.AppendLine(" invocation)");
+
+			stringBuilder
+				.Indent(indent++).AppendLine("{")
+				.Indent(indent).Append("_argument = ").AppendParameterVariableTupleNames(methodSymbol.Parameters).AppendLine(";")
+				.Indent(indent).AppendLine("_invocation = invocation;")
+				.Indent(indent).AppendLine("Index = index;");
+
+			for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+			{
+				stringBuilder.AppendLine();
+
+				stringBuilder
+					.Indent(indent)
+					.AppendLine("try")
+					.Indent(indent++).AppendLine("{");
+
+				stringBuilder
+					.Indent(indent)
+					.AppendFieldName(JsonSnapshotName)
+					.AppendParameterPropertyName(i)
+					.Append(" = ")
+					.AppendParameterVariableName(i)
+					.AppendLine(".SerializeToJson();");
+
+				stringBuilder
+					.Indent(--indent)
+					.AppendLine("}")
+					.Indent(indent).AppendLine("catch")
+					.Indent(indent).AppendLine("{")
+					.Indent(indent + 1).AppendLine("// Swallow")
+					.Indent(indent).AppendLine("}");
+			}
+
+			return stringBuilder
+				.Indent(--indent).Append('}');
+		}
+
+		private StringBuilder CreateItemGetMethods(IMethodSymbol methodSymbol, ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride, int indent)
+		{
+			for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+			{
+				const string argumentPrefix = "_argument.";
+				var parameter = methodSymbol.Parameters[i];
+
+				var typeOverride = genericTypeOverride
+					.GetValueOrDefault(parameter)
+					.Build();
+
+				if (i != 0)
+					stringBuilder.AppendLine().AppendLine();
+
+				stringBuilder
+					.Indent(indent)
+					.Append("public ")
+					.AppendType(parameter.Type, typeOverride)
+					.Append(" Get")
+					.AppendParameterPropertyName(i)
+					.AppendLine("(SetupType setupType)")
+					.Indent(indent++).AppendLine("{");
+
+				stringBuilder
+					.Indent(indent)
+					.Append("return setupType == SetupType.Equivalent && !string.IsNullOrEmpty(")
+					.AppendFieldName(JsonSnapshotName)
+					.AppendParameterPropertyName(i)
+					.AppendLine(")");
+
+				stringBuilder
+					.Indent(indent + 1)
+					.Append("? ")
+					.AppendFieldName(JsonSnapshotName)
+					.AppendParameterPropertyName(i)
+					.Append($".DeserializeFromJson({argumentPrefix}")
+					.AppendParameterVariableName(i)
+					.AppendLine(")");
+
+				stringBuilder
+					.Indent(indent + 1)
+					.Append($": {argumentPrefix}")
+					.AppendParameterVariableName(i)
+					.AppendLine(";");
+
+				stringBuilder
+					.Indent(--indent)
+					.Append('}');
+			}
+
+			return stringBuilder;
+		}
+
+		private StringBuilder CreateToStringMethod(IMethodSymbol methodSymbol, int indent)
+		{
+			for (var i = 0; i < methodSymbol.Parameters.Length; i++)
+			{
+				stringBuilder
+					.AppendLine()
+					.Indent(indent)
+					.Append("// ")
+					.AppendParameterVariableName(i)
+					.AppendLine();
+
+				if (i != 0)
+					stringBuilder
+						.Indent(indent)
+						.AppendLine("stringBuilder.Clear();");
+
+				stringBuilder
+					.Indent(indent)
+					.Append("if (!string.IsNullOrEmpty(_invocation.")
+					.AppendParameterPrefixFieldName(i)
+					.AppendLine("))");
+
+				stringBuilder
+					.Indent(indent + 1)
+					.Append("stringBuilder.Append($\"{_invocation.")
+					.AppendParameterPrefixFieldName(i)
+					.AppendLine("} \");");
+
+				stringBuilder
+					.Indent(indent)
+					.Append("if (!string.IsNullOrEmpty(")
+					.AppendFieldName(JsonSnapshotName)
+					.AppendParameterPropertyName(i)
+					.AppendLine("))");
+
+				stringBuilder
+					.Indent(indent + 1)
+					.Append("stringBuilder.Append(")
+					.AppendFieldName(JsonSnapshotName)
+					.AppendParameterPropertyName(i)
+					.AppendLine(");");
+
+				stringBuilder
+					.Indent(indent)
+					.AppendLine("else");
+
+				stringBuilder
+					.Indent(indent + 1)
+					.Append("stringBuilder.Append(_argument.")
+					.AppendParameterVariableName(i)
+					.AppendLine(");");
+
+				stringBuilder
+					.Indent(indent)
+					.Append("var ")
+					.AppendParameterVariableName(i)
+					.AppendLine(" = stringBuilder.ToString();");
+			}
+
+			return stringBuilder
+				.AppendLine()
+				.Indent(indent)
+				.Append("var stringValue = string.Format(_invocation._name, ")
+				.AppendParameterNames(methodSymbol.Parameters, appendParameterName: MethodSymbolEx.AppendParameterVariableName)
+				.Append(");");
+		}
 	}
 
 	private static string CreateSetupClassName(StringBuilder stringBuilder, IMethodSymbol methodSymbol, out ImmutableDictionary<IParameterSymbol, StringTemplate> genericTypeOverride)
