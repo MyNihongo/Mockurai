@@ -253,10 +253,7 @@ internal static class MockImplementationGenerator
 
 		private StringBuilder CreateProxyMethods(MockedTypeSymbol typeSymbol, IReadOnlyList<MockedMemberSymbol> members, int indent)
 		{
-			if (members.Count > 0)
-				stringBuilder.AppendLine();
-
-			var generatedCount = 0;
+			int generatedCount = 0, startIndex = stringBuilder.Length;
 			foreach (var member in members)
 			{
 				Action<StringBuilder, MockedTypeSymbol, MockedMemberSymbol, int>? handler = member.Symbol.Kind switch
@@ -305,9 +302,14 @@ internal static class MockImplementationGenerator
 				generatedCount++;
 			}
 
-			return members.Count > 0
-				? stringBuilder.AppendLine()
-				: stringBuilder;
+			if (generatedCount > 0)
+			{
+				return stringBuilder
+					.Insert(startIndex, "\r\n")
+					.AppendLine();
+			}
+			
+			return stringBuilder;
 		}
 
 		private StringBuilder CreateInvocationContainerProperties(

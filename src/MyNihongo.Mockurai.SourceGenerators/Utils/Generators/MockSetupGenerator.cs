@@ -76,7 +76,7 @@ internal static class MockSetupGenerator
 			.Indent(2).AppendLine("public System.Exception? Exception;")
 			.CreateItemSetupDeclaration(returnType, indent: 2).AppendLine()
 			.Indent(1).AppendLine("}")
-			.CreateComparer(parameterSplit.InputParameters, indent: 1).AppendLine()
+			.CreateComparer(parameterSplit.InputParameters, indent: 1)
 			.Append('}')
 			.ToString();
 
@@ -317,7 +317,7 @@ internal static class MockSetupGenerator
 				.AppendLine()
 				.Indent(indent).AppendLine("return xSort.CompareTo(ySort);")
 				.Indent(--indent).AppendLine("}")
-				.Indent(--indent).Append('}');
+				.Indent(--indent).AppendLine("}");
 		}
 	}
 

@@ -4,27 +4,49 @@ namespace MyNihongo.Mockurai.Tests;
 
 public static class StringEx
 {
-	public static string Indent(this string @this, int indent)
+	extension(string @this)
 	{
-		var stringBuilder = new StringBuilder();
-		using var reader = new StringReader(@this);
-
-		var hasLines = false;
-		while (reader.ReadLine() is { } line)
+		public string NewLineIndent(int newLine, int indent)
 		{
-			if (hasLines)
-				stringBuilder.AppendLine();
+			var value = @this.IndentBuilder(indent);
 
-			if (line.Length > 0)
+			if (!string.IsNullOrEmpty(@this))
 			{
-				for (var i = 0; i < indent; i++)
-					stringBuilder.Append('\t');
+				for (var i = 0; i < newLine; i++)
+					value.Insert(index: 0, Environment.NewLine);
 			}
 
-			stringBuilder.Append(line);
-			hasLines = true;
+			return value.ToString();
 		}
 
-		return stringBuilder.ToString();
+		public string Indent(int indent)
+		{
+			return @this.IndentBuilder(indent)
+				.ToString();
+		}
+
+		private StringBuilder IndentBuilder(int indent)
+		{
+			var stringBuilder = new StringBuilder();
+			using var reader = new StringReader(@this);
+
+			var hasLines = false;
+			while (reader.ReadLine() is { } line)
+			{
+				if (hasLines)
+					stringBuilder.AppendLine();
+
+				if (line.Length > 0)
+				{
+					for (var i = 0; i < indent; i++)
+						stringBuilder.Append('\t');
+				}
+
+				stringBuilder.Append(line);
+				hasLines = true;
+			}
+
+			return stringBuilder;
+		}
 	}
 }

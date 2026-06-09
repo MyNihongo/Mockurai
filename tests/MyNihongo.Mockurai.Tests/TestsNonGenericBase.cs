@@ -264,13 +264,10 @@ public abstract class TestsNonGenericBase : TestsBase
 
 			  	public MyNihongo.Example.Tests.Class Object => _proxy ??= new Proxy(this);
 
-			  	public InvocationContainer Invocations => field ??= new InvocationContainer(this);
-
-			  {{methods.Indent(1)}}
+			  	public InvocationContainer Invocations => field ??= new InvocationContainer(this);{{methods.NewLineIndent(newLine: 2, indent: 1)}}
 
 			  	public void VerifyNoOtherCalls()
-			  	{
-			  {{verifyNoOtherCalls.Indent(2)}}
+			  	{{{verifyNoOtherCalls.NewLineIndent(newLine: 1, indent: 2)}}
 			  	}
 
 			  	private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
@@ -297,9 +294,7 @@ public abstract class TestsNonGenericBase : TestsBase
 			  		public InvocationContainer(ClassMock mock)
 			  		{
 			  			_mock = mock;
-			  		}
-
-			  {{invocationContainer.Indent(2)}}
+			  		}{{invocationContainer.NewLineIndent(newLine: 2, indent: 2)}}
 			  	}
 			  }
 
@@ -310,17 +305,14 @@ public abstract class TestsNonGenericBase : TestsBase
 			  		public ClassMock.InvocationContainer Invocations => ((ClassMock)@this).Invocations;
 
 			  		public void VerifyNoOtherCalls() =>
-			  			((ClassMock)@this).VerifyNoOtherCalls();
-
-			  {{extensions.Indent(2)}}
+			  			((ClassMock)@this).VerifyNoOtherCalls();{{extensions.NewLineIndent(newLine: 2, indent: 2)}}
 			  	}
 			  }
 
 			  public static partial class MockSequenceExtensions
 			  {
 			  	extension(IMockSequence<MyNihongo.Example.Tests.Class> @this)
-			  	{
-			  {{extensionsSequence.Indent(2)}}
+			  	{{{extensionsSequence.NewLineIndent(newLine: 1, indent: 2)}}
 			  	}
 			  }
 			  """;
