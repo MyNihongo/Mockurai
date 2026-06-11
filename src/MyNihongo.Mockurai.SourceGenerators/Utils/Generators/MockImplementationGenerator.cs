@@ -253,7 +253,7 @@ internal static class MockImplementationGenerator
 
 		private StringBuilder CreateProxyMethods(MockedTypeSymbol typeSymbol, IReadOnlyList<MockedMemberSymbol> members, int indent)
 		{
-			int generatedCount = 0, startIndex = stringBuilder.Length;
+			var generatedCount = 0;
 			foreach (var member in members)
 			{
 				Action<StringBuilder, MockedTypeSymbol, MockedMemberSymbol, int>? handler = member.Symbol.Kind switch
@@ -267,11 +267,16 @@ internal static class MockImplementationGenerator
 				if (handler is null)
 					continue;
 
-				if (generatedCount > 0)
+				// Since StringBuilder.Insert(startIndex, Environment.NewLine) does not work in source generators,
+				// forced to do this workaround to prepend a new line
+				switch (generatedCount)
 				{
-					stringBuilder
-						.AppendLine()
-						.AppendLine();
+					case 0:
+						stringBuilder.AppendLine();
+						break;
+					case > 0:
+						stringBuilder.AppendLine().AppendLine();
+						break;
 				}
 
 				handler(stringBuilder, typeSymbol, member, indent);
@@ -291,25 +296,25 @@ internal static class MockImplementationGenerator
 				if (handler is null)
 					continue;
 
-				if (generatedCount > 0)
+				// Since StringBuilder.Insert(startIndex, Environment.NewLine) does not work in source generators,
+				// forced to do this workaround to prepend a new line
+				switch (generatedCount)
 				{
-					stringBuilder
-						.AppendLine()
-						.AppendLine();
+					case 0:
+						stringBuilder.AppendLine();
+						break;
+					case > 0:
+						stringBuilder.AppendLine().AppendLine();
+						break;
 				}
 
 				handler(stringBuilder, member, indent);
 				generatedCount++;
 			}
 
-			if (generatedCount > 0)
-			{
-				return stringBuilder
-					.Insert(startIndex, "\r\n")
-					.AppendLine();
-			}
-			
-			return stringBuilder;
+			return generatedCount > 0
+				? stringBuilder.AppendLine()
+				: stringBuilder;
 		}
 
 		private StringBuilder CreateInvocationContainerProperties(
