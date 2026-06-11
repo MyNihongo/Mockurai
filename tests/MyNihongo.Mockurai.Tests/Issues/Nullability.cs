@@ -30,7 +30,6 @@ public sealed class Nullability : IssuesTestsBase
 
 				public partial class TestsBase
 				{
-
 					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
 					protected virtual void VerifyNoOtherCalls()
 					{
@@ -96,11 +95,8 @@ public sealed class Nullability : IssuesTestsBase
 
 					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
 
-
-
 					public void VerifyNoOtherCalls()
 					{
-
 					}
 
 					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
@@ -116,8 +112,6 @@ public sealed class Nullability : IssuesTestsBase
 						{
 							_mock = mock;
 						}
-
-
 					}
 
 					public sealed class InvocationContainer
@@ -128,8 +122,6 @@ public sealed class Nullability : IssuesTestsBase
 						{
 							_mock = mock;
 						}
-
-
 					}
 				}
 
@@ -141,8 +133,6 @@ public sealed class Nullability : IssuesTestsBase
 
 						public void VerifyNoOtherCalls() =>
 							((InterfaceMock)@this).VerifyNoOtherCalls();
-
-
 					}
 				}
 
@@ -150,7 +140,6 @@ public sealed class Nullability : IssuesTestsBase
 				{
 					extension(IMockSequence<Issues.Tests.IInterface> @this)
 					{
-
 					}
 				}
 				"""
