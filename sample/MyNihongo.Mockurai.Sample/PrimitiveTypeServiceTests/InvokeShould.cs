@@ -461,4 +461,43 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.VerifyInvoke(Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void CallbackChainedSetup()
+	{
+		var result = 0;
+
+		DependencyServiceMock
+			.SetupInvoke()
+			.Callback(() => result++)
+			.Callback(() => result++);
+
+		var fixture = CreateFixture();
+		fixture.Invoke();
+		fixture.Invoke();
+
+		const decimal expected = 2;
+		Assert.Equal(expected, result);
+	}
+
+	[Fact]
+	public void CallbackSeparateSetup()
+	{
+		var result = 0;
+
+		DependencyServiceMock
+			.SetupInvoke()
+			.Callback(() => result++);
+
+		DependencyServiceMock
+			.SetupInvoke()
+			.Callback(() => result++);
+
+		var fixture = CreateFixture();
+		fixture.Invoke();
+		fixture.Invoke();
+
+		const decimal expected = 1;
+		Assert.Equal(expected, result);
+	}
 }
