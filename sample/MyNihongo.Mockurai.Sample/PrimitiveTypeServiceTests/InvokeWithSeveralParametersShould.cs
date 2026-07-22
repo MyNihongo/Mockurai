@@ -725,4 +725,233 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 		const int expected = 10;
 		Assert.Equal(expected, actual);
 	}
+
+	[Fact]
+	public void ReturnChainedSetupValue()
+	{
+		const int setupValue11 = 11, setupValue12 = 12, setupValue21 = 21, setupValue22 = 22;
+		int result1 = 0, result2 = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(setupValue11, setupValue12)
+			.Callback((_, _) => result1 += 1)
+			.Callback((_, _) => result1 += 2);
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(setupValue21, setupValue22)
+			.Callback((_, _) => result2 += 3)
+			.Callback((_, _) => result2 += 4);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParameters(setupValue11, setupValue12);
+		fixture.InvokeWithSeveralParameters(setupValue11, setupValue12);
+		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
+		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
+
+		const decimal expected1 = 2, expected2 = 4;
+		Assert.Equal(expected1, result1);
+		Assert.Equal(expected2, result2);
+	}
+
+	[Fact]
+	public void ReturnSeparateSetupValue()
+	{
+		const int setupValue11 = 11, setupValue12 = 12, setupValue21 = 21, setupValue22 = 22;
+		int result1 = 0, result2 = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(setupValue11, setupValue12)
+			.Callback((_, _) => result1 += 1);
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(setupValue11, setupValue12)
+			.Callback((_, _) => result1 += 2);
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(setupValue12, setupValue22)
+			.Callback((_, _) => result2 += 3);
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(setupValue21, setupValue22)
+			.Callback((_, _) => result2 += 4);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParameters(setupValue11, setupValue12);
+		fixture.InvokeWithSeveralParameters(setupValue11, setupValue12);
+		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
+		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
+
+		const decimal expected1 = 2, expected2 = 4;
+		Assert.Equal(expected1, result1);
+		Assert.Equal(expected2, result2);
+	}
+
+	[Fact]
+	public void ReturnChainedSetupEquivalent()
+	{
+		const int setupValue11 = 11, setupValue12 = 12, setupValue21 = 21, setupValue22 = 22;
+		int result1 = 0, result2 = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(setupValue11, setupValue12)
+			.Callback((_, _) => result1 += 1)
+			.Callback((_, _) => result1 += 2);
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Equivalent(setupValue21), It<int>.Equivalent(setupValue22))
+			.Callback((_, _) => result2 += 3)
+			.Callback((_, _) => result2 += 4);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParameters(setupValue11, setupValue12);
+		fixture.InvokeWithSeveralParameters(setupValue11, setupValue12);
+		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
+		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
+
+		const decimal expected1 = 2, expected2 = 4;
+		Assert.Equal(expected1, result1);
+		Assert.Equal(expected2, result2);
+	}
+
+	[Fact]
+	public void ReturnSeparateSetupEquivalent()
+	{
+		const int setupValue11 = 11, setupValue12 = 12, setupValue21 = 21, setupValue22 = 22;
+		int result1 = 0, result2 = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Equivalent(setupValue11), It<int>.Equivalent(setupValue12))
+			.Callback((_, _) => result1 += 1);
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Equivalent(setupValue11), It<int>.Equivalent(setupValue12))
+			.Callback((_, _) => result1 += 2);
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Equivalent(setupValue21), It<int>.Equivalent(setupValue22))
+			.Callback((_, _) => result2 += 3);
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Equivalent(setupValue21), It<int>.Equivalent(setupValue22))
+			.Callback((_, _) => result2 += 4);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParameters(setupValue11, setupValue12);
+		fixture.InvokeWithSeveralParameters(setupValue11, setupValue12);
+		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
+		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
+
+		const decimal expected1 = 2, expected2 = 4;
+		Assert.Equal(expected1, result1);
+		Assert.Equal(expected2, result2);
+	}
+
+	[Fact]
+	public void ReturnChainedSetupWhere()
+	{
+		const int setupValue11 = 11, setupValue12 = 12, setupValue21 = 21, setupValue22 = 22;
+		int result1 = 0, result2 = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Where(x => x == setupValue11), It<int>.Where(x => x == setupValue12))
+			.Callback((_, _) => result1 += 1)
+			.Callback((_, _) => result1 += 2);
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Where(x => x == setupValue21), It<int>.Where(x => x == setupValue22))
+			.Callback((_, _) => result2 += 3)
+			.Callback((_, _) => result2 += 4);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParameters(setupValue11, setupValue12);
+		fixture.InvokeWithSeveralParameters(setupValue11, setupValue12);
+		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
+		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
+
+		const decimal expected1 = 2, expected2 = 4;
+		Assert.Equal(expected1, result1);
+		Assert.Equal(expected2, result2);
+	}
+
+	[Fact]
+	public void ReturnSeparateSetupWhere()
+	{
+		const int setupValue11 = 11, setupValue12 = 12, setupValue21 = 21, setupValue22 = 22;
+		int result1 = 0, result2 = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Where(x => x == setupValue11), It<int>.Where(x => x == setupValue12))
+			.Callback((_, _) => result1 += 1);
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Where(x => x == setupValue11), It<int>.Where(x => x == setupValue12))
+			.Callback((_, _) => result1 += 2);
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Where(x => x == setupValue21), It<int>.Where(x => x == setupValue22))
+			.Callback((_, _) => result2 += 3);
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Where(x => x == setupValue21), It<int>.Where(x => x == setupValue22))
+			.Callback((_, _) => result2 += 4);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParameters(setupValue11, setupValue12);
+		fixture.InvokeWithSeveralParameters(setupValue11, setupValue12);
+		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
+		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
+
+		const decimal expected1 = 2, expected2 = 4;
+		Assert.Equal(expected1, result1);
+		Assert.Equal(expected2, result2);
+	}
+
+	[Fact]
+	public void ReturnChainedSetupAny()
+	{
+		const int setupValue11 = 11, setupValue12 = 12, setupValue21 = 21, setupValue22 = 22;
+		int result1 = 0, result2 = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Callback((_, _) => result1 += 1)
+			.Callback((_, _) => result2 += 2);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParameters(setupValue11, setupValue12);
+		fixture.InvokeWithSeveralParameters(setupValue11, setupValue12);
+		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
+		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
+
+		const decimal expected1 = 2, expected2 = 4;
+		Assert.Equal(expected1, result1);
+		Assert.Equal(expected2, result2);
+	}
+
+	[Fact]
+	public void ReturnSeparateSetupAny()
+	{
+		const int setupValue11 = 11, setupValue12 = 12, setupValue21 = 21, setupValue22 = 22;
+		int result1 = 0, result2 = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Callback((_, _) => result1 += 1)
+			.Callback((_, _) => result1 += 2);
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Callback((_, _) => result2 += 3)
+			.Callback((_, _) => result2 += 4);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParameters(setupValue11, setupValue12);
+		fixture.InvokeWithSeveralParameters(setupValue11, setupValue12);
+		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
+		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
+
+		const decimal expected1 = 2, expected2 = 4;
+		Assert.Equal(expected1, result1);
+		Assert.Equal(expected2, result2);
+	}
 }

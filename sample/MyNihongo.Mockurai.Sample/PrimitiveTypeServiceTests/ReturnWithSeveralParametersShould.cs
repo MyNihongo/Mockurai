@@ -942,4 +942,249 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 		DependencyServiceMock.VerifyReturnWithSeveralParameters(setValue1, setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void ReturnChainedSetupValue()
+	{
+		const int setupValue11 = 11, setupValue12 = 12, setupValue21 = 21, setupValue22 = 22;
+		const decimal returnValue11 = 110m, returnValue12 = 120m, returnValue21 = 210m, returnValue22 = 220m;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(setupValue11, setupValue12)
+			.Returns(returnValue11)
+			.Returns(returnValue12);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(setupValue21, setupValue22)
+			.Returns(returnValue21)
+			.Returns(returnValue22);
+
+		var fixture = CreateFixture();
+		var actual11 = fixture.ReturnWithSeveralParameters(setupValue11, setupValue12);
+		var actual12 = fixture.ReturnWithSeveralParameters(setupValue11, setupValue12);
+		var actual21 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
+		var actual22 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
+
+		const double expected1 = 0d, expected2 = 0d;
+		Assert.Equal(expected1, actual11);
+		Assert.Equal(expected1, actual12);
+		Assert.Equal(expected2, actual21);
+		Assert.Equal(expected2, actual22);
+	}
+
+	[Fact]
+	public void ReturnSeparateSetupValue()
+	{
+		const int setupValue11 = 11, setupValue12 = 12, setupValue21 = 21, setupValue22 = 22;
+		const decimal returnValue11 = 110m, returnValue12 = 120m, returnValue21 = 210m, returnValue22 = 220m;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(setupValue11, setupValue12)
+			.Returns(returnValue11);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(setupValue11, setupValue12)
+			.Returns(returnValue12);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(setupValue12, setupValue22)
+			.Returns(returnValue21);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(setupValue21, setupValue22)
+			.Returns(returnValue22);
+
+		var fixture = CreateFixture();
+		var actual11 = fixture.ReturnWithSeveralParameters(setupValue11, setupValue12);
+		var actual12 = fixture.ReturnWithSeveralParameters(setupValue11, setupValue12);
+		var actual21 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
+		var actual22 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
+
+		const double expected1 = 0d, expected2 = 0d;
+		Assert.Equal(expected1, actual11);
+		Assert.Equal(expected1, actual12);
+		Assert.Equal(expected2, actual21);
+		Assert.Equal(expected2, actual22);
+	}
+
+	[Fact]
+	public void ReturnChainedSetupEquivalent()
+	{
+		const int setupValue11 = 11, setupValue12 = 12, setupValue21 = 21, setupValue22 = 22;
+		const decimal returnValue11 = 110m, returnValue12 = 120m, returnValue21 = 210m, returnValue22 = 220m;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Equivalent(setupValue11), It<int>.Equivalent(setupValue12))
+			.Returns(returnValue11)
+			.Returns(returnValue12);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Equivalent(setupValue21), It<int>.Equivalent(setupValue22))
+			.Returns(returnValue21)
+			.Returns(returnValue22);
+
+		var fixture = CreateFixture();
+		var actual11 = fixture.ReturnWithSeveralParameters(setupValue11, setupValue12);
+		var actual12 = fixture.ReturnWithSeveralParameters(setupValue11, setupValue12);
+		var actual21 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
+		var actual22 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
+
+		const double expected1 = 0d, expected2 = 0d;
+		Assert.Equal(expected1, actual11);
+		Assert.Equal(expected1, actual12);
+		Assert.Equal(expected2, actual21);
+		Assert.Equal(expected2, actual22);
+	}
+
+	[Fact]
+	public void ReturnSeparateSetupEquivalent()
+	{
+		const int setupValue11 = 11, setupValue12 = 12, setupValue21 = 21, setupValue22 = 22;
+		const decimal returnValue11 = 110m, returnValue12 = 120m, returnValue21 = 210m, returnValue22 = 220m;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Equivalent(setupValue11), It<int>.Equivalent(setupValue12))
+			.Returns(returnValue11);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Equivalent(setupValue11), It<int>.Equivalent(setupValue12))
+			.Returns(returnValue12);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Equivalent(setupValue21), It<int>.Equivalent(setupValue22))
+			.Returns(returnValue21);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Equivalent(setupValue21), It<int>.Equivalent(setupValue22))
+			.Returns(returnValue22);
+
+		var fixture = CreateFixture();
+		var actual11 = fixture.ReturnWithSeveralParameters(setupValue11, setupValue12);
+		var actual12 = fixture.ReturnWithSeveralParameters(setupValue11, setupValue12);
+		var actual21 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
+		var actual22 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
+
+		const double expected1 = 0d, expected2 = 0d;
+		Assert.Equal(expected1, actual11);
+		Assert.Equal(expected1, actual12);
+		Assert.Equal(expected2, actual21);
+		Assert.Equal(expected2, actual22);
+	}
+
+	[Fact]
+	public void ReturnChainedSetupWhere()
+	{
+		const int setupValue11 = 11, setupValue12 = 12, setupValue21 = 21, setupValue22 = 22;
+		const decimal returnValue11 = 110m, returnValue12 = 120m, returnValue21 = 210m, returnValue22 = 220m;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Where(x => x == setupValue11), It<int>.Where(x => x == setupValue12))
+			.Returns(returnValue11)
+			.Returns(returnValue12);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Where(x => x == setupValue21), It<int>.Where(x => x == setupValue22))
+			.Returns(returnValue21)
+			.Returns(returnValue22);
+
+		var fixture = CreateFixture();
+		var actual11 = fixture.ReturnWithSeveralParameters(setupValue11, setupValue12);
+		var actual12 = fixture.ReturnWithSeveralParameters(setupValue11, setupValue12);
+		var actual21 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
+		var actual22 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
+
+		const double expected1 = 0d, expected2 = 0d;
+		Assert.Equal(expected1, actual11);
+		Assert.Equal(expected1, actual12);
+		Assert.Equal(expected2, actual21);
+		Assert.Equal(expected2, actual22);
+	}
+
+	[Fact]
+	public void ReturnSeparateSetupWhere()
+	{
+		const int setupValue11 = 11, setupValue12 = 12, setupValue21 = 21, setupValue22 = 22;
+		const decimal returnValue11 = 110m, returnValue12 = 120m, returnValue21 = 210m, returnValue22 = 220m;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Where(x => x == setupValue11), It<int>.Where(x => x == setupValue12))
+			.Returns(returnValue11);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Where(x => x == setupValue11), It<int>.Where(x => x == setupValue12))
+			.Returns(returnValue12);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Where(x => x == setupValue21), It<int>.Where(x => x == setupValue22))
+			.Returns(returnValue21);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Where(x => x == setupValue21), It<int>.Where(x => x == setupValue22))
+			.Returns(returnValue22);
+
+		var fixture = CreateFixture();
+		var actual11 = fixture.ReturnWithSeveralParameters(setupValue11, setupValue12);
+		var actual12 = fixture.ReturnWithSeveralParameters(setupValue11, setupValue12);
+		var actual21 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
+		var actual22 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
+
+		const double expected1 = 0d, expected2 = 0d;
+		Assert.Equal(expected1, actual11);
+		Assert.Equal(expected1, actual12);
+		Assert.Equal(expected2, actual21);
+		Assert.Equal(expected2, actual22);
+	}
+
+	[Fact]
+	public void ReturnChainedSetupAny()
+	{
+		const int setupValue11 = 11, setupValue12 = 12, setupValue21 = 21, setupValue22 = 22;
+		const decimal returnValue11 = 110m, returnValue21 = 210m;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Returns(returnValue11)
+			.Returns(returnValue21);
+
+		var fixture = CreateFixture();
+		var actual11 = fixture.ReturnWithSeveralParameters(setupValue11, setupValue12);
+		var actual12 = fixture.ReturnWithSeveralParameters(setupValue11, setupValue12);
+		var actual21 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
+		var actual22 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
+
+		const double expected1 = 0d, expected2 = 0d;
+		Assert.Equal(expected1, actual11);
+		Assert.Equal(expected1, actual12);
+		Assert.Equal(expected2, actual21);
+		Assert.Equal(expected2, actual22);
+	}
+
+	[Fact]
+	public void ReturnSeparateSetupAny()
+	{
+		const int setupValue11 = 11, setupValue12 = 12, setupValue21 = 21, setupValue22 = 22;
+		const decimal returnValue11 = 110m, returnValue12 = 120m, returnValue21 = 210m, returnValue22 = 220m;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Returns(returnValue11)
+			.Returns(returnValue12);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Returns(returnValue21)
+			.Returns(returnValue22);
+
+		var fixture = CreateFixture();
+		var actual11 = fixture.ReturnWithSeveralParameters(setupValue11, setupValue12);
+		var actual12 = fixture.ReturnWithSeveralParameters(setupValue11, setupValue12);
+		var actual21 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
+		var actual22 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
+
+		const double expected1 = 0d, expected2 = 0d;
+		Assert.Equal(expected1, actual11);
+		Assert.Equal(expected1, actual12);
+		Assert.Equal(expected2, actual21);
+		Assert.Equal(expected2, actual22);
+	}
 }

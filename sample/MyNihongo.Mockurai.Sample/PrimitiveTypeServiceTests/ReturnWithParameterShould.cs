@@ -955,7 +955,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void CallbackChainedSetupValue()
+	public void ReturnChainedSetupValue()
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		const string returnValue1 = nameof(returnValue1), returnValue2 = nameof(returnValue2);
@@ -983,7 +983,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void CallbackSeparateSetupValue()
+	public void ReturnSeparateSetupValue()
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		const string returnValue1 = nameof(returnValue1), returnValue2 = nameof(returnValue2);
@@ -1017,7 +1017,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void CallbackChainedSetupEquivalent()
+	public void ReturnChainedSetupEquivalent()
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		const string returnValue1 = nameof(returnValue1), returnValue2 = nameof(returnValue2);
@@ -1045,7 +1045,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void CallbackSeparateSetupEquivalent()
+	public void ReturnSeparateSetupEquivalent()
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		const string returnValue1 = nameof(returnValue1), returnValue2 = nameof(returnValue2);
@@ -1079,7 +1079,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void CallbackChainedSetupWhere()
+	public void ReturnChainedSetupWhere()
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		const string returnValue1 = nameof(returnValue1), returnValue2 = nameof(returnValue2);
@@ -1107,7 +1107,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void CallbackSeparateSetupWhere()
+	public void ReturnSeparateSetupWhere()
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		const string returnValue1 = nameof(returnValue1), returnValue2 = nameof(returnValue2);
@@ -1141,7 +1141,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void CallbackChainedSetupAny()
+	public void ReturnChainedSetupAny()
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		const string returnValue1 = nameof(returnValue1), returnValue2 = nameof(returnValue2);
@@ -1164,7 +1164,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 	}
 
 	[Fact]
-	public void CallbackSeparateSetupAny()
+	public void ReturnSeparateSetupAny()
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
 		const string returnValue1 = nameof(returnValue1), returnValue2 = nameof(returnValue2);
