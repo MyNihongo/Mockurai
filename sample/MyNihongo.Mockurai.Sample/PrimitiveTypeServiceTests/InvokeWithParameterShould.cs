@@ -1075,7 +1075,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.InvokeWithParameter(setupValue2);
 		fixture.InvokeWithParameter(setupValue2);
 
-		const decimal expected1 = 2, expected2 = 4;
+		const decimal expected1 = 3, expected2 = 7;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
@@ -1108,7 +1108,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.InvokeWithParameter(setupValue2);
 		fixture.InvokeWithParameter(setupValue2);
 
-		const decimal expected1 = 1, expected2 = 2;
+		const decimal expected1 = 0, expected2 = 0;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
@@ -1135,7 +1135,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.InvokeWithParameter(setupValue2);
 		fixture.InvokeWithParameter(setupValue2);
 
-		const decimal expected1 = 2, expected2 = 4;
+		const decimal expected1 = 3, expected2 = 7;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
@@ -1168,7 +1168,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.InvokeWithParameter(setupValue2);
 		fixture.InvokeWithParameter(setupValue2);
 
-		const decimal expected1 = 1, expected2 = 2;
+		const decimal expected1 = 0, expected2 = 0;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
@@ -1195,7 +1195,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.InvokeWithParameter(setupValue2);
 		fixture.InvokeWithParameter(setupValue2);
 
-		const decimal expected1 = 2, expected2 = 4;
+		const decimal expected1 = 3, expected2 = 7;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
@@ -1228,7 +1228,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.InvokeWithParameter(setupValue2);
 		fixture.InvokeWithParameter(setupValue2);
 
-		const decimal expected1 = 1, expected2 = 2;
+		const decimal expected1 = 0, expected2 = 0;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
@@ -1237,12 +1237,12 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 	public void CallbackChainedSetupAny()
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
-		var result = 0;
+		int result1 = 0, result2 = 0;
 
 		DependencyServiceMock
 			.SetupInvokeWithParameter(ItIn<string>.Any())
-			.Callback((in _) => result++)
-			.Callback((in _) => result += 2);
+			.Callback((in _) => result1++)
+			.Callback((in _) => result2 += 2);
 
 		var fixture = CreateFixture();
 		fixture.InvokeWithParameter(setupValue1);
@@ -1250,23 +1250,24 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.InvokeWithParameter(setupValue2);
 		fixture.InvokeWithParameter(setupValue2);
 
-		const decimal expected = 4;
-		Assert.Equal(expected, result);
+		const decimal expected1 = 1, expected2 = 6;
+		Assert.Equal(expected1, result1);
+		Assert.Equal(expected2, result2);
 	}
 
 	[Fact]
 	public void CallbackSeparateSetupAny()
 	{
 		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
-		var result = 0;
+		int result1 = 0, result2 = 0;
 
 		DependencyServiceMock
 			.SetupInvokeWithParameter(ItIn<string>.Any())
-			.Callback((in _) => result++);
+			.Callback((in _) => result1++);
 
 		DependencyServiceMock
 			.SetupInvokeWithParameter(ItIn<string>.Any())
-			.Callback((in _) => result += 2);
+			.Callback((in _) => result2 += 2);
 
 		var fixture = CreateFixture();
 		fixture.InvokeWithParameter(setupValue1);
@@ -1274,7 +1275,8 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.InvokeWithParameter(setupValue2);
 		fixture.InvokeWithParameter(setupValue2);
 
-		const decimal expected = 8;
-		Assert.Equal(expected, result);
+		const decimal expected1 = 0, expected2 = 0;
+		Assert.Equal(expected1, result1);
+		Assert.Equal(expected2, result2);
 	}
 }

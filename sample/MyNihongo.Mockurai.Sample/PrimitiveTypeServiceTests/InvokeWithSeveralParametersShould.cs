@@ -748,7 +748,7 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 
-		const decimal expected1 = 2, expected2 = 4;
+		const decimal expected1 = 3, expected2 = 7;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
@@ -781,7 +781,7 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 
-		const decimal expected1 = 2, expected2 = 4;
+		const decimal expected1 = 0, expected2 = 0;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
@@ -808,7 +808,7 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 
-		const decimal expected1 = 2, expected2 = 4;
+		const decimal expected1 = 3, expected2 = 7;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
@@ -841,7 +841,7 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 
-		const decimal expected1 = 2, expected2 = 4;
+		const decimal expected1 = 0, expected2 = 0;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
@@ -868,7 +868,7 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 
-		const decimal expected1 = 2, expected2 = 4;
+		const decimal expected1 = 3, expected2 = 7;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
@@ -901,7 +901,7 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 
-		const decimal expected1 = 2, expected2 = 4;
+		const decimal expected1 = 0, expected2 = 0;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
@@ -923,7 +923,7 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 
-		const decimal expected1 = 2, expected2 = 4;
+		const decimal expected1 = 1, expected2 = 6;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
@@ -950,7 +950,7 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 
-		const decimal expected1 = 2, expected2 = 4;
+		const decimal expected1 = 0, expected2 = 0;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}

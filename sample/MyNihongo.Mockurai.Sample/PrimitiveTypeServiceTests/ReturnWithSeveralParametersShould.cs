@@ -965,11 +965,12 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 		var actual21 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
 		var actual22 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
 
-		const double expected1 = 0d, expected2 = 0d;
-		Assert.Equal(expected1, actual11);
-		Assert.Equal(expected1, actual12);
-		Assert.Equal(expected2, actual21);
-		Assert.Equal(expected2, actual22);
+		const double expected11 = 12100d, expected12 = 14400d;
+		const double expected21 = 44100d, expected22 = 48400d;
+		Assert.Equal(expected11, actual11);
+		Assert.Equal(expected12, actual12);
+		Assert.Equal(expected21, actual21);
+		Assert.Equal(expected22, actual22);
 	}
 
 	[Fact]
@@ -1029,11 +1030,12 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 		var actual21 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
 		var actual22 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
 
-		const double expected1 = 0d, expected2 = 0d;
-		Assert.Equal(expected1, actual11);
-		Assert.Equal(expected1, actual12);
-		Assert.Equal(expected2, actual21);
-		Assert.Equal(expected2, actual22);
+		const double expected11 = 12100d, expected12 = 14400d;
+		const double expected21 = 44100d, expected22 = 48400d;
+		Assert.Equal(expected11, actual11);
+		Assert.Equal(expected12, actual12);
+		Assert.Equal(expected21, actual21);
+		Assert.Equal(expected22, actual22);
 	}
 
 	[Fact]
@@ -1093,11 +1095,12 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 		var actual21 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
 		var actual22 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
 
-		const double expected1 = 0d, expected2 = 0d;
-		Assert.Equal(expected1, actual11);
-		Assert.Equal(expected1, actual12);
-		Assert.Equal(expected2, actual21);
-		Assert.Equal(expected2, actual22);
+		const double expected11 = 12100d, expected12 = 14400d;
+		const double expected21 = 44100d, expected22 = 48400d;
+		Assert.Equal(expected11, actual11);
+		Assert.Equal(expected12, actual12);
+		Assert.Equal(expected21, actual21);
+		Assert.Equal(expected22, actual22);
 	}
 
 	[Fact]
@@ -1152,9 +1155,9 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 		var actual21 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
 		var actual22 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
 
-		const double expected1 = 0d, expected2 = 0d;
+		const double expected1 = 12100d, expected2 = 44100d;
 		Assert.Equal(expected1, actual11);
-		Assert.Equal(expected1, actual12);
+		Assert.Equal(expected2, actual12);
 		Assert.Equal(expected2, actual21);
 		Assert.Equal(expected2, actual22);
 	}
