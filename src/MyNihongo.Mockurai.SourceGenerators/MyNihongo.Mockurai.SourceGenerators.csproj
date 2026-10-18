@@ -9,7 +9,7 @@
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 		<RootNamespace>MyNihongo.Mockurai</RootNamespace>
 		<PackageId>Mockurai.SourceGenerators</PackageId>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<Authors>Mynihongo</Authors>
 		<Copyright>© Mynihongo 2026</Copyright>
 		<Product>Mockurai</Product>
