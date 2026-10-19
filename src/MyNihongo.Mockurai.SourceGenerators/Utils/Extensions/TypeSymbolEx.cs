@@ -64,13 +64,24 @@ internal static class TypeSymbolEx
 
 		public IEnumerable<ISymbol> GetInterfaceMembers()
 		{
-			foreach (var member in @this.GetMembers())
+			foreach (var member in GetMembers(@this))
 				yield return member;
 
 			foreach (var interfaceSymbol in @this.AllInterfaces)
 			{
-				foreach (var member in interfaceSymbol.GetMembers())
+				foreach (var member in GetMembers(interfaceSymbol))
 					yield return member;
+			}
+
+			yield break;
+
+			static IEnumerable<ISymbol> GetMembers(ITypeSymbol typeSymbol)
+			{
+				foreach (var member in typeSymbol.GetMembers())
+				{
+					if (!member.IsStatic)
+						yield return member;
+				}
 			}
 		}
 
