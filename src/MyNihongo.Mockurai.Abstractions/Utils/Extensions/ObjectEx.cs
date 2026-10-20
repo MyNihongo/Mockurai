@@ -29,9 +29,8 @@ public static class ObjectEx
 				? @this?.ToString() ?? value
 				: value;
 		}
-		catch (Exception ex)
+		catch
 		{
-			Console.WriteLine("Unable to serialize to json, exception=`{0}`", ex);
 			return @this?.ToString() ?? string.Empty;
 		}
 	}
