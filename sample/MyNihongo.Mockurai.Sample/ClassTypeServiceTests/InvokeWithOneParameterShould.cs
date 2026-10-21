@@ -70,4 +70,53 @@ public sealed class InvokeWithOneParameterShould : ClassTypeServiceTestsBase
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public void UseToStringIfSerializedParameterTooLong()
+	{
+		var input = new ClassParameter1
+		{
+			Number = 123,
+			Text = string.Create(256, false, (span, _) =>
+			{
+				for (var i = 0; i < span.Length; i++)
+				{
+					span[i] = 'a';
+				}
+			}),
+		};
+
+		var varify = new ClassParameter1
+		{
+			Number = 123,
+			Text = string.Create(256, false, (span, _) =>
+			{
+				for (var i = 0; i < span.Length; i++)
+				{
+					span[i] = 'b';
+				}
+			}),
+		};
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithOneParameter(input);
+
+		var actual = () =>
+		{
+			var verify = ItIn<ClassParameter1>.Equivalent(varify);
+			ClassDependencyServiceMock.VerifyInvokeWithOneParameter(verify, Times.Once);
+		};
+
+		const string expectedMessage =
+			"""
+			Expected IClassDependencyService.InvokeWithOneParameter(in MyNihongo.Mockurai.Sample.ClassParameter1) to be called 1 time, but instead it was called 0 times.
+			Performed invocations:
+			- 1: IClassDependencyService.InvokeWithOneParameter(in {"Text":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","Number":123})
+			  - Text:
+			    expected: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+			    actual: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+			""";
+		var exception = Assert.Throws<MockVerifyCountException>(actual);
+		Assert.Equal(expectedMessage, exception.Message);
+	}
 }

@@ -18,20 +18,20 @@ public static class ObjectEx
 	/// </summary>
 	/// <typeparam name="T">The value type.</typeparam>
 	/// <param name="this">The value to render.</param>
+	/// <param name="limitLength">if set to <c>true</c>, limits the length of the resulting string. The default is <c>false</c>.</param>
 	/// <returns>The JSON representation, or the string fallback when serialization throws.</returns>
-	public static string SerializeToJson<T>(this T @this)
+	public static string SerializeToJson<T>(this T @this, bool limitLength = false)
 	{
 		try
 		{
 			var value = JsonSerializer.Serialize(@this, Options);
 
-			return value == "{}"
+			return value == "{}" || (limitLength && value.Length > 256)
 				? @this?.ToString() ?? value
 				: value;
 		}
-		catch (Exception ex)
+		catch
 		{
-			Console.WriteLine("Unable to serialize to json, exception=`{0}`", ex);
 			return @this?.ToString() ?? string.Empty;
 		}
 	}
