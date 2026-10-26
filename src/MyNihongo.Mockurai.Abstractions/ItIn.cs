@@ -27,7 +27,7 @@ public readonly ref struct ItIn<T>
 	/// <param name="value">The expected value.</param>
 	public static ItIn<T> Value(T value)
 	{
-		return new ItIn<T>(x => EqualityComparer<T>.Default.Equals(value, x), SetupType.Value, () => value.SerializeToJson());
+		return new ItIn<T>(x => EqualityComparer<T>.Default.Equals(value, x), SetupType.Value, () => value.SerializeToJson(limitLength: true));
 	}
 
 	/// <summary>
@@ -42,7 +42,7 @@ public readonly ref struct ItIn<T>
 	public static ItIn<T> Equivalent(T value, IEquivalencyComparer<T>? comparer = null, bool useJsonSnapshot = true)
 	{
 		var setupType = useJsonSnapshot ? SetupType.Equivalent : SetupType.Value;
-		return new ItIn<T>(x => (comparer ?? EquivalencyComparer<T>.Default).Equivalent(value, x), setupType, () => value.SerializeToJson());
+		return new ItIn<T>(x => (comparer ?? EquivalencyComparer<T>.Default).Equivalent(value, x), setupType, () => value.SerializeToJson(limitLength: true));
 	}
 
 	/// <summary>
