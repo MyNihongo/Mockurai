@@ -444,7 +444,7 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(where(predicate), where(predicate)) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters(x => (x < 200), x => (x > 200)) to be invoked at index 4, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.InvokeWithSeveralParameters(123, 234)
 			- 2: IPrimitiveDependencyService.InvokeWithSeveralParameters(234, 234)
@@ -781,7 +781,7 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 
-		const decimal expected1 = 0, expected2 = 0;
+		const decimal expected1 = 4, expected2 = 8;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
@@ -841,7 +841,7 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 
-		const decimal expected1 = 0, expected2 = 0;
+		const decimal expected1 = 4, expected2 = 8;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
@@ -901,7 +901,7 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 
-		const decimal expected1 = 0, expected2 = 0;
+		const decimal expected1 = 4, expected2 = 8;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
@@ -950,7 +950,7 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 		fixture.InvokeWithSeveralParameters(setupValue21, setupValue22);
 
-		const decimal expected1 = 0, expected2 = 0;
+		const decimal expected1 = 0, expected2 = 15;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}

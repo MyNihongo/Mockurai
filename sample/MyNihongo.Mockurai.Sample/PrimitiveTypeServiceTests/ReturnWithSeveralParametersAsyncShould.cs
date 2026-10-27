@@ -382,7 +382,7 @@ public sealed class ReturnWithSeveralParametersAsyncShould : PrimitiveTypeServic
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(where(predicate), where(predicate)) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(x => (x < 200), x => (x > 200)) to be invoked at index 4, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(123, 234)
 			- 2: IPrimitiveDependencyService.ReturnWithSeveralParametersAsync(234, 234)

@@ -248,7 +248,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass.MyMethod<T>(where(predicate), any) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod<T>(x => (x > 200), any) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: MyClass.MyMethod<T>(123, 234)
 			""";
@@ -274,7 +274,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass.MyMethod<T>(any, where(predicate)) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod<T>(any, x => (x < 100)) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: MyClass.MyMethod<T>(123, 234)
 			""";
@@ -354,7 +354,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass.MyMethod<T>(where(predicate), where(predicate)) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod<T>(x => (x > 100), x => (x < 200)) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: MyClass.MyMethod<T>(123, 234)
 			""";
@@ -380,7 +380,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass.MyMethod<T>(where(predicate), where(predicate)) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod<T>(x => (x < 100), x => (x > 200)) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: MyClass.MyMethod<T>(123, 234)
 			""";
@@ -406,7 +406,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass.MyMethod<T>(where(predicate), where(predicate)) to be called 1 time, but instead it was called 0 times.
+			Expected MyClass.MyMethod<T>(x => (x > 200), x => (x < 200)) to be called 1 time, but instead it was called 0 times.
 			Performed invocations:
 			- 1: MyClass.MyMethod<T>(123, 234)
 			""";
@@ -771,7 +771,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 			fixture.Verify(verify1.ValueSetup, verify2.ValueSetup, 0L);
 		};
 
-		const string expectedMessage = "Expected MyClass.MyMethod<T>(where(predicate), where(predicate)) to be invoked at index 0, but there are no invocations.";
+		const string expectedMessage = "Expected MyClass.MyMethod<T>(x => (x > 0), x => (x < 0)) to be invoked at index 0, but there are no invocations.";
 		var exception = Assert.Throws<MockVerifySequenceOutOfRangeException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
@@ -810,7 +810,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass.MyMethod<T>(where(predicate), any) to be invoked at index 1, but it has not been called.
+			Expected MyClass.MyMethod<T>(x => (x > 200), any) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: MyClass.MyMethod<T>(123, 234)
 			""";
@@ -835,7 +835,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass.MyMethod<T>(any, where(predicate)) to be invoked at index 1, but it has not been called.
+			Expected MyClass.MyMethod<T>(any, x => (x < 100)) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: MyClass.MyMethod<T>(123, 234)
 			""";
@@ -912,7 +912,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass.MyMethod<T>(where(predicate), where(predicate)) to be invoked at index 1, but it has not been called.
+			Expected MyClass.MyMethod<T>(x => (x > 100), x => (x < 200)) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: MyClass.MyMethod<T>(123, 234)
 			""";
@@ -937,7 +937,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass.MyMethod<T>(where(predicate), where(predicate)) to be invoked at index 1, but it has not been called.
+			Expected MyClass.MyMethod<T>(x => (x < 100), x => (x > 200)) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: MyClass.MyMethod<T>(123, 234)
 			""";
@@ -962,7 +962,7 @@ public sealed class VerifyPrimitiveShould : InvocationWithSeveralParametersTests
 
 		const string expectedMessage =
 			"""
-			Expected MyClass.MyMethod<T>(where(predicate), where(predicate)) to be invoked at index 1, but it has not been called.
+			Expected MyClass.MyMethod<T>(x => (x > 200), x => (x < 200)) to be invoked at index 1, but it has not been called.
 			Performed invocations:
 			- 1: MyClass.MyMethod<T>(123, 234)
 			""";

@@ -239,6 +239,7 @@ public abstract class TestsBase
 		var setupFields = inputParameters.Length > 0
 			? """
 			  private static readonly Comparer SortComparer = new();
+			  	private static readonly EqualityComparer SetupEqualityComparer = new();
 			  	private SetupContainer<Item>? _setups;
 			  	private Item? _currentSetup;
 			  """
@@ -252,11 +253,32 @@ public abstract class TestsBase
 			    	{
 			    		_currentSetup = new Item({{inputParameterNames}});
 
-			    		_setups ??= new SetupContainer<Item>(SortComparer);
+			    		_setups ??= new SetupContainer<Item>(SortComparer, SetupEqualityComparer);
 			    		_setups.Add(_currentSetup);
 			    	}
 			    """
 			: string.Empty;
+
+		var itemEqualityComparer = () =>
+		{
+			return string.Join(" &&" + Environment.NewLine + "\t\t\t",
+				inputParameters.Select(x =>
+				{
+					var prop = x.GetCamelCaseNameString();
+					return $"x?.{prop} == y?.{prop}";
+				}));
+		};
+
+		var itemHashCodeAdds = () =>
+		{
+			return string.Concat(inputParameters.Select(x =>
+			{
+				var prop = x.GetCamelCaseNameString();
+				return
+					$"\t\t\tif (obj.{prop}.HasValue){Environment.NewLine}" +
+					$"\t\t\t\thash.Add(obj.{prop}.Value.GetHashCode());{Environment.NewLine}";
+			}));
+		};
 
 		var comparer = inputParameters.Length > 0
 			? $$"""
@@ -280,6 +302,18 @@ public abstract class TestsBase
 			    			}
 
 			    			return xSort.CompareTo(ySort);
+			    		}
+			    	}
+
+			    	private sealed class EqualityComparer: System.Collections.Generic.IEqualityComparer<Item>
+			    	{
+			    		public bool Equals(Item? x, Item? y) =>
+			    			{{itemEqualityComparer()}};
+
+			    		public int GetHashCode(Item obj)
+			    		{
+			    			var hash = new System.HashCode();
+			    {{itemHashCodeAdds()}}			return hash.ToHashCode();
 			    		}
 			    	}
 			    """
@@ -313,6 +347,30 @@ public abstract class TestsBase
 			    	}
 			    """;
 
+		var resetMethod = inputParameters.Length > 0
+			? string.Empty
+			: """
+
+
+			  	public void Reset()
+			  	{
+			  		_currentSetup.Reset();
+			  	}
+			  """;
+
+		var itemResetMethod = inputParameters.Length > 0
+			? string.Empty
+			: """
+
+
+			  		public void Reset()
+			  		{
+			  			_queue.Clear();
+			  			_currentSetup = null;
+			  			AndContinue = false;
+			  		}
+			  """;
+
 		var sourceCode =
 			$$"""
 			  #nullable enable
@@ -335,7 +393,7 @@ public abstract class TestsBase
 			  	public void Throws(in System.Exception exception)
 			  	{{{currentSetupCheck}}
 			  		_currentSetup.Add(exception);
-			  	}{{returnsInterfaceMethods}}
+			  	}{{resetMethod}}{{returnsInterfaceMethods}}
 
 			  	ISetupCallbackJoin<{{interfaceGeneric}}> ISetupCallbackStart<{{interfaceGeneric}}>.Callback(in CallbackDelegate callback)
 			  	{
@@ -417,7 +475,7 @@ public abstract class TestsBase
 			  				1 => _queue.Peek(),
 			  				_ => _queue.Dequeue(),
 			  			};
-			  		}
+			  		}{{itemResetMethod}}
 			  	}
 
 			  	private sealed class ItemSetup

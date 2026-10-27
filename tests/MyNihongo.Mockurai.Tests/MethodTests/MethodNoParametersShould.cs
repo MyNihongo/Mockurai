@@ -16,6 +16,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			public Setup SetupInvoke()
 			{
 				_invoke0 ??= new Setup();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 
@@ -90,6 +91,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			public Setup<decimal> SetupInvoke()
 			{
 				_invoke0 ??= new Setup<decimal>();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 
@@ -165,6 +167,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
 				var invoke0 = (Setup<TReturn>)_invoke0.GetOrAdd((typeof(T), typeof(TReturn)), static _ => new Setup<TReturn>());
+				invoke0.Reset();
 				return invoke0;
 			}
 
@@ -251,6 +254,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
 				var invoke0 = (Setup)_invoke0.GetOrAdd(typeof(T), static _ => new Setup());
+				invoke0.Reset();
 				return invoke0;
 			}
 
@@ -337,6 +341,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), Setup>();
 				var invoke0 = (Setup)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new Setup());
+				invoke0.Reset();
 				return invoke0;
 			}
 
@@ -427,6 +432,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			public Setup SetupInvoke()
 			{
 				_invoke0 ??= new Setup();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 
@@ -506,6 +512,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			public Setup<int> SetupInvoke()
 			{
 				_invoke0 ??= new Setup<int>();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 
@@ -587,6 +594,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			public Setup<decimal> SetupInvoke()
 			{
 				_invoke0 ??= new Setup<decimal>();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 
@@ -667,6 +675,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
 				var invoke0 = (Setup)_invoke0.GetOrAdd(typeof(T), static _ => new Setup());
+				invoke0.Reset();
 				return invoke0;
 			}
 
@@ -758,6 +767,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
 				var invoke0 = (Setup<TReturn>)_invoke0.GetOrAdd((typeof(T), typeof(TReturn)), static _ => new Setup<TReturn>());
+				invoke0.Reset();
 				return invoke0;
 			}
 
@@ -849,6 +859,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), Setup>();
 				var invoke0 = (Setup)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new Setup());
+				invoke0.Reset();
 				return invoke0;
 			}
 
@@ -940,6 +951,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
 				var invoke0 = (Setup)_invoke0.GetOrAdd(typeof(T), static _ => new Setup());
+				invoke0.Reset();
 				return invoke0;
 			}
 
@@ -1033,6 +1045,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
 				var invoke0 = (Setup<TReturn>)_invoke0.GetOrAdd((typeof(T), typeof(TReturn)), static _ => new Setup<TReturn>());
+				invoke0.Reset();
 				return invoke0;
 			}
 
@@ -1126,6 +1139,7 @@ public sealed class MethodNoParametersShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), Setup>();
 				var invoke0 = (Setup)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new Setup());
+				invoke0.Reset();
 				return invoke0;
 			}
 

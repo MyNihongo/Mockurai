@@ -244,6 +244,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			public SetupWithOutParameter<int> SetupInvoke(in ItOut<int> result)
 			{
 				_invoke0 ??= new SetupWithOutParameter<int>();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 
@@ -326,6 +327,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			public SetupWithOutParameter<int, decimal> SetupInvoke(in ItOut<int> result)
 			{
 				_invoke0 ??= new SetupWithOutParameter<int, decimal>();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 
@@ -1042,6 +1044,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
 				var invoke0 = (SetupWithOutParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithOutParameter<T>());
+				invoke0.Reset();
 				return invoke0;
 			}
 
@@ -1136,6 +1139,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
 				var invoke0 = (SetupWithOutParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithOutParameter<T1, T2>());
+				invoke0.Reset();
 				return invoke0;
 			}
 
@@ -1925,6 +1929,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			public SetupWithOutParameter<int> SetupInvoke(in ItOut<int> result)
 			{
 				_invoke0 ??= new SetupWithOutParameter<int>();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 
@@ -2012,6 +2017,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			public SetupWithOutParameter<int, decimal> SetupInvoke(in ItOut<int> result)
 			{
 				_invoke0 ??= new SetupWithOutParameter<int, decimal>();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 
@@ -2773,6 +2779,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
 				var invoke0 = (SetupWithOutParameter<T>)_invoke0.GetOrAdd(typeof(T), static _ => new SetupWithOutParameter<T>());
+				invoke0.Reset();
 				return invoke0;
 			}
 
@@ -2872,6 +2879,7 @@ public sealed class MethodWithOneParameterShould : MethodTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
 				var invoke0 = (SetupWithOutParameter<T1, T2>)_invoke0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithOutParameter<T1, T2>());
+				invoke0.Reset();
 				return invoke0;
 			}
 

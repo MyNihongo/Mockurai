@@ -1307,7 +1307,7 @@ public sealed class InvokePrimitiveShould : SetupWithSeveralParametersTestsBase
 		fixture.SetupParameters(It<int>.Any().ValueSetup, It<int>.Any().ValueSetup);
 		fixture.Callback((_, _) => { Debug.WriteLine("output"); });
 
-		const int expected = 3;
+		const int expected = 1;
 		var actual = GetSetupCount(fixture);
 		Assert.Equal(expected, actual);
 	}

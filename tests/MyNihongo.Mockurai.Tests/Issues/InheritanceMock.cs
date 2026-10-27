@@ -58,6 +58,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup SetupInvoke()
 					{
 						_invoke0 ??= new Setup();
+						_invoke0.Reset();
 						return _invoke0;
 					}
 
@@ -80,6 +81,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup SetupInvoke1()
 					{
 						_invoke10 ??= new Setup();
+						_invoke10.Reset();
 						return _invoke10;
 					}
 
@@ -265,6 +267,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup SetupInvoke()
 					{
 						_invoke0 ??= new Setup();
+						_invoke0.Reset();
 						return _invoke0;
 					}
 
@@ -287,6 +290,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup SetupInvoke1()
 					{
 						_invoke10 ??= new Setup();
+						_invoke10.Reset();
 						return _invoke10;
 					}
 
@@ -309,6 +313,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup SetupInvoke2()
 					{
 						_invoke20 ??= new Setup();
+						_invoke20.Reset();
 						return _invoke20;
 					}
 
@@ -522,6 +527,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup SetupInvoke()
 					{
 						_invoke0 ??= new Setup();
+						_invoke0.Reset();
 						return _invoke0;
 					}
 
@@ -544,6 +550,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup SetupInvoke2()
 					{
 						_invoke20 ??= new Setup();
+						_invoke20.Reset();
 						return _invoke20;
 					}
 
@@ -566,6 +573,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup SetupInvoke1()
 					{
 						_invoke10 ??= new Setup();
+						_invoke10.Reset();
 						return _invoke10;
 					}
 
@@ -825,6 +833,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup<T> SetupInvoke()
 					{
 						_invoke0 ??= new Setup<T>();
+						_invoke0.Reset();
 						return _invoke0;
 					}
 
@@ -1030,6 +1039,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup SetupInvoke()
 					{
 						_invoke0 ??= new Setup();
+						_invoke0.Reset();
 						return _invoke0;
 					}
 
@@ -1075,6 +1085,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup<decimal> SetupReturn()
 					{
 						_return0 ??= new Setup<decimal>();
+						_return0.Reset();
 						return _return0;
 					}
 
@@ -1334,6 +1345,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup SetupInvoke()
 					{
 						_invoke0 ??= new Setup();
+						_invoke0.Reset();
 						return _invoke0;
 					}
 
@@ -1356,6 +1368,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup SetupInvoke1()
 					{
 						_invoke10 ??= new Setup();
+						_invoke10.Reset();
 						return _invoke10;
 					}
 
@@ -1592,6 +1605,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup SetupInvoke()
 					{
 						_invoke0 ??= new Setup();
+						_invoke0.Reset();
 						return _invoke0;
 					}
 
@@ -1614,6 +1628,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup SetupInvoke2()
 					{
 						_invoke20 ??= new Setup();
+						_invoke20.Reset();
 						return _invoke20;
 					}
 
@@ -1636,6 +1651,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup SetupInvoke1()
 					{
 						_invoke10 ??= new Setup();
+						_invoke10.Reset();
 						return _invoke10;
 					}
 
@@ -1895,6 +1911,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup<T> SetupInvoke()
 					{
 						_invoke0 ??= new Setup<T>();
+						_invoke0.Reset();
 						return _invoke0;
 					}
 
@@ -2149,6 +2166,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup<float> SetupInvoke()
 					{
 						_invoke0 ??= new Setup<float>();
+						_invoke0.Reset();
 						return _invoke0;
 					}
 
@@ -2403,6 +2421,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup SetupInvoke()
 					{
 						_invoke0 ??= new Setup();
+						_invoke0.Reset();
 						return _invoke0;
 					}
 
@@ -2611,6 +2630,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup SetupInvoke()
 					{
 						_invoke0 ??= new Setup();
+						_invoke0.Reset();
 						return _invoke0;
 					}
 
@@ -3224,6 +3244,7 @@ public sealed class InheritanceMock : IssuesTestsBase
 					public Setup<double> SetupGetRequestCharge()
 					{
 						_requestCharge0Get ??= new Setup<double>();
+						_requestCharge0Get.Reset();
 						return _requestCharge0Get;
 					}
 

@@ -322,7 +322,7 @@ public sealed class InvokeWithParameterAsyncShould : PrimitiveTypeServiceTestsBa
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameterAsync(where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameterAsync(x => (x > 100)) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.InvokeWithParameterAsync(123)
 			- 2: IPrimitiveDependencyService.InvokeWithParameterAsync(321)

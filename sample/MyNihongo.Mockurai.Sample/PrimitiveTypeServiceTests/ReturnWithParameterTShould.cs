@@ -319,7 +319,7 @@ public sealed class ReturnWithParameterTShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithParameter<Single, String>(where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithParameter<Single, String>(x => (x > 100)) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(123)
 			- 2: IPrimitiveDependencyService.ReturnWithParameter<Single, String>(321)

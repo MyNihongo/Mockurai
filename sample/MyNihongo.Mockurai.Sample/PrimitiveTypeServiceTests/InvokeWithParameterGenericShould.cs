@@ -325,7 +325,7 @@ public sealed class InvokeWithParameterGenericShould : PrimitiveTypeServiceTests
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter<Single>(where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameter<Single>(x => (x > 100)) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
 			- 2: IPrimitiveDependencyService.InvokeWithParameter<Single>(321)

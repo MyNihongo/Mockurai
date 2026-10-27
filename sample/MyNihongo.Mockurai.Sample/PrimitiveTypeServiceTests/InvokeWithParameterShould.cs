@@ -745,7 +745,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(in where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameter(in x => x.StartsWith("pa")) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.InvokeWithParameter(in "parameter1")
 			- 2: IPrimitiveDependencyService.InvokeWithParameter(in "parameter2")
@@ -772,7 +772,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(in where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameter(in x => (x < 200)) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.InvokeWithParameter(in 123)
 			- 2: IPrimitiveDependencyService.InvokeWithParameter(in 234)
@@ -1108,7 +1108,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.InvokeWithParameter(setupValue2);
 		fixture.InvokeWithParameter(setupValue2);
 
-		const decimal expected1 = 0, expected2 = 0;
+		const decimal expected1 = 4, expected2 = 8;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
@@ -1168,7 +1168,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.InvokeWithParameter(setupValue2);
 		fixture.InvokeWithParameter(setupValue2);
 
-		const decimal expected1 = 0, expected2 = 0;
+		const decimal expected1 = 4, expected2 = 8;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
@@ -1228,7 +1228,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.InvokeWithParameter(setupValue2);
 		fixture.InvokeWithParameter(setupValue2);
 
-		const decimal expected1 = 0, expected2 = 0;
+		const decimal expected1 = 4, expected2 = 8;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
@@ -1275,7 +1275,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		fixture.InvokeWithParameter(setupValue2);
 		fixture.InvokeWithParameter(setupValue2);
 
-		const decimal expected1 = 0, expected2 = 0;
+		const decimal expected1 = 0, expected2 = 8;
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}

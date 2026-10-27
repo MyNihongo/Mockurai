@@ -462,7 +462,7 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>(where(predicate), where(predicate)) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>(x => x.EndsWith(1), x => x.EndsWith(2)) to be invoked at index 4, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue1", "parameterValue2")
 			- 2: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue2", "parameterValue2")

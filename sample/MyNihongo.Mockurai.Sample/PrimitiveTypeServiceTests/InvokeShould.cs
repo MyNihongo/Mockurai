@@ -497,7 +497,7 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 		fixture.Invoke();
 		fixture.Invoke();
 
-		const decimal expected = 1;
+		const decimal expected = 2;
 		Assert.Equal(expected, result);
 	}
 }

@@ -478,7 +478,7 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(where(predicate), where(predicate)) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters(x => (x < 200), x => (x > 200)) to be invoked at index 4, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters(123, 234)
 			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters(234, 234)
@@ -1001,7 +1001,7 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 		var actual21 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
 		var actual22 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
 
-		const double expected1 = 0d, expected2 = 0d;
+		const double expected1 = 14400d, expected2 = 48400d;
 		Assert.Equal(expected1, actual11);
 		Assert.Equal(expected1, actual12);
 		Assert.Equal(expected2, actual21);
@@ -1066,7 +1066,7 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 		var actual21 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
 		var actual22 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
 
-		const double expected1 = 0d, expected2 = 0d;
+		const double expected1 = 14400d, expected2 = 48400d;
 		Assert.Equal(expected1, actual11);
 		Assert.Equal(expected1, actual12);
 		Assert.Equal(expected2, actual21);
@@ -1131,7 +1131,7 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 		var actual21 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
 		var actual22 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
 
-		const double expected1 = 0d, expected2 = 0d;
+		const double expected1 = 14400d, expected2 = 48400d;
 		Assert.Equal(expected1, actual11);
 		Assert.Equal(expected1, actual12);
 		Assert.Equal(expected2, actual21);
@@ -1184,10 +1184,11 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 		var actual21 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
 		var actual22 = fixture.ReturnWithSeveralParameters(setupValue21, setupValue22);
 
-		const double expected1 = 0d, expected2 = 0d;
-		Assert.Equal(expected1, actual11);
-		Assert.Equal(expected1, actual12);
-		Assert.Equal(expected2, actual21);
-		Assert.Equal(expected2, actual22);
+		const double expected11 = 44100d, expected12 = 48400d;
+		const double expected21 = 48400d, expected22 = 48400d;
+		Assert.Equal(expected11, actual11);
+		Assert.Equal(expected12, actual12);
+		Assert.Equal(expected21, actual21);
+		Assert.Equal(expected22, actual22);
 	}
 }

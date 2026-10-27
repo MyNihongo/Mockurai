@@ -447,7 +447,7 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.GetInit.set = where(predicate) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.GetInit.set = x => x.EndsWith("1") to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.GetInit.set = "parameter1"
 			- 2: IPrimitiveDependencyService.GetInit.set = "parameter2"

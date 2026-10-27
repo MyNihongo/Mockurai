@@ -319,7 +319,7 @@ public sealed class ReturnWithParameterGenericShould : PrimitiveTypeServiceTests
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService<String>.ReturnWithParameter<Single>(where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService<String>.ReturnWithParameter<Single>(x => x.EndsWith(1)) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService<String>.ReturnWithParameter<Single>("setupValue1")
 			- 2: IPrimitiveDependencyService<String>.ReturnWithParameter<Single>("setupValue2")

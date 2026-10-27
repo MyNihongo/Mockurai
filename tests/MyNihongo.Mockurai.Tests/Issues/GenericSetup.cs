@@ -1317,6 +1317,7 @@ public sealed class GenericSetup : IssuesTestsBase
 				public sealed class SetupArray1T1Int32<T1, TReturns> : ISetupCallbackJoin<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>, ISetupCallbackReset<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>, ISetupReturnsThrowsJoin<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>, ISetupReturnsThrowsReset<SetupArray1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>
 				{
 					private static readonly Comparer SortComparer = new();
+					private static readonly EqualityComparer SetupEqualityComparer = new();
 					private SetupContainer<Item>? _setups;
 					private Item? _currentSetup;
 
@@ -1359,7 +1360,7 @@ public sealed class GenericSetup : IssuesTestsBase
 					{
 						_currentSetup = new Item(parameter1, parameter2);
 
-						_setups ??= new SetupContainer<Item>(SortComparer);
+						_setups ??= new SetupContainer<Item>(SortComparer, SetupEqualityComparer);
 						_setups.Add(_currentSetup);
 					}
 
@@ -1563,6 +1564,23 @@ public sealed class GenericSetup : IssuesTestsBase
 							}
 
 							return xSort.CompareTo(ySort);
+						}
+					}
+
+					private sealed class EqualityComparer: System.Collections.Generic.IEqualityComparer<Item>
+					{
+						public bool Equals(Item? x, Item? y) =>
+							x?.Parameter1 == y?.Parameter1 &&
+							x?.Parameter2 == y?.Parameter2;
+
+						public int GetHashCode(Item obj)
+						{
+							var hash = new System.HashCode();
+							if (obj.Parameter1.HasValue)
+								hash.Add(obj.Parameter1.Value.GetHashCode());
+							if (obj.Parameter2.HasValue)
+								hash.Add(obj.Parameter2.Value.GetHashCode());
+							return hash.ToHashCode();
 						}
 					}
 				}
@@ -1953,6 +1971,7 @@ public sealed class GenericSetup : IssuesTestsBase
 				public sealed class SetupArray1ICollectionT1Int32<T1, TReturns> : ISetupCallbackJoin<SetupArray1ICollectionT1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1ICollectionT1Int32<T1, TReturns>.ReturnsCallbackDelegate>, ISetupCallbackReset<SetupArray1ICollectionT1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1ICollectionT1Int32<T1, TReturns>.ReturnsCallbackDelegate>, ISetupReturnsThrowsJoin<SetupArray1ICollectionT1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1ICollectionT1Int32<T1, TReturns>.ReturnsCallbackDelegate>, ISetupReturnsThrowsReset<SetupArray1ICollectionT1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1ICollectionT1Int32<T1, TReturns>.ReturnsCallbackDelegate>
 				{
 					private static readonly Comparer SortComparer = new();
+					private static readonly EqualityComparer SetupEqualityComparer = new();
 					private SetupContainer<Item>? _setups;
 					private Item? _currentSetup;
 
@@ -1995,7 +2014,7 @@ public sealed class GenericSetup : IssuesTestsBase
 					{
 						_currentSetup = new Item(parameter1, parameter2);
 
-						_setups ??= new SetupContainer<Item>(SortComparer);
+						_setups ??= new SetupContainer<Item>(SortComparer, SetupEqualityComparer);
 						_setups.Add(_currentSetup);
 					}
 
@@ -2199,6 +2218,23 @@ public sealed class GenericSetup : IssuesTestsBase
 							}
 
 							return xSort.CompareTo(ySort);
+						}
+					}
+
+					private sealed class EqualityComparer: System.Collections.Generic.IEqualityComparer<Item>
+					{
+						public bool Equals(Item? x, Item? y) =>
+							x?.Parameter1 == y?.Parameter1 &&
+							x?.Parameter2 == y?.Parameter2;
+
+						public int GetHashCode(Item obj)
+						{
+							var hash = new System.HashCode();
+							if (obj.Parameter1.HasValue)
+								hash.Add(obj.Parameter1.Value.GetHashCode());
+							if (obj.Parameter2.HasValue)
+								hash.Add(obj.Parameter2.Value.GetHashCode());
+							return hash.ToHashCode();
 						}
 					}
 				}
@@ -2589,6 +2625,7 @@ public sealed class GenericSetup : IssuesTestsBase
 				public sealed class SetupArray2T1Int32<T1, TReturns> : ISetupCallbackJoin<SetupArray2T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray2T1Int32<T1, TReturns>.ReturnsCallbackDelegate>, ISetupCallbackReset<SetupArray2T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray2T1Int32<T1, TReturns>.ReturnsCallbackDelegate>, ISetupReturnsThrowsJoin<SetupArray2T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray2T1Int32<T1, TReturns>.ReturnsCallbackDelegate>, ISetupReturnsThrowsReset<SetupArray2T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray2T1Int32<T1, TReturns>.ReturnsCallbackDelegate>
 				{
 					private static readonly Comparer SortComparer = new();
+					private static readonly EqualityComparer SetupEqualityComparer = new();
 					private SetupContainer<Item>? _setups;
 					private Item? _currentSetup;
 
@@ -2631,7 +2668,7 @@ public sealed class GenericSetup : IssuesTestsBase
 					{
 						_currentSetup = new Item(parameter1, parameter2);
 
-						_setups ??= new SetupContainer<Item>(SortComparer);
+						_setups ??= new SetupContainer<Item>(SortComparer, SetupEqualityComparer);
 						_setups.Add(_currentSetup);
 					}
 
@@ -2835,6 +2872,23 @@ public sealed class GenericSetup : IssuesTestsBase
 							}
 
 							return xSort.CompareTo(ySort);
+						}
+					}
+
+					private sealed class EqualityComparer: System.Collections.Generic.IEqualityComparer<Item>
+					{
+						public bool Equals(Item? x, Item? y) =>
+							x?.Parameter1 == y?.Parameter1 &&
+							x?.Parameter2 == y?.Parameter2;
+
+						public int GetHashCode(Item obj)
+						{
+							var hash = new System.HashCode();
+							if (obj.Parameter1.HasValue)
+								hash.Add(obj.Parameter1.Value.GetHashCode());
+							if (obj.Parameter2.HasValue)
+								hash.Add(obj.Parameter2.Value.GetHashCode());
+							return hash.ToHashCode();
 						}
 					}
 				}
@@ -3225,6 +3279,7 @@ public sealed class GenericSetup : IssuesTestsBase
 				public sealed class SetupArray1Array1T1Int32<T1, TReturns> : ISetupCallbackJoin<SetupArray1Array1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1Array1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>, ISetupCallbackReset<SetupArray1Array1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1Array1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>, ISetupReturnsThrowsJoin<SetupArray1Array1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1Array1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>, ISetupReturnsThrowsReset<SetupArray1Array1T1Int32<T1, TReturns>.CallbackDelegate, TReturns, SetupArray1Array1T1Int32<T1, TReturns>.ReturnsCallbackDelegate>
 				{
 					private static readonly Comparer SortComparer = new();
+					private static readonly EqualityComparer SetupEqualityComparer = new();
 					private SetupContainer<Item>? _setups;
 					private Item? _currentSetup;
 
@@ -3267,7 +3322,7 @@ public sealed class GenericSetup : IssuesTestsBase
 					{
 						_currentSetup = new Item(parameter1, parameter2);
 
-						_setups ??= new SetupContainer<Item>(SortComparer);
+						_setups ??= new SetupContainer<Item>(SortComparer, SetupEqualityComparer);
 						_setups.Add(_currentSetup);
 					}
 
@@ -3471,6 +3526,23 @@ public sealed class GenericSetup : IssuesTestsBase
 							}
 
 							return xSort.CompareTo(ySort);
+						}
+					}
+
+					private sealed class EqualityComparer: System.Collections.Generic.IEqualityComparer<Item>
+					{
+						public bool Equals(Item? x, Item? y) =>
+							x?.Parameter1 == y?.Parameter1 &&
+							x?.Parameter2 == y?.Parameter2;
+
+						public int GetHashCode(Item obj)
+						{
+							var hash = new System.HashCode();
+							if (obj.Parameter1.HasValue)
+								hash.Add(obj.Parameter1.Value.GetHashCode());
+							if (obj.Parameter2.HasValue)
+								hash.Add(obj.Parameter2.Value.GetHashCode());
+							return hash.ToHashCode();
 						}
 					}
 				}

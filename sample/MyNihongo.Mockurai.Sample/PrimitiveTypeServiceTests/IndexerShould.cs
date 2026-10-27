@@ -352,7 +352,7 @@ public sealed class IndexerShould : PrimitiveTypeServiceTestsBase
 		const string value1 = nameof(value1), value2 = nameof(value2);
 
 		var verifyKey1 = It<int>.Where(x => x < 200);
-		var verifyValue2 = It<string?>.Where(x => x?.EndsWith('2') == true);
+		var verifyValue2 = It<string?>.Where(x => x != null && x.EndsWith('2'));
 
 		var fixture = CreateFixture();
 		fixture[key1] = value1;
@@ -635,7 +635,7 @@ public sealed class IndexerShould : PrimitiveTypeServiceTestsBase
 		VerifyInSequence(static ctx =>
 		{
 			It<int> verifyKey1 = It<int>.Where(x => x < 200), verifyKey2 = It<int>.Where(x => x > 200);
-			It<string?> verifyValue1 = It<string?>.Where(x => x?.EndsWith('1') == true), verifyValue2 = It<string?>.Where(x => x?.EndsWith('2') == true);
+			It<string?> verifyValue1 = It<string?>.Where(x => x != null && x.EndsWith('1')), verifyValue2 = It<string?>.Where(x => x != null && x.EndsWith('2'));
 			ctx.DependencyServiceMock.SetIndexer(verifyKey1, verifyValue1);
 			ctx.DependencyServiceMock.SetIndexer(verifyKey2, verifyValue2);
 		});
@@ -740,7 +740,7 @@ public sealed class IndexerShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.This[where(predicate)].get to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.This[x => (x < 200)].get to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.This[123].get
 			- 2: IPrimitiveDependencyService.This[234].get
@@ -762,14 +762,14 @@ public sealed class IndexerShould : PrimitiveTypeServiceTestsBase
 		var actual = () => VerifyInSequence(static ctx =>
 		{
 			It<int> verifyKey1 = It<int>.Where(x => x > 200), verifyKey2 = It<int>.Where(x => x < 200);
-			It<string?> verifyValue1 = It<string?>.Where(x => x?.EndsWith('1') == false), verifyValue2 = It<string?>.Where(x => x?.EndsWith('2') == false);
+			It<string?> verifyValue1 = It<string?>.Where(x => x == null || !x.EndsWith('1')), verifyValue2 = It<string?>.Where(x => x == null || !x.EndsWith('2'));
 			ctx.DependencyServiceMock.SetIndexer(verifyKey1, verifyValue1);
 			ctx.DependencyServiceMock.SetIndexer(verifyKey2, verifyValue2);
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.This[where(predicate)].set = where(predicate) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.This[x => (x < 200)].set = x => ((x == null) OrElse Not(x.EndsWith(2))) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.This[123].set = "value1"
 			- 2: IPrimitiveDependencyService.This[234].set = "value2"
@@ -791,14 +791,14 @@ public sealed class IndexerShould : PrimitiveTypeServiceTestsBase
 		var actual = () => VerifyInSequence(static ctx =>
 		{
 			It<int> verifyKey1 = It<int>.Where(x => x > 200), verifyKey2 = It<int>.Where(x => x < 200);
-			It<string?> verifyValue1 = It<string?>.Where(x => x?.EndsWith('1') == false), verifyValue2 = It<string?>.Where(x => x?.EndsWith('2') == false);
+			It<string?> verifyValue1 = It<string?>.Where(x => x == null || !x.EndsWith('1')), verifyValue2 = It<string?>.Where(x => x == null || !x.EndsWith('2'));
 			ctx.DependencyServiceMock.SetIndexer(verifyKey1, verifyValue1);
 			ctx.DependencyServiceMock.SetIndexer(verifyKey2, verifyValue2);
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.This[where(predicate)].set = where(predicate) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.This[x => (x < 200)].set = x => ((x == null) OrElse Not(x.EndsWith(2))) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.This[123].set = "value1"
 			- 2: IPrimitiveDependencyService.This[234].set = "value2"

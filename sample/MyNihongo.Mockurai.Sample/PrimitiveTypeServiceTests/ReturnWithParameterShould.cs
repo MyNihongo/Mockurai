@@ -567,7 +567,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithParameter(in where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithParameter(in x => x.StartsWith("pa")) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.ReturnWithParameter(in "parameter1")
 			- 2: IPrimitiveDependencyService.ReturnWithParameter(in "parameter2")
@@ -1012,10 +1012,11 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		var actual21 = fixture.ReturnWithParameter(setupValue2);
 		var actual22 = fixture.ReturnWithParameter(setupValue2);
 
-		Assert.Equal(returnValue2, actual11);
-		Assert.Equal(returnValue2, actual12);
-		Assert.Equal(returnValue2, actual21);
-		Assert.Equal(returnValue2, actual22);
+		const string expected1 = $"name:{returnValue2},age:32", expected2 = $"name:{returnValue2}b,age:32";
+		Assert.Equal(expected1, actual11);
+		Assert.Equal(expected1, actual12);
+		Assert.Equal(expected2, actual21);
+		Assert.Equal(expected2, actual22);
 	}
 
 	[Fact]
@@ -1076,10 +1077,11 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		var actual21 = fixture.ReturnWithParameter(setupValue2);
 		var actual22 = fixture.ReturnWithParameter(setupValue2);
 
-		Assert.Equal(returnValue1, actual11);
-		Assert.Equal(returnValue2, actual12);
-		Assert.Equal(returnValue1, actual21);
-		Assert.Equal(returnValue2, actual22);
+		const string expected1 = $"name:{returnValue2},age:32", expected2 = $"name:{returnValue2}b,age:32";
+		Assert.Equal(expected1, actual11);
+		Assert.Equal(expected1, actual12);
+		Assert.Equal(expected2, actual21);
+		Assert.Equal(expected2, actual22);
 	}
 
 	[Fact]
@@ -1140,10 +1142,11 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		var actual21 = fixture.ReturnWithParameter(setupValue2);
 		var actual22 = fixture.ReturnWithParameter(setupValue2);
 
-		Assert.Equal(returnValue1, actual11);
-		Assert.Equal(returnValue2, actual12);
-		Assert.Equal(returnValue1, actual21);
-		Assert.Equal(returnValue2, actual22);
+		const string expected1 = $"name:{returnValue2},age:32", expected2 = $"name:{returnValue2}b,age:32";
+		Assert.Equal(expected1, actual11);
+		Assert.Equal(expected1, actual12);
+		Assert.Equal(expected2, actual21);
+		Assert.Equal(expected2, actual22);
 	}
 
 	[Fact]
@@ -1190,9 +1193,10 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		var actual21 = fixture.ReturnWithParameter(setupValue2);
 		var actual22 = fixture.ReturnWithParameter(setupValue2);
 
-		Assert.Equal(returnValue1, actual11);
-		Assert.Equal(returnValue2, actual12);
-		Assert.Equal(returnValue1, actual21);
-		Assert.Equal(returnValue2, actual22);
+		const string expected = $"name:{returnValue2},age:32";
+		Assert.Equal(expected, actual11);
+		Assert.Equal(expected, actual12);
+		Assert.Equal(expected, actual21);
+		Assert.Equal(expected, actual22);
 	}
 }

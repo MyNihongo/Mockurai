@@ -320,7 +320,7 @@ public sealed class ReturnWithParameterAsyncShould : PrimitiveTypeServiceTestsBa
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithParameterAsync(where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithParameterAsync(x => x.StartsWith("pa")) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.ReturnWithParameterAsync("parameter1")
 			- 2: IPrimitiveDependencyService.ReturnWithParameterAsync("parameter2")

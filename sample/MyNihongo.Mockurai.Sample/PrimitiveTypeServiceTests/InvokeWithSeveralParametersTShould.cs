@@ -451,7 +451,7 @@ public sealed class InvokeWithSeveralParametersTShould : PrimitiveTypeServiceTes
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(where(predicate), where(predicate)) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(x => (x < 200), x => (x > 200)) to be invoked at index 4, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(123, 234)
 			- 2: IPrimitiveDependencyService.InvokeWithSeveralParameters<Single>(234, 234)

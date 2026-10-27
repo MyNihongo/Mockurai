@@ -322,6 +322,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			public SetupWithOutParameter<int> SetupInvokeAsync(in ItOut<int> result)
 			{
 				_invokeAsync0 ??= new SetupWithOutParameter<int>();
+				_invokeAsync0.Reset();
 				return _invokeAsync0;
 			}
 
@@ -406,6 +407,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			public SetupWithOutParameter<int> SetupInvokeAsync(in ItOut<int> result)
 			{
 				_invokeAsync0 ??= new SetupWithOutParameter<int>();
+				_invokeAsync0.Reset();
 				return _invokeAsync0;
 			}
 
@@ -490,6 +492,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			public SetupWithOutParameter<int, decimal> SetupInvokeAsync(in ItOut<int> result)
 			{
 				_invokeAsync0 ??= new SetupWithOutParameter<int, decimal>();
+				_invokeAsync0.Reset();
 				return _invokeAsync0;
 			}
 
@@ -573,6 +576,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			public SetupWithOutParameter<int, decimal> SetupInvokeAsync(in ItOut<int> result)
 			{
 				_invokeAsync0 ??= new SetupWithOutParameter<int, decimal>();
+				_invokeAsync0.Reset();
 				return _invokeAsync0;
 			}
 
@@ -1933,6 +1937,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			{
 				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
 				var invokeAsync0 = (SetupWithOutParameter<TInvoke>)_invokeAsync0.GetOrAdd(typeof(TInvoke), static _ => new SetupWithOutParameter<TInvoke>());
+				invokeAsync0.Reset();
 				return invokeAsync0;
 			}
 
@@ -2029,6 +2034,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			{
 				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
 				var invokeAsync0 = (SetupWithOutParameter<TInvoke>)_invokeAsync0.GetOrAdd(typeof(TInvoke), static _ => new SetupWithOutParameter<TInvoke>());
+				invokeAsync0.Reset();
 				return invokeAsync0;
 			}
 
@@ -2125,6 +2131,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			{
 				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
 				var invokeAsync0 = (SetupWithOutParameter<TInvoke, decimal>)_invokeAsync0.GetOrAdd(typeof(TInvoke), static _ => new SetupWithOutParameter<TInvoke, decimal>());
+				invokeAsync0.Reset();
 				return invokeAsync0;
 			}
 
@@ -2220,6 +2227,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			{
 				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
 				var invokeAsync0 = (SetupWithOutParameter<TInvoke, decimal>)_invokeAsync0.GetOrAdd(typeof(TInvoke), static _ => new SetupWithOutParameter<TInvoke, decimal>());
+				invokeAsync0.Reset();
 				return invokeAsync0;
 			}
 
@@ -3682,6 +3690,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			public SetupWithOutParameter<T> SetupInvokeAsync(in ItOut<T> value)
 			{
 				_invokeAsync0 ??= new SetupWithOutParameter<T>();
+				_invokeAsync0.Reset();
 				return _invokeAsync0;
 			}
 
@@ -3766,6 +3775,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			public SetupWithOutParameter<T> SetupInvokeAsync(in ItOut<T> value)
 			{
 				_invokeAsync0 ??= new SetupWithOutParameter<T>();
+				_invokeAsync0.Reset();
 				return _invokeAsync0;
 			}
 
@@ -3850,6 +3860,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			public SetupWithOutParameter<T, T> SetupInvokeAsync(in ItOut<T> value)
 			{
 				_invokeAsync0 ??= new SetupWithOutParameter<T, T>();
+				_invokeAsync0.Reset();
 				return _invokeAsync0;
 			}
 
@@ -3933,6 +3944,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			public SetupWithOutParameter<T, T> SetupInvokeAsync(in ItOut<T> value)
 			{
 				_invokeAsync0 ??= new SetupWithOutParameter<T, T>();
+				_invokeAsync0.Reset();
 				return _invokeAsync0;
 			}
 
@@ -5289,6 +5301,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			{
 				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
 				var invokeAsync0 = (SetupWithOutParameter<T1>)_invokeAsync0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithOutParameter<T1>());
+				invokeAsync0.Reset();
 				return invokeAsync0;
 			}
 
@@ -5385,6 +5398,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			{
 				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
 				var invokeAsync0 = (SetupWithOutParameter<T1>)_invokeAsync0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithOutParameter<T1>());
+				invokeAsync0.Reset();
 				return invokeAsync0;
 			}
 
@@ -5481,6 +5495,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			{
 				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
 				var invokeAsync0 = (SetupWithOutParameter<T1, T2>)_invokeAsync0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithOutParameter<T1, T2>());
+				invokeAsync0.Reset();
 				return invokeAsync0;
 			}
 
@@ -5576,6 +5591,7 @@ public sealed class MethodWithOneParameterGenericAsyncShould : MethodGenericTest
 			{
 				_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type), object>();
 				var invokeAsync0 = (SetupWithOutParameter<T1, T2>)_invokeAsync0.GetOrAdd((typeof(T1), typeof(T2)), static _ => new SetupWithOutParameter<T1, T2>());
+				invokeAsync0.Reset();
 				return invokeAsync0;
 			}
 

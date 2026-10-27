@@ -114,6 +114,7 @@ public sealed class StaticMembers : IssuesTestsBase
 					public Setup<object> SetupCreateConfig()
 					{
 						_createConfig0 ??= new Setup<object>();
+						_createConfig0.Reset();
 						return _createConfig0;
 					}
 

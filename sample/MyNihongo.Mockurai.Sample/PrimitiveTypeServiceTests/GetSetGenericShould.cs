@@ -451,7 +451,7 @@ public sealed class GetSetGenericShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService<String>.GetSet.set = where(predicate) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService<String>.GetSet.set = x => x.EndsWith("1") to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService<String>.GetSet.set = "parameter1"
 			- 2: IPrimitiveDependencyService<String>.GetSet.set = "parameter2"

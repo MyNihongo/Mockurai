@@ -301,7 +301,7 @@ public sealed class SetOnlyShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.SetOnly.set = where(predicate) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.SetOnly.set = x => (x < 200) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.SetOnly.set = 123
 			- 2: IPrimitiveDependencyService.SetOnly.set = 234

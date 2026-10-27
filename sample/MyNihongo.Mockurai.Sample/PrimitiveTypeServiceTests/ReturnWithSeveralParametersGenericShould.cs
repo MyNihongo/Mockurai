@@ -390,7 +390,7 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService<String>.ReturnWithSeveralParameters<Single, Double>(789, where(predicate)) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService<String>.ReturnWithSeveralParameters<Single, Double>(789, x => (x < 300)) to be invoked at index 4, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService<String>.ReturnWithSeveralParameters<Single, Double>(123, 234)
 			- 2: IPrimitiveDependencyService<String>.ReturnWithSeveralParameters<Single, Double>(789, 234)

@@ -324,7 +324,7 @@ public sealed class InvokeWithParameterClassShould : PrimitiveTypeServiceTestsBa
 
 		const string expectedMessage =
 			"""
-			Expected PrimitiveDependencyBase.InvokeWithParameter(where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected PrimitiveDependencyBase.InvokeWithParameter(x => (x < 200)) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: PrimitiveDependencyBase.InvokeWithParameter(123)
 			- 2: PrimitiveDependencyBase.InvokeWithParameter(321)

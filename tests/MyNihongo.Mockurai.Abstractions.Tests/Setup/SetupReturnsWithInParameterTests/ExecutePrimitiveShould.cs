@@ -818,7 +818,7 @@ public sealed class ExecutePrimitiveShould : SetupReturnsWithInParameterTestsBas
 		fixture.SetupParameter(ItIn<int>.Any().ValueSetup);
 		fixture.Callback(static (in _) => { Debug.WriteLine("output"); });
 
-		const int expected = 3;
+		const int expected = 1;
 		var actual = GetSetupCount(fixture);
 		Assert.Equal(expected, actual);
 	}

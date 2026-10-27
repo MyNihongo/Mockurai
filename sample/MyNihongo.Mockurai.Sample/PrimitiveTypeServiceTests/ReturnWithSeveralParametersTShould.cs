@@ -397,7 +397,7 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", where(predicate)) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", x => (x < 300)) to be invoked at index 4, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue1", 234)
 			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", 234)
