@@ -917,4 +917,30 @@ public sealed class ReturnWithSeveralParametersGenericShould : PrimitiveTypeServ
 		});
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		const float parameter1 = 2f;
+		const double parameter2 = 3d;
+
+		DependencyGenericServiceMock
+			.SetupReturnWithSeveralParameters<string, float, double>(It<float>.Value(parameter1), parameter2)
+			.Returns("first1")
+			.Returns("first2");
+
+		DependencyGenericServiceMock
+			.SetupReturnWithSeveralParameters<string, float, double>(It<float>.Value(parameter1), parameter2)
+			.Returns("second1")
+			.Returns("second2");
+
+		var fixture = CreateFixture();
+
+		Assert.Equal("second1", fixture.ReturnWithSeveralParametersGeneric(parameter1, parameter2));
+		Assert.Equal("second2", fixture.ReturnWithSeveralParametersGeneric(parameter1, parameter2));
+		Assert.Equal("second2", fixture.ReturnWithSeveralParametersGeneric(parameter1, parameter2));
+
+		DependencyGenericServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(It<float>.Value(parameter1), parameter2, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

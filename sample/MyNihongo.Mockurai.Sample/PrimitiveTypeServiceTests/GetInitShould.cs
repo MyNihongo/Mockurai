@@ -998,4 +998,59 @@ public sealed class GetInitShould : PrimitiveTypeServiceTestsBase
 		const string expected = argument1 + argument2;
 		Assert.Equal(expected, actual);
 	}
+
+	[Fact]
+	public void OverwriteChainedGetSetup()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		const string setupValue3 = nameof(setupValue3), setupValue4 = nameof(setupValue4);
+
+		DependencyServiceMock
+			.SetupGetGetInit()
+			.Returns(setupValue1)
+			.Returns(setupValue2);
+
+		DependencyServiceMock
+			.SetupGetGetInit()
+			.Returns(setupValue3)
+			.Returns(setupValue4);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(setupValue3, fixture.GetInit);
+		Assert.Equal(setupValue4, fixture.GetInit);
+		Assert.Equal(setupValue4, fixture.GetInit);
+
+		DependencyServiceMock.VerifyGetGetInit(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetSetup()
+	{
+		const string parameter = nameof(parameter);
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupSetGetInit(parameter)
+			.Callback(x => first += x.Length)
+			.Callback(x => first += x.Length * 10);
+
+		DependencyServiceMock
+			.SetupSetGetInit(parameter)
+			.Callback(x => second += x.Length)
+			.Callback(x => second += x.Length * 10);
+
+		var fixture = CreateFixture();
+		fixture.GetInit = parameter;
+		fixture.GetInit = parameter;
+		fixture.GetInit = parameter;
+
+		Assert.Equal(0, first);
+		Assert.Equal(parameter.Length + parameter.Length * 10 * 2, second);
+
+		DependencyServiceMock.VerifySetGetInit(parameter, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

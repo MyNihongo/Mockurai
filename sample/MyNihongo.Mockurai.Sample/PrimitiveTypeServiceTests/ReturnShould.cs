@@ -702,4 +702,27 @@ public sealed class ReturnShould : PrimitiveTypeServiceTestsBase
 		Assert.Equal(expected, actual1);
 		Assert.Equal(expected, actual2);
 	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		DependencyServiceMock
+			.SetupReturn()
+			.Returns(1)
+			.Returns(2);
+
+		DependencyServiceMock
+			.SetupReturn()
+			.Returns(10)
+			.Returns(20);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10_000m, fixture.Return());
+		Assert.Equal(20_000m, fixture.Return());
+		Assert.Equal(20_000m, fixture.Return());
+
+		DependencyServiceMock.VerifyReturn(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

@@ -488,4 +488,27 @@ public sealed class ReturnClassShould : PrimitiveTypeServiceTestsBase
 		PrimitiveDependencyMock.VerifyReturn(Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		PrimitiveDependencyMock
+			.SetupReturn()
+			.Returns(1)
+			.Returns(2);
+
+		PrimitiveDependencyMock
+			.SetupReturn()
+			.Returns(10)
+			.Returns(20);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10, fixture.ReturnClass());
+		Assert.Equal(20, fixture.ReturnClass());
+		Assert.Equal(20, fixture.ReturnClass());
+
+		PrimitiveDependencyMock.VerifyReturn(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

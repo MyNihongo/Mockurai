@@ -1191,4 +1191,29 @@ public sealed class ReturnWithSeveralParametersShould : PrimitiveTypeServiceTest
 		Assert.Equal(expected21, actual21);
 		Assert.Equal(expected22, actual22);
 	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		const int parameter1 = 2025, parameter2 = 6;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(parameter1, parameter2)
+			.Returns(1m)
+			.Returns(2m);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters(parameter1, parameter2)
+			.Returns(10m)
+			.Returns(20m);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(Math.Pow(10, 2), fixture.ReturnWithSeveralParameters(parameter1, parameter2));
+		Assert.Equal(Math.Pow(20, 2), fixture.ReturnWithSeveralParameters(parameter1, parameter2));
+		Assert.Equal(Math.Pow(20, 2), fixture.ReturnWithSeveralParameters(parameter1, parameter2));
+
+		DependencyServiceMock.VerifyReturnWithSeveralParameters(parameter1, parameter2, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

@@ -802,4 +802,35 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 		});
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		const float parameter1 = 2025f;
+		const string parameter2 = nameof(parameter2);
+		var first = 0;
+		var second = 0;
+
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters<string, float>(parameter1, parameter2)
+			.Callback((x, y) => first += (int)x + y.Length)
+			.Callback((x, y) => first += ((int)x + y.Length) * 10);
+
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters<string, float>(parameter1, parameter2)
+			.Callback((x, y) => second += (int)x + y.Length)
+			.Callback((x, y) => second += ((int)x + y.Length) * 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParametersGeneric(parameter1, parameter2);
+		fixture.InvokeWithSeveralParametersGeneric(parameter1, parameter2);
+		fixture.InvokeWithSeveralParametersGeneric(parameter1, parameter2);
+
+		Assert.Equal(0, first);
+		const int sum = 2025 + 10;
+		Assert.Equal(sum + sum * 10 + sum * 10, second);
+
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters<string, float>(parameter1, parameter2, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

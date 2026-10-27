@@ -490,4 +490,27 @@ public sealed class GetOnlyShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.VerifyGetGetOnly(Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		DependencyServiceMock
+			.SetupGetGetOnly()
+			.Returns(1)
+			.Returns(2);
+
+		DependencyServiceMock
+			.SetupGetGetOnly()
+			.Returns(10)
+			.Returns(20);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10, fixture.GetOnly);
+		Assert.Equal(20, fixture.GetOnly);
+		Assert.Equal(20, fixture.GetOnly);
+
+		DependencyServiceMock.VerifyGetGetOnly(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

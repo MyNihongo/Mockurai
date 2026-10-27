@@ -557,4 +557,27 @@ public sealed class ReturnGenericShould : PrimitiveTypeServiceTestsBase
 		});
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		DependencyGenericServiceMock
+			.SetupReturn<string, float>()
+			.Returns(1f)
+			.Returns(2f);
+
+		DependencyGenericServiceMock
+			.SetupReturn<string, float>()
+			.Returns(10f)
+			.Returns(20f);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10f, fixture.ReturnGeneric<float>());
+		Assert.Equal(20f, fixture.ReturnGeneric<float>());
+		Assert.Equal(20f, fixture.ReturnGeneric<float>());
+
+		DependencyGenericServiceMock.VerifyReturn<string, float>(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

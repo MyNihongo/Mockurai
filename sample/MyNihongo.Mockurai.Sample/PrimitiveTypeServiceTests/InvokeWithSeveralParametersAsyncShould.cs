@@ -708,4 +708,33 @@ public sealed class InvokeWithSeveralParametersAsyncShould : PrimitiveTypeServic
 		DependencyServiceMock.VerifyInvokeWithSeveralParametersAsync(setValue1, setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public async Task OverwriteChainedSetup()
+	{
+		const int parameter1 = 2025, parameter2 = 6;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParametersAsync(parameter1, parameter2)
+			.Callback((x, y) => first += x + y)
+			.Callback((x, y) => first += (x + y) * 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParametersAsync(parameter1, parameter2)
+			.Callback((x, y) => second += x + y)
+			.Callback((x, y) => second += (x + y) * 10);
+
+		var fixture = CreateFixture();
+		await fixture.InvokeWithSeveralParametersAsync(parameter1, parameter2);
+		await fixture.InvokeWithSeveralParametersAsync(parameter1, parameter2);
+		await fixture.InvokeWithSeveralParametersAsync(parameter1, parameter2);
+
+		Assert.Equal(0, first);
+		Assert.Equal(42651, second);
+
+		DependencyServiceMock.VerifyInvokeWithSeveralParametersAsync(parameter1, parameter2, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

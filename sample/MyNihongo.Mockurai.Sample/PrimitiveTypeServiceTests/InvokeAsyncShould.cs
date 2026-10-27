@@ -311,4 +311,32 @@ public sealed class InvokeAsyncShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.VerifyInvokeAsync(Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public async Task OverwriteChainedSetup()
+	{
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeAsync()
+			.Callback(() => first++)
+			.Callback(() => first += 10);
+
+		DependencyServiceMock
+			.SetupInvokeAsync()
+			.Callback(() => second++)
+			.Callback(() => second += 10);
+
+		var fixture = CreateFixture();
+		await fixture.InvokeAsync();
+		await fixture.InvokeAsync();
+		await fixture.InvokeAsync();
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifyInvokeAsync(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

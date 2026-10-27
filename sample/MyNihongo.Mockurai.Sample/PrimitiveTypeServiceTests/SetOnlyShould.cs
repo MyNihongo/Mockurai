@@ -496,4 +496,33 @@ public sealed class SetOnlyShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.VerifySetSetOnly(setValue, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		const decimal parameter = 1234.567m;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupSetSetOnly(parameter)
+			.Callback(_ => first++)
+			.Callback(_ => first += 10);
+
+		DependencyServiceMock
+			.SetupSetSetOnly(parameter)
+			.Callback(_ => second++)
+			.Callback(_ => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.SetOnly = parameter;
+		fixture.SetOnly = parameter;
+		fixture.SetOnly = parameter;
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifySetSetOnly(parameter, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

@@ -681,4 +681,29 @@ public sealed class ReturnWithParameterAsyncShould : PrimitiveTypeServiceTestsBa
 		DependencyServiceMock.VerifyReturnWithParameterAsync(setValue, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public async Task OverwriteChainedSetup()
+	{
+		const string parameter = nameof(parameter);
+
+		DependencyServiceMock
+			.SetupReturnWithParameterAsync(parameter)
+			.Returns(1)
+			.Returns(2);
+
+		DependencyServiceMock
+			.SetupReturnWithParameterAsync(parameter)
+			.Returns(10)
+			.Returns(20);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10, await fixture.ReturnWithParameterAsync(parameter));
+		Assert.Equal(20, await fixture.ReturnWithParameterAsync(parameter));
+		Assert.Equal(20, await fixture.ReturnWithParameterAsync(parameter));
+
+		DependencyServiceMock.VerifyReturnWithParameterAsync(parameter, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

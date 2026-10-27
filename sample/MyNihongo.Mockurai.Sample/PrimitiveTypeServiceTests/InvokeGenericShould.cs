@@ -456,4 +456,32 @@ public sealed class InvokeGenericShould : PrimitiveTypeServiceTestsBase
 		});
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvoke<float>()
+			.Callback(() => first++)
+			.Callback(() => first += 10);
+
+		DependencyServiceMock
+			.SetupInvoke<float>()
+			.Callback(() => second++)
+			.Callback(() => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.Invoke<float>();
+		fixture.Invoke<float>();
+		fixture.Invoke<float>();
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifyInvoke<float>(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

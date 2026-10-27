@@ -1279,4 +1279,33 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		Assert.Equal(expected1, result1);
 		Assert.Equal(expected2, result2);
 	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		const string parameter = nameof(parameter);
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Value(parameter))
+			.Callback((in _) => first++)
+			.Callback((in _) => first += 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Value(parameter))
+			.Callback((in _) => second++)
+			.Callback((in _) => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<string>.Value(parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

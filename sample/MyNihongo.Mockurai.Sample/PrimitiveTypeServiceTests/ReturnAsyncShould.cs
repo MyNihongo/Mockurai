@@ -491,4 +491,27 @@ public sealed class ReturnAsyncShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.VerifyReturnAsync(Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public async Task OverwriteChainedSetup()
+	{
+		DependencyServiceMock
+			.SetupReturnAsync()
+			.Returns(true)
+			.Returns(false);
+
+		DependencyServiceMock
+			.SetupReturnAsync()
+			.Returns(false)
+			.Returns(true);
+
+		var fixture = CreateFixture();
+
+		Assert.False(await fixture.ReturnAsync());
+		Assert.True(await fixture.ReturnAsync());
+		Assert.True(await fixture.ReturnAsync());
+
+		DependencyServiceMock.VerifyReturnAsync(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

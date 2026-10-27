@@ -1199,4 +1199,29 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		Assert.Equal(expected, actual21);
 		Assert.Equal(expected, actual22);
 	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		const string parameter = nameof(parameter);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Value(parameter))
+			.Returns("first1")
+			.Returns("first2");
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Value(parameter))
+			.Returns("second1")
+			.Returns("second2");
+
+		var fixture = CreateFixture();
+
+		Assert.Equal("name:second1,age:32", fixture.ReturnWithParameter(parameter));
+		Assert.Equal("name:second2,age:32", fixture.ReturnWithParameter(parameter));
+		Assert.Equal("name:second2,age:32", fixture.ReturnWithParameter(parameter));
+
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

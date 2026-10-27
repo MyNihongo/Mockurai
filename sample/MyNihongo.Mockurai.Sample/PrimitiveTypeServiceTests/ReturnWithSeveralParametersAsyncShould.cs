@@ -816,4 +816,29 @@ public sealed class ReturnWithSeveralParametersAsyncShould : PrimitiveTypeServic
 		DependencyServiceMock.VerifyReturnWithSeveralParametersAsync(setValue1, setValue2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public async Task OverwriteChainedSetup()
+	{
+		const int parameter1 = 2025, parameter2 = 6;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParametersAsync(parameter1, parameter2)
+			.Returns(1m)
+			.Returns(2m);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParametersAsync(parameter1, parameter2)
+			.Returns(10m)
+			.Returns(20m);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10m, await fixture.ReturnWithSeveralParametersAsync(parameter1, parameter2));
+		Assert.Equal(20m, await fixture.ReturnWithSeveralParametersAsync(parameter1, parameter2));
+		Assert.Equal(20m, await fixture.ReturnWithSeveralParametersAsync(parameter1, parameter2));
+
+		DependencyServiceMock.VerifyReturnWithSeveralParametersAsync(parameter1, parameter2, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

@@ -548,4 +548,33 @@ public sealed class InvokeWithParameterAsyncShould : PrimitiveTypeServiceTestsBa
 		DependencyServiceMock.VerifyInvokeWithParameterAsync(setValue, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public async Task OverwriteChainedSetup()
+	{
+		const int parameter = 123;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameterAsync(parameter)
+			.Callback(x => first += x)
+			.Callback(x => first += x * 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameterAsync(parameter)
+			.Callback(x => second += x)
+			.Callback(x => second += x * 10);
+
+		var fixture = CreateFixture();
+		await fixture.InvokeWithParameterAsync(parameter);
+		await fixture.InvokeWithParameterAsync(parameter);
+		await fixture.InvokeWithParameterAsync(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(2583, second);
+
+		DependencyServiceMock.VerifyInvokeWithParameterAsync(parameter, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

@@ -769,4 +769,29 @@ public sealed class ReturnWithParameterGenericShould : PrimitiveTypeServiceTests
 		});
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		const string setupValue = "Okayama Issei";
+
+		DependencyGenericServiceMock
+			.SetupReturnWithParameter<string, float>(setupValue)
+			.Returns(1f)
+			.Returns(2f);
+
+		DependencyGenericServiceMock
+			.SetupReturnWithParameter<string, float>(setupValue)
+			.Returns(10f)
+			.Returns(20f);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+		Assert.Equal(20f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+		Assert.Equal(20f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+
+		DependencyGenericServiceMock.VerifyReturnWithParameter<string, float>(setupValue, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

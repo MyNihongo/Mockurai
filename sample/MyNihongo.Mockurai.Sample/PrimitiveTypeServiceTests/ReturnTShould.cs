@@ -557,4 +557,27 @@ public sealed class ReturnTShould : PrimitiveTypeServiceTestsBase
 		});
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		DependencyServiceMock
+			.SetupReturn<float>()
+			.Returns(1f)
+			.Returns(2f);
+
+		DependencyServiceMock
+			.SetupReturn<float>()
+			.Returns(10f)
+			.Returns(20f);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10f, fixture.Return<float>());
+		Assert.Equal(20f, fixture.Return<float>());
+		Assert.Equal(20f, fixture.Return<float>());
+
+		DependencyServiceMock.VerifyReturn<float>(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

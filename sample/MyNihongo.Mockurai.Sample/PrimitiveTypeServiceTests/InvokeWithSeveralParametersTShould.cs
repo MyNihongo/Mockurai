@@ -808,4 +808,34 @@ public sealed class InvokeWithSeveralParametersTShould : PrimitiveTypeServiceTes
 		var exception = Assert.Throws<MockVerifyCountException>(actual);
 		Assert.Equal(expectedMessage, exception.Message);
 	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		const float parameter1 = 2025f;
+		const int parameter2 = 6;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters<float>(parameter1, parameter2)
+			.Callback((x, y) => first += (int)x + y)
+			.Callback((x, y) => first += ((int)x + y) * 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters<float>(parameter1, parameter2)
+			.Callback((x, y) => second += (int)x + y)
+			.Callback((x, y) => second += ((int)x + y) * 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParameters(parameter1, parameter2);
+		fixture.InvokeWithSeveralParameters(parameter1, parameter2);
+		fixture.InvokeWithSeveralParameters(parameter1, parameter2);
+
+		Assert.Equal(0, first);
+		Assert.Equal(42651, second);
+
+		DependencyServiceMock.VerifyInvokeWithSeveralParameters<float>(parameter1, parameter2, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

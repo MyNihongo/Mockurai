@@ -488,4 +488,30 @@ public sealed class GetOnlyGenericShould : PrimitiveTypeServiceTestsBase
 		DependencyGenericServiceMock.VerifyGetGetOnly(Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		const string setupValue3 = nameof(setupValue3), setupValue4 = nameof(setupValue4);
+
+		DependencyGenericServiceMock
+			.SetupGetGetOnly()
+			.Returns(setupValue1)
+			.Returns(setupValue2);
+
+		DependencyGenericServiceMock
+			.SetupGetGetOnly()
+			.Returns(setupValue3)
+			.Returns(setupValue4);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(setupValue3, fixture.GetOnlyGeneric);
+		Assert.Equal(setupValue4, fixture.GetOnlyGeneric);
+		Assert.Equal(setupValue4, fixture.GetOnlyGeneric);
+
+		DependencyGenericServiceMock.VerifyGetGetOnly(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

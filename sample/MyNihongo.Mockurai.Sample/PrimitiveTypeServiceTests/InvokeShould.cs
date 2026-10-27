@@ -500,4 +500,32 @@ public sealed class InvokeShould : PrimitiveTypeServiceTestsBase
 		const decimal expected = 2;
 		Assert.Equal(expected, result);
 	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvoke()
+			.Callback(() => first++)
+			.Callback(() => first += 10);
+
+		DependencyServiceMock
+			.SetupInvoke()
+			.Callback(() => second++)
+			.Callback(() => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.Invoke();
+		fixture.Invoke();
+		fixture.Invoke();
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifyInvoke(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

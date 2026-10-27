@@ -767,4 +767,29 @@ public sealed class ReturnWithParameterTShould : PrimitiveTypeServiceTestsBase
 		});
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		const float setupValue = 123f;
+
+		DependencyServiceMock
+			.SetupReturnWithParameter<float, string>(setupValue)
+			.Returns("first1")
+			.Returns("first2");
+
+		DependencyServiceMock
+			.SetupReturnWithParameter<float, string>(setupValue)
+			.Returns("second1")
+			.Returns("second2");
+
+		var fixture = CreateFixture();
+
+		Assert.Equal("second1", fixture.ReturnWithParameter<float, string>(setupValue));
+		Assert.Equal("second2", fixture.ReturnWithParameter<float, string>(setupValue));
+		Assert.Equal("second2", fixture.ReturnWithParameter<float, string>(setupValue));
+
+		DependencyServiceMock.VerifyReturnWithParameter<float, string>(setupValue, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }
