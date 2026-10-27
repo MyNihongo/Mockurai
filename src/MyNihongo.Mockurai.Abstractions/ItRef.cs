@@ -32,7 +32,8 @@ public readonly ref struct ItRef<T>
 	/// <param name="predicate">The predicate expression evaluated against each argument.</param>
 	public static ItRef<T> Where(Expression<Func<T, bool>> predicate)
 	{
-		return new ItRef<T>(predicate.Compile(), SetupType.Where, Constants.WhereToString, equalityKey: predicate.ToString());
+		var expressionString = predicate.ToString();
+		return new ItRef<T>(predicate.Compile(), SetupType.Where, () => expressionString, equalityKey: expressionString);
 	}
 
 

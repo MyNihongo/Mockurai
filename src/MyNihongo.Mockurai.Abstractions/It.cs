@@ -52,7 +52,8 @@ public readonly ref struct It<T>
 	/// <param name="predicate">The predicate expression evaluated against each argument.</param>
 	public static It<T> Where(Expression<Func<T, bool>> predicate)
 	{
-		return new It<T>(predicate.Compile(), SetupType.Where, Constants.WhereToString, equalityKey: predicate.ToString());
+		var expressionString = predicate.ToString();
+		return new It<T>(predicate.Compile(), SetupType.Where, () => expressionString, equalityKey: expressionString);
 	}
 
 
