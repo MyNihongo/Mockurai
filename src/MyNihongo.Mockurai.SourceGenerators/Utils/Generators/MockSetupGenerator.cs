@@ -66,6 +66,7 @@ internal static class MockSetupGenerator
 			.Indent(4).AppendLine("_ => _queue.Dequeue(),")
 			.Indent(3).AppendLine("};")
 			.Indent(2).AppendLine("}")
+			.CreateItemResetMethod(parameterSplit.InputParameters, indent: 2)
 			.Indent(1).AppendLine("}")
 			.AppendLine()
 			.Indent(1).AppendLine("private sealed class ItemSetup")
@@ -121,6 +122,7 @@ internal static class MockSetupGenerator
 			{
 				stringBuilder
 					.Indent(indent).AppendLine("private static readonly Comparer SortComparer = new();")
+					.Indent(indent).AppendLine("private static readonly EqualityComparer SetupEqualityComparer = new();")
 					.Indent(indent).AppendLine("private SetupContainer<Item>? _setups;")
 					.Indent(indent).Append("private Item? _currentSetup;");
 			}
@@ -168,10 +170,22 @@ internal static class MockSetupGenerator
 					.AppendReturnsMethods(methodSymbol, parameterSplit, indent);
 			}
 
-			return stringBuilder
+			stringBuilder
 				.AppendLine()
 				.AppendCallbackMethod(parameterSplit.InputParameters, indent).AppendLine()
 				.AppendThrowsMethod(parameterSplit.InputParameters, indent);
+
+			if (parameterSplit.InputParameters.IsDefaultOrEmpty)
+			{
+				stringBuilder
+					.AppendLine()
+					.Indent(indent).AppendLine("public void Reset()")
+					.Indent(indent++).AppendLine("{")
+					.Indent(indent).AppendLine("_currentSetup.Reset();")
+					.Indent(--indent).AppendLine("}");
+			}
+
+			return stringBuilder;
 		}
 
 		private StringBuilder CreateInterfaceMethodImplementations(IMethodSymbol methodSymbol,
@@ -258,6 +272,21 @@ internal static class MockSetupGenerator
 				.Indent(--indent).AppendLine("}");
 		}
 
+		private StringBuilder CreateItemResetMethod(ImmutableArray<ParameterSplit.Item> inputParameters, int indent)
+		{
+			if (!inputParameters.IsDefaultOrEmpty)
+				return stringBuilder;
+
+			return stringBuilder
+				.AppendLine()
+				.Indent(indent).AppendLine("public void Reset()")
+				.Indent(indent++).AppendLine("{")
+				.Indent(indent).AppendLine("_queue.Clear();")
+				.Indent(indent).AppendLine("_currentSetup = null;")
+				.Indent(indent).AppendLine("AndContinue = false;")
+				.Indent(--indent).AppendLine("}");
+		}
+
 		private StringBuilder CreateItemSetupDeclaration(ITypeSymbol? returnType, int indent)
 		{
 			// fields
@@ -297,7 +326,7 @@ internal static class MockSetupGenerator
 
 			stringBuilder.AppendLine();
 
-			return stringBuilder
+			stringBuilder
 				.Indent(indent).AppendLine("private sealed class Comparer: System.Collections.Generic.IComparer<Item>")
 				.Indent(indent++).AppendLine("{")
 				.Indent(indent).AppendLine("public int Compare(Item? x, Item? y)")
@@ -316,6 +345,52 @@ internal static class MockSetupGenerator
 				.Indent(--indent).AppendLine("}")
 				.AppendLine()
 				.Indent(indent).AppendLine("return xSort.CompareTo(ySort);")
+				.Indent(--indent).AppendLine("}")
+				.Indent(--indent).AppendLine("}");
+
+			stringBuilder.AppendLine();
+
+			stringBuilder
+				.Indent(indent).AppendLine("private sealed class EqualityComparer: System.Collections.Generic.IEqualityComparer<Item>")
+				.Indent(indent++).AppendLine("{")
+				.Indent(indent).Append("public bool Equals(Item? x, Item? y) =>");
+
+			for (var i = 0; i < inputParameters.Length; i++)
+			{
+				if (i > 0)
+					stringBuilder.Append(" &&");
+
+				stringBuilder
+					.AppendLine()
+					.Indent(indent + 1)
+					.Append("x?.")
+					.AppendParameterPropertyName(inputParameters[i].Index)
+					.Append(" == y?.")
+					.AppendParameterPropertyName(inputParameters[i].Index);
+			}
+
+			stringBuilder
+				.AppendLine(";")
+				.AppendLine();
+				
+			stringBuilder	
+				.Indent(indent).AppendLine("public int GetHashCode(Item obj)")
+				.Indent(indent++).AppendLine("{")
+				.Indent(indent).AppendLine("var hash = new System.HashCode();");
+
+			foreach (var parameterItem in inputParameters)
+			{
+				stringBuilder
+					.Indent(indent).Append("if (obj.")
+					.AppendParameterPropertyName(parameterItem.Index)
+					.AppendLine(".HasValue)")
+					.Indent(indent + 1).Append("hash.Add(obj.")
+					.AppendParameterPropertyName(parameterItem.Index)
+					.AppendLine(".Value.GetHashCode());");
+			}
+
+			return stringBuilder
+				.Indent(indent).AppendLine("return hash.ToHashCode();")
 				.Indent(--indent).AppendLine("}")
 				.Indent(--indent).AppendLine("}");
 		}
@@ -712,7 +787,7 @@ file static class Extensions
 				.AppendLine(");").AppendLine();
 
 			stringBuilder
-				.Indent(indent).AppendLine("_setups ??= new SetupContainer<Item>(SortComparer);")
+				.Indent(indent).AppendLine("_setups ??= new SetupContainer<Item>(SortComparer, SetupEqualityComparer);")
 				.Indent(indent).AppendLine("_setups.Add(_currentSetup);");
 
 			stringBuilder
@@ -731,9 +806,9 @@ file static class Extensions
 				.Indent(--indent).AppendLine("}");
 		}
 
-		public StringBuilder AppendThrowsMethod(ImmutableArray<ParameterSplit.Item> inputParameters, int indent)
+		public void AppendThrowsMethod(ImmutableArray<ParameterSplit.Item> inputParameters, int indent)
 		{
-			return stringBuilder
+			stringBuilder
 				.Indent(indent).AppendLine("public void Throws(in System.Exception exception)")
 				.Indent(indent++).AppendLine("{")
 				.TryAppendCurrentSetupCheck(inputParameters, indent)

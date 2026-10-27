@@ -13,6 +13,7 @@ public abstract class SetupWithParameterBase<TParameter, TCallback, TReturns, TR
 		ISetupReturnsThrowsJoin<TCallback, TReturns, TReturnsCallback>, ISetupReturnsThrowsReset<TCallback, TReturns, TReturnsCallback>
 {
 	private static readonly Comparer SortComparer = new();
+	private static readonly ItemEqualityComparer SetupEqualityComparer = new();
 
 	/// <summary>
 	/// The lazily-initialized container of per-argument setups, ordered by matcher specificity.
@@ -34,7 +35,7 @@ public abstract class SetupWithParameterBase<TParameter, TCallback, TReturns, TR
 	{
 		_currentSetup = new Item(parameter);
 
-		Setups ??= new SetupContainer<Item>(SortComparer);
+		Setups ??= new SetupContainer<Item>(SortComparer, SetupEqualityComparer);
 		Setups.Add(_currentSetup);
 	}
 
@@ -274,5 +275,14 @@ public abstract class SetupWithParameterBase<TParameter, TCallback, TReturns, TR
 
 			return xSort.CompareTo(ySort);
 		}
+	}
+
+	private sealed class ItemEqualityComparer : IEqualityComparer<Item>
+	{
+		public bool Equals(Item? x, Item? y) =>
+			x?.Parameter == y?.Parameter;
+
+		public int GetHashCode(Item obj) =>
+			obj.Parameter.HasValue ? obj.Parameter.Value.GetHashCode() : 0;
 	}
 }
