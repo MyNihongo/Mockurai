@@ -1447,6 +1447,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 			public SetupOutInt32OutSingle SetupInvoke(in ItOut<int> param1, in ItOut<float> param2)
 			{
 				_invoke0 ??= new SetupOutInt32OutSingle();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 
@@ -1542,6 +1543,7 @@ public sealed class MethodWithSeveralParameters : MethodTestsBase
 			public SetupOutInt32OutSingle<decimal> SetupInvoke(in ItOut<int> param1, in ItOut<float> param2)
 			{
 				_invoke0 ??= new SetupOutInt32OutSingle<decimal>();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 

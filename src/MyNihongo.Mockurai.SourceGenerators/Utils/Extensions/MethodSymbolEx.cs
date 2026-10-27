@@ -211,6 +211,13 @@ internal static class MethodSymbolEx
 					.AppendParameterNames(parameters, suffix: MockGeneratorConst.Suffixes.ValueSetup)
 					.AppendLine(");");
 			}
+			else
+			{
+				@this
+					.Indent(indent)
+					.AppendVariableName(memberSymbol.MemberName, methodSymbol.MethodKind, isField: genericTypeNames.IsDefaultOrEmpty)
+					.AppendLine(".Reset();");
+			}
 
 			return @this
 				.Indent(indent)

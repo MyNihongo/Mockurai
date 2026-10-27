@@ -745,7 +745,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(in where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameter(in x => x.StartsWith("pa")) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.InvokeWithParameter(in "parameter1")
 			- 2: IPrimitiveDependencyService.InvokeWithParameter(in "parameter2")
@@ -772,7 +772,7 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter(in where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameter(in x => (x < 200)) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.InvokeWithParameter(in 123)
 			- 2: IPrimitiveDependencyService.InvokeWithParameter(in 234)
@@ -1050,6 +1050,349 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		Assert.Equal(3 * setValue, callback);
 
 		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<int>.Value(setValue), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void CallbackChainedSetupValue()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		int result1 = 0, result2 = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Value(setupValue1))
+			.Callback((in _) => result1 += 1)
+			.Callback((in _) => result1 += 2);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Value(setupValue2))
+			.Callback((in _) => result2 += 3)
+			.Callback((in _) => result2 += 4);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(setupValue1);
+		fixture.InvokeWithParameter(setupValue1);
+		fixture.InvokeWithParameter(setupValue2);
+		fixture.InvokeWithParameter(setupValue2);
+
+		const decimal expected1 = 3, expected2 = 7;
+		Assert.Equal(expected1, result1);
+		Assert.Equal(expected2, result2);
+	}
+
+	[Fact]
+	public void CallbackSeparateSetupValue()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		int result1 = 0, result2 = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Value(setupValue1))
+			.Callback((in _) => result1++);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Value(setupValue1))
+			.Callback((in _) => result1 += 2);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Value(setupValue2))
+			.Callback((in _) => result2 += 3);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Value(setupValue2))
+			.Callback((in _) => result2 += 4);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(setupValue1);
+		fixture.InvokeWithParameter(setupValue1);
+		fixture.InvokeWithParameter(setupValue2);
+		fixture.InvokeWithParameter(setupValue2);
+
+		const decimal expected1 = 4, expected2 = 8;
+		Assert.Equal(expected1, result1);
+		Assert.Equal(expected2, result2);
+	}
+
+	[Fact]
+	public void CallbackChainedSetupEquivalent()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		int result1 = 0, result2 = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Equivalent(setupValue1))
+			.Callback((in _) => result1 += 1)
+			.Callback((in _) => result1 += 2);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Equivalent(setupValue2))
+			.Callback((in _) => result2 += 3)
+			.Callback((in _) => result2 += 4);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(setupValue1);
+		fixture.InvokeWithParameter(setupValue1);
+		fixture.InvokeWithParameter(setupValue2);
+		fixture.InvokeWithParameter(setupValue2);
+
+		const decimal expected1 = 3, expected2 = 7;
+		Assert.Equal(expected1, result1);
+		Assert.Equal(expected2, result2);
+	}
+
+	[Fact]
+	public void CallbackSeparateSetupEquivalent()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		int result1 = 0, result2 = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Equivalent(setupValue1))
+			.Callback((in _) => result1++);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Equivalent(setupValue1))
+			.Callback((in _) => result1 += 2);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Value(setupValue2))
+			.Callback((in _) => result2 += 3);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Value(setupValue2))
+			.Callback((in _) => result2 += 4);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(setupValue1);
+		fixture.InvokeWithParameter(setupValue1);
+		fixture.InvokeWithParameter(setupValue2);
+		fixture.InvokeWithParameter(setupValue2);
+
+		const decimal expected1 = 4, expected2 = 8;
+		Assert.Equal(expected1, result1);
+		Assert.Equal(expected2, result2);
+	}
+
+	[Fact]
+	public void CallbackChainedSetupWhere()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		int result1 = 0, result2 = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Where(x => x == setupValue1))
+			.Callback((in _) => result1++)
+			.Callback((in _) => result1 += 2);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Where(x => x == setupValue2))
+			.Callback((in _) => result2 += 3)
+			.Callback((in _) => result2 += 4);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(setupValue1);
+		fixture.InvokeWithParameter(setupValue1);
+		fixture.InvokeWithParameter(setupValue2);
+		fixture.InvokeWithParameter(setupValue2);
+
+		const decimal expected1 = 3, expected2 = 7;
+		Assert.Equal(expected1, result1);
+		Assert.Equal(expected2, result2);
+	}
+
+	[Fact]
+	public void CallbackSeparateSetupWhere()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		int result1 = 0, result2 = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Where(x => x == setupValue1))
+			.Callback((in _) => result1++);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Where(x => x == setupValue1))
+			.Callback((in _) => result1 += 2);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Where(x => x == setupValue2))
+			.Callback((in _) => result2 += 3);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Where(x => x == setupValue2))
+			.Callback((in _) => result2 += 4);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(setupValue1);
+		fixture.InvokeWithParameter(setupValue1);
+		fixture.InvokeWithParameter(setupValue2);
+		fixture.InvokeWithParameter(setupValue2);
+
+		const decimal expected1 = 4, expected2 = 8;
+		Assert.Equal(expected1, result1);
+		Assert.Equal(expected2, result2);
+	}
+
+	[Fact]
+	public void CallbackChainedSetupAny()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		int result1 = 0, result2 = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Any())
+			.Callback((in _) => result1++)
+			.Callback((in _) => result2 += 2);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(setupValue1);
+		fixture.InvokeWithParameter(setupValue1);
+		fixture.InvokeWithParameter(setupValue2);
+		fixture.InvokeWithParameter(setupValue2);
+
+		const decimal expected1 = 1, expected2 = 6;
+		Assert.Equal(expected1, result1);
+		Assert.Equal(expected2, result2);
+	}
+
+	[Fact]
+	public void CallbackSeparateSetupAny()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		int result1 = 0, result2 = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Any())
+			.Callback((in _) => result1++);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Any())
+			.Callback((in _) => result2 += 2);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(setupValue1);
+		fixture.InvokeWithParameter(setupValue1);
+		fixture.InvokeWithParameter(setupValue2);
+		fixture.InvokeWithParameter(setupValue2);
+
+		const decimal expected1 = 0, expected2 = 8;
+		Assert.Equal(expected1, result1);
+		Assert.Equal(expected2, result2);
+	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		const string parameter = nameof(parameter);
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Value(parameter))
+			.Callback((in _) => first++)
+			.Callback((in _) => first += 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Value(parameter))
+			.Callback((in _) => second++)
+			.Callback((in _) => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<string>.Value(parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupEquivalent()
+	{
+		const string parameter = nameof(parameter);
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Equivalent(parameter))
+			.Callback((in _) => first++)
+			.Callback((in _) => first += 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Equivalent(parameter))
+			.Callback((in _) => second++)
+			.Callback((in _) => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<string>.Equivalent(parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupWhere()
+	{
+		const string parameter = nameof(parameter);
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Where(x => x == parameter))
+			.Callback((in _) => first++)
+			.Callback((in _) => first += 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Where(x => x == parameter))
+			.Callback((in _) => second++)
+			.Callback((in _) => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<string>.Where(x => x == parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupAny()
+	{
+		const string parameter = nameof(parameter);
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Any())
+			.Callback((in _) => first++)
+			.Callback((in _) => first += 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Any())
+			.Callback((in _) => second++)
+			.Callback((in _) => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<string>.Any(), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 }

@@ -14,6 +14,17 @@ public abstract class SetupBase<TCallback>
 	private bool _andContinue;
 
 	/// <summary>
+	/// Clears all queued setup steps so that the next configuration starts fresh.
+	/// This is called when a new setup call overwrites a previous one for the same member.
+	/// </summary>
+	public void Reset()
+	{
+		_queue.Clear();
+		_currentSetup = null;
+		_andContinue = false;
+	}
+
+	/// <summary>
 	/// Configures a callback to run when the mocked member is invoked, either as a new step
 	/// or merged with the previous step when following an <c>And</c>.
 	/// </summary>

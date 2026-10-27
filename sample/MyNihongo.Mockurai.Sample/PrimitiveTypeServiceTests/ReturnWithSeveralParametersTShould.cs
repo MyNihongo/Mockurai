@@ -397,7 +397,7 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", where(predicate)) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", x => (x < 300)) to be invoked at index 4, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue1", 234)
 			- 2: IPrimitiveDependencyService.ReturnWithSeveralParameters<String, Single, Double>(ref "parameterValue3", 234)
@@ -919,6 +919,110 @@ public sealed class ReturnWithSeveralParametersTShould : PrimitiveTypeServiceTes
 			ctx.DependencyServiceMock.ReturnWithSeveralParameters<float, double, string>(ItRef<float>.Value(floatParam), intParam);
 			ctx.DependencyServiceMock.ReturnWithSeveralParameters<decimal, float, string>(ItRef<decimal>.Value(decimalParam), intParam);
 		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		var parameter1 = "name";
+		const float parameter2 = 2f;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameter1), parameter2)
+			.Returns(1d)
+			.Returns(2d);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameter1), parameter2)
+			.Returns(10d)
+			.Returns(20d);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10d, fixture.ReturnWithSeveralParameters<string, float, double>(ref parameter1, parameter2));
+		Assert.Equal(20d, fixture.ReturnWithSeveralParameters<string, float, double>(ref parameter1, parameter2));
+		Assert.Equal(20d, fixture.ReturnWithSeveralParameters<string, float, double>(ref parameter1, parameter2));
+
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameter1), parameter2, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupEquivalent()
+	{
+		var parameter1 = "name";
+		const float parameter2 = 2f;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameter1), parameter2)
+			.Returns(1d)
+			.Returns(2d);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameter1), parameter2)
+			.Returns(10d)
+			.Returns(20d);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10d, fixture.ReturnWithSeveralParameters<string, float, double>(ref parameter1, parameter2));
+		Assert.Equal(20d, fixture.ReturnWithSeveralParameters<string, float, double>(ref parameter1, parameter2));
+		Assert.Equal(20d, fixture.ReturnWithSeveralParameters<string, float, double>(ref parameter1, parameter2));
+
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Value(parameter1), It<float>.Equivalent(parameter2), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupWhere()
+	{
+		var parameter1 = "name";
+		const float parameter2 = 2f;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters<string, float, double>(ItRef<string>.Where(x => x == parameter1), It<float>.Where(x => x == parameter2))
+			.Returns(1d)
+			.Returns(2d);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters<string, float, double>(ItRef<string>.Where(x => x == parameter1), It<float>.Where(x => x == parameter2))
+			.Returns(10d)
+			.Returns(20d);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10d, fixture.ReturnWithSeveralParameters<string, float, double>(ref parameter1, parameter2));
+		Assert.Equal(20d, fixture.ReturnWithSeveralParameters<string, float, double>(ref parameter1, parameter2));
+		Assert.Equal(20d, fixture.ReturnWithSeveralParameters<string, float, double>(ref parameter1, parameter2));
+
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Where(x => x == parameter1), It<float>.Where(x => x == parameter2), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupAny()
+	{
+		var parameter1 = "name";
+		const float parameter2 = 2f;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters<string, float, double>(ItRef<string>.Any(), It<float>.Any())
+			.Returns(1d)
+			.Returns(2d);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParameters<string, float, double>(ItRef<string>.Any(), It<float>.Any())
+			.Returns(10d)
+			.Returns(20d);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10d, fixture.ReturnWithSeveralParameters<string, float, double>(ref parameter1, parameter2));
+		Assert.Equal(20d, fixture.ReturnWithSeveralParameters<string, float, double>(ref parameter1, parameter2));
+		Assert.Equal(20d, fixture.ReturnWithSeveralParameters<string, float, double>(ref parameter1, parameter2));
+
+		DependencyServiceMock.VerifyReturnWithSeveralParameters<string, float, double>(ItRef<string>.Any(), It<float>.Any(), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 }

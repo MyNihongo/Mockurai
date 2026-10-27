@@ -462,7 +462,7 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>(where(predicate), where(predicate)) to be invoked at index 4, but it has not been called.
+			Expected IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>(x => x.EndsWith(1), x => x.EndsWith(2)) to be invoked at index 4, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue1", "parameterValue2")
 			- 2: IPrimitiveDependencyService<String>.InvokeWithSeveralParameters<String>("parameterValue2", "parameterValue2")
@@ -800,6 +800,130 @@ public sealed class InvokeWithSeveralParametersGenericShould : PrimitiveTypeServ
 			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters<string, int>(intParam, stringParam);
 			ctx.DependencyGenericServiceMock.InvokeWithSeveralParameters<string, float>(floatParam, stringParam);
 		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		const float parameter1 = 2025f;
+		const string parameter2 = nameof(parameter2);
+		var first = 0;
+		var second = 0;
+
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters<string, float>(parameter1, parameter2)
+			.Callback((x, y) => first += (int)x + y.Length)
+			.Callback((x, y) => first += ((int)x + y.Length) * 10);
+
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters<string, float>(parameter1, parameter2)
+			.Callback((x, y) => second += (int)x + y.Length)
+			.Callback((x, y) => second += ((int)x + y.Length) * 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParametersGeneric(parameter1, parameter2);
+		fixture.InvokeWithSeveralParametersGeneric(parameter1, parameter2);
+		fixture.InvokeWithSeveralParametersGeneric(parameter1, parameter2);
+
+		Assert.Equal(0, first);
+		const int sum = 2025 + 10;
+		Assert.Equal(sum + sum * 10 + sum * 10, second);
+
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters<string, float>(parameter1, parameter2, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupEquivalent()
+	{
+		const float parameter1 = 2025f;
+		const string parameter2 = nameof(parameter2);
+		var first = 0;
+		var second = 0;
+
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters(It<float>.Equivalent(parameter1), It<string>.Equivalent(parameter2))
+			.Callback((x, y) => first += (int)x + y.Length)
+			.Callback((x, y) => first += ((int)x + y.Length) * 10);
+
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters(It<float>.Equivalent(parameter1), It<string>.Equivalent(parameter2))
+			.Callback((x, y) => second += (int)x + y.Length)
+			.Callback((x, y) => second += ((int)x + y.Length) * 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParametersGeneric(parameter1, parameter2);
+		fixture.InvokeWithSeveralParametersGeneric(parameter1, parameter2);
+		fixture.InvokeWithSeveralParametersGeneric(parameter1, parameter2);
+
+		Assert.Equal(0, first);
+		const int sum = 2025 + 10;
+		Assert.Equal(sum + sum * 10 + sum * 10, second);
+
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters(It<float>.Equivalent(parameter1), It<string>.Equivalent(parameter2), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupWhere()
+	{
+		const float parameter1 = 2025f;
+		const string parameter2 = nameof(parameter2);
+		var first = 0;
+		var second = 0;
+
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters(It<float>.Where(x => x == parameter1), It<string>.Where(x => x == parameter2))
+			.Callback((x, y) => first += (int)x + y.Length)
+			.Callback((x, y) => first += ((int)x + y.Length) * 10);
+
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters(It<float>.Where(x => x == parameter1), It<string>.Where(x => x == parameter2))
+			.Callback((x, y) => second += (int)x + y.Length)
+			.Callback((x, y) => second += ((int)x + y.Length) * 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParametersGeneric(parameter1, parameter2);
+		fixture.InvokeWithSeveralParametersGeneric(parameter1, parameter2);
+		fixture.InvokeWithSeveralParametersGeneric(parameter1, parameter2);
+
+		Assert.Equal(0, first);
+		const int sum = 2025 + 10;
+		Assert.Equal(sum + sum * 10 + sum * 10, second);
+
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters(It<float>.Where(x => x == parameter1), It<string>.Where(x => x == parameter2), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupAny()
+	{
+		const float parameter1 = 2025f;
+		const string parameter2 = nameof(parameter2);
+		var first = 0;
+		var second = 0;
+
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters(It<float>.Any(), It<string>.Any())
+			.Callback((x, y) => first += (int)x + y.Length)
+			.Callback((x, y) => first += ((int)x + y.Length) * 10);
+
+		DependencyGenericServiceMock
+			.SetupInvokeWithSeveralParameters(It<float>.Any(), It<string>.Any())
+			.Callback((x, y) => second += (int)x + y.Length)
+			.Callback((x, y) => second += ((int)x + y.Length) * 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParametersGeneric(parameter1, parameter2);
+		fixture.InvokeWithSeveralParametersGeneric(parameter1, parameter2);
+		fixture.InvokeWithSeveralParametersGeneric(parameter1, parameter2);
+
+		Assert.Equal(0, first);
+		const int sum = 2025 + 10;
+		Assert.Equal(sum + sum * 10 + sum * 10, second);
+
+		DependencyGenericServiceMock.VerifyInvokeWithSeveralParameters(It<float>.Any(), It<string>.Any(), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 }

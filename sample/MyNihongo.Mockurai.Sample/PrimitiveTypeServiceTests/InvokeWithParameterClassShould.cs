@@ -324,7 +324,7 @@ public sealed class InvokeWithParameterClassShould : PrimitiveTypeServiceTestsBa
 
 		const string expectedMessage =
 			"""
-			Expected PrimitiveDependencyBase.InvokeWithParameter(where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected PrimitiveDependencyBase.InvokeWithParameter(x => (x < 200)) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: PrimitiveDependencyBase.InvokeWithParameter(123)
 			- 2: PrimitiveDependencyBase.InvokeWithParameter(321)
@@ -548,6 +548,122 @@ public sealed class InvokeWithParameterClassShould : PrimitiveTypeServiceTestsBa
 		Assert.Equal(3 * setValue, callback);
 
 		PrimitiveDependencyBaseMock.VerifyInvokeWithParameter(setValue, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		const float parameter = 123f;
+		var first = 0;
+		var second = 0;
+
+		PrimitiveDependencyBaseMock
+			.SetupInvokeWithParameter(parameter)
+			.Callback(x => first += (int)x)
+			.Callback(x => first += (int)x * 10);
+
+		PrimitiveDependencyBaseMock
+			.SetupInvokeWithParameter(parameter)
+			.Callback(x => second += (int)x)
+			.Callback(x => second += (int)x * 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameterClass(parameter);
+		fixture.InvokeWithParameterClass(parameter);
+		fixture.InvokeWithParameterClass(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(2583, second);
+
+		PrimitiveDependencyBaseMock.VerifyInvokeWithParameter(parameter, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupEquivalent()
+	{
+		const float parameter = 123f;
+		var first = 0;
+		var second = 0;
+
+		PrimitiveDependencyBaseMock
+			.SetupInvokeWithParameter(It<float>.Equivalent(parameter))
+			.Callback(x => first += (int)x)
+			.Callback(x => first += (int)x * 10);
+
+		PrimitiveDependencyBaseMock
+			.SetupInvokeWithParameter(It<float>.Equivalent(parameter))
+			.Callback(x => second += (int)x)
+			.Callback(x => second += (int)x * 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameterClass(parameter);
+		fixture.InvokeWithParameterClass(parameter);
+		fixture.InvokeWithParameterClass(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(2583, second);
+
+		PrimitiveDependencyBaseMock.VerifyInvokeWithParameter(It<float>.Equivalent(parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupWhere()
+	{
+		const float parameter = 123f;
+		var first = 0;
+		var second = 0;
+
+		PrimitiveDependencyBaseMock
+			.SetupInvokeWithParameter(It<float>.Where(x => x == parameter))
+			.Callback(x => first += (int)x)
+			.Callback(x => first += (int)x * 10);
+
+		PrimitiveDependencyBaseMock
+			.SetupInvokeWithParameter(It<float>.Where(x => x == parameter))
+			.Callback(x => second += (int)x)
+			.Callback(x => second += (int)x * 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameterClass(parameter);
+		fixture.InvokeWithParameterClass(parameter);
+		fixture.InvokeWithParameterClass(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(2583, second);
+
+		PrimitiveDependencyBaseMock.VerifyInvokeWithParameter(It<float>.Where(x => x == parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupAny()
+	{
+		const float parameter = 123f;
+		var first = 0;
+		var second = 0;
+
+		PrimitiveDependencyBaseMock
+			.SetupInvokeWithParameter(It<float>.Any())
+			.Callback(x => first += (int)x)
+			.Callback(x => first += (int)x * 10);
+
+		PrimitiveDependencyBaseMock
+			.SetupInvokeWithParameter(It<float>.Any())
+			.Callback(x => second += (int)x)
+			.Callback(x => second += (int)x * 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameterClass(parameter);
+		fixture.InvokeWithParameterClass(parameter);
+		fixture.InvokeWithParameterClass(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(2583, second);
+
+		PrimitiveDependencyBaseMock.VerifyInvokeWithParameter(It<float>.Any(), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 }

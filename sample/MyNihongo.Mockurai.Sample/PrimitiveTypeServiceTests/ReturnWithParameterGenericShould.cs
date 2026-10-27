@@ -319,7 +319,7 @@ public sealed class ReturnWithParameterGenericShould : PrimitiveTypeServiceTests
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService<String>.ReturnWithParameter<Single>(where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService<String>.ReturnWithParameter<Single>(x => x.EndsWith(1)) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService<String>.ReturnWithParameter<Single>("setupValue1")
 			- 2: IPrimitiveDependencyService<String>.ReturnWithParameter<Single>("setupValue2")
@@ -767,6 +767,106 @@ public sealed class ReturnWithParameterGenericShould : PrimitiveTypeServiceTests
 			ctx.DependencyGenericServiceMock.ReturnWithParameter<string, int>(stringParameter);
 			ctx.DependencyGenericServiceMock.ReturnWithParameter<string, short>(stringParameter);
 		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		const string setupValue = "Okayama Issei";
+
+		DependencyGenericServiceMock
+			.SetupReturnWithParameter<string, float>(setupValue)
+			.Returns(1f)
+			.Returns(2f);
+
+		DependencyGenericServiceMock
+			.SetupReturnWithParameter<string, float>(setupValue)
+			.Returns(10f)
+			.Returns(20f);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+		Assert.Equal(20f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+		Assert.Equal(20f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+
+		DependencyGenericServiceMock.VerifyReturnWithParameter<string, float>(setupValue, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupEquivalent()
+	{
+		const string setupValue = "Okayama Issei";
+
+		DependencyGenericServiceMock
+			.SetupReturnWithParameter<string, float>(It<string>.Equivalent(setupValue))
+			.Returns(1f)
+			.Returns(2f);
+
+		DependencyGenericServiceMock
+			.SetupReturnWithParameter<string, float>(It<string>.Equivalent(setupValue))
+			.Returns(10f)
+			.Returns(20f);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+		Assert.Equal(20f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+		Assert.Equal(20f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+
+		DependencyGenericServiceMock.VerifyReturnWithParameter<string, float>(It<string>.Equivalent(setupValue), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupWhere()
+	{
+		const string setupValue = "Okayama Issei";
+
+		DependencyGenericServiceMock
+			.SetupReturnWithParameter<string, float>(It<string>.Where(x => x == setupValue))
+			.Returns(1f)
+			.Returns(2f);
+
+		DependencyGenericServiceMock
+			.SetupReturnWithParameter<string, float>(It<string>.Where(x => x == setupValue))
+			.Returns(10f)
+			.Returns(20f);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+		Assert.Equal(20f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+		Assert.Equal(20f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+
+		DependencyGenericServiceMock.VerifyReturnWithParameter<string, float>(It<string>.Where(x => x == setupValue), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupAny()
+	{
+		const string setupValue = "Okayama Issei";
+
+		DependencyGenericServiceMock
+			.SetupReturnWithParameter<string, float>(It<string>.Any())
+			.Returns(1f)
+			.Returns(2f);
+
+		DependencyGenericServiceMock
+			.SetupReturnWithParameter<string, float>(It<string>.Any())
+			.Returns(10f)
+			.Returns(20f);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+		Assert.Equal(20f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+		Assert.Equal(20f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+
+		DependencyGenericServiceMock.VerifyReturnWithParameter<string, float>(It<string>.Any(), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 }

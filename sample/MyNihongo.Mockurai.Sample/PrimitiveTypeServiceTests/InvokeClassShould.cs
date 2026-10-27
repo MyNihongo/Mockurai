@@ -311,4 +311,32 @@ public sealed class InvokeClassShould : PrimitiveTypeServiceTestsBase
 		PrimitiveDependencyBaseMock.VerifyInvoke(Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		var first = 0;
+		var second = 0;
+
+		PrimitiveDependencyBaseMock
+			.SetupInvoke()
+			.Callback(() => first++)
+			.Callback(() => first += 10);
+
+		PrimitiveDependencyBaseMock
+			.SetupInvoke()
+			.Callback(() => second++)
+			.Callback(() => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeClass();
+		fixture.InvokeClass();
+		fixture.InvokeClass();
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		PrimitiveDependencyBaseMock.VerifyInvoke(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

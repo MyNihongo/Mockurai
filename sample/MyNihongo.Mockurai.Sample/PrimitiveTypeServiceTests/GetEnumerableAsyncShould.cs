@@ -75,4 +75,25 @@ public sealed class GetEnumerableAsyncShould : PrimitiveTypeServiceTestsBase
 
 		Assert.Equivalent(setupValues, actual, true);
 	}
+
+	[Fact]
+	public async Task OverwriteChainedSetup()
+	{
+		string[] values1 = ["A", "B"], values2 = ["C", "D"];
+		using var cts = new CancellationTokenSource();
+
+		DependencyServiceMock
+			.SetupGetEnumerableAsync(cts.Token)
+			.Returns([..values1]);
+
+		DependencyServiceMock
+			.SetupGetEnumerableAsync(cts.Token)
+			.Returns([..values2]);
+
+		var actual = await CreateFixture()
+			.GetEnumerableAsync(cts.Token)
+			.ToArrayAsync(cts.Token);
+
+		Assert.Equivalent(values2, actual, true);
+	}
 }

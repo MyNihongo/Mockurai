@@ -451,7 +451,7 @@ public sealed class GetSetGenericShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService<String>.GetSet.set = where(predicate) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService<String>.GetSet.set = x => x.EndsWith("1") to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService<String>.GetSet.set = "parameter1"
 			- 2: IPrimitiveDependencyService<String>.GetSet.set = "parameter2"
@@ -983,6 +983,148 @@ public sealed class GetSetGenericShould : PrimitiveTypeServiceTestsBase
 		Assert.Equal(3 * setValue.Length, callback);
 
 		DependencyGenericServiceMock.VerifySetGetSet(setValue, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedGetSetup()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		const string setupValue3 = nameof(setupValue3), setupValue4 = nameof(setupValue4);
+
+		DependencyGenericServiceMock
+			.SetupGetGetSet()
+			.Returns(setupValue1)
+			.Returns(setupValue2);
+
+		DependencyGenericServiceMock
+			.SetupGetGetSet()
+			.Returns(setupValue3)
+			.Returns(setupValue4);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(setupValue3, fixture.GetSetGeneric);
+		Assert.Equal(setupValue4, fixture.GetSetGeneric);
+		Assert.Equal(setupValue4, fixture.GetSetGeneric);
+
+		DependencyGenericServiceMock.VerifyGetGetSet(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetSetup()
+	{
+		const string parameter = nameof(parameter);
+		var first = 0;
+		var second = 0;
+
+		DependencyGenericServiceMock
+			.SetupSetGetSet(parameter)
+			.Callback(x => first += x.Length)
+			.Callback(x => first += x.Length * 10);
+
+		DependencyGenericServiceMock
+			.SetupSetGetSet(parameter)
+			.Callback(x => second += x.Length)
+			.Callback(x => second += x.Length * 10);
+
+		var fixture = CreateFixture();
+		fixture.GetSetGeneric = parameter;
+		fixture.GetSetGeneric = parameter;
+		fixture.GetSetGeneric = parameter;
+
+		Assert.Equal(0, first);
+		Assert.Equal(parameter.Length + parameter.Length * 10 * 2, second);
+
+		DependencyGenericServiceMock.VerifySetGetSet(parameter, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetSetupEquivalent()
+	{
+		const string parameter = nameof(parameter);
+		var first = 0;
+		var second = 0;
+
+		DependencyGenericServiceMock
+			.SetupSetGetSet(It<string>.Equivalent(parameter))
+			.Callback(x => first += x.Length)
+			.Callback(x => first += x.Length * 10);
+
+		DependencyGenericServiceMock
+			.SetupSetGetSet(It<string>.Equivalent(parameter))
+			.Callback(x => second += x.Length)
+			.Callback(x => second += x.Length * 10);
+
+		var fixture = CreateFixture();
+		fixture.GetSetGeneric = parameter;
+		fixture.GetSetGeneric = parameter;
+		fixture.GetSetGeneric = parameter;
+
+		Assert.Equal(0, first);
+		Assert.Equal(parameter.Length + parameter.Length * 10 * 2, second);
+
+		DependencyGenericServiceMock.VerifySetGetSet(It<string>.Equivalent(parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetSetupWhere()
+	{
+		const string parameter = nameof(parameter);
+		var first = 0;
+		var second = 0;
+
+		DependencyGenericServiceMock
+			.SetupSetGetSet(It<string>.Where(x => x == parameter))
+			.Callback(x => first += x.Length)
+			.Callback(x => first += x.Length * 10);
+
+		DependencyGenericServiceMock
+			.SetupSetGetSet(It<string>.Where(x => x == parameter))
+			.Callback(x => second += x.Length)
+			.Callback(x => second += x.Length * 10);
+
+		var fixture = CreateFixture();
+		fixture.GetSetGeneric = parameter;
+		fixture.GetSetGeneric = parameter;
+		fixture.GetSetGeneric = parameter;
+
+		Assert.Equal(0, first);
+		Assert.Equal(parameter.Length + parameter.Length * 10 * 2, second);
+
+		DependencyGenericServiceMock.VerifySetGetSet(It<string>.Where(x => x == parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetSetupAny()
+	{
+		const string parameter = nameof(parameter);
+		var first = 0;
+		var second = 0;
+
+		DependencyGenericServiceMock
+			.SetupSetGetSet(It<string>.Any())
+			.Callback(x => first += x.Length)
+			.Callback(x => first += x.Length * 10);
+
+		DependencyGenericServiceMock
+			.SetupSetGetSet(It<string>.Any())
+			.Callback(x => second += x.Length)
+			.Callback(x => second += x.Length * 10);
+
+		var fixture = CreateFixture();
+		fixture.GetSetGeneric = parameter;
+		fixture.GetSetGeneric = parameter;
+		fixture.GetSetGeneric = parameter;
+
+		Assert.Equal(0, first);
+		Assert.Equal(parameter.Length + parameter.Length * 10 * 2, second);
+
+		DependencyGenericServiceMock.VerifySetGetSet(It<string>.Any(), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 }

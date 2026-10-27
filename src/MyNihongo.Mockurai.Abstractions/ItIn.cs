@@ -11,14 +11,14 @@ public readonly ref struct ItIn<T>
 	/// </summary>
 	public readonly ItSetup<T> ValueSetup;
 
-	private ItIn(Func<T, bool> predicate, SetupType type, Func<string> toString)
+	private ItIn(Func<T, bool> predicate, SetupType type, Func<string> toString, object? equalityKey = null)
 	{
-		ValueSetup = new ItSetup<T>(predicate, type, toString);
+		ValueSetup = new ItSetup<T>(predicate, type, toString, equalityKey);
 	}
 
-	private ItIn(Func<T, ComparisonResult> predicate, SetupType type, Func<string> toString)
+	private ItIn(Func<T, ComparisonResult> predicate, SetupType type, Func<string> toString, object? equalityKey = null)
 	{
-		ValueSetup = new ItSetup<T>(predicate, type, toString);
+		ValueSetup = new ItSetup<T>(predicate, type, toString, equalityKey);
 	}
 
 	/// <summary>
@@ -27,7 +27,7 @@ public readonly ref struct ItIn<T>
 	/// <param name="value">The expected value.</param>
 	public static ItIn<T> Value(T value)
 	{
-		return new ItIn<T>(x => EqualityComparer<T>.Default.Equals(value, x), SetupType.Value, () => value.SerializeToJson(limitLength: true));
+		return new ItIn<T>(x => EqualityComparer<T>.Default.Equals(value, x), SetupType.Value, () => value.SerializeToJson(limitLength: true), equalityKey: value);
 	}
 
 	/// <summary>
@@ -42,17 +42,20 @@ public readonly ref struct ItIn<T>
 	public static ItIn<T> Equivalent(T value, IEquivalencyComparer<T>? comparer = null, bool useJsonSnapshot = true)
 	{
 		var setupType = useJsonSnapshot ? SetupType.Equivalent : SetupType.Value;
-		return new ItIn<T>(x => (comparer ?? EquivalencyComparer<T>.Default).Equivalent(value, x), setupType, () => value.SerializeToJson(limitLength: true));
+		return new ItIn<T>(x => (comparer ?? EquivalencyComparer<T>.Default).Equivalent(value, x), setupType, () => value.SerializeToJson(limitLength: true), equalityKey: value);
 	}
 
 	/// <summary>
-	/// Matches arguments that satisfy the supplied <paramref name="predicate"/>.
+	/// Matches arguments that satisfy the supplied <paramref name="predicate"/> expression.
+	/// The expression tree is used for setup-identity comparison so that duplicate setups overwrite.
 	/// </summary>
-	/// <param name="predicate">The predicate evaluated against each argument.</param>
-	public static ItIn<T> Where(in Func<T, bool> predicate)
+	/// <param name="predicate">The predicate expression evaluated against each argument.</param>
+	public static ItIn<T> Where(Expression<Func<T, bool>> predicate)
 	{
-		return new ItIn<T>(predicate, SetupType.Where, Constants.WhereToString);
+		var expressionString = predicate.ToString();
+		return new ItIn<T>(predicate.Compile(), SetupType.Where, () => expressionString, equalityKey: expressionString);
 	}
+
 
 	/// <summary>
 	/// Matches any argument value.

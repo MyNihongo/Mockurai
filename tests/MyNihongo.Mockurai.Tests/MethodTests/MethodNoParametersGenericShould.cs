@@ -16,6 +16,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			public Setup SetupInvoke()
 			{
 				_invoke0 ??= new Setup();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 
@@ -90,6 +91,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			public Setup<decimal> SetupInvoke()
 			{
 				_invoke0 ??= new Setup<decimal>();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 
@@ -165,6 +167,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
 				var invoke0 = (Setup)_invoke0.GetOrAdd(typeof(TInvoke), static _ => new Setup());
+				invoke0.Reset();
 				return invoke0;
 			}
 
@@ -250,6 +253,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			public Setup<T> SetupInvoke()
 			{
 				_invoke0 ??= new Setup<T>();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 
@@ -325,6 +329,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
 				var invoke0 = (Setup<TReturn>)_invoke0.GetOrAdd(typeof(TReturn), static _ => new Setup<TReturn>());
+				invoke0.Reset();
 				return invoke0;
 			}
 
@@ -415,6 +420,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			public Setup SetupInvoke()
 			{
 				_invoke0 ??= new Setup();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 
@@ -494,6 +500,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			public Setup<decimal> SetupInvoke()
 			{
 				_invoke0 ??= new Setup<decimal>();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 
@@ -573,6 +580,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			public Setup SetupInvoke()
 			{
 				_invoke0 ??= new Setup();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 
@@ -654,6 +662,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			public Setup<int> SetupInvoke()
 			{
 				_invoke0 ??= new Setup<int>();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 
@@ -736,6 +745,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
 				var invoke0 = (Setup)_invoke0.GetOrAdd(typeof(TInvoke), static _ => new Setup());
+				invoke0.Reset();
 				return invoke0;
 			}
 
@@ -827,6 +837,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
 				var invoke0 = (Setup<decimal>)_invoke0.GetOrAdd(typeof(TInvoke), static _ => new Setup<decimal>());
+				invoke0.Reset();
 				return invoke0;
 			}
 
@@ -918,6 +929,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
 				var invoke0 = (Setup)_invoke0.GetOrAdd(typeof(TInvoke), static _ => new Setup());
+				invoke0.Reset();
 				return invoke0;
 			}
 
@@ -1011,6 +1023,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
 				var invoke0 = (Setup<int>)_invoke0.GetOrAdd(typeof(TInvoke), static _ => new Setup<int>());
+				invoke0.Reset();
 				return invoke0;
 			}
 
@@ -1103,6 +1116,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			public Setup<T> SetupInvoke()
 			{
 				_invoke0 ??= new Setup<T>();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 
@@ -1182,6 +1196,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			public Setup<T> SetupInvoke()
 			{
 				_invoke0 ??= new Setup<T>();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 
@@ -1264,6 +1279,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
 				var invoke0 = (Setup<TReturn>)_invoke0.GetOrAdd(typeof(TReturn), static _ => new Setup<TReturn>());
+				invoke0.Reset();
 				return invoke0;
 			}
 
@@ -1355,6 +1371,7 @@ public sealed class MethodNoParametersGenericShould : MethodGenericTestsBase
 			{
 				_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
 				var invoke0 = (Setup<TReturn>)_invoke0.GetOrAdd(typeof(TReturn), static _ => new Setup<TReturn>());
+				invoke0.Reset();
 				return invoke0;
 			}
 

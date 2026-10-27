@@ -16,6 +16,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			public Setup<int> SetupGetProperty()
 			{
 				_property0Get ??= new Setup<int>();
+				_property0Get.Reset();
 				return _property0Get;
 			}
 
@@ -254,6 +255,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			public Setup<int> SetupGetProperty()
 			{
 				_property0Get ??= new Setup<int>();
+				_property0Get.Reset();
 				return _property0Get;
 			}
 
@@ -388,6 +390,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			public Setup<int> SetupGetProperty()
 			{
 				_property0Get ??= new Setup<int>();
+				_property0Get.Reset();
 				return _property0Get;
 			}
 
@@ -522,6 +525,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			public Setup<T> SetupGetProperty()
 			{
 				_property0Get ??= new Setup<T>();
+				_property0Get.Reset();
 				return _property0Get;
 			}
 
@@ -656,6 +660,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			public Setup<T?> SetupGetProperty()
 			{
 				_property0Get ??= new Setup<T?>();
+				_property0Get.Reset();
 				return _property0Get;
 			}
 
@@ -790,6 +795,7 @@ public sealed class PropertyGenericShould : PropertyGenericTestsBase
 			public Setup<MyNihongo.Example.Tests.Record<T?>> SetupGetProperty()
 			{
 				_property0Get ??= new Setup<MyNihongo.Example.Tests.Record<T?>>();
+				_property0Get.Reset();
 				return _property0Get;
 			}
 

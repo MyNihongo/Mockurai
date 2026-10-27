@@ -32,6 +32,7 @@ public sealed class BaseClassesTest : TestsBase
 			public Setup SetupInvoke()
 			{
 				_invoke0 ??= new Setup();
+				_invoke0.Reset();
 				return _invoke0;
 			}
 

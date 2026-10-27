@@ -301,7 +301,7 @@ public sealed class SetOnlyShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.SetOnly.set = where(predicate) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.SetOnly.set = x => (x < 200) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.SetOnly.set = 123
 			- 2: IPrimitiveDependencyService.SetOnly.set = 234
@@ -494,6 +494,122 @@ public sealed class SetOnlyShould : PrimitiveTypeServiceTestsBase
 		Assert.Equal(3 * setValue, callback);
 
 		DependencyServiceMock.VerifySetSetOnly(setValue, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		const decimal parameter = 1234.567m;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupSetSetOnly(parameter)
+			.Callback(_ => first++)
+			.Callback(_ => first += 10);
+
+		DependencyServiceMock
+			.SetupSetSetOnly(parameter)
+			.Callback(_ => second++)
+			.Callback(_ => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.SetOnly = parameter;
+		fixture.SetOnly = parameter;
+		fixture.SetOnly = parameter;
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifySetSetOnly(parameter, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupEquivalent()
+	{
+		const decimal parameter = 1234.567m;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupSetSetOnly(It<decimal>.Equivalent(parameter))
+			.Callback(_ => first++)
+			.Callback(_ => first += 10);
+
+		DependencyServiceMock
+			.SetupSetSetOnly(It<decimal>.Equivalent(parameter))
+			.Callback(_ => second++)
+			.Callback(_ => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.SetOnly = parameter;
+		fixture.SetOnly = parameter;
+		fixture.SetOnly = parameter;
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifySetSetOnly(It<decimal>.Equivalent(parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupWhere()
+	{
+		const decimal parameter = 1234.567m;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupSetSetOnly(It<decimal>.Where(x => x == parameter))
+			.Callback(_ => first++)
+			.Callback(_ => first += 10);
+
+		DependencyServiceMock
+			.SetupSetSetOnly(It<decimal>.Where(x => x == parameter))
+			.Callback(_ => second++)
+			.Callback(_ => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.SetOnly = parameter;
+		fixture.SetOnly = parameter;
+		fixture.SetOnly = parameter;
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifySetSetOnly(It<decimal>.Where(x => x == parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupAny()
+	{
+		const decimal parameter = 1234.567m;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupSetSetOnly(It<decimal>.Any())
+			.Callback(_ => first++)
+			.Callback(_ => first += 10);
+
+		DependencyServiceMock
+			.SetupSetSetOnly(It<decimal>.Any())
+			.Callback(_ => second++)
+			.Callback(_ => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.SetOnly = parameter;
+		fixture.SetOnly = parameter;
+		fixture.SetOnly = parameter;
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifySetSetOnly(It<decimal>.Any(), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 }

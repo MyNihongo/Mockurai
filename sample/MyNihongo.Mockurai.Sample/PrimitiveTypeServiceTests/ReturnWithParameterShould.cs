@@ -567,7 +567,7 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.ReturnWithParameter(in where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.ReturnWithParameter(in x => x.StartsWith("pa")) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.ReturnWithParameter(in "parameter1")
 			- 2: IPrimitiveDependencyService.ReturnWithParameter(in "parameter2")
@@ -951,6 +951,352 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		Assert.Equal(errorMessage, exception3.Message);
 
 		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(setValue), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void ReturnChainedSetupValue()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		const string returnValue1 = nameof(returnValue1), returnValue2 = nameof(returnValue2);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Value(setupValue1))
+			.Returns(returnValue1)
+			.Returns(returnValue2);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Value(setupValue2))
+			.Returns(returnValue1 + "a")
+			.Returns(returnValue2 + "b");
+
+		var fixture = CreateFixture();
+		var actual11 = fixture.ReturnWithParameter(setupValue1);
+		var actual12 = fixture.ReturnWithParameter(setupValue1);
+		var actual21 = fixture.ReturnWithParameter(setupValue2);
+		var actual22 = fixture.ReturnWithParameter(setupValue2);
+
+		const string expected11 = $"name:{returnValue1},age:32", expected12 = $"name:{returnValue2},age:32";
+		const string expected21 = $"name:{returnValue1}a,age:32", expected22 = $"name:{returnValue2}b,age:32";
+		Assert.Equal(expected11, actual11);
+		Assert.Equal(expected12, actual12);
+		Assert.Equal(expected21, actual21);
+		Assert.Equal(expected22, actual22);
+	}
+
+	[Fact]
+	public void ReturnSeparateSetupValue()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		const string returnValue1 = nameof(returnValue1), returnValue2 = nameof(returnValue2);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Value(setupValue1))
+			.Returns(returnValue1);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Value(setupValue1))
+			.Returns(returnValue2);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Value(setupValue2))
+			.Returns(returnValue1 + "a");
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Value(setupValue2))
+			.Returns(returnValue2 + "b");
+
+		var fixture = CreateFixture();
+		var actual11 = fixture.ReturnWithParameter(setupValue1);
+		var actual12 = fixture.ReturnWithParameter(setupValue1);
+		var actual21 = fixture.ReturnWithParameter(setupValue2);
+		var actual22 = fixture.ReturnWithParameter(setupValue2);
+
+		const string expected1 = $"name:{returnValue2},age:32", expected2 = $"name:{returnValue2}b,age:32";
+		Assert.Equal(expected1, actual11);
+		Assert.Equal(expected1, actual12);
+		Assert.Equal(expected2, actual21);
+		Assert.Equal(expected2, actual22);
+	}
+
+	[Fact]
+	public void ReturnChainedSetupEquivalent()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		const string returnValue1 = nameof(returnValue1), returnValue2 = nameof(returnValue2);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Equivalent(setupValue1))
+			.Returns(returnValue1)
+			.Returns(returnValue2);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Equivalent(setupValue2))
+			.Returns(returnValue1 + "a")
+			.Returns(returnValue2 + "b");
+
+		var fixture = CreateFixture();
+		var actual11 = fixture.ReturnWithParameter(setupValue1);
+		var actual12 = fixture.ReturnWithParameter(setupValue1);
+		var actual21 = fixture.ReturnWithParameter(setupValue2);
+		var actual22 = fixture.ReturnWithParameter(setupValue2);
+
+		const string expected11 = $"name:{returnValue1},age:32", expected12 = $"name:{returnValue2},age:32";
+		const string expected21 = $"name:{returnValue1}a,age:32", expected22 = $"name:{returnValue2}b,age:32";
+		Assert.Equal(expected11, actual11);
+		Assert.Equal(expected12, actual12);
+		Assert.Equal(expected21, actual21);
+		Assert.Equal(expected22, actual22);
+	}
+
+	[Fact]
+	public void ReturnSeparateSetupEquivalent()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		const string returnValue1 = nameof(returnValue1), returnValue2 = nameof(returnValue2);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Equivalent(setupValue1))
+			.Returns(returnValue1);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Equivalent(setupValue1))
+			.Returns(returnValue2);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Value(setupValue2))
+			.Returns(returnValue1 + "a");
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Value(setupValue2))
+			.Returns(returnValue2 + "b");
+
+		var fixture = CreateFixture();
+		var actual11 = fixture.ReturnWithParameter(setupValue1);
+		var actual12 = fixture.ReturnWithParameter(setupValue1);
+		var actual21 = fixture.ReturnWithParameter(setupValue2);
+		var actual22 = fixture.ReturnWithParameter(setupValue2);
+
+		const string expected1 = $"name:{returnValue2},age:32", expected2 = $"name:{returnValue2}b,age:32";
+		Assert.Equal(expected1, actual11);
+		Assert.Equal(expected1, actual12);
+		Assert.Equal(expected2, actual21);
+		Assert.Equal(expected2, actual22);
+	}
+
+	[Fact]
+	public void ReturnChainedSetupWhere()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		const string returnValue1 = nameof(returnValue1), returnValue2 = nameof(returnValue2);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Where(x => x == setupValue1))
+			.Returns(returnValue1)
+			.Returns(returnValue2);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Where(x => x == setupValue2))
+			.Returns(returnValue1 + "a")
+			.Returns(returnValue2 + "b");
+
+		var fixture = CreateFixture();
+		var actual11 = fixture.ReturnWithParameter(setupValue1);
+		var actual12 = fixture.ReturnWithParameter(setupValue1);
+		var actual21 = fixture.ReturnWithParameter(setupValue2);
+		var actual22 = fixture.ReturnWithParameter(setupValue2);
+
+		const string expected11 = $"name:{returnValue1},age:32", expected12 = $"name:{returnValue2},age:32";
+		const string expected21 = $"name:{returnValue1}a,age:32", expected22 = $"name:{returnValue2}b,age:32";
+		Assert.Equal(expected11, actual11);
+		Assert.Equal(expected12, actual12);
+		Assert.Equal(expected21, actual21);
+		Assert.Equal(expected22, actual22);
+	}
+
+	[Fact]
+	public void ReturnSeparateSetupWhere()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		const string returnValue1 = nameof(returnValue1), returnValue2 = nameof(returnValue2);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Where(x => x == setupValue1))
+			.Returns(returnValue1);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Where(x => x == setupValue1))
+			.Returns(returnValue2);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Where(x => x == setupValue2))
+			.Returns(returnValue1 + "a");
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Where(x => x == setupValue2))
+			.Returns(returnValue2 + "b");
+
+		var fixture = CreateFixture();
+		var actual11 = fixture.ReturnWithParameter(setupValue1);
+		var actual12 = fixture.ReturnWithParameter(setupValue1);
+		var actual21 = fixture.ReturnWithParameter(setupValue2);
+		var actual22 = fixture.ReturnWithParameter(setupValue2);
+
+		const string expected1 = $"name:{returnValue2},age:32", expected2 = $"name:{returnValue2}b,age:32";
+		Assert.Equal(expected1, actual11);
+		Assert.Equal(expected1, actual12);
+		Assert.Equal(expected2, actual21);
+		Assert.Equal(expected2, actual22);
+	}
+
+	[Fact]
+	public void ReturnChainedSetupAny()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		const string returnValue1 = nameof(returnValue1), returnValue2 = nameof(returnValue2);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Any())
+			.Returns(returnValue1)
+			.Returns(returnValue2);
+
+		var fixture = CreateFixture();
+		var actual11 = fixture.ReturnWithParameter(setupValue1);
+		var actual12 = fixture.ReturnWithParameter(setupValue1);
+		var actual21 = fixture.ReturnWithParameter(setupValue2);
+		var actual22 = fixture.ReturnWithParameter(setupValue2);
+
+		const string expected1 = $"name:{returnValue1},age:32", expected2 = $"name:{returnValue2},age:32";
+		Assert.Equal(expected1, actual11);
+		Assert.Equal(expected2, actual12);
+		Assert.Equal(expected2, actual21);
+		Assert.Equal(expected2, actual22);
+	}
+
+	[Fact]
+	public void ReturnSeparateSetupAny()
+	{
+		const string setupValue1 = nameof(setupValue1), setupValue2 = nameof(setupValue2);
+		const string returnValue1 = nameof(returnValue1), returnValue2 = nameof(returnValue2);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Any())
+			.Returns(returnValue1);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Any())
+			.Returns(returnValue2);
+
+		var fixture = CreateFixture();
+		var actual11 = fixture.ReturnWithParameter(setupValue1);
+		var actual12 = fixture.ReturnWithParameter(setupValue1);
+		var actual21 = fixture.ReturnWithParameter(setupValue2);
+		var actual22 = fixture.ReturnWithParameter(setupValue2);
+
+		const string expected = $"name:{returnValue2},age:32";
+		Assert.Equal(expected, actual11);
+		Assert.Equal(expected, actual12);
+		Assert.Equal(expected, actual21);
+		Assert.Equal(expected, actual22);
+	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		const string parameter = nameof(parameter);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Value(parameter))
+			.Returns("first1")
+			.Returns("first2");
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Value(parameter))
+			.Returns("second1")
+			.Returns("second2");
+
+		var fixture = CreateFixture();
+
+		Assert.Equal("name:second1,age:32", fixture.ReturnWithParameter(parameter));
+		Assert.Equal("name:second2,age:32", fixture.ReturnWithParameter(parameter));
+		Assert.Equal("name:second2,age:32", fixture.ReturnWithParameter(parameter));
+
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupEquivalent()
+	{
+		const string parameter = nameof(parameter);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Equivalent(parameter))
+			.Returns("first1")
+			.Returns("first2");
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Equivalent(parameter))
+			.Returns("second1")
+			.Returns("second2");
+
+		var fixture = CreateFixture();
+
+		Assert.Equal("name:second1,age:32", fixture.ReturnWithParameter(parameter));
+		Assert.Equal("name:second2,age:32", fixture.ReturnWithParameter(parameter));
+		Assert.Equal("name:second2,age:32", fixture.ReturnWithParameter(parameter));
+
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Equivalent(parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupWhere()
+	{
+		const string parameter = nameof(parameter);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Where(x => x == parameter))
+			.Returns("first1")
+			.Returns("first2");
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Where(x => x == parameter))
+			.Returns("second1")
+			.Returns("second2");
+
+		var fixture = CreateFixture();
+
+		Assert.Equal("name:second1,age:32", fixture.ReturnWithParameter(parameter));
+		Assert.Equal("name:second2,age:32", fixture.ReturnWithParameter(parameter));
+		Assert.Equal("name:second2,age:32", fixture.ReturnWithParameter(parameter));
+
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Where(x => x == parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupAny()
+	{
+		const string parameter = nameof(parameter);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Any())
+			.Returns("first1")
+			.Returns("first2");
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Any())
+			.Returns("second1")
+			.Returns("second2");
+
+		var fixture = CreateFixture();
+
+		Assert.Equal("name:second1,age:32", fixture.ReturnWithParameter(parameter));
+		Assert.Equal("name:second2,age:32", fixture.ReturnWithParameter(parameter));
+		Assert.Equal("name:second2,age:32", fixture.ReturnWithParameter(parameter));
+
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Any(), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 }

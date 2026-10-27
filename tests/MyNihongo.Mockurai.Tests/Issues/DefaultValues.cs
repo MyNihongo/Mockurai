@@ -110,6 +110,7 @@ public sealed class DefaultValues : IssuesTestsBase
 					public Setup SetupInvoke()
 					{
 						_invoke0 ??= new Setup();
+						_invoke0.Reset();
 						return _invoke0;
 					}
 
@@ -314,6 +315,7 @@ public sealed class DefaultValues : IssuesTestsBase
 					public Setup SetupInvoke()
 					{
 						_invoke0 ??= new Setup();
+						_invoke0.Reset();
 						return _invoke0;
 					}
 

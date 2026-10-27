@@ -11,9 +11,9 @@ public readonly ref struct ItRef<T>
 	/// </summary>
 	public readonly ItSetup<T> ValueSetup;
 
-	private ItRef(Func<T, bool> predicate, SetupType type, Func<string> toString)
+	private ItRef(Func<T, bool> predicate, SetupType type, Func<string> toString, object? equalityKey = null)
 	{
-		ValueSetup = new ItSetup<T>(predicate, type, toString);
+		ValueSetup = new ItSetup<T>(predicate, type, toString, equalityKey);
 	}
 
 	/// <summary>
@@ -22,17 +22,20 @@ public readonly ref struct ItRef<T>
 	/// <param name="value">The expected value.</param>
 	public static ItRef<T> Value(T value)
 	{
-		return new ItRef<T>(x => EqualityComparer<T>.Default.Equals(value, x), SetupType.Value, () => value.SerializeToJson(limitLength: true));
+		return new ItRef<T>(x => EqualityComparer<T>.Default.Equals(value, x), SetupType.Value, () => value.SerializeToJson(limitLength: true), equalityKey: value);
 	}
 
 	/// <summary>
-	/// Matches arguments that satisfy the supplied <paramref name="predicate"/>.
+	/// Matches arguments that satisfy the supplied <paramref name="predicate"/> expression.
+	/// The expression tree is used for setup-identity comparison so that duplicate setups overwrite.
 	/// </summary>
-	/// <param name="predicate">The predicate evaluated against each argument.</param>
-	public static ItRef<T> Where(in Func<T, bool> predicate)
+	/// <param name="predicate">The predicate expression evaluated against each argument.</param>
+	public static ItRef<T> Where(Expression<Func<T, bool>> predicate)
 	{
-		return new ItRef<T>(predicate, SetupType.Where, Constants.WhereToString);
+		var expressionString = predicate.ToString();
+		return new ItRef<T>(predicate.Compile(), SetupType.Where, () => expressionString, equalityKey: expressionString);
 	}
+
 
 	/// <summary>
 	/// Matches any argument value.

@@ -380,7 +380,7 @@ public sealed class InvokePrimitiveShould : SetupWithRefReadOnlyParameterTestsBa
 		fixture.SetupParameter(ItRefReadOnly<int>.Any().ValueSetup);
 		fixture.Callback((ref readonly _) => { Debug.WriteLine("output"); });
 
-		const int expected = 3;
+		const int expected = 1;
 		var actual = GetSetupCount(fixture);
 		Assert.Equal(expected, actual);
 	}

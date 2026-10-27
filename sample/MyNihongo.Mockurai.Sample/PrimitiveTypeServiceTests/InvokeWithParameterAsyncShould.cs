@@ -322,7 +322,7 @@ public sealed class InvokeWithParameterAsyncShould : PrimitiveTypeServiceTestsBa
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameterAsync(where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameterAsync(x => (x > 100)) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.InvokeWithParameterAsync(123)
 			- 2: IPrimitiveDependencyService.InvokeWithParameterAsync(321)
@@ -546,6 +546,122 @@ public sealed class InvokeWithParameterAsyncShould : PrimitiveTypeServiceTestsBa
 		Assert.Equal(3 * setValue, callback);
 
 		DependencyServiceMock.VerifyInvokeWithParameterAsync(setValue, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public async Task OverwriteChainedSetup()
+	{
+		const int parameter = 123;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameterAsync(parameter)
+			.Callback(x => first += x)
+			.Callback(x => first += x * 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameterAsync(parameter)
+			.Callback(x => second += x)
+			.Callback(x => second += x * 10);
+
+		var fixture = CreateFixture();
+		await fixture.InvokeWithParameterAsync(parameter);
+		await fixture.InvokeWithParameterAsync(parameter);
+		await fixture.InvokeWithParameterAsync(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(2583, second);
+
+		DependencyServiceMock.VerifyInvokeWithParameterAsync(parameter, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public async Task OverwriteChainedSetupEquivalent()
+	{
+		const int parameter = 123;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameterAsync(It<int>.Equivalent(parameter))
+			.Callback(x => first += x)
+			.Callback(x => first += x * 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameterAsync(It<int>.Equivalent(parameter))
+			.Callback(x => second += x)
+			.Callback(x => second += x * 10);
+
+		var fixture = CreateFixture();
+		await fixture.InvokeWithParameterAsync(parameter);
+		await fixture.InvokeWithParameterAsync(parameter);
+		await fixture.InvokeWithParameterAsync(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(2583, second);
+
+		DependencyServiceMock.VerifyInvokeWithParameterAsync(It<int>.Equivalent(parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public async Task OverwriteChainedSetupWhere()
+	{
+		const int parameter = 123;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameterAsync(It<int>.Where(x => x == parameter))
+			.Callback(x => first += x)
+			.Callback(x => first += x * 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameterAsync(It<int>.Where(x => x == parameter))
+			.Callback(x => second += x)
+			.Callback(x => second += x * 10);
+
+		var fixture = CreateFixture();
+		await fixture.InvokeWithParameterAsync(parameter);
+		await fixture.InvokeWithParameterAsync(parameter);
+		await fixture.InvokeWithParameterAsync(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(2583, second);
+
+		DependencyServiceMock.VerifyInvokeWithParameterAsync(It<int>.Where(x => x == parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public async Task OverwriteChainedSetupAny()
+	{
+		const int parameter = 123;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameterAsync(It<int>.Any())
+			.Callback(x => first += x)
+			.Callback(x => first += x * 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameterAsync(It<int>.Any())
+			.Callback(x => second += x)
+			.Callback(x => second += x * 10);
+
+		var fixture = CreateFixture();
+		await fixture.InvokeWithParameterAsync(parameter);
+		await fixture.InvokeWithParameterAsync(parameter);
+		await fixture.InvokeWithParameterAsync(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(2583, second);
+
+		DependencyServiceMock.VerifyInvokeWithParameterAsync(It<int>.Any(), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 }

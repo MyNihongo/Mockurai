@@ -325,7 +325,7 @@ public sealed class InvokeWithParameterGenericShould : PrimitiveTypeServiceTests
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.InvokeWithParameter<Single>(where(predicate)) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.InvokeWithParameter<Single>(x => (x > 100)) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.InvokeWithParameter<Single>(123)
 			- 2: IPrimitiveDependencyService.InvokeWithParameter<Single>(321)
@@ -615,6 +615,122 @@ public sealed class InvokeWithParameterGenericShould : PrimitiveTypeServiceTests
 			ctx.DependencyServiceMock.InvokeWithParameter<decimal>(decimalParam);
 			ctx.DependencyServiceMock.InvokeWithParameter<float>(floatParam);
 		});
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		const float parameter = 123f;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter<float>(parameter)
+			.Callback(x => first += (int)x)
+			.Callback(x => first += (int)x * 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter<float>(parameter)
+			.Callback(x => second += (int)x)
+			.Callback(x => second += (int)x * 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(2583, second);
+
+		DependencyServiceMock.VerifyInvokeWithParameter<float>(parameter, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupEquivalent()
+	{
+		const float parameter = 123f;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(It<float>.Equivalent(parameter))
+			.Callback(x => first += (int)x)
+			.Callback(x => first += (int)x * 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(It<float>.Equivalent(parameter))
+			.Callback(x => second += (int)x)
+			.Callback(x => second += (int)x * 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(2583, second);
+
+		DependencyServiceMock.VerifyInvokeWithParameter(It<float>.Equivalent(parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupWhere()
+	{
+		const float parameter = 123f;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(It<float>.Where(x => x == parameter))
+			.Callback(x => first += (int)x)
+			.Callback(x => first += (int)x * 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(It<float>.Where(x => x == parameter))
+			.Callback(x => second += (int)x)
+			.Callback(x => second += (int)x * 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(2583, second);
+
+		DependencyServiceMock.VerifyInvokeWithParameter(It<float>.Where(x => x == parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupAny()
+	{
+		const float parameter = 123f;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(It<float>.Any())
+			.Callback(x => first += (int)x)
+			.Callback(x => first += (int)x * 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(It<float>.Any())
+			.Callback(x => second += (int)x)
+			.Callback(x => second += (int)x * 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(2583, second);
+
+		DependencyServiceMock.VerifyInvokeWithParameter(It<float>.Any(), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 }

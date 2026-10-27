@@ -352,7 +352,7 @@ public sealed class IndexerShould : PrimitiveTypeServiceTestsBase
 		const string value1 = nameof(value1), value2 = nameof(value2);
 
 		var verifyKey1 = It<int>.Where(x => x < 200);
-		var verifyValue2 = It<string?>.Where(x => x?.EndsWith('2') == true);
+		var verifyValue2 = It<string?>.Where(x => x != null && x.EndsWith('2'));
 
 		var fixture = CreateFixture();
 		fixture[key1] = value1;
@@ -635,7 +635,7 @@ public sealed class IndexerShould : PrimitiveTypeServiceTestsBase
 		VerifyInSequence(static ctx =>
 		{
 			It<int> verifyKey1 = It<int>.Where(x => x < 200), verifyKey2 = It<int>.Where(x => x > 200);
-			It<string?> verifyValue1 = It<string?>.Where(x => x?.EndsWith('1') == true), verifyValue2 = It<string?>.Where(x => x?.EndsWith('2') == true);
+			It<string?> verifyValue1 = It<string?>.Where(x => x != null && x.EndsWith('1')), verifyValue2 = It<string?>.Where(x => x != null && x.EndsWith('2'));
 			ctx.DependencyServiceMock.SetIndexer(verifyKey1, verifyValue1);
 			ctx.DependencyServiceMock.SetIndexer(verifyKey2, verifyValue2);
 		});
@@ -740,7 +740,7 @@ public sealed class IndexerShould : PrimitiveTypeServiceTestsBase
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.This[where(predicate)].get to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.This[x => (x < 200)].get to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.This[123].get
 			- 2: IPrimitiveDependencyService.This[234].get
@@ -762,14 +762,14 @@ public sealed class IndexerShould : PrimitiveTypeServiceTestsBase
 		var actual = () => VerifyInSequence(static ctx =>
 		{
 			It<int> verifyKey1 = It<int>.Where(x => x > 200), verifyKey2 = It<int>.Where(x => x < 200);
-			It<string?> verifyValue1 = It<string?>.Where(x => x?.EndsWith('1') == false), verifyValue2 = It<string?>.Where(x => x?.EndsWith('2') == false);
+			It<string?> verifyValue1 = It<string?>.Where(x => x == null || !x.EndsWith('1')), verifyValue2 = It<string?>.Where(x => x == null || !x.EndsWith('2'));
 			ctx.DependencyServiceMock.SetIndexer(verifyKey1, verifyValue1);
 			ctx.DependencyServiceMock.SetIndexer(verifyKey2, verifyValue2);
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.This[where(predicate)].set = where(predicate) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.This[x => (x < 200)].set = x => ((x == null) OrElse Not(x.EndsWith(2))) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.This[123].set = "value1"
 			- 2: IPrimitiveDependencyService.This[234].set = "value2"
@@ -791,14 +791,14 @@ public sealed class IndexerShould : PrimitiveTypeServiceTestsBase
 		var actual = () => VerifyInSequence(static ctx =>
 		{
 			It<int> verifyKey1 = It<int>.Where(x => x > 200), verifyKey2 = It<int>.Where(x => x < 200);
-			It<string?> verifyValue1 = It<string?>.Where(x => x?.EndsWith('1') == false), verifyValue2 = It<string?>.Where(x => x?.EndsWith('2') == false);
+			It<string?> verifyValue1 = It<string?>.Where(x => x == null || !x.EndsWith('1')), verifyValue2 = It<string?>.Where(x => x == null || !x.EndsWith('2'));
 			ctx.DependencyServiceMock.SetIndexer(verifyKey1, verifyValue1);
 			ctx.DependencyServiceMock.SetIndexer(verifyKey2, verifyValue2);
 		});
 
 		const string expectedMessage =
 			"""
-			Expected IPrimitiveDependencyService.This[where(predicate)].set = where(predicate) to be invoked at index 3, but it has not been called.
+			Expected IPrimitiveDependencyService.This[x => (x < 200)].set = x => ((x == null) OrElse Not(x.EndsWith(2))) to be invoked at index 3, but it has not been called.
 			Performed invocations:
 			- 1: IPrimitiveDependencyService.This[123].set = "value1"
 			- 2: IPrimitiveDependencyService.This[234].set = "value2"
@@ -1184,6 +1184,234 @@ public sealed class IndexerShould : PrimitiveTypeServiceTestsBase
 		Assert.Equal(3 * key, callback);
 
 		DependencyServiceMock.VerifySetIndexer(key, value, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedGetSetup()
+	{
+		const int key = 42;
+		const string? value1 = "first", value2 = "second";
+		const string? value3 = "third", value4 = "fourth";
+
+		DependencyServiceMock
+			.SetupGetIndexer(key)
+			.Returns(value1)
+			.Returns(value2);
+
+		DependencyServiceMock
+			.SetupGetIndexer(key)
+			.Returns(value3)
+			.Returns(value4);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(value3, fixture[key]);
+		Assert.Equal(value4, fixture[key]);
+		Assert.Equal(value4, fixture[key]);
+
+		DependencyServiceMock.VerifyGetIndexer(key, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetSetup()
+	{
+		const int key = 42;
+		const string? value = "test";
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupSetIndexer(key, value)
+			.Callback((_, _) => first++)
+			.Callback((_, _) => first += 10);
+
+		DependencyServiceMock
+			.SetupSetIndexer(key, value)
+			.Callback((_, _) => second++)
+			.Callback((_, _) => second += 10);
+
+		var fixture = CreateFixture();
+		fixture[key] = value;
+		fixture[key] = value;
+		fixture[key] = value;
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifySetIndexer(key, value, Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedGetSetupEquivalent()
+	{
+		const int key = 42;
+		const string? value1 = "first", value2 = "second";
+		const string? value3 = "third", value4 = "fourth";
+
+		DependencyServiceMock
+			.SetupGetIndexer(It<int>.Equivalent(key))
+			.Returns(value1)
+			.Returns(value2);
+
+		DependencyServiceMock
+			.SetupGetIndexer(It<int>.Equivalent(key))
+			.Returns(value3)
+			.Returns(value4);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(value3, fixture[key]);
+		Assert.Equal(value4, fixture[key]);
+		Assert.Equal(value4, fixture[key]);
+
+		DependencyServiceMock.VerifyGetIndexer(It<int>.Equivalent(key), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedGetSetupWhere()
+	{
+		const int key = 42;
+		const string? value1 = "first", value2 = "second";
+		const string? value3 = "third", value4 = "fourth";
+
+		DependencyServiceMock
+			.SetupGetIndexer(It<int>.Where(x => x == key))
+			.Returns(value1)
+			.Returns(value2);
+
+		DependencyServiceMock
+			.SetupGetIndexer(It<int>.Where(x => x == key))
+			.Returns(value3)
+			.Returns(value4);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(value3, fixture[key]);
+		Assert.Equal(value4, fixture[key]);
+		Assert.Equal(value4, fixture[key]);
+
+		DependencyServiceMock.VerifyGetIndexer(It<int>.Where(x => x == key), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedGetSetupAny()
+	{
+		const int key = 42;
+		const string? value1 = "first", value2 = "second";
+		const string? value3 = "third", value4 = "fourth";
+
+		DependencyServiceMock
+			.SetupGetIndexer(It<int>.Any())
+			.Returns(value1)
+			.Returns(value2);
+
+		DependencyServiceMock
+			.SetupGetIndexer(It<int>.Any())
+			.Returns(value3)
+			.Returns(value4);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(value3, fixture[key]);
+		Assert.Equal(value4, fixture[key]);
+		Assert.Equal(value4, fixture[key]);
+
+		DependencyServiceMock.VerifyGetIndexer(It<int>.Any(), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetSetupEquivalent()
+	{
+		const int key = 42;
+		const string? value = "test";
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupSetIndexer(It<int>.Equivalent(key), It<string?>.Equivalent(value))
+			.Callback((_, _) => first++)
+			.Callback((_, _) => first += 10);
+
+		DependencyServiceMock
+			.SetupSetIndexer(It<int>.Equivalent(key), It<string?>.Equivalent(value))
+			.Callback((_, _) => second++)
+			.Callback((_, _) => second += 10);
+
+		var fixture = CreateFixture();
+		fixture[key] = value;
+		fixture[key] = value;
+		fixture[key] = value;
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifySetIndexer(It<int>.Equivalent(key), It<string?>.Equivalent(value), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetSetupWhere()
+	{
+		const int key = 42;
+		const string? value = "test";
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupSetIndexer(It<int>.Where(x => x == key), It<string?>.Where(x => x == value))
+			.Callback((_, _) => first++)
+			.Callback((_, _) => first += 10);
+
+		DependencyServiceMock
+			.SetupSetIndexer(It<int>.Where(x => x == key), It<string?>.Where(x => x == value))
+			.Callback((_, _) => second++)
+			.Callback((_, _) => second += 10);
+
+		var fixture = CreateFixture();
+		fixture[key] = value;
+		fixture[key] = value;
+		fixture[key] = value;
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifySetIndexer(It<int>.Where(x => x == key), It<string?>.Where(x => x == value), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetSetupAny()
+	{
+		const int key = 42;
+		const string? value = "test";
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupSetIndexer(It<int>.Any(), It<string?>.Any())
+			.Callback((_, _) => first++)
+			.Callback((_, _) => first += 10);
+
+		DependencyServiceMock
+			.SetupSetIndexer(It<int>.Any(), It<string?>.Any())
+			.Callback((_, _) => second++)
+			.Callback((_, _) => second += 10);
+
+		var fixture = CreateFixture();
+		fixture[key] = value;
+		fixture[key] = value;
+		fixture[key] = value;
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifySetIndexer(It<int>.Any(), It<string?>.Any(), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
 }

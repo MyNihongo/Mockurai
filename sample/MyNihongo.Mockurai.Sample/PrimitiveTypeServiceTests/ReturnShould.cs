@@ -661,4 +661,68 @@ public sealed class ReturnShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.VerifyReturn(Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void ReturnChainedSetup()
+	{
+		const int returnValue1 = 1, returnValue2 = 2;
+
+		DependencyServiceMock
+			.SetupReturn()
+			.Returns(returnValue1)
+			.Returns(returnValue2);
+
+		var fixture = CreateFixture();
+		var actual1 = fixture.Return();
+		var actual2 = fixture.Return();
+
+		const decimal expected1 = 1000m, expected2 = 2000m;
+		Assert.Equal(expected1, actual1);
+		Assert.Equal(expected2, actual2);
+	}
+
+	[Fact]
+	public void ReturnSeparateSetup()
+	{
+		const int returnValue1 = 1, returnValue2 = 2;
+
+		DependencyServiceMock
+			.SetupReturn()
+			.Returns(returnValue1);
+
+		DependencyServiceMock
+			.SetupReturn()
+			.Returns(returnValue2);
+
+		var fixture = CreateFixture();
+		var actual1 = fixture.Return();
+		var actual2 = fixture.Return();
+
+		const decimal expected = 2000m;
+		Assert.Equal(expected, actual1);
+		Assert.Equal(expected, actual2);
+	}
+
+	[Fact]
+	public void OverwriteChainedSetup()
+	{
+		DependencyServiceMock
+			.SetupReturn()
+			.Returns(1)
+			.Returns(2);
+
+		DependencyServiceMock
+			.SetupReturn()
+			.Returns(10)
+			.Returns(20);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10_000m, fixture.Return());
+		Assert.Equal(20_000m, fixture.Return());
+		Assert.Equal(20_000m, fixture.Return());
+
+		DependencyServiceMock.VerifyReturn(Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }
