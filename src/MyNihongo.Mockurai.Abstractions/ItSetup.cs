@@ -117,8 +117,25 @@ public readonly struct ItSetup<T> : IComparable<ItSetup<T>>, IEquatable<ItSetup<
 		return HashCode.Combine(Type, _equalityKey);
 	}
 
-	public static bool operator ==(ItSetup<T> left, ItSetup<T> right) => left.Equals(right);
-	public static bool operator !=(ItSetup<T> left, ItSetup<T> right) => !left.Equals(right);
+    /// <summary>
+    /// Determines whether two specified <see cref="ItSetup{T}"/> instances are equal.
+    /// </summary>
+    /// <param name="left">The first object to compare.</param>
+    /// <param name="right">The second object to compare.</param>
+    /// <returns>
+    /// <c>true</c> if the <paramref name="left"/> and <paramref name="right"/> parameters are equal; otherwise, <c>false</c>.
+    /// </returns>
+    public static bool operator ==(ItSetup<T> left, ItSetup<T> right) => left.Equals(right);
+
+    /// <summary>
+    /// Determines whether two specified <see cref="ItSetup{T}"/> instances are not equal.
+    /// </summary>
+    /// <param name="left">The first object to compare.</param>
+    /// <param name="right">The second object to compare.</param>
+    /// <returns>
+    /// <c>true</c> if the <paramref name="left"/> and <paramref name="right"/> parameters are not equal; otherwise, <c>false</c>.
+    /// </returns>
+    public static bool operator !=(ItSetup<T> left, ItSetup<T> right) => !left.Equals(right);
 
 	/// <inheritdoc/>
 	public override string ToString()
