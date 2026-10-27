@@ -4,11 +4,12 @@
 /// A compiled argument matcher that pairs a predicate with a <see cref="SetupType"/> tag used to order setups by specificity.
 /// </summary>
 /// <typeparam name="T">The argument type being matched.</typeparam>
-public readonly struct ItSetup<T> : IComparable<ItSetup<T>>
+public readonly struct ItSetup<T> : IComparable<ItSetup<T>>, IEquatable<ItSetup<T>>
 {
 	private readonly Func<T, bool>? _predicateBool;
 	private readonly Func<T, ComparisonResult>? _predicateResult;
 	private readonly Func<string>? _toString;
+	private readonly object? _equalityKey;
 
 	/// <summary>
 	/// The matcher kind used to order setups by specificity.
@@ -21,11 +22,13 @@ public readonly struct ItSetup<T> : IComparable<ItSetup<T>>
 	/// <param name="predicate">The predicate evaluated against each argument.</param>
 	/// <param name="type">The matcher kind.</param>
 	/// <param name="toString">A delegate that produces the matcher's string representation.</param>
-	public ItSetup(Func<T, bool> predicate, SetupType type, Func<string> toString)
+	/// <param name="equalityKey">An optional key used for setup-identity comparison.</param>
+	public ItSetup(Func<T, bool> predicate, SetupType type, Func<string> toString, object? equalityKey = null)
 	{
 		_predicateBool = predicate;
 		_toString = toString;
 		Type = type;
+		_equalityKey = equalityKey;
 	}
 
 	/// <summary>
@@ -34,11 +37,13 @@ public readonly struct ItSetup<T> : IComparable<ItSetup<T>>
 	/// <param name="predicate">The predicate that returns a populated <see cref="ComparisonResult"/> when the argument fails to match.</param>
 	/// <param name="type">The matcher kind.</param>
 	/// <param name="toString">A delegate that produces the matcher's string representation.</param>
-	public ItSetup(Func<T, ComparisonResult> predicate, SetupType type, Func<string> toString)
+	/// <param name="equalityKey">An optional key used for setup-identity comparison.</param>
+	public ItSetup(Func<T, ComparisonResult> predicate, SetupType type, Func<string> toString, object? equalityKey = null)
 	{
 		_predicateResult = predicate;
 		_toString = toString;
 		Type = type;
+		_equalityKey = equalityKey;
 	}
 
 	/// <summary>
@@ -86,6 +91,34 @@ public readonly struct ItSetup<T> : IComparable<ItSetup<T>>
 		result = null;
 		return Type == SetupType.Any;
 	}
+
+	/// <inheritdoc/>
+	public bool Equals(ItSetup<T> other)
+	{
+		if (Type != other.Type)
+			return false;
+
+		if (Type == SetupType.Any)
+			return true;
+
+		if (_equalityKey is null || other._equalityKey is null)
+			return false;
+
+		return _equalityKey.Equals(other._equalityKey);
+	}
+
+	/// <inheritdoc/>
+	public override bool Equals(object? obj) =>
+		obj is ItSetup<T> other && Equals(other);
+
+	/// <inheritdoc/>
+	public override int GetHashCode()
+	{
+		return HashCode.Combine(Type, _equalityKey);
+	}
+
+	public static bool operator ==(ItSetup<T> left, ItSetup<T> right) => left.Equals(right);
+	public static bool operator !=(ItSetup<T> left, ItSetup<T> right) => !left.Equals(right);
 
 	/// <inheritdoc/>
 	public override string ToString()

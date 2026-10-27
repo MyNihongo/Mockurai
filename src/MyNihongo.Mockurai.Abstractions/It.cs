@@ -11,14 +11,14 @@ public readonly ref struct It<T>
 	/// </summary>
 	public readonly ItSetup<T> ValueSetup;
 
-	private It(Func<T, bool> predicate, SetupType type, Func<string> toString)
+	private It(Func<T, bool> predicate, SetupType type, Func<string> toString, object? equalityKey = null)
 	{
-		ValueSetup = new ItSetup<T>(predicate, type, toString);
+		ValueSetup = new ItSetup<T>(predicate, type, toString, equalityKey);
 	}
 
-	private It(Func<T, ComparisonResult> predicate, SetupType type, Func<string> toString)
+	private It(Func<T, ComparisonResult> predicate, SetupType type, Func<string> toString, object? equalityKey = null)
 	{
-		ValueSetup = new ItSetup<T>(predicate, type, toString);
+		ValueSetup = new ItSetup<T>(predicate, type, toString, equalityKey);
 	}
 
 	/// <summary>
@@ -27,7 +27,7 @@ public readonly ref struct It<T>
 	/// <param name="value">The expected value.</param>
 	public static It<T> Value(T value)
 	{
-		return new It<T>(x => EqualityComparer<T>.Default.Equals(value, x), SetupType.Value, () => value.SerializeToJson(limitLength: true));
+		return new It<T>(x => EqualityComparer<T>.Default.Equals(value, x), SetupType.Value, () => value.SerializeToJson(limitLength: true), equalityKey: value);
 	}
 
 	/// <summary>
@@ -42,17 +42,19 @@ public readonly ref struct It<T>
 	public static It<T> Equivalent(T value, IEquivalencyComparer<T>? comparer = null, bool useJsonSnapshot = true)
 	{
 		var setupType = useJsonSnapshot ? SetupType.Equivalent : SetupType.Value;
-		return new It<T>(x => (comparer ?? EquivalencyComparer<T>.Default).Equivalent(value, x), setupType, () => value.SerializeToJson(limitLength: true));
+		return new It<T>(x => (comparer ?? EquivalencyComparer<T>.Default).Equivalent(value, x), setupType, () => value.SerializeToJson(limitLength: true), equalityKey: value);
 	}
 
 	/// <summary>
-	/// Matches arguments that satisfy the supplied <paramref name="predicate"/>.
+	/// Matches arguments that satisfy the supplied <paramref name="predicate"/> expression.
+	/// The expression tree is used for setup-identity comparison so that duplicate setups overwrite.
 	/// </summary>
-	/// <param name="predicate">The predicate evaluated against each argument.</param>
-	public static It<T> Where(in Func<T, bool> predicate)
+	/// <param name="predicate">The predicate expression evaluated against each argument.</param>
+	public static It<T> Where(Expression<Func<T, bool>> predicate)
 	{
-		return new It<T>(predicate, SetupType.Where, Constants.WhereToString);
+		return new It<T>(predicate.Compile(), SetupType.Where, Constants.WhereToString, equalityKey: predicate.ToString());
 	}
+
 
 	/// <summary>
 	/// Matches any argument value.
