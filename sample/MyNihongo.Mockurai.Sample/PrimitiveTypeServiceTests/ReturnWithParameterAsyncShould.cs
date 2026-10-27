@@ -706,4 +706,79 @@ public sealed class ReturnWithParameterAsyncShould : PrimitiveTypeServiceTestsBa
 		DependencyServiceMock.VerifyReturnWithParameterAsync(parameter, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public async Task OverwriteChainedSetupEquivalent()
+	{
+		const string parameter = nameof(parameter);
+
+		DependencyServiceMock
+			.SetupReturnWithParameterAsync(It<string>.Equivalent(parameter))
+			.Returns(1)
+			.Returns(2);
+
+		DependencyServiceMock
+			.SetupReturnWithParameterAsync(It<string>.Equivalent(parameter))
+			.Returns(10)
+			.Returns(20);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10, await fixture.ReturnWithParameterAsync(parameter));
+		Assert.Equal(20, await fixture.ReturnWithParameterAsync(parameter));
+		Assert.Equal(20, await fixture.ReturnWithParameterAsync(parameter));
+
+		DependencyServiceMock.VerifyReturnWithParameterAsync(It<string>.Equivalent(parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public async Task OverwriteChainedSetupWhere()
+	{
+		const string parameter = nameof(parameter);
+
+		DependencyServiceMock
+			.SetupReturnWithParameterAsync(It<string>.Where(x => x == parameter))
+			.Returns(1)
+			.Returns(2);
+
+		DependencyServiceMock
+			.SetupReturnWithParameterAsync(It<string>.Where(x => x == parameter))
+			.Returns(10)
+			.Returns(20);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10, await fixture.ReturnWithParameterAsync(parameter));
+		Assert.Equal(20, await fixture.ReturnWithParameterAsync(parameter));
+		Assert.Equal(20, await fixture.ReturnWithParameterAsync(parameter));
+
+		DependencyServiceMock.VerifyReturnWithParameterAsync(It<string>.Where(x => x == parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public async Task OverwriteChainedSetupAny()
+	{
+		const string parameter = nameof(parameter);
+
+		DependencyServiceMock
+			.SetupReturnWithParameterAsync(It<string>.Any())
+			.Returns(1)
+			.Returns(2);
+
+		DependencyServiceMock
+			.SetupReturnWithParameterAsync(It<string>.Any())
+			.Returns(10)
+			.Returns(20);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10, await fixture.ReturnWithParameterAsync(parameter));
+		Assert.Equal(20, await fixture.ReturnWithParameterAsync(parameter));
+		Assert.Equal(20, await fixture.ReturnWithParameterAsync(parameter));
+
+		DependencyServiceMock.VerifyReturnWithParameterAsync(It<string>.Any(), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

@@ -841,4 +841,79 @@ public sealed class ReturnWithSeveralParametersAsyncShould : PrimitiveTypeServic
 		DependencyServiceMock.VerifyReturnWithSeveralParametersAsync(parameter1, parameter2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public async Task OverwriteChainedSetupEquivalent()
+	{
+		const int parameter1 = 2025, parameter2 = 6;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParametersAsync(It<int>.Equivalent(parameter1), It<int>.Equivalent(parameter2))
+			.Returns(1m)
+			.Returns(2m);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParametersAsync(It<int>.Equivalent(parameter1), It<int>.Equivalent(parameter2))
+			.Returns(10m)
+			.Returns(20m);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10m, await fixture.ReturnWithSeveralParametersAsync(parameter1, parameter2));
+		Assert.Equal(20m, await fixture.ReturnWithSeveralParametersAsync(parameter1, parameter2));
+		Assert.Equal(20m, await fixture.ReturnWithSeveralParametersAsync(parameter1, parameter2));
+
+		DependencyServiceMock.VerifyReturnWithSeveralParametersAsync(It<int>.Equivalent(parameter1), It<int>.Equivalent(parameter2), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public async Task OverwriteChainedSetupWhere()
+	{
+		const int parameter1 = 2025, parameter2 = 6;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParametersAsync(It<int>.Where(x => x == parameter1), It<int>.Where(x => x == parameter2))
+			.Returns(1m)
+			.Returns(2m);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParametersAsync(It<int>.Where(x => x == parameter1), It<int>.Where(x => x == parameter2))
+			.Returns(10m)
+			.Returns(20m);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10m, await fixture.ReturnWithSeveralParametersAsync(parameter1, parameter2));
+		Assert.Equal(20m, await fixture.ReturnWithSeveralParametersAsync(parameter1, parameter2));
+		Assert.Equal(20m, await fixture.ReturnWithSeveralParametersAsync(parameter1, parameter2));
+
+		DependencyServiceMock.VerifyReturnWithSeveralParametersAsync(It<int>.Where(x => x == parameter1), It<int>.Where(x => x == parameter2), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public async Task OverwriteChainedSetupAny()
+	{
+		const int parameter1 = 2025, parameter2 = 6;
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParametersAsync(It<int>.Any(), It<int>.Any())
+			.Returns(1m)
+			.Returns(2m);
+
+		DependencyServiceMock
+			.SetupReturnWithSeveralParametersAsync(It<int>.Any(), It<int>.Any())
+			.Returns(10m)
+			.Returns(20m);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10m, await fixture.ReturnWithSeveralParametersAsync(parameter1, parameter2));
+		Assert.Equal(20m, await fixture.ReturnWithSeveralParametersAsync(parameter1, parameter2));
+		Assert.Equal(20m, await fixture.ReturnWithSeveralParametersAsync(parameter1, parameter2));
+
+		DependencyServiceMock.VerifyReturnWithSeveralParametersAsync(It<int>.Any(), It<int>.Any(), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

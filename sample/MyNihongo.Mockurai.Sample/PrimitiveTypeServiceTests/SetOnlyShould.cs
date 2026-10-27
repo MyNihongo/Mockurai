@@ -525,4 +525,91 @@ public sealed class SetOnlyShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.VerifySetSetOnly(parameter, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void OverwriteChainedSetupEquivalent()
+	{
+		const decimal parameter = 1234.567m;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupSetSetOnly(It<decimal>.Equivalent(parameter))
+			.Callback(_ => first++)
+			.Callback(_ => first += 10);
+
+		DependencyServiceMock
+			.SetupSetSetOnly(It<decimal>.Equivalent(parameter))
+			.Callback(_ => second++)
+			.Callback(_ => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.SetOnly = parameter;
+		fixture.SetOnly = parameter;
+		fixture.SetOnly = parameter;
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifySetSetOnly(It<decimal>.Equivalent(parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupWhere()
+	{
+		const decimal parameter = 1234.567m;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupSetSetOnly(It<decimal>.Where(x => x == parameter))
+			.Callback(_ => first++)
+			.Callback(_ => first += 10);
+
+		DependencyServiceMock
+			.SetupSetSetOnly(It<decimal>.Where(x => x == parameter))
+			.Callback(_ => second++)
+			.Callback(_ => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.SetOnly = parameter;
+		fixture.SetOnly = parameter;
+		fixture.SetOnly = parameter;
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifySetSetOnly(It<decimal>.Where(x => x == parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupAny()
+	{
+		const decimal parameter = 1234.567m;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupSetSetOnly(It<decimal>.Any())
+			.Callback(_ => first++)
+			.Callback(_ => first += 10);
+
+		DependencyServiceMock
+			.SetupSetSetOnly(It<decimal>.Any())
+			.Callback(_ => second++)
+			.Callback(_ => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.SetOnly = parameter;
+		fixture.SetOnly = parameter;
+		fixture.SetOnly = parameter;
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifySetSetOnly(It<decimal>.Any(), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

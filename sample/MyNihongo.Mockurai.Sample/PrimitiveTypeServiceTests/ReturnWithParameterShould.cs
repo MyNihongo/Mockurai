@@ -1224,4 +1224,79 @@ public sealed class ReturnWithParameterShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Value(parameter), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void OverwriteChainedSetupEquivalent()
+	{
+		const string parameter = nameof(parameter);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Equivalent(parameter))
+			.Returns("first1")
+			.Returns("first2");
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Equivalent(parameter))
+			.Returns("second1")
+			.Returns("second2");
+
+		var fixture = CreateFixture();
+
+		Assert.Equal("name:second1,age:32", fixture.ReturnWithParameter(parameter));
+		Assert.Equal("name:second2,age:32", fixture.ReturnWithParameter(parameter));
+		Assert.Equal("name:second2,age:32", fixture.ReturnWithParameter(parameter));
+
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Equivalent(parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupWhere()
+	{
+		const string parameter = nameof(parameter);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Where(x => x == parameter))
+			.Returns("first1")
+			.Returns("first2");
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Where(x => x == parameter))
+			.Returns("second1")
+			.Returns("second2");
+
+		var fixture = CreateFixture();
+
+		Assert.Equal("name:second1,age:32", fixture.ReturnWithParameter(parameter));
+		Assert.Equal("name:second2,age:32", fixture.ReturnWithParameter(parameter));
+		Assert.Equal("name:second2,age:32", fixture.ReturnWithParameter(parameter));
+
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Where(x => x == parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupAny()
+	{
+		const string parameter = nameof(parameter);
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Any())
+			.Returns("first1")
+			.Returns("first2");
+
+		DependencyServiceMock
+			.SetupReturnWithParameter(ItIn<string>.Any())
+			.Returns("second1")
+			.Returns("second2");
+
+		var fixture = CreateFixture();
+
+		Assert.Equal("name:second1,age:32", fixture.ReturnWithParameter(parameter));
+		Assert.Equal("name:second2,age:32", fixture.ReturnWithParameter(parameter));
+		Assert.Equal("name:second2,age:32", fixture.ReturnWithParameter(parameter));
+
+		DependencyServiceMock.VerifyReturnWithParameter(ItIn<string>.Any(), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

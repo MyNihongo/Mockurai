@@ -1308,4 +1308,91 @@ public sealed class InvokeWithParameterShould : PrimitiveTypeServiceTestsBase
 		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<string>.Value(parameter), Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void OverwriteChainedSetupEquivalent()
+	{
+		const string parameter = nameof(parameter);
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Equivalent(parameter))
+			.Callback((in _) => first++)
+			.Callback((in _) => first += 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Equivalent(parameter))
+			.Callback((in _) => second++)
+			.Callback((in _) => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<string>.Equivalent(parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupWhere()
+	{
+		const string parameter = nameof(parameter);
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Where(x => x == parameter))
+			.Callback((in _) => first++)
+			.Callback((in _) => first += 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Where(x => x == parameter))
+			.Callback((in _) => second++)
+			.Callback((in _) => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<string>.Where(x => x == parameter), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupAny()
+	{
+		const string parameter = nameof(parameter);
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Any())
+			.Callback((in _) => first++)
+			.Callback((in _) => first += 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithParameter(ItIn<string>.Any())
+			.Callback((in _) => second++)
+			.Callback((in _) => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+		fixture.InvokeWithParameter(parameter);
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifyInvokeWithParameter(ItIn<string>.Any(), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

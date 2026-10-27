@@ -794,4 +794,79 @@ public sealed class ReturnWithParameterGenericShould : PrimitiveTypeServiceTests
 		DependencyGenericServiceMock.VerifyReturnWithParameter<string, float>(setupValue, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void OverwriteChainedSetupEquivalent()
+	{
+		const string setupValue = "Okayama Issei";
+
+		DependencyGenericServiceMock
+			.SetupReturnWithParameter<string, float>(It<string>.Equivalent(setupValue))
+			.Returns(1f)
+			.Returns(2f);
+
+		DependencyGenericServiceMock
+			.SetupReturnWithParameter<string, float>(It<string>.Equivalent(setupValue))
+			.Returns(10f)
+			.Returns(20f);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+		Assert.Equal(20f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+		Assert.Equal(20f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+
+		DependencyGenericServiceMock.VerifyReturnWithParameter<string, float>(It<string>.Equivalent(setupValue), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupWhere()
+	{
+		const string setupValue = "Okayama Issei";
+
+		DependencyGenericServiceMock
+			.SetupReturnWithParameter<string, float>(It<string>.Where(x => x == setupValue))
+			.Returns(1f)
+			.Returns(2f);
+
+		DependencyGenericServiceMock
+			.SetupReturnWithParameter<string, float>(It<string>.Where(x => x == setupValue))
+			.Returns(10f)
+			.Returns(20f);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+		Assert.Equal(20f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+		Assert.Equal(20f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+
+		DependencyGenericServiceMock.VerifyReturnWithParameter<string, float>(It<string>.Where(x => x == setupValue), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupAny()
+	{
+		const string setupValue = "Okayama Issei";
+
+		DependencyGenericServiceMock
+			.SetupReturnWithParameter<string, float>(It<string>.Any())
+			.Returns(1f)
+			.Returns(2f);
+
+		DependencyGenericServiceMock
+			.SetupReturnWithParameter<string, float>(It<string>.Any())
+			.Returns(10f)
+			.Returns(20f);
+
+		var fixture = CreateFixture();
+
+		Assert.Equal(10f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+		Assert.Equal(20f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+		Assert.Equal(20f, fixture.ReturnWithParameterGeneric<float>(setupValue));
+
+		DependencyGenericServiceMock.VerifyReturnWithParameter<string, float>(It<string>.Any(), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }

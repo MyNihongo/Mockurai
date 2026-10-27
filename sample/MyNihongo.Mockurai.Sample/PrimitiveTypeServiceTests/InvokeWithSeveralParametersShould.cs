@@ -983,4 +983,91 @@ public sealed class InvokeWithSeveralParametersShould : PrimitiveTypeServiceTest
 		DependencyServiceMock.VerifyInvokeWithSeveralParameters(parameter1, parameter2, Times.Exactly(3));
 		VerifyNoOtherCalls();
 	}
+
+	[Fact]
+	public void OverwriteChainedSetupEquivalent()
+	{
+		const int parameter1 = 2025, parameter2 = 6;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Equivalent(parameter1), It<int>.Equivalent(parameter2))
+			.Callback((_, _) => first++)
+			.Callback((_, _) => first += 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Equivalent(parameter1), It<int>.Equivalent(parameter2))
+			.Callback((_, _) => second++)
+			.Callback((_, _) => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParameters(parameter1, parameter2);
+		fixture.InvokeWithSeveralParameters(parameter1, parameter2);
+		fixture.InvokeWithSeveralParameters(parameter1, parameter2);
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifyInvokeWithSeveralParameters(It<int>.Equivalent(parameter1), It<int>.Equivalent(parameter2), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupWhere()
+	{
+		const int parameter1 = 2025, parameter2 = 6;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Where(x => x == parameter1), It<int>.Where(x => x == parameter2))
+			.Callback((_, _) => first++)
+			.Callback((_, _) => first += 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Where(x => x == parameter1), It<int>.Where(x => x == parameter2))
+			.Callback((_, _) => second++)
+			.Callback((_, _) => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParameters(parameter1, parameter2);
+		fixture.InvokeWithSeveralParameters(parameter1, parameter2);
+		fixture.InvokeWithSeveralParameters(parameter1, parameter2);
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifyInvokeWithSeveralParameters(It<int>.Where(x => x == parameter1), It<int>.Where(x => x == parameter2), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public void OverwriteChainedSetupAny()
+	{
+		const int parameter1 = 2025, parameter2 = 6;
+		var first = 0;
+		var second = 0;
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Callback((_, _) => first++)
+			.Callback((_, _) => first += 10);
+
+		DependencyServiceMock
+			.SetupInvokeWithSeveralParameters(It<int>.Any(), It<int>.Any())
+			.Callback((_, _) => second++)
+			.Callback((_, _) => second += 10);
+
+		var fixture = CreateFixture();
+		fixture.InvokeWithSeveralParameters(parameter1, parameter2);
+		fixture.InvokeWithSeveralParameters(parameter1, parameter2);
+		fixture.InvokeWithSeveralParameters(parameter1, parameter2);
+
+		Assert.Equal(0, first);
+		Assert.Equal(21, second);
+
+		DependencyServiceMock.VerifyInvokeWithSeveralParameters(It<int>.Any(), It<int>.Any(), Times.Exactly(3));
+		VerifyNoOtherCalls();
+	}
 }
