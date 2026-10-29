@@ -270,7 +270,9 @@ internal static class MethodSymbolEx
 				.AppendVerifyMethodName(methodSymbol)
 				.Append('(')
 				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
-				.AppendLine("long index)")
+				.Append("long index)")
+				.AppendGenericTypeConstraints(methodSymbol.TypeArguments)
+				.AppendLine()
 				.Indent(indent++).AppendLine("{");
 
 			@this
@@ -379,7 +381,9 @@ internal static class MethodSymbolEx
 				.AppendVerifyMethodName(methodSymbol, appendVerifyPrefix: false, typeArguments: genericTypes)
 				.Append('(')
 				.AppendItParameters(methodSymbol.Parameters)
-				.AppendLine(")");
+				.Append(')')
+				.AppendGenericTypeConstraints(genericTypes)
+				.AppendLine();
 
 			@this
 				.Indent(indent++)
@@ -409,7 +413,8 @@ internal static class MethodSymbolEx
 				.AppendSetupMethodName(methodSymbol, typeArguments)
 				.Append('(')
 				.AppendItParameters(methodSymbol.Parameters, useDefaults: useDefaults)
-				.Append(')');
+				.Append(')')
+				.AppendGenericTypeConstraints(typeArguments ?? methodSymbol.TypeArguments);
 		}
 
 		private StringBuilder AppendSetupMethodReturnType(IMethodSymbol methodSymbol, SetupMethodReturnType returnType)
@@ -452,7 +457,8 @@ internal static class MethodSymbolEx
 				.Append('(')
 				.AppendItParameters(methodSymbol.Parameters, appendComma: true)
 				.Append(timesType)
-				.Append(" times)");
+				.Append(" times)")
+				.AppendGenericTypeConstraints(typeArguments ?? methodSymbol.TypeArguments);
 		}
 
 		private StringBuilder AppendVerifyMethodName(IMethodSymbol methodSymbol, bool appendVerifyPrefix = DefaultAppendVerifyPrefix, ImmutableArray<ITypeSymbol>? typeArguments = null)

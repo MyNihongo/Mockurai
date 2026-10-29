@@ -157,6 +157,73 @@ internal static class TypeSymbolEx
 			return @this.Append('>');
 		}
 
+		public StringBuilder AppendGenericTypeConstraints(ImmutableArray<ITypeSymbol> typeArguments)
+		{
+			foreach (var typeArgument in typeArguments)
+			{
+				if (typeArgument is not ITypeParameterSymbol typeParameterSymbol)
+					continue;
+
+				var startIndex = @this.Length;
+				var hasConstraints = false;
+
+				@this.Append(" where ").Append(typeParameterSymbol.Name).Append(" : ");
+
+				if (typeParameterSymbol.HasReferenceTypeConstraint)
+				{
+					@this.Append(typeParameterSymbol.ReferenceTypeConstraintNullableAnnotation == NullableAnnotation.Annotated ? "class?" : "class");
+					hasConstraints = true;
+				}
+				else if (typeParameterSymbol.HasUnmanagedTypeConstraint)
+				{
+					@this.Append("unmanaged");
+					hasConstraints = true;
+				}
+				else if (typeParameterSymbol.HasValueTypeConstraint)
+				{
+					@this.Append("struct");
+					hasConstraints = true;
+				}
+				else if (typeParameterSymbol.HasNotNullConstraint)
+				{
+					@this.Append("notnull");
+					hasConstraints = true;
+				}
+
+				foreach (var constraintType in typeParameterSymbol.ConstraintTypes)
+				{
+					if (hasConstraints)
+						@this.Append(", ");
+
+					@this.AppendType(constraintType);
+					hasConstraints = true;
+				}
+
+				if (typeParameterSymbol.HasConstructorConstraint)
+				{
+					if (hasConstraints)
+						@this.Append(", ");
+
+					@this.Append("new()");
+					hasConstraints = true;
+				}
+
+				if (typeParameterSymbol.AllowsRefLikeType)
+				{
+					if (hasConstraints)
+						@this.Append(", ");
+
+					@this.Append("allows ref struct");
+					hasConstraints = true;
+				}
+
+				if (!hasConstraints)
+					@this.Length = startIndex;
+			}
+
+			return @this;
+		}
+
 		public StringBuilder AppendTypeofName(ITypeSymbol typeParameterSymbol, string? typeOverride = null, bool appendStringInterpolation = false)
 		{
 			if (appendStringInterpolation)
