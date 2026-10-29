@@ -3953,10 +3953,10 @@ public sealed class GenericSetup : IssuesTestsBase
 						public ISetup<System.Action, TReturns, System.Func<TReturns>> SetupInvokeAsync<TReturns>() where TReturns : class =>
 							((InterfaceMock)@this).SetupInvokeAsync<TReturns>();
 
-						public void VerifyInvokeAsync<TReturns>(in Times times) =>
+						public void VerifyInvokeAsync<TReturns>(in Times times) where TReturns : class =>
 							((InterfaceMock)@this).VerifyInvokeAsync<TReturns>(times);
 
-						public void VerifyInvokeAsync<TReturns>(System.Func<Times> times) =>
+						public void VerifyInvokeAsync<TReturns>(System.Func<Times> times) where TReturns : class =>
 							((InterfaceMock)@this).VerifyInvokeAsync<TReturns>(times());
 					}
 				}
@@ -3980,4 +3980,664 @@ public sealed class GenericSetup : IssuesTestsBase
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
+
+	[Fact]
+	public async Task GenericConstraintsMultiple()
+	{
+		const string testCode =
+			"""
+			namespace Issues.Tests;
+
+			public interface IInterface
+			{
+				System.Threading.Tasks.Task<TReturns> InvokeAsync<TReturns>() where TReturns : class, System.IDisposable, new();
+
+				void Invoke<T>() where T : unmanaged, System.IComparable<T>;
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<IInterface> InterfaceMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources =
+		[
+			GetTestsBaseSource(),
+			(
+				"InterfaceMock.g.cs",
+				"""
+				#nullable enable
+				namespace MyNihongo.Mockurai;
+
+				public sealed class InterfaceMock : IMock<Issues.Tests.IInterface>
+				{
+					private readonly InvocationIndex.Counter _invocationIndex;
+					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
+					private Proxy? _proxy;
+
+					public InterfaceMock(InvocationIndex.Counter invocationIndex)
+					{
+						_invocationIndex = invocationIndex;
+						_invocationProviders = GetInvocations;
+					}
+
+					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
+
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
+					// InvokeAsync
+					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invokeAsync0;
+					private InvocationDictionary? _invokeAsync0Invocation;
+
+					public Setup<TReturns> SetupInvokeAsync<TReturns>() where TReturns : class, System.IDisposable, new()
+					{
+						_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+						var invokeAsync0 = (Setup<TReturns>)_invokeAsync0.GetOrAdd(typeof(TReturns), static _ => new Setup<TReturns>());
+						invokeAsync0.Reset();
+						return invokeAsync0;
+					}
+
+					public void VerifyInvokeAsync<TReturns>(in Times times) where TReturns : class, System.IDisposable, new()
+					{
+						_invokeAsync0Invocation ??= new InvocationDictionary();
+						var invokeAsync0Invocation = (Invocation)_invokeAsync0Invocation.GetOrAdd(typeof(TReturns), static key => new Invocation($"IInterface.InvokeAsync<{key.Name}>()"));
+						invokeAsync0Invocation.Verify(times, _invocationProviders);
+					}
+
+					public long VerifyInvokeAsync<TReturns>(long index) where TReturns : class, System.IDisposable, new()
+					{
+						_invokeAsync0Invocation ??= new InvocationDictionary();
+						var invokeAsync0Invocation = (Invocation)_invokeAsync0Invocation.GetOrAdd(typeof(TReturns), static key => new Invocation($"IInterface.InvokeAsync<{key.Name}>()"));
+						return invokeAsync0Invocation.Verify(index, _invocationProviders);
+					}
+
+					// Invoke
+					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>? _invoke0;
+					private InvocationDictionary? _invoke0Invocation;
+
+					public Setup SetupInvoke<T>() where T : unmanaged, System.IComparable<T>
+					{
+						_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
+						var invoke0 = (Setup)_invoke0.GetOrAdd(typeof(T), static _ => new Setup());
+						invoke0.Reset();
+						return invoke0;
+					}
+
+					public void VerifyInvoke<T>(in Times times) where T : unmanaged, System.IComparable<T>
+					{
+						_invoke0Invocation ??= new InvocationDictionary();
+						var invoke0Invocation = (Invocation)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation($"IInterface.Invoke<{key.Name}>()"));
+						invoke0Invocation.Verify(times, _invocationProviders);
+					}
+
+					public long VerifyInvoke<T>(long index) where T : unmanaged, System.IComparable<T>
+					{
+						_invoke0Invocation ??= new InvocationDictionary();
+						var invoke0Invocation = (Invocation)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation($"IInterface.Invoke<{key.Name}>()"));
+						return invoke0Invocation.Verify(index, _invocationProviders);
+					}
+
+					public void VerifyNoOtherCalls()
+					{
+						_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);
+						_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);
+					}
+
+					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
+					{
+						yield return _invokeAsync0Invocation;
+						yield return _invoke0Invocation;
+					}
+
+					private sealed class Proxy : Issues.Tests.IInterface
+					{
+						private readonly InterfaceMock _mock;
+
+						public Proxy(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Threading.Tasks.Task<TReturns> InvokeAsync<TReturns>() where TReturns : class, System.IDisposable, new()
+						{
+							_mock._invokeAsync0Invocation ??= new InvocationDictionary();
+							var invokeAsync0Invocation = (Invocation)_mock._invokeAsync0Invocation.GetOrAdd(typeof(TReturns), static key => new Invocation($"IInterface.InvokeAsync<{key.Name}>()"));
+							invokeAsync0Invocation.Register(_mock._invocationIndex);
+							return System.Threading.Tasks.Task.FromResult<TReturns>(((Setup<TReturns>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TReturns)))?.Execute(out var returnValue) == true ? returnValue! : default!);
+						}
+
+						public void Invoke<T>() where T : unmanaged, System.IComparable<T>
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (Invocation)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation($"IInterface.Invoke<{key.Name}>()"));
+							invoke0Invocation.Register(_mock._invocationIndex);
+							((Setup?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Invoke();
+						}
+					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation> InvokeAsync<TReturns>() where TReturns : class, System.IDisposable, new()
+						{
+							_mock._invokeAsync0Invocation ??= new InvocationDictionary();
+							var invokeAsync0Invocation = (Invocation)_mock._invokeAsync0Invocation.GetOrAdd(typeof(TReturns), static key => new Invocation($"IInterface.InvokeAsync<{key.Name}>()"));
+							return invokeAsync0Invocation.GetInvocations() ?? [];
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation> Invoke<T>() where T : unmanaged, System.IComparable<T>
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (Invocation)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation($"IInterface.Invoke<{key.Name}>()"));
+							return invoke0Invocation.GetInvocations() ?? [];
+						}
+					}
+				}
+
+				public static partial class MockExtensions
+				{
+					extension(IMock<Issues.Tests.IInterface> @this)
+					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
+						public void VerifyNoOtherCalls() =>
+							((InterfaceMock)@this).VerifyNoOtherCalls();
+
+						// InvokeAsync
+						public ISetup<System.Action, TReturns, System.Func<TReturns>> SetupInvokeAsync<TReturns>() where TReturns : class, System.IDisposable, new() =>
+							((InterfaceMock)@this).SetupInvokeAsync<TReturns>();
+
+						public void VerifyInvokeAsync<TReturns>(in Times times) where TReturns : class, System.IDisposable, new() =>
+							((InterfaceMock)@this).VerifyInvokeAsync<TReturns>(times);
+
+						public void VerifyInvokeAsync<TReturns>(System.Func<Times> times) where TReturns : class, System.IDisposable, new() =>
+							((InterfaceMock)@this).VerifyInvokeAsync<TReturns>(times());
+
+						// Invoke
+						public ISetup<System.Action> SetupInvoke<T>() where T : unmanaged, System.IComparable<T> =>
+							((InterfaceMock)@this).SetupInvoke<T>();
+
+						public void VerifyInvoke<T>(in Times times) where T : unmanaged, System.IComparable<T> =>
+							((InterfaceMock)@this).VerifyInvoke<T>(times);
+
+						public void VerifyInvoke<T>(System.Func<Times> times) where T : unmanaged, System.IComparable<T> =>
+							((InterfaceMock)@this).VerifyInvoke<T>(times());
+					}
+				}
+
+				public static partial class MockSequenceExtensions
+				{
+					extension(IMockSequence<Issues.Tests.IInterface> @this)
+					{
+						// InvokeAsync
+						public void InvokeAsync<TReturns>() where TReturns : class, System.IDisposable, new()
+						{
+							var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvokeAsync<TReturns>(@this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+
+						// Invoke
+						public void Invoke<T>() where T : unmanaged, System.IComparable<T>
+						{
+							var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvoke<T>(@this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+					}
+				}
+				"""
+			),
+		];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
+	}
+
+	[Fact]
+	public async Task GenericConstraintsMultipleTypes()
+	{
+		const string testCode =
+			"""
+			namespace Issues.Tests;
+
+			public interface IInterface
+			{
+				TReturns Invoke<T1, T2, TReturns>(T1 param1, T2 param2)
+					where T1 : struct, System.IComparable<T1>
+					where T2 : class?, System.IDisposable
+					where TReturns : notnull, new();
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<IInterface> InterfaceMock { get; }
+			}
+			""";
+
+		var types = new TypeModel[]
+		{
+			new("T1", 1, isGeneric: true),
+			new("T2", 2, isGeneric: true),
+		};
+
+		GeneratedSources generatedSources =
+		[
+			GetTestsBaseSource(),
+			(
+				"InterfaceMock.g.cs",
+				"""
+				#nullable enable
+				namespace MyNihongo.Mockurai;
+
+				public sealed class InterfaceMock : IMock<Issues.Tests.IInterface>
+				{
+					private readonly InvocationIndex.Counter _invocationIndex;
+					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
+					private Proxy? _proxy;
+
+					public InterfaceMock(InvocationIndex.Counter invocationIndex)
+					{
+						_invocationIndex = invocationIndex;
+						_invocationProviders = GetInvocations;
+					}
+
+					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
+
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
+					// Invoke
+					private System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type, System.Type), object>? _invoke0;
+					private InvocationDictionary<(System.Type, System.Type, System.Type)>? _invoke0Invocation;
+
+					public SetupT1T2<T1, T2, TReturns> SetupInvoke<T1, T2, TReturns>(in It<T1> param1, in It<T2> param2) where T1 : struct, System.IComparable<T1> where T2 : class?, System.IDisposable where TReturns : notnull, new()
+					{
+						_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<(System.Type, System.Type, System.Type), object>();
+						var invoke0 = (SetupT1T2<T1, T2, TReturns>)_invoke0.GetOrAdd((typeof(T1), typeof(T2), typeof(TReturns)), static _ => new SetupT1T2<T1, T2, TReturns>());
+						invoke0.SetupParameters(param1.ValueSetup, param2.ValueSetup);
+						return invoke0;
+					}
+
+					public void VerifyInvoke<T1, T2, TReturns>(in It<T1> param1, in It<T2> param2, in Times times) where T1 : struct, System.IComparable<T1> where T2 : class?, System.IDisposable where TReturns : notnull, new()
+					{
+						_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type, System.Type)>();
+						var invoke0Invocation = (InvocationT1T2<T1, T2>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2), typeof(TReturns)), static key => new InvocationT1T2<T1, T2>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}, {key.Item3.Name}>({{0}}, {{1}})"));
+						invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, times, _invocationProviders);
+					}
+
+					public long VerifyInvoke<T1, T2, TReturns>(in It<T1> param1, in It<T2> param2, long index) where T1 : struct, System.IComparable<T1> where T2 : class?, System.IDisposable where TReturns : notnull, new()
+					{
+						_invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type, System.Type)>();
+						var invoke0Invocation = (InvocationT1T2<T1, T2>)_invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2), typeof(TReturns)), static key => new InvocationT1T2<T1, T2>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}, {key.Item3.Name}>({{0}}, {{1}})"));
+						return invoke0Invocation.Verify(param1.ValueSetup, param2.ValueSetup, index, _invocationProviders);
+					}
+
+					public void VerifyNoOtherCalls()
+					{
+						_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);
+					}
+
+					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
+					{
+						yield return _invoke0Invocation;
+					}
+
+					private sealed class Proxy : Issues.Tests.IInterface
+					{
+						private readonly InterfaceMock _mock;
+
+						public Proxy(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public TReturns Invoke<T1, T2, TReturns>(T1 param1, T2 param2) where T1 : struct, System.IComparable<T1> where T2 : class?, System.IDisposable where TReturns : notnull, new()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type, System.Type)>();
+							var invoke0Invocation = (InvocationT1T2<T1, T2>)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2), typeof(TReturns)), static key => new InvocationT1T2<T1, T2>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}, {key.Item3.Name}>({{0}}, {{1}})"));
+							invoke0Invocation.Register(_mock._invocationIndex, param1, param2);
+							return ((SetupT1T2<T1, T2, TReturns>?)_mock._invoke0?.ValueOrDefault((typeof(T1), typeof(T2), typeof(TReturns))))?.Execute(param1, param2, out var returnValue) == true ? returnValue! : default!;
+						}
+					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation<(T1 param1, T2 param2)>> Invoke<T1, T2, TReturns>() where T1 : struct, System.IComparable<T1> where T2 : class?, System.IDisposable where TReturns : notnull, new()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary<(System.Type, System.Type, System.Type)>();
+							var invoke0Invocation = (InvocationT1T2<T1, T2>)_mock._invoke0Invocation.GetOrAdd((typeof(T1), typeof(T2), typeof(TReturns)), static key => new InvocationT1T2<T1, T2>($"IInterface.Invoke<{key.Item1.Name}, {key.Item2.Name}, {key.Item3.Name}>({{0}}, {{1}})"));
+							return invoke0Invocation.GetInvocationsWithArguments() ?? [];
+						}
+					}
+				}
+
+				public static partial class MockExtensions
+				{
+					extension(IMock<Issues.Tests.IInterface> @this)
+					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
+						public void VerifyNoOtherCalls() =>
+							((InterfaceMock)@this).VerifyNoOtherCalls();
+
+						// Invoke
+						public ISetup<SetupT1T2<T1, T2, TReturns>.CallbackDelegate, TReturns, SetupT1T2<T1, T2, TReturns>.ReturnsCallbackDelegate> SetupInvoke<T1, T2, TReturns>(in It<T1> param1 = default, in It<T2> param2 = default) where T1 : struct, System.IComparable<T1> where T2 : class?, System.IDisposable where TReturns : notnull, new() =>
+							((InterfaceMock)@this).SetupInvoke<T1, T2, TReturns>(param1, param2);
+
+						public void VerifyInvoke<T1, T2, TReturns>(in It<T1> param1, in It<T2> param2, in Times times) where T1 : struct, System.IComparable<T1> where T2 : class?, System.IDisposable where TReturns : notnull, new() =>
+							((InterfaceMock)@this).VerifyInvoke<T1, T2, TReturns>(param1, param2, times);
+
+						public void VerifyInvoke<T1, T2, TReturns>(in It<T1> param1, in It<T2> param2, System.Func<Times> times) where T1 : struct, System.IComparable<T1> where T2 : class?, System.IDisposable where TReturns : notnull, new() =>
+							((InterfaceMock)@this).VerifyInvoke<T1, T2, TReturns>(param1, param2, times());
+					}
+				}
+
+				public static partial class MockSequenceExtensions
+				{
+					extension(IMockSequence<Issues.Tests.IInterface> @this)
+					{
+						// Invoke
+						public void Invoke<T1, T2, TReturns>(in It<T1> param1, in It<T2> param2) where T1 : struct, System.IComparable<T1> where T2 : class?, System.IDisposable where TReturns : notnull, new()
+						{
+							var nextIndex = ((InterfaceMock)@this.Mock).VerifyInvoke<T1, T2, TReturns>(param1, param2, @this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+					}
+				}
+				"""
+			),
+			CreateSetupReturnsCode(types),
+			CreateInvocationCode(types),
+		];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
+	}
+
+	[Fact]
+	public async Task GenericConstraintsOverride()
+	{
+		const string testCode =
+			"""
+			namespace Issues.Tests;
+
+			public abstract class Class
+			{
+				public abstract System.Threading.Tasks.Task<TReturns> InvokeAsync<TReturns>() where TReturns : class, System.IDisposable, new();
+
+				public virtual void Invoke<T>() where T : unmanaged, System.IComparable<T>
+				{
+				}
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected partial IMock<Class> ClassMock { get; }
+			}
+			""";
+
+		GeneratedSources generatedSources =
+		[
+			(
+				"TestsBase.g.cs",
+				"""
+				#nullable enable
+				namespace Issues.Tests;
+
+				public partial class TestsBase
+				{
+					// ClassMock
+					private readonly ClassMock _classMock = new(InvocationIndex.CounterValue);
+					protected partial MyNihongo.Mockurai.IMock<Issues.Tests.Class> ClassMock => _classMock;
+
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
+					protected virtual void VerifyNoOtherCalls()
+					{
+						ClassMock.VerifyNoOtherCalls();
+					}
+
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
+					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
+					{
+						var ctx = new VerifySequenceContext(
+							classMock: ClassMock
+						);
+
+						verify(ctx);
+					}
+
+					protected class VerifySequenceContext
+					{
+						protected readonly VerifyIndex VerifyIndex;
+						public readonly IMockSequence<Issues.Tests.Class> ClassMock;
+
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.Class> classMock)
+						{
+							VerifyIndex = new VerifyIndex();
+							ClassMock = new MockSequence<Issues.Tests.Class>
+							{
+								VerifyIndex = VerifyIndex,
+								Mock = classMock,
+							};
+						}
+
+						protected VerifySequenceContext(VerifySequenceContext ctx)
+						{
+							VerifyIndex = ctx.VerifyIndex;
+							ClassMock = ctx.ClassMock;
+						}
+					}
+				}
+				"""
+			),
+			(
+				"ClassMock.g.cs",
+				"""
+				#nullable enable
+				namespace MyNihongo.Mockurai;
+
+				public sealed class ClassMock : IMock<Issues.Tests.Class>
+				{
+					private readonly InvocationIndex.Counter _invocationIndex;
+					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
+					private Proxy? _proxy;
+
+					public ClassMock(InvocationIndex.Counter invocationIndex)
+					{
+						_invocationIndex = invocationIndex;
+						_invocationProviders = GetInvocations;
+					}
+
+					public Issues.Tests.Class Object => _proxy ??= new Proxy(this);
+
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
+					// InvokeAsync
+					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>? _invokeAsync0;
+					private InvocationDictionary? _invokeAsync0Invocation;
+
+					public Setup<TReturns> SetupInvokeAsync<TReturns>() where TReturns : class, System.IDisposable, new()
+					{
+						_invokeAsync0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, object>();
+						var invokeAsync0 = (Setup<TReturns>)_invokeAsync0.GetOrAdd(typeof(TReturns), static _ => new Setup<TReturns>());
+						invokeAsync0.Reset();
+						return invokeAsync0;
+					}
+
+					public void VerifyInvokeAsync<TReturns>(in Times times) where TReturns : class, System.IDisposable, new()
+					{
+						_invokeAsync0Invocation ??= new InvocationDictionary();
+						var invokeAsync0Invocation = (Invocation)_invokeAsync0Invocation.GetOrAdd(typeof(TReturns), static key => new Invocation($"Class.InvokeAsync<{key.Name}>()"));
+						invokeAsync0Invocation.Verify(times, _invocationProviders);
+					}
+
+					public long VerifyInvokeAsync<TReturns>(long index) where TReturns : class, System.IDisposable, new()
+					{
+						_invokeAsync0Invocation ??= new InvocationDictionary();
+						var invokeAsync0Invocation = (Invocation)_invokeAsync0Invocation.GetOrAdd(typeof(TReturns), static key => new Invocation($"Class.InvokeAsync<{key.Name}>()"));
+						return invokeAsync0Invocation.Verify(index, _invocationProviders);
+					}
+
+					// Invoke
+					private System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>? _invoke0;
+					private InvocationDictionary? _invoke0Invocation;
+
+					public Setup SetupInvoke<T>() where T : unmanaged, System.IComparable<T>
+					{
+						_invoke0 ??= new System.Collections.Concurrent.ConcurrentDictionary<System.Type, Setup>();
+						var invoke0 = (Setup)_invoke0.GetOrAdd(typeof(T), static _ => new Setup());
+						invoke0.Reset();
+						return invoke0;
+					}
+
+					public void VerifyInvoke<T>(in Times times) where T : unmanaged, System.IComparable<T>
+					{
+						_invoke0Invocation ??= new InvocationDictionary();
+						var invoke0Invocation = (Invocation)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation($"Class.Invoke<{key.Name}>()"));
+						invoke0Invocation.Verify(times, _invocationProviders);
+					}
+
+					public long VerifyInvoke<T>(long index) where T : unmanaged, System.IComparable<T>
+					{
+						_invoke0Invocation ??= new InvocationDictionary();
+						var invoke0Invocation = (Invocation)_invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation($"Class.Invoke<{key.Name}>()"));
+						return invoke0Invocation.Verify(index, _invocationProviders);
+					}
+
+					public void VerifyNoOtherCalls()
+					{
+						_invokeAsync0Invocation?.VerifyNoOtherCalls(_invocationProviders);
+						_invoke0Invocation?.VerifyNoOtherCalls(_invocationProviders);
+					}
+
+					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
+					{
+						yield return _invokeAsync0Invocation;
+						yield return _invoke0Invocation;
+					}
+
+					private sealed class Proxy : Issues.Tests.Class
+					{
+						private readonly ClassMock _mock;
+
+						public Proxy(ClassMock mock)
+						{
+							_mock = mock;
+						}
+
+						public override System.Threading.Tasks.Task<TReturns> InvokeAsync<TReturns>()
+						{
+							_mock._invokeAsync0Invocation ??= new InvocationDictionary();
+							var invokeAsync0Invocation = (Invocation)_mock._invokeAsync0Invocation.GetOrAdd(typeof(TReturns), static key => new Invocation($"Class.InvokeAsync<{key.Name}>()"));
+							invokeAsync0Invocation.Register(_mock._invocationIndex);
+							return System.Threading.Tasks.Task.FromResult<TReturns>(((Setup<TReturns>?)_mock._invokeAsync0?.ValueOrDefault(typeof(TReturns)))?.Execute(out var returnValue) == true ? returnValue! : default!);
+						}
+
+						public override void Invoke<T>()
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (Invocation)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation($"Class.Invoke<{key.Name}>()"));
+							invoke0Invocation.Register(_mock._invocationIndex);
+							((Setup?)_mock._invoke0?.ValueOrDefault(typeof(T)))?.Invoke();
+						}
+					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly ClassMock _mock;
+
+						public InvocationContainer(ClassMock mock)
+						{
+							_mock = mock;
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation> InvokeAsync<TReturns>() where TReturns : class, System.IDisposable, new()
+						{
+							_mock._invokeAsync0Invocation ??= new InvocationDictionary();
+							var invokeAsync0Invocation = (Invocation)_mock._invokeAsync0Invocation.GetOrAdd(typeof(TReturns), static key => new Invocation($"Class.InvokeAsync<{key.Name}>()"));
+							return invokeAsync0Invocation.GetInvocations() ?? [];
+						}
+
+						public System.Collections.Generic.IEnumerable<IInvocation> Invoke<T>() where T : unmanaged, System.IComparable<T>
+						{
+							_mock._invoke0Invocation ??= new InvocationDictionary();
+							var invoke0Invocation = (Invocation)_mock._invoke0Invocation.GetOrAdd(typeof(T), static key => new Invocation($"Class.Invoke<{key.Name}>()"));
+							return invoke0Invocation.GetInvocations() ?? [];
+						}
+					}
+				}
+
+				public static partial class MockExtensions
+				{
+					extension(IMock<Issues.Tests.Class> @this)
+					{
+						public ClassMock.InvocationContainer Invocations => ((ClassMock)@this).Invocations;
+
+						public void VerifyNoOtherCalls() =>
+							((ClassMock)@this).VerifyNoOtherCalls();
+
+						// InvokeAsync
+						public ISetup<System.Action, TReturns, System.Func<TReturns>> SetupInvokeAsync<TReturns>() where TReturns : class, System.IDisposable, new() =>
+							((ClassMock)@this).SetupInvokeAsync<TReturns>();
+
+						public void VerifyInvokeAsync<TReturns>(in Times times) where TReturns : class, System.IDisposable, new() =>
+							((ClassMock)@this).VerifyInvokeAsync<TReturns>(times);
+
+						public void VerifyInvokeAsync<TReturns>(System.Func<Times> times) where TReturns : class, System.IDisposable, new() =>
+							((ClassMock)@this).VerifyInvokeAsync<TReturns>(times());
+
+						// Invoke
+						public ISetup<System.Action> SetupInvoke<T>() where T : unmanaged, System.IComparable<T> =>
+							((ClassMock)@this).SetupInvoke<T>();
+
+						public void VerifyInvoke<T>(in Times times) where T : unmanaged, System.IComparable<T> =>
+							((ClassMock)@this).VerifyInvoke<T>(times);
+
+						public void VerifyInvoke<T>(System.Func<Times> times) where T : unmanaged, System.IComparable<T> =>
+							((ClassMock)@this).VerifyInvoke<T>(times());
+					}
+				}
+
+				public static partial class MockSequenceExtensions
+				{
+					extension(IMockSequence<Issues.Tests.Class> @this)
+					{
+						// InvokeAsync
+						public void InvokeAsync<TReturns>() where TReturns : class, System.IDisposable, new()
+						{
+							var nextIndex = ((ClassMock)@this.Mock).VerifyInvokeAsync<TReturns>(@this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+
+						// Invoke
+						public void Invoke<T>() where T : unmanaged, System.IComparable<T>
+						{
+							var nextIndex = ((ClassMock)@this.Mock).VerifyInvoke<T>(@this.VerifyIndex);
+							@this.VerifyIndex.Set(nextIndex);
+						}
+					}
+				}
+				"""
+			),
+		];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
+	}
 }
+
