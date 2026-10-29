@@ -92,10 +92,27 @@ internal static class SymbolEx
 			return @this.Where(static x => x.Kind switch
 			{
 				SymbolKind.Event => true,
-				SymbolKind.Property => true,
-				SymbolKind.Method => x is IMethodSymbol { MethodKind: MethodKind.Ordinary },
+				SymbolKind.Property => x is IPropertySymbol { Type.IsRefLikeType: false },
+				SymbolKind.Method => x is IMethodSymbol { MethodKind: MethodKind.Ordinary } method && !method.HasRefLikeTypes(),
 				_ => false,
 			});
+		}
+	}
+
+	extension(IMethodSymbol @this)
+	{
+		public bool HasRefLikeTypes()
+		{
+			if (@this.ReturnType.IsRefLikeType)
+				return true;
+
+			foreach (var parameter in @this.Parameters)
+			{
+				if (parameter.Type.IsRefLikeType)
+					return true;
+			}
+
+			return false;
 		}
 	}
 }
