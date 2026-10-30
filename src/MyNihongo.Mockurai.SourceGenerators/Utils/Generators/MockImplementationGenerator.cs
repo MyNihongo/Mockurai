@@ -371,7 +371,8 @@ internal static class MockImplementationGenerator
 					else
 					{
 						stringBuilder
-							.AppendGenericTypes(method.TypeArguments).AppendLine("()")
+							.AppendGenericTypes(method.TypeArguments).Append("()")
+							.AppendGenericTypeConstraints(method.TypeArguments).AppendLine()
 							.Indent(indent++).AppendLine("{")
 							.Indent(indent).AppendInvocationDeclaration(method, typeSymbol, memberSymbol, fieldPrefix, indent, out var genericTypeNames).AppendLine();
 

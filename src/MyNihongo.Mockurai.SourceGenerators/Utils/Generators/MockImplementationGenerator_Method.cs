@@ -104,7 +104,7 @@ internal static class MockImplementationMethodGenerator
 
 		private StringBuilder AppendMethodDeclaration(IMethodSymbol methodSymbol)
 		{
-			return stringBuilder
+			stringBuilder
 				.AppendDeclaredAccessibility(methodSymbol)
 				.Append(' ')
 				.TryAppendOverride(methodSymbol)
@@ -115,6 +115,11 @@ internal static class MockImplementationMethodGenerator
 				.Append('(')
 				.AppendParameters(methodSymbol.Parameters)
 				.Append(')');
+
+			// overrides inherit constraints and cannot redeclare them
+			return methodSymbol.ContainingType.TypeKind == TypeKind.Class && methodSymbol.CanOverride
+				? stringBuilder
+				: stringBuilder.AppendGenericTypeConstraints(methodSymbol.TypeArguments);
 		}
 
 		private StringBuilder AppendRegisterMethod(IMethodSymbol methodSymbol, MockedMemberSymbol memberSymbol, ImmutableArray<ITypeSymbol> genericTypes)
