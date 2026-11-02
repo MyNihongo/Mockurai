@@ -3,7 +3,7 @@
 [MockuraiGenerate]
 public abstract partial class ClassTypeServiceTestsBase
 {
-	protected partial IMock<IClassDependencyService> ClassDependencyServiceMock { get; }
+	protected readonly IMock<IClassDependencyService> ClassDependencyServiceMock = Mock.Create<IClassDependencyService>();
 
 	protected IClassTypeService CreateFixture()
 	{
