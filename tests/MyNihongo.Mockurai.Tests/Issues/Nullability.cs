@@ -150,10 +150,152 @@ public sealed class Nullability : IssuesTestsBase
 		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
-	[Fact(Skip = "implement later")]
+	[Fact]
 	public async Task GenerateNullableFields()
 	{
-		throw new NotImplementedException();
+		const string testCode =
+			"""
+			namespace Issues.Tests;
+
+			public interface IInterface
+			{
+			}
+
+			[MockuraiGenerate]
+			public abstract partial class TestsBase
+			{
+				protected readonly IMock<IInterface>? InterfaceMock = Mock.Create<IInterface>();
+			}
+			""";
+
+		GeneratedSources generatedSources =
+		[
+			(
+				"TestsBase.g.cs",
+				"""
+				#nullable enable
+				namespace Issues.Tests;
+
+				public partial class TestsBase
+				{
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
+					protected virtual void VerifyNoOtherCalls()
+					{
+						InterfaceMock?.VerifyNoOtherCalls();
+					}
+
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
+					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
+					{
+						var ctx = new VerifySequenceContext(
+							interfaceMock: InterfaceMock
+						);
+
+						verify(ctx);
+					}
+
+					protected class VerifySequenceContext
+					{
+						protected readonly VerifyIndex VerifyIndex;
+						public readonly IMockSequence<Issues.Tests.IInterface>? InterfaceMock;
+
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.IInterface>? interfaceMock)
+						{
+							VerifyIndex = new VerifyIndex();
+							if (interfaceMock is not null)
+							{
+								InterfaceMock = new MockSequence<Issues.Tests.IInterface>
+								{
+									VerifyIndex = VerifyIndex,
+									Mock = interfaceMock,
+								};
+							}
+						}
+
+						protected VerifySequenceContext(VerifySequenceContext ctx)
+						{
+							VerifyIndex = ctx.VerifyIndex;
+							InterfaceMock = ctx.InterfaceMock;
+						}
+					}
+				}
+				"""
+			),
+			(
+				"InterfaceMock.g.cs",
+				"""
+				#nullable enable
+				namespace MyNihongo.Mockurai;
+
+				public sealed class InterfaceMock : IMock<Issues.Tests.IInterface>
+				{
+					private readonly InvocationIndex.Counter _invocationIndex;
+					private readonly System.Func<System.Collections.Generic.IEnumerable<IInvocationProvider?>> _invocationProviders;
+					private Proxy? _proxy;
+
+					public InterfaceMock(InvocationIndex.Counter invocationIndex)
+					{
+						_invocationIndex = invocationIndex;
+						_invocationProviders = GetInvocations;
+					}
+
+					public Issues.Tests.IInterface Object => _proxy ??= new Proxy(this);
+
+					public InvocationContainer Invocations => field ??= new InvocationContainer(this);
+
+					public void VerifyNoOtherCalls()
+					{
+					}
+
+					private System.Collections.Generic.IEnumerable<IInvocationProvider?> GetInvocations()
+					{
+						yield break;
+					}
+
+					private sealed class Proxy : Issues.Tests.IInterface
+					{
+						private readonly InterfaceMock _mock;
+
+						public Proxy(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+					}
+
+					public sealed class InvocationContainer
+					{
+						private readonly InterfaceMock _mock;
+
+						public InvocationContainer(InterfaceMock mock)
+						{
+							_mock = mock;
+						}
+					}
+				}
+
+				public static partial class MockExtensions
+				{
+					extension(IMock<Issues.Tests.IInterface> @this)
+					{
+						public InterfaceMock.InvocationContainer Invocations => ((InterfaceMock)@this).Invocations;
+
+						public void VerifyNoOtherCalls() =>
+							((InterfaceMock)@this).VerifyNoOtherCalls();
+					}
+				}
+
+				public static partial class MockSequenceExtensions
+				{
+					extension(IMockSequence<Issues.Tests.IInterface> @this)
+					{
+					}
+				}
+				"""
+			),
+		];
+
+		var ctx = CreateFixture(testCode, generatedSources);
+		await ctx.RunAsync(TestContext.Current.CancellationToken);
 	}
 
 	[Fact]

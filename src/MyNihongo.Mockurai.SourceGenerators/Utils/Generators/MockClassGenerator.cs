@@ -123,7 +123,7 @@ internal static class MockClassGenerator
 
 				stringBuilder
 					.Indent(indent)
-					.AppendFieldOrPropertyName(symbol)
+					.Append(symbol?.Name)
 					.TryAppendNullableAnnotation(symbol)
 					.AppendLine(".VerifyNoOtherCalls();");
 			}
@@ -182,7 +182,7 @@ internal static class MockClassGenerator
 					.Indent(indent)
 					.AppendParameterName(symbolName)
 					.Append(": ")
-					.AppendFieldOrPropertyName(symbol);
+					.Append(symbolName);
 
 				if (i < lastIndex)
 					stringBuilder.Append(',');
