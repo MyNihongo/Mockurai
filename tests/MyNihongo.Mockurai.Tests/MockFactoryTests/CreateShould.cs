@@ -1,9 +1,9 @@
 ﻿namespace MyNihongo.Mockurai.Tests.MockFactoryTests;
 
-public sealed class CreateShould : TestsBase
+public sealed class CreateShould : MockFactoryTestsBase
 {
 	[Fact]
-	public async Task CreateMocksWithFactory()
+	public async Task GenerateMockWithPrivateField()
 	{
 		const string testCode =
 			"""
@@ -21,7 +21,58 @@ public sealed class CreateShould : TestsBase
 			}
 			""";
 
-		GeneratedSources generatedSources = [];
+		GeneratedSources generatedSources =
+		[
+			(
+				"TestsBase.g.cs",
+				"""
+				#nullable enable
+				namespace Issues.Tests;
+
+				public partial class TestsBase
+				{
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
+					protected virtual void VerifyNoOtherCalls()
+					{
+						_interfaceMock.VerifyNoOtherCalls();
+					}
+
+					[System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
+					protected void VerifyInSequence(System.Action<VerifySequenceContext> verify)
+					{
+						var ctx = new VerifySequenceContext(
+							interfaceMock: _interfaceMock
+						);
+
+						verify(ctx);
+					}
+
+					protected class VerifySequenceContext
+					{
+						protected readonly VerifyIndex VerifyIndex;
+						public readonly IMockSequence<Issues.Tests.IInterface> InterfaceMock;
+
+						public VerifySequenceContext(MyNihongo.Mockurai.IMock<Issues.Tests.IInterface> interfaceMock)
+						{
+							VerifyIndex = new VerifyIndex();
+							InterfaceMock = new MockSequence<Issues.Tests.IInterface>
+							{
+								VerifyIndex = VerifyIndex,
+								Mock = interfaceMock,
+							};
+						}
+
+						protected VerifySequenceContext(VerifySequenceContext ctx)
+						{
+							VerifyIndex = ctx.VerifyIndex;
+							InterfaceMock = ctx.InterfaceMock;
+						}
+					}
+				}
+				"""
+			),
+			InterfaceMock,
+		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
 		await ctx.RunAsync(TestContext.Current.CancellationToken);
