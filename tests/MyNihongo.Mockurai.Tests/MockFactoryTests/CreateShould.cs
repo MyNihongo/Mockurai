@@ -72,6 +72,7 @@ public sealed class CreateShould : MockFactoryTestsBase
 				"""
 			),
 			InterfaceMock,
+			CreateInterfaceMockInterceptors(testCode),
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);
@@ -150,6 +151,7 @@ public sealed class CreateShould : MockFactoryTestsBase
 				  """
 			),
 			InterfaceMock,
+			CreateInterfaceMockInterceptors(testCode),
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);

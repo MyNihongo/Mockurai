@@ -1,11 +1,13 @@
+using Microsoft.CodeAnalysis.CSharp;
+
 namespace MyNihongo.Mockurai.Models;
 
 internal sealed class MockFactoryTransformResult(InvocationExpressionSyntax invocation)
 {
-	public ITypeSymbol? GetMockedTypeSymbol(Compilation compilation)
+	public MockFactoryInvocation? GetMockFactoryInvocation(Compilation compilation)
 	{
-		var symbol = compilation
-			.GetSemanticModel(invocation.SyntaxTree)
+		var semanticModel = compilation.GetSemanticModel(invocation.SyntaxTree);
+		var symbol = semanticModel
 			.GetSymbolInfo(invocation)
 			.Symbol;
 
@@ -16,8 +18,12 @@ internal sealed class MockFactoryTransformResult(InvocationExpressionSyntax invo
 			return null;
 
 		var typeArgument = methodSymbol.TypeArguments[0];
-		return typeArgument is not ITypeParameterSymbol
-			? typeArgument
+		if (typeArgument is ITypeParameterSymbol)
+			return null;
+
+		var location = semanticModel.GetInterceptableLocation(invocation);
+		return location is not null
+			? new MockFactoryInvocation(typeArgument, location)
 			: null;
 	}
 }

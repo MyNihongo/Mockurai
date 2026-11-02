@@ -292,6 +292,7 @@ public sealed class Nullability : IssuesTestsBase
 				}
 				"""
 			),
+			CreateInterfaceMockInterceptors(testCode),
 		];
 
 		var ctx = CreateFixture(testCode, generatedSources);

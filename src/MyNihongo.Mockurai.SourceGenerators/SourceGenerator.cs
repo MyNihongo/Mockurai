@@ -1,4 +1,6 @@
-﻿namespace MyNihongo.Mockurai;
+﻿using Microsoft.CodeAnalysis.CSharp;
+
+namespace MyNihongo.Mockurai;
 
 [Generator]
 public sealed class SourceGenerator : IIncrementalGenerator
@@ -45,10 +47,19 @@ public sealed class SourceGenerator : IIncrementalGenerator
 					mockTypes.AddAll(mocks);
 				}
 
+				var mockFactoryInvocations = new Dictionary<ITypeSymbol, List<InterceptableLocation>>(TypeSymbolNameComparer.Default);
 				foreach (var mockFactoryResult in source.MockFactoryResults)
 				{
-					var mockType = mockFactoryResult?.GetMockedTypeSymbol(compilation);
-					mockTypes.AddSingle(mockType);
+					var mockFactoryInvocation = mockFactoryResult?.GetMockFactoryInvocation(compilation);
+					if (mockFactoryInvocation is null)
+						continue;
+
+					mockTypes.AddSingle(mockFactoryInvocation.Type);
+
+					if (!mockFactoryInvocations.TryGetValue(mockFactoryInvocation.Type, out var locations))
+						mockFactoryInvocations.Add(mockFactoryInvocation.Type, locations = []);
+
+					locations.Add(mockFactoryInvocation.Location);
 				}
 
 				var methodSetups = new HashSet<IMethodSymbol>(MethodSymbolSetupComparer.Default);
@@ -59,6 +70,12 @@ public sealed class SourceGenerator : IIncrementalGenerator
 					context.AddSanitisedSource($"{sourceCodeResult.Name}.g.cs", sourceCodeResult.Source);
 
 					methodSetups.TryAddAll(sourceCodeResult.MethodSymbols);
+				}
+
+				if (mockFactoryInvocations.Count > 0)
+				{
+					var interceptorsSourceCode = mockFactoryInvocations.GenerateMockFactoryInterceptors(source);
+					context.AddSanitisedSource("MockFactoryInterceptors.g.cs", interceptorsSourceCode);
 				}
 
 				foreach (var methodSetup in methodSetups)

@@ -1,4 +1,8 @@
-﻿namespace MyNihongo.Mockurai.Tests;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+namespace MyNihongo.Mockurai.Tests;
 
 public abstract class TestsBase
 {
@@ -8,6 +12,16 @@ public abstract class TestsBase
 		{
 			ReferenceAssemblies = ReferenceAssemblies.Net.Net100,
 			TestCode = testCode,
+			SolutionTransforms =
+			{
+				static (solution, projectId) =>
+				{
+					var parseOptions = (CSharpParseOptions)solution.GetProject(projectId)!.ParseOptions!;
+					return solution.WithProjectParseOptions(projectId, parseOptions.WithFeatures([
+						new KeyValuePair<string, string>("InterceptorsNamespaces", "MyNihongo.Mockurai"),
+					]));
+				},
+			},
 			TestState =
 			{
 				AdditionalReferences = { typeof(MockuraiGenerateAttribute).Assembly },
@@ -18,6 +32,59 @@ public abstract class TestsBase
 				},
 			},
 		};
+	}
+
+	protected static GeneratedSource CreateInterfaceMockInterceptors(string testCode)
+	{
+		var interceptsLocations = string.Join(Environment.NewLine + "\t\t", GetInterceptsLocationAttributes(testCode));
+
+		return (
+			"MockFactoryInterceptors.g.cs",
+			$$"""
+			  #nullable enable
+			  namespace System.Runtime.CompilerServices
+			  {
+			  	[System.AttributeUsage(System.AttributeTargets.Method, AllowMultiple = true)]
+			  	file sealed class InterceptsLocationAttribute : System.Attribute
+			  	{
+			  		public InterceptsLocationAttribute(int version, string data)
+			  		{
+			  		}
+			  	}
+			  }
+
+			  namespace MyNihongo.Mockurai
+			  {
+			  	file static class MockFactoryInterceptors
+			  	{
+			  		{{interceptsLocations}}
+			  		public static IMock<Issues.Tests.IInterface> Create0() =>
+			  			new global::MyNihongo.Mockurai.InterfaceMock(InvocationIndex.CounterValue);
+			  	}
+			  }
+			  """
+		);
+	}
+
+	// The location data contains a checksum of the test code, therefore it is calculated in the same way as the generator does
+	private static IEnumerable<string> GetInterceptsLocationAttributes(string testCode)
+	{
+		var syntaxTree = CSharpSyntaxTree.ParseText(testCode, path: "/0/Test0.cs");
+		var usingsSyntaxTree = CSharpSyntaxTree.ParseText("global using MyNihongo.Mockurai;");
+		var references = ((string)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")!)
+			.Split(Path.PathSeparator)
+			.Append(typeof(Mock).Assembly.Location)
+			.Select(static x => MetadataReference.CreateFromFile(x));
+
+		var compilation = CSharpCompilation.Create(assemblyName: null, [syntaxTree, usingsSyntaxTree], references);
+		var semanticModel = compilation.GetSemanticModel(syntaxTree);
+
+		return syntaxTree.GetRoot()
+			.DescendantNodes()
+			.OfType<InvocationExpressionSyntax>()
+			.Select(x => semanticModel.GetInterceptableLocation(x))
+			.OfType<InterceptableLocation>()
+			.Select(static x => x.GetInterceptsLocationAttributeSyntax());
 	}
 
 	protected static GeneratedSource CreateSetupCode(string[] types)
@@ -727,7 +794,7 @@ public abstract class TestsBase
 			  		public long Index { get; }
 
 			  		public bool IsVerified { get; set; }
-			  
+
 			  		public {{tupleType}} Arguments => _argument;
 
 			  		{{verifyItemGetParameterFunctions}}
