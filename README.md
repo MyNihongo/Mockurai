@@ -24,12 +24,28 @@ dotnet add package Mockurai
 
 Add `[MockuraiGenerate]` to a `partial` test base class and declare `IMock<T>` properties for each dependency. The generator fills in the implementations and produces the matching setup/verify extension methods.
 
+#### Using partial properties
+
 ```csharp
 [MockuraiGenerate]
 public abstract partial class CustomerServiceTestsBase
 {
     protected partial IMock<ICustomerRepository> RepositoryMock { get; }
     protected partial IMock<IClock> ClockMock { get; }
+
+    protected ICustomerService CreateFixture() =>
+        new CustomerService(RepositoryMock.Object, ClockMock.Object);
+}
+```
+
+#### Using fields
+
+```csharp
+[MockuraiGenerate]
+public abstract partial class CustomerServiceTestsBase
+{
+    protected readonly IMock<ICustomerRepository> RepositoryMock = Mock.Create<ICustomerRepository>();
+    protected readonly IMock<IClock> ClockMock = Mock.Create<IClock>();
 
     protected ICustomerService CreateFixture() =>
         new CustomerService(RepositoryMock.Object, ClockMock.Object);
