@@ -2,11 +2,21 @@
 
 internal static class HashSetEx
 {
-	public static void AddAll(this HashSet<ITypeSymbol> @this, List<MockClassDeclaration> mocks)
+	extension(HashSet<ITypeSymbol> @this)
 	{
-		// OriginalDefinition has the generic type (e.g. T), not the implementation type (e.g. int, string, etc.)
-		foreach (var mock in mocks)
-			@this.Add(mock.Type.OriginalDefinition);
+		public void AddAll(List<MockClassDeclaration> mocks)
+		{
+			// OriginalDefinition has the generic type (e.g. T), not the implementation type (e.g. int, string, etc.)
+			foreach (var mock in mocks)
+				@this.Add(mock.Type.OriginalDefinition);
+		}
+
+		public void AddSingle(ITypeSymbol? mock)
+		{
+			// OriginalDefinition has the generic type (e.g. T), not the implementation type (e.g. int, string, etc.)
+			if (mock is not null)
+				@this.Add(mock.OriginalDefinition);
+		}
 	}
 
 	public static void TryAddAll<T>(this HashSet<T> @this, IReadOnlyList<T>? items)

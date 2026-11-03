@@ -18,15 +18,18 @@ internal static class IncrementalValueProviderEx
 
 	public static IncrementalValueProvider<CompilationCombinedResult> Combine(
 		this IncrementalValueProvider<Compilation> @this,
-		in IncrementalValueProvider<ImmutableArray<SyntaxNodeTransformResult?>> transformResult,
+		in IncrementalValueProvider<ImmutableArray<TestClassTransformResult?>> testClassResults,
+		in IncrementalValueProvider<ImmutableArray<MockFactoryTransformResult?>> mockFactoryResults,
 		in IncrementalValueProvider<ConfigurationOptions> options)
 	{
 		return @this
-			.Combine(transformResult)
+			.Combine(testClassResults)
+			.Combine(mockFactoryResults)
 			.Combine(options)
 			.Select(static (x, _) => new CompilationCombinedResult(
-				compilation: x.Left.Left,
-				transformResults: x.Left.Right,
+				compilation: x.Left.Left.Left,
+				testClassTransformResults: x.Left.Left.Right,
+				mockFactoryResults: x.Left.Right,
 				options: x.Right
 			));
 	}

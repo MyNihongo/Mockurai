@@ -9,6 +9,8 @@ internal static class MockGeneratorConst
 	public const string BeforeVerifyNoOtherCallsAttribute = $"{BeforeVerifyNoOtherCallsAttributeName}Attribute";
 	public const string SkipVerifyNoOtherCallsPropertyName = "SkipVerifyNoOtherCalls";
 	public const string Namespace = "MyNihongo.Mockurai";
+	public const string FactoryClassName = "Mock";
+	public const string FactoryMethodName = "Create";
 
 	public static class Variables
 	{
