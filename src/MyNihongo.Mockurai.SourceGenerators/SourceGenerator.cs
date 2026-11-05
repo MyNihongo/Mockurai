@@ -30,8 +30,10 @@ public sealed class SourceGenerator : IIncrementalGenerator
 			{
 				const string globalUsings = $"global using {MockGeneratorConst.Namespace};";
 				var compilation = context.AddSourceToSyntaxTree("_Usings.g.cs", globalUsings, source.Compilation);
+				var exports = MockExports.Collect(compilation);
 
-				var mockTypes = new HashSet<ITypeSymbol>(TypeSymbolNameComparer.Default);
+				// Exported mocks are always generated, even if they are not used in the current assembly
+				var mockTypes = new HashSet<ITypeSymbol>(exports.Own, TypeSymbolNameComparer.Default);
 				foreach (var classNode in new ClassInheritanceTree<TestClassTransformResult>(source.TestClassTransformResults, compilation))
 				{
 					var namedTypeSymbol = classNode?.GetNamedTypeSymbol(compilation);
@@ -42,7 +44,7 @@ public sealed class SourceGenerator : IIncrementalGenerator
 					if (mocks.Count == 0)
 						continue;
 
-					var sourceCode = namedTypeSymbol.GenerateMockClass(mocks);
+					var sourceCode = namedTypeSymbol.GenerateMockClass(mocks, exports);
 					compilation = context.AddSourceToSyntaxTree($"{namedTypeSymbol.Name}.g.cs", sourceCode, compilation);
 					mockTypes.AddAll(mocks);
 				}
@@ -66,15 +68,25 @@ public sealed class SourceGenerator : IIncrementalGenerator
 				var methodInvocations = new HashSet<IMethodSymbol>(MethodSymbolInvocationComparer.Default);
 				foreach (var mockType in mockTypes)
 				{
-					var sourceCodeResult = mockType.GenerateMockImplementation(source);
+					// Mocks exported from referenced assemblies are reused as they are
+					if (exports.TryGetReferenced(mockType) is not null)
+						continue;
+
+					var sourceCodeResult = mockType.GenerateMockImplementation(source, exports);
 					context.AddSanitisedSource($"{sourceCodeResult.Name}.g.cs", sourceCodeResult.Source);
 
 					methodSetups.TryAddAll(sourceCodeResult.MethodSymbols);
 				}
 
+				if (exports.Own.Count > 0)
+				{
+					var exportsSourceCode = exports.Own.GenerateMockExports(source);
+					context.AddSanitisedSource("MockExports.g.cs", exportsSourceCode);
+				}
+
 				if (mockFactoryInvocations.Count > 0)
 				{
-					var interceptorsSourceCode = mockFactoryInvocations.GenerateMockFactoryInterceptors(source);
+					var interceptorsSourceCode = mockFactoryInvocations.GenerateMockFactoryInterceptors(source, exports);
 					context.AddSanitisedSource("MockFactoryInterceptors.g.cs", interceptorsSourceCode);
 				}
 

@@ -117,6 +117,16 @@ internal static class TypeSymbolEx
 				: @this;
 		}
 
+		public StringBuilder AppendMockClassReference(ITypeSymbol typeSymbol, string rootNamespace, MockExports exports)
+		{
+			if (exports.TryGetReferenced(typeSymbol) is { } exportedMockType)
+				return @this.Append(exportedMockType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
+
+			return @this
+				.Append("global::").Append(rootNamespace).Append('.')
+				.AppendMockClassName(typeSymbol);
+		}
+
 		public StringBuilder AppendGenericTypes(ITypeSymbol typeSymbol, bool useSeparator = true, bool appendTypeOfName = false)
 		{
 			return typeSymbol is INamedTypeSymbol { TypeArguments.Length: > 0 } namedTypeSymbol

@@ -4,15 +4,21 @@ namespace MyNihongo.Mockurai.Utils;
 
 internal static class MockImplementationGenerator
 {
-	public static MockImplementationResult GenerateMockImplementation(this ITypeSymbol typeSymbol, CompilationCombinedResult result)
+	public static MockImplementationResult GenerateMockImplementation(this ITypeSymbol typeSymbol, CompilationCombinedResult result, MockExports exports)
 	{
 		var stringBuilder = new StringBuilder();
 		var typeString = typeSymbol.ToString();
 
-		var accessibility = GetAccessibility(typeSymbol);
+		var isExported = exports.IsOwn(typeSymbol);
+		var accessibility = GetAccessibility(typeSymbol, isExported, exports.IsLibrary);
 		var accessibilityString = accessibility.GetString();
 
 		var (constructor, mockClassName, genericTypes) = CreateMockClassName(stringBuilder, typeSymbol);
+
+		// Exported mocks have their own extension classes, so that they never collide with MockExtensions of the consuming assemblies
+		var (extensionsClassName, sequenceExtensionsClassName) = isExported
+			? (mockClassName + "Extensions", mockClassName + "SequenceExtensions")
+			: ("MockExtensions", "MockSequenceExtensions");
 		var mockedTypeSymbol = new MockedTypeSymbol(typeSymbol);
 		var mockableMembers = GetMockableMembers(typeSymbol);
 
@@ -70,7 +76,7 @@ internal static class MockImplementationGenerator
 			.Indent(1).AppendLine("}")
 			.AppendLine("}")
 			.AppendLine()
-			.AppendLine("public static partial class MockExtensions")
+			.Append("public static partial class ").AppendLine(extensionsClassName)
 			.AppendLine("{")
 			.Indent(1).Append("extension").Append(genericTypes).Append("(IMock<").Append(typeString).AppendLine("> @this)")
 			.Indent(1).AppendLine("{")
@@ -82,7 +88,7 @@ internal static class MockImplementationGenerator
 			.Indent(1).AppendLine("}")
 			.AppendLine("}")
 			.AppendLine()
-			.AppendLine("public static partial class MockSequenceExtensions")
+			.Append("public static partial class ").AppendLine(sequenceExtensionsClassName)
 			.AppendLine("{")
 			.Indent(1).Append("extension").Append(genericTypes).Append("(IMockSequence<").Append(typeString).AppendLine("> @this)")
 			.Indent(1).AppendLine("{")
@@ -98,9 +104,13 @@ internal static class MockImplementationGenerator
 		);
 	}
 
-	private static Accessibility GetAccessibility(ITypeSymbol typeSymbol)
+	private static Accessibility GetAccessibility(ITypeSymbol typeSymbol, bool isExported, bool isLibrary)
 	{
-		return typeSymbol.DeclaredAccessibility.IsInternal
+		if (isExported)
+			return Accessibility.Public;
+
+		// Libraries must not leak their internal mocks to the consuming assemblies
+		return isLibrary || typeSymbol.DeclaredAccessibility.IsInternal
 			? Accessibility.Internal
 			: Accessibility.Public;
 	}
