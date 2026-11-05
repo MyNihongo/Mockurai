@@ -2,7 +2,7 @@
 
 internal static class MockClassGenerator
 {
-	public static string GenerateMockClass(this INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks)
+	public static string GenerateMockClass(this INamedTypeSymbol classSymbol, List<MockClassDeclaration> mocks, MockExports exports)
 	{
 		var stringBuilder = new StringBuilder();
 		const int indent = 1;
@@ -13,7 +13,7 @@ internal static class MockClassGenerator
 			.AppendLine()
 			.Append(classSymbol.DeclaredAccessibility.GetString()).Append(" partial class ").AppendLine(classSymbol.Name)
 			.AppendLine("{")
-			.CreateProperties(mocks, indent)
+			.CreateProperties(mocks, exports, indent)
 			.CreateVerifyNoOtherCalls(classSymbol, mocks, indent)
 			.AppendLine()
 			.CreateVerifyInSequence(classSymbol, mocks, indent)
@@ -26,7 +26,7 @@ internal static class MockClassGenerator
 
 	extension(StringBuilder stringBuilder)
 	{
-		private StringBuilder CreateProperties(List<MockClassDeclaration> mocks, int indent)
+		private StringBuilder CreateProperties(List<MockClassDeclaration> mocks, MockExports exports, int indent)
 		{
 			foreach (var mock in mocks)
 			{
@@ -43,8 +43,14 @@ internal static class MockClassGenerator
 
 				stringBuilder
 					.Indent(indent)
-					.Append("private readonly ")
-					.AppendMockClassName(mock.Type)
+					.Append("private readonly ");
+
+				if (exports.TryGetReferenced(mock.Type) is { } exportedMockType)
+					stringBuilder.Append(exportedMockType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
+				else
+					stringBuilder.AppendMockClassName(mock.Type);
+
+				stringBuilder
 					.Append(' ')
 					.AppendFieldName(propertyName)
 					.AppendLine(" = new(InvocationIndex.CounterValue);");
