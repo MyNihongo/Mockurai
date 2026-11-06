@@ -5,7 +5,7 @@ namespace MyNihongo.Mockurai;
 internal sealed class MockConfigurationSetup<T> : IConfigurationSetup
 	where T : class, IConfiguration
 {
-	private static readonly SectionInfoProvider SectionInfoProvider = new();
+	private readonly SectionInfoProvider _sectionInfoProvider = new();
 	private readonly IMock<T> _mock;
 
 	public MockConfigurationSetup(IMock<T> mock)
@@ -16,7 +16,9 @@ internal sealed class MockConfigurationSetup<T> : IConfigurationSetup
 	public void Returns(object? configurationObject)
 	{
 		// TODO: reset
-
+		
+		// TODO: generate if exported
+		Mock.Create<IConfiguration>();
 
 		if (configurationObject is null)
 			return;
@@ -28,7 +30,7 @@ internal sealed class MockConfigurationSetup<T> : IConfigurationSetup
 
 		_mock.SetupDefaultSection();
 		
-		var props = SectionInfoProvider.Resolve(type, configurationObject);
+		var props = _sectionInfoProvider.Resolve(type, configurationObject);
 		if (props.Count == 0)
 			return;
 	}
