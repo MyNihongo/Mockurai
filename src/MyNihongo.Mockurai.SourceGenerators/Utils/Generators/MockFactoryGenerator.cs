@@ -4,7 +4,7 @@ namespace MyNihongo.Mockurai.Utils;
 
 internal static class MockFactoryGenerator
 {
-	public static string GenerateMockFactoryInterceptors(this Dictionary<ITypeSymbol, List<InterceptableLocation>> invocations, CompilationCombinedResult result)
+	public static string GenerateMockFactoryInterceptors(this Dictionary<ITypeSymbol, List<InterceptableLocation>> invocations, CompilationCombinedResult result, MockExports exports)
 	{
 		var stringBuilder = new StringBuilder()
 			.AppendLine("#nullable enable")
@@ -39,8 +39,8 @@ internal static class MockFactoryGenerator
 				.Append("public static IMock<").Append(invocation.Key).Append("> ")
 				.Append(MockGeneratorConst.FactoryMethodName).Append(index++).AppendLine("() =>")
 				.Indent(3)
-				.Append("new global::").Append(result.Options.RootNamespace).Append('.')
-				.AppendMockClassName(invocation.Key)
+				.Append("new ")
+				.AppendMockClassReference(invocation.Key, result.Options.RootNamespace, exports)
 				.AppendLine("(InvocationIndex.CounterValue);");
 		}
 
