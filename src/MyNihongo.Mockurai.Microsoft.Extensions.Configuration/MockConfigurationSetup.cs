@@ -1,37 +1,36 @@
-﻿using System.Dynamic;
+﻿namespace MyNihongo.Mockurai;
 
-namespace MyNihongo.Mockurai;
-
-internal sealed class MockConfigurationSetup<T> : IConfigurationSetup
-	where T : class, IConfiguration
+internal sealed class MockConfigurationSetup : IConfigurationSetup
 {
-	private readonly SectionInfoProvider _sectionInfoProvider = new();
-	private readonly IMock<T> _mock;
+	private readonly IMock<IConfiguration> _mock;
 
-	public MockConfigurationSetup(IMock<T> mock)
+	public MockConfigurationSetup(IMock<IConfiguration> mock)
 	{
 		_mock = mock;
 	}
 
 	public void Returns(object? configurationObject)
 	{
-		// TODO: reset
-		
-		// TODO: generate if exported
-		Mock.Create<IConfiguration>();
+		var root = ConfigurationTreeBuilder.Build(configurationObject);
 
-		if (configurationObject is null)
-			return;
+		_mock
+			.SetupGetSection()
+			.Returns(key => root.GetSection(key));
 
-		var type = configurationObject.GetType();
+		_mock
+			.SetupGetChildren()
+			.Returns(() => root.GetChildren());
 
-		if (type.IsPrimitive() || configurationObject is IEnumerable and not ExpandoObject)
-			throw new InvalidOperationException($"`{type.FullName}` must not be a primitive type or enumerable");
+		_mock
+			.SetupGetIndexer()
+			.Returns(key => root[key]);
 
-		_mock.SetupDefaultSection();
-		
-		var props = _sectionInfoProvider.Resolve(type, configurationObject);
-		if (props.Count == 0)
-			return;
+		_mock
+			.SetupSetIndexer()
+			.Callback((key, value) => root[key] = value);
+
+		_mock
+			.SetupGetReloadToken()
+			.Returns(NullChangeToken.Instance);
 	}
 }
