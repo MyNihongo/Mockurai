@@ -9,7 +9,7 @@
 		<Nullable>enable</Nullable>
 		<RootNamespace>MyNihongo.Mockurai</RootNamespace>
 		<PackageId>Mockurai.Microsoft.Extensions.Configuration</PackageId>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 		<Authors>Mynihongo</Authors>
 		<Copyright>© Mynihongo 2026</Copyright>
 		<Product>Mockurai</Product>
@@ -29,7 +29,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.14"/>
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="11.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
