@@ -1,4 +1,10 @@
 <Solution>
+  <Folder Name="/extensions/">
+    <Project Path="src/MyNihongo.Mockurai.Microsoft.Extensions.Configuration/MyNihongo.Mockurai.Microsoft.Extensions.Configuration.csproj" Id="b388551f-e2bd-4f7d-b6d3-9b37670e8599" />
+  </Folder>
+  <Folder Name="/extensions/tests/">
+    <Project Path="tests/MyNihongo.Mockurai.Microsoft.Extensions.Configuration.Tests/MyNihongo.Mockurai.Microsoft.Extensions.Configuration.Tests.csproj" Id="a72654bd-6167-4bef-989f-c91c5a5085ca" />
+  </Folder>
   <Folder Name="/samples/">
     <Project Path="sample/MyNihongo.Mockurai.Sample/MyNihongo.Mockurai.Sample.csproj" />
   </Folder>
